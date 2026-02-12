@@ -15,6 +15,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Plugins
 plugins=(
   git
+  fzf-tab
   zsh-autosuggestions
   zsh-syntax-highlighting
   autojump
@@ -44,6 +45,32 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' complete-options true
+
+# Group completions by category with Nord-styled headers
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format $'\e[1;34m-- %d --\e[0m'
+zstyle ':completion:*:messages' format $'\e[1;33m-- %d --\e[0m'
+zstyle ':completion:*:warnings' format $'\e[1;31m-- no matches --\e[0m'
+
+# Better sorting and caching
+zstyle ':completion:*' file-sort modification
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/.zcompcache"
+
+# Process completion
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=34=31'
+zstyle ':completion:*:*:kill:*' menu yes select
+
+# fzf-tab configuration
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
+zstyle ':fzf-tab:complete:ls:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
+zstyle ':fzf-tab:complete:cat:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
+zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
+zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
+zstyle ':fzf-tab:*' fzf-flags --color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C --color=fg:#D8DEE9,header:#A3BE8C,info:#88C0D0,pointer:#81A1C1 --color=marker:#EBCB8B,fg+:#ECEFF4,prompt:#88C0D0,hl+:#A3BE8C --color=border:#4C566A
+zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # --------------------------------------------------------------
 # ⚙️ Environment Setup

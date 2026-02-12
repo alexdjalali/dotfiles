@@ -1,0 +1,1087 @@
+# ==============================================================
+# 🧠 Developer ZSH Configuration (macOS + iTerm2)
+# Optimized for Go, Python, Node/TS, Docker, Kubernetes, Git
+# ==============================================================
+
+### Powerlevel10k Instant Prompt — keep this near the top ###
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+### Oh My Zsh ###
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Plugins
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  autojump
+  docker
+  kubectl
+  fzf
+  history-substring-search
+  colored-man-pages
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# --------------------------------------------------------------
+# 🧩 Completions and Performance
+# --------------------------------------------------------------
+
+# Fast, cached completions
+autoload -Uz compinit
+if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+  compinit
+else
+  compinit -C
+fi
+
+# Completion tweaks
+zstyle ':completion:*' menu select
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+# --------------------------------------------------------------
+# ⚙️ Environment Setup
+# --------------------------------------------------------------
+
+# Supermemory (Claude Code plugin — persistent memory)
+# IMPORTANT: Set your own API key or source from ~/.zshrc.local
+# export SUPERMEMORY_CC_API_KEY="your-api-key-here"
+
+# Source local/private config (for API keys, tokens, etc.)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Locale
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Editor
+export EDITOR="nvim"
+
+# PATHs (ordered for macOS developer stack)
+export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+
+# Go
+export GOPATH="$HOME/go"
+export PATH="$PATH:$GOPATH/bin"
+
+# Python - dynamic version detection
+python_path=$(echo $HOME/Library/Python/3.*/bin | tr ' ' ':')
+[[ -n "$python_path" ]] && export PATH="$python_path:$PATH"
+
+# Rust/Cargo (for uv, etc.)
+[[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
+
+# Nord theme for bat
+export BAT_THEME="Nord"
+
+# Nord-inspired colors for eza/ls
+export EZA_COLORS="\
+uu=36:\
+gu=37:\
+sn=32:\
+sb=32:\
+da=34:\
+ur=34:\
+uw=35:\
+ux=36:\
+ue=36:\
+gr=34:\
+gw=35:\
+gx=36:\
+tr=34:\
+tw=35:\
+tx=36:"
+
+# iTerm2 integration
+if [ -e "${HOME}/.iterm2_shell_integration.zsh" ]; then
+  source "${HOME}/.iterm2_shell_integration.zsh"
+fi
+
+# Scripts
+export PATH="$HOME/.local/scripts:$PATH"
+
+# --------------------------------------------------------------
+# 🎨 Powerlevel10k
+# --------------------------------------------------------------
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# 🧠 History Configuration
+# --------------------------------------------------------------
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_SPACE  # Don't save commands starting with space
+
+# --------------------------------------------------------------
+# 🔍 Autosuggestions and Syntax Highlighting (Nord theme)
+# --------------------------------------------------------------
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4C566A,standout"
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+
+# Nord-themed syntax highlighting
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
+# Main highlighter colors (Nord palette)
+ZSH_HIGHLIGHT_STYLES[default]=none
+ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=#BF616A,bold
+ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=#81A1C1,bold
+ZSH_HIGHLIGHT_STYLES[suffix-alias]=fg=#A3BE8C,underline
+ZSH_HIGHLIGHT_STYLES[global-alias]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[precommand]=fg=#A3BE8C,underline
+ZSH_HIGHLIGHT_STYLES[commandseparator]=fg=#88C0D0,bold
+ZSH_HIGHLIGHT_STYLES[autodirectory]=fg=#A3BE8C,underline
+ZSH_HIGHLIGHT_STYLES[path]=underline
+ZSH_HIGHLIGHT_STYLES[globbing]=fg=#88C0D0,bold
+ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=#88C0D0,bold
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]=fg=#88C0D0,bold
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=#EBCB8B
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=#EBCB8B
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]=fg=#EBCB8B
+ZSH_HIGHLIGHT_STYLES[rc-quote]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]=fg=#B48EAD
+ZSH_HIGHLIGHT_STYLES[redirection]=fg=#88C0D0,bold
+ZSH_HIGHLIGHT_STYLES[comment]=fg=#4C566A,bold
+ZSH_HIGHLIGHT_STYLES[arg0]=fg=#A3BE8C
+
+# Bracket highlighter (Nord colors)
+ZSH_HIGHLIGHT_STYLES[bracket-error]=fg=#BF616A,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-1]=fg=#88C0D0,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-2]=fg=#A3BE8C,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-3]=fg=#B48EAD,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-4]=fg=#EBCB8B,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-5]=fg=#81A1C1,bold
+ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]=standout
+
+# --------------------------------------------------------------
+# ⚡ Global Alias Expansion
+# --------------------------------------------------------------
+globalias() {
+   if [[ $LBUFFER =~ '[a-zA-Z0-9]+$' ]]; then
+       zle _expand_alias
+       zle expand-word
+   fi
+   zle self-insert
+}
+zle -N globalias
+bindkey " " globalias
+bindkey "^[[Z" magic-space
+bindkey -M isearch " " magic-space
+
+# --------------------------------------------------------------
+# 🧰 Performance: Lazy Load Heavy Tools
+# --------------------------------------------------------------
+
+# Lazy load nvm (saves ~200ms startup time)
+export NVM_DIR="$HOME/.nvm"
+alias nvm='unalias nvm; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; nvm $@'
+
+# Disable Oh My Zsh auto-update (saves time)
+DISABLE_AUTO_UPDATE="true"
+DISABLE_UPDATE_PROMPT="true"
+
+# --------------------------------------------------------------
+# 🧠 Aliases (Common Dev Shortcuts)
+# --------------------------------------------------------------
+
+# General
+alias ll='ls -lah'
+alias cls='clear'
+alias h='history | grep'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Modern CLI replacements (install: brew install eza bat ripgrep fd dust)
+if command -v eza &> /dev/null; then
+  alias ls='eza --icons --group-directories-first'
+  alias la='eza --icons -a --group-directories-first'
+  alias ll='eza -la --icons --group-directories-first --git'
+  alias lt='eza --icons --tree --level=2'
+  alias llt='eza -la --icons --tree --level=2 --git'
+fi
+if command -v bat &> /dev/null; then
+  alias cat='bat --style=plain'
+  alias ccat='/bin/cat'  # Original cat
+fi
+if command -v rg &> /dev/null; then
+  alias grep='rg'
+fi
+if command -v fd &> /dev/null; then
+  alias find='fd'
+fi
+if command -v dust &> /dev/null; then
+  alias du='dust'
+fi
+if command -v procs &> /dev/null; then
+  alias ps='procs'
+fi
+if command -v btop &> /dev/null; then
+  alias top='btop'
+  alias htop='btop'
+fi
+if command -v duf &> /dev/null; then
+  alias df='duf'
+fi
+
+# Safety aliases
+alias rm='rm -i'
+alias rmf='/bin/rm -f'
+alias mv='mv -i'
+alias cp='cp -i'
+
+# Git
+alias gs='git status'
+alias ga='git add .'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git pull'
+alias gb='git branch'
+alias gd='git diff'
+alias gco='git checkout'
+alias gundo='git reset --soft HEAD~1'
+alias glog='git log --oneline --graph --decorate --all'
+alias gst='git stash'
+alias gstp='git stash pop'
+alias gclean='git clean -fd'
+alias grh='git reset --hard'
+alias grc='git rebase --continue'
+alias gra='git rebase --abort'
+alias gpr='gh pr create --fill'
+alias gpv='gh pr view --web'
+
+# Custom workflow scripts (~/.local/scripts)
+alias gbs='git-branch-stack.sh'       # Branch stack management
+alias dreset='docker-reset.sh'        # Docker cluster reset
+alias e2e='pipeline-e2e.sh'           # ML pipeline E2E testing
+alias prr='pr-review.sh'              # PR review workflow
+
+# Documentation (~/.local/docs)
+alias docs='glow ~/.local/docs/README.md'
+alias docs-git='glow ~/.local/docs/git-workflow.md'
+alias docs-api='glow ~/.local/docs/api-development.md'
+alias docs-docker='glow ~/.local/docs/docker-containers.md'
+alias docs-quality='glow ~/.local/docs/code-quality.md'
+alias docs-productivity='glow ~/.local/docs/productivity.md'
+alias docs-scripts='glow ~/.local/docs/custom-scripts.md'
+
+# Docker (safe versions)
+alias d='docker'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias di='docker images'
+
+# Kubernetes
+alias k='kubectl'
+alias kgp='kubectl get pods'
+alias kga='kubectl get all'
+alias kctx='kubectl config get-contexts'
+alias kuse='kubectl config use-context'
+alias kns='kubectl config set-context --current --namespace'
+alias kaf='kubectl apply -f'
+alias kdf='kubectl delete -f'
+alias kl='kubectl logs -f'
+
+# Docker Compose
+alias dc='docker-compose'
+alias dcup='docker-compose up -d'
+alias dcdown='docker-compose down'
+alias dclogs='docker-compose logs -f'
+
+# Go
+alias gob='go build'
+alias got='go test ./...'
+alias gor='go run .'
+alias gom='go mod tidy'
+
+# Node / JS / TS
+alias ni='npm install'
+alias nr='npm run'
+alias nt='npm test'
+alias nrd='npm run dev'
+alias ns='npm start'
+
+# Python
+alias venv='python3 -m venv venv && source venv/bin/activate'
+alias py='python3'
+alias pip='pip3'
+
+# Neovim
+alias nvimrc="nvim ~/.config/nvim/init.lua"
+alias nvimplugins="nvim ~/.config/nvim/lua/plugins/"
+alias nvimlua="cd ~/.config/nvim/lua"
+alias nvimconf="cd ~/.config/nvim"
+alias nvim-update="nvim --headless '+Lazy! sync' +qa"
+alias nvim-clean="nvim --headless '+Lazy! clean' +qa"
+alias nvim-check="nvim --headless '+checkhealth' +qa"
+alias nvim-profile="nvim --startuptime /tmp/nvim-startup.log +q && cat /tmp/nvim-startup.log"
+alias vim='nvim'
+alias vi='nvim'
+alias vimdiff='nvim -d'
+alias vconflict="nvim \$(git diff --name-only --diff-filter=U)"
+alias vmod="nvim \$(git ls-files -m)"
+alias vstaged="nvim \$(git diff --name-only --cached)"
+alias scratch="nvim +'set buftype=nofile' +'set bufhidden=hide' +'set noswapfile'"
+alias note="nvim ~/notes/\$(date +%Y-%m-%d).md"
+alias todo="nvim ~/notes/TODO.md"
+alias lsp-check="nvim --headless -c 'LspInfo' -c 'qa'"
+alias mason-status="nvim --headless -c 'Mason' -c 'qa'"
+alias diff="nvim -d"
+alias copyfile='pbcopy <'
+alias vpaste='pbpaste | nvim -'
+
+# macOS Clipboard
+alias copy='pbcopy'
+alias paste='pbpaste'
+
+# Source .zsh
+alias reload="source ~/.zshrc && echo '🔁 Zsh config reloaded!'"
+
+# Scripts
+alias macclean="$HOME/.local/scripts/mac-cleanup.sh"
+alias brewmaintain="$HOME/.local/scripts/brew-maintain.sh"
+alias aireview="$HOME/.local/scripts/git-ai-review.sh"
+
+# Ports
+alias ports='lsof -i -P -n'
+
+# History helpers
+alias hgrep='history | grep'
+alias htop10='history | awk "{print \$2}" | sort | uniq -c | sort -rn | head -10'
+
+# --------------------------------------------------------------
+# 🛠️ Useful Functions
+# --------------------------------------------------------------
+
+# Unalias any conflicting aliases before defining functions
+unalias dstop drm dprune dexec dlogs gcb gac gbdel kexec kpf v ve vrg vr vs vl vw proj tn ta gdiff dark light vf vg 2>/dev/null
+
+# Create directory and cd into it
+mkcd() { mkdir -p "$1" && cd "$1"; }
+
+# Docker: Stop all running containers
+dstop() {
+  local containers=$(docker ps -q)
+  [[ -n "$containers" ]] && docker stop $containers || echo "No running containers"
+}
+
+# Docker: Remove all stopped containers
+drm() {
+  local containers=$(docker ps -aq)
+  [[ -n "$containers" ]] && docker rm $containers || echo "No containers to remove"
+}
+
+# Docker: System prune (with confirmation)
+dprune() {
+  echo "⚠️  This will remove all stopped containers, unused networks, dangling images, and build cache"
+  read "reply?Continue? (y/N) "
+  [[ $reply =~ ^[Yy]$ ]] && docker system prune -af
+}
+
+# Docker: Exec into running container
+dexec() { docker exec -it "$1" /bin/bash || docker exec -it "$1" /bin/sh; }
+
+# Docker: Follow logs
+dlogs() { docker logs -f "$1"; }
+
+# Git: Create and checkout branch
+gcb() { git checkout -b "$1"; }
+
+# Git: Add all and commit
+gac() { git add . && git commit -m "$1"; }
+
+# Git: Delete branch
+gbdel() { git branch -d "$1"; }
+
+# Kubernetes: Exec into pod
+kexec() { kubectl exec -it "$1" -- /bin/bash || kubectl exec -it "$1" -- /bin/sh; }
+
+# Kubernetes: Port forward helper
+kpf() { kubectl port-forward "$1" "$2:$2"; }
+
+# Find process using port
+port() { lsof -i ":$1"; }
+
+# Kill process on port
+killport() {
+  local pid=$(lsof -ti ":$1")
+  [[ -n "$pid" ]] && kill -9 $pid && echo "Killed process on port $1" || echo "No process on port $1"
+}
+
+# Quick web server
+serve() { python3 -m http.server "${1:-8000}"; }
+
+# Extract any archive
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.gz|*.tgz) tar -xzf "$1" ;;
+      *.tar.bz2|*.tbz2) tar -xjf "$1" ;;
+      *.tar.xz) tar -xJf "$1" ;;
+      *.tar) tar -xf "$1" ;;
+      *.zip) unzip "$1" ;;
+      *.rar) unrar x "$1" ;;
+      *.7z) 7z x "$1" ;;
+      *.gz) gunzip "$1" ;;
+      *.bz2) bunzip2 "$1" ;;
+      *) echo "Unknown archive format: $1" ;;
+    esac
+  else
+    echo "File not found: $1"
+  fi
+}
+
+# Quick backup of a file
+backup() { cp "$1" "$1.bak.$(date +%Y%m%d-%H%M%S)"; }
+
+# Show PATH in readable format
+path() { echo $PATH | tr ':' '\n'; }
+
+# --------------------------------------------------------------
+# 🎯 Neovim Functions
+# --------------------------------------------------------------
+
+# Open file at specific line (e.g., v file.txt:42)
+v() {
+  if [[ $1 =~ ^(.+):([0-9]+):?([0-9]*)$ ]]; then
+    nvim "+${match[2]}" "${match[1]}"
+  else
+    nvim "$@"
+  fi
+}
+
+# FZF edit with live preview
+ve() {
+  local file=$(fzf --preview 'bat --color=always --line-range=:50 {}')
+  [[ -n "$file" ]] && nvim "$file"
+}
+
+# FZF ripgrep edit (search content then open in nvim)
+vrg() {
+  local file=$(rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+    fzf --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
+  if [[ -n "$file" ]]; then
+    nvim "+${file##*:}" "${file%%:*}"
+  fi
+}
+
+# FZF recent files (nvim oldfiles)
+vr() {
+  local file=$(nvim --headless -c "echo join(v:oldfiles, '\n')" -c "qa!" 2>&1 | fzf --preview 'bat --color=always {}')
+  [[ -n "$file" ]] && nvim "$file"
+}
+
+# Save nvim session for current directory
+vs() {
+  local session_name="${1:-$(basename $PWD)}"
+  mkdir -p ~/.config/nvim/sessions
+  nvim -c "mksession! ~/.config/nvim/sessions/${session_name}.vim" -c "qa"
+  echo "Session saved: ${session_name}"
+}
+
+# Load nvim session
+vl() {
+  local session=$(find ~/.config/nvim/sessions -name "*.vim" 2>/dev/null | fzf --preview 'cat {}')
+  [[ -n "$session" ]] && nvim -S "$session"
+}
+
+# Auto-restore session if exists
+vw() {
+  local session="$HOME/.config/nvim/sessions/$(basename $PWD).vim"
+  if [[ -f "$session" ]]; then
+    nvim -S "$session"
+  else
+    nvim
+  fi
+}
+
+# Git diff in nvim
+gdiff() {
+  git diff "$@" | nvim -R -
+}
+
+# Backup nvim config
+nvim-backup() {
+  local backup_dir="$HOME/.config/nvim-backups/$(date +%Y%m%d-%H%M%S)"
+  mkdir -p "$backup_dir"
+  cp -r ~/.config/nvim/* "$backup_dir/"
+  echo "Nvim config backed up to: $backup_dir"
+}
+
+# Restore nvim config from backup
+nvim-restore() {
+  local backup=$(fd -t d . ~/.config/nvim-backups 2>/dev/null | fzf)
+  if [[ -n "$backup" ]]; then
+    rm -rf ~/.config/nvim/*
+    cp -r "$backup"/* ~/.config/nvim/
+    echo "Restored from: $backup"
+  fi
+}
+
+# --------------------------------------------------------------
+# 🚀 Workflow Functions
+# --------------------------------------------------------------
+
+# Quick project switcher with fzf + nvim
+proj() {
+  local project=$(fd -t d -d 3 . ~/projects ~/work ~/dev 2>/dev/null | fzf --preview 'eza --tree --level=2 {}')
+  if [[ -n "$project" ]]; then
+    cd "$project"
+    nvim
+  fi
+}
+
+# Create tmux session with nvim
+tn() {
+  local session_name="${1:-$(basename $PWD)}"
+  tmux new-session -s "$session_name" -d
+  tmux send-keys -t "$session_name" "nvim" C-m
+  tmux attach -t "$session_name"
+}
+
+# Attach to existing tmux or create new
+ta() {
+  if tmux ls 2>/dev/null; then
+    tmux attach -t "$(tmux ls | fzf | cut -d: -f1)"
+  else
+    tn
+  fi
+}
+
+# Telescope shortcuts (if using Telescope in nvim)
+vf() {
+  nvim -c "Telescope find_files"
+}
+
+vg() {
+  nvim -c "Telescope live_grep"
+}
+
+# Switch to dark mode (iTerm + system)
+dark() {
+  iterm-profile 'Dark'
+  osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
+}
+
+# Switch to light mode
+light() {
+  iterm-profile 'Light'
+  osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
+}
+
+# --------------------------------------------------------------
+# 🎨 Visual Enhancements
+# --------------------------------------------------------------
+
+# Command execution time tracker (macOS compatible)
+VISUAL_TIMER_START=0
+function visual_preexec() {
+  VISUAL_TIMER_START=$(python3 -c 'import time; print(int(time.time() * 1000))')
+}
+
+function visual_precmd() {
+  if [ $VISUAL_TIMER_START -ne 0 ]; then
+    local now=$(python3 -c 'import time; print(int(time.time() * 1000))')
+    local elapsed=$(($now-$VISUAL_TIMER_START))
+
+    if [ $elapsed -gt 1000 ]; then
+      local elapsed_seconds=$(echo "scale=2; $elapsed/1000" | bc)
+      echo -e "\n\033[0;36m⏱  Took ${elapsed_seconds}s\033[0m"
+    fi
+    VISUAL_TIMER_START=0
+  fi
+}
+
+preexec_functions+=(visual_preexec)
+precmd_functions+=(visual_precmd)
+
+# Directory info panel
+function dir_info() {
+  local total_files=$(find . -maxdepth 1 -type f 2>/dev/null | wc -l | tr -d ' ')
+  local total_dirs=$(find . -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+  total_dirs=$((total_dirs - 1)) # Exclude current dir
+  local git_branch=$(git branch --show-current 2>/dev/null)
+
+  if [[ $total_files -gt 0 || $total_dirs -gt 0 ]]; then
+    echo -e "\n\033[0;36m📁 Files: $total_files | 📂 Dirs: $total_dirs\033[0m"
+  fi
+  [[ -n "$git_branch" ]] && echo -e "\033[0;32m  $git_branch\033[0m"
+}
+
+chpwd_functions+=(dir_info)
+
+# Background jobs indicator
+function check_background_jobs() {
+  local job_count=$(jobs | wc -l | tr -d ' ')
+  if [ $job_count -gt 0 ]; then
+    echo -e "\033[1;33m⚙️  $job_count background job(s) running\033[0m"
+  fi
+}
+
+precmd_functions+=(check_background_jobs)
+
+# Kubernetes context visual indicator
+function k8s_context_visual() {
+  if command -v kubectl &> /dev/null; then
+    local ctx=$(kubectl config current-context 2>/dev/null)
+    if [[ -n "$ctx" ]]; then
+      case "$ctx" in
+        *prod*) echo -e "\n\033[1;31m☸  K8s: $ctx (PRODUCTION)\033[0m" ;;
+        *stg*|*staging*) echo -e "\n\033[1;33m☸  K8s: $ctx (STAGING)\033[0m" ;;
+        *dev*) echo -e "\n\033[1;32m☸  K8s: $ctx (DEV)\033[0m" ;;
+        *) echo -e "\n\033[0;36m☸  K8s: $ctx\033[0m" ;;
+      esac
+    fi
+  fi
+}
+
+# Uncomment to show k8s context before each prompt
+# precmd_functions+=(k8s_context_visual)
+
+# Rainbow separator
+function rainbow_sep() {
+  local cols=$(tput cols)
+  printf '\033[38;5;81m%*s\033[0m\n' $cols '' | tr ' ' '─'
+}
+
+alias sep='rainbow_sep'
+
+# Directory size
+function dirsize() {
+  local size=$(du -sh . 2>/dev/null | cut -f1)
+  echo -e "\033[0;36m📦 Directory size: $size\033[0m"
+}
+
+alias ds='dirsize'
+
+# Automatic iTerm2 profile switching
+function iterm_profile_switch() {
+  case "$PWD" in
+    */production*|*/prod*)
+      echo -e "\033]50;SetProfile=Production\a" 2>/dev/null
+      ;;
+    */staging*|*/stage*|*/stg*)
+      echo -e "\033]50;SetProfile=Staging\a" 2>/dev/null
+      ;;
+    */development*|*/dev*)
+      echo -e "\033]50;SetProfile=Development\a" 2>/dev/null
+      ;;
+    *)
+      echo -e "\033]50;SetProfile=Default\a" 2>/dev/null
+      ;;
+  esac
+}
+
+# Uncomment to enable auto profile switching
+# chpwd_functions+=(iterm_profile_switch)
+
+# Show project banner if .project-name exists
+function show_project_banner() {
+  if [[ -f .project-name ]] && command -v figlet &> /dev/null; then
+    figlet -f small "$(cat .project-name)" | lolcat 2>/dev/null || figlet -f small "$(cat .project-name)"
+  fi
+}
+
+chpwd_functions+=(show_project_banner)
+
+# --------------------------------------------------------------
+# 🧰 FZF Integration (if installed via brew)
+# --------------------------------------------------------------
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Enhanced FZF settings with Nord theme
+export FZF_DEFAULT_OPTS="
+  --height 40%
+  --layout=reverse
+  --border
+  --info=inline
+  --color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C
+  --color=fg:#D8DEE9,header:#A3BE8C,info:#88C0D0,pointer:#81A1C1
+  --color=marker:#EBCB8B,fg+:#D8DEE9,prompt:#88C0D0,hl+:#A3BE8C
+  --color=border:#4C566A"
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git 2>/dev/null || find .'
+
+# Use fzf for history search
+bindkey '^R' fzf-history-widget
+
+# FZF file opener
+fopen() {
+  local file=$(fzf --preview 'bat --color=always {} 2>/dev/null || cat {}')
+  [[ -n "$file" ]] && $EDITOR "$file"
+}
+
+# FZF cd into directory
+fcd() {
+  local dir=$(fd --type d 2>/dev/null | fzf --preview 'eza --tree --level=1 {} 2>/dev/null || ls -la {}')
+  [[ -n "$dir" ]] && cd "$dir"
+}
+
+# FZF git checkout
+fco() {
+  local branch=$(git branch -a | grep -v HEAD | sed 's/^..//' | fzf --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {}')
+  [[ -n "$branch" ]] && git checkout "$branch"
+}
+
+# FZF kubernetes pod logs
+klogs() {
+  local pod=$(kubectl get pods --no-headers | fzf | awk '{print $1}')
+  [[ -n "$pod" ]] && kubectl logs -f "$pod"
+}
+
+# FZF kubernetes exec
+kfexec() {
+  local pod=$(kubectl get pods --no-headers | fzf | awk '{print $1}')
+  [[ -n "$pod" ]] && kubectl exec -it "$pod" -- /bin/bash
+}
+
+# FZF docker logs
+dflogs() {
+  local container=$(docker ps --format '{{.Names}}' | fzf)
+  [[ -n "$container" ]] && docker logs -f "$container"
+}
+
+# FZF git diff files
+fgd() {
+  local file=$(git diff --name-only | fzf --preview 'git diff --color=always {}')
+  [[ -n "$file" ]] && nvim "$file"
+}
+
+# --------------------------------------------------------------
+# 🔧 Tool Completions
+# --------------------------------------------------------------
+
+# GitHub CLI completions
+if command -v gh &> /dev/null; then
+  eval "$(gh completion -s zsh)"
+fi
+
+# Makefile target completion
+_make_targets() {
+  if [[ -f Makefile ]]; then
+    local targets=$(grep -E '^[a-zA-Z_-]+:' Makefile | cut -d: -f1)
+    _arguments "1: :($targets)"
+  fi
+}
+compdef _make_targets make
+
+# --------------------------------------------------------------
+# 🚀 Optional Modern Tools
+# --------------------------------------------------------------
+
+# Zoxide - smarter cd (install: brew install zoxide)
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd='z'
+fi
+
+# Direnv - load directory-specific env (install: brew install direnv)
+if command -v direnv &> /dev/null; then
+  eval "$(direnv hook zsh)"
+fi
+
+# Atuin - magical shell history (install: brew install atuin)
+if command -v atuin &> /dev/null; then
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# Delta - beautiful git diffs (install: brew install delta)
+if command -v delta &> /dev/null; then
+  export GIT_PAGER='delta'
+fi
+
+# --------------------------------------------------------------
+# 💡 Final Touches
+# --------------------------------------------------------------
+
+# Custom aliases file (optional)
+[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+
+# --------------------------------------------------------------
+# 🧹 End of .zshrc
+# --------------------------------------------------------------
+
+# Git branch visualization
+alias gtree="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
+alias git-graph="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
+alias git-tree-all="git log --all --graph --decorate --oneline --abbrev-commit"
+
+# Enhanced git status with icons
+alias gss='git status --short --branch'
+
+# --------------------------------------------------------------
+# 🎨 Visual Tool Aliases
+# --------------------------------------------------------------
+
+# Weather
+alias weather='curl -s "wttr.in/?format=3"'
+alias weather-full='curl -s "wttr.in/?0"'
+
+# Code statistics
+alias stats='tokei'
+alias code-stats='tokei --sort lines'
+
+# JSON pretty viewing
+alias json='jq -C . | less -R'
+alias json-compact='jq -c .'
+alias jsonview='fx'
+
+# Enhanced tree views
+alias tree='eza --tree --icons --git-ignore --level=3'
+alias tree-all='eza --tree --icons --all --level=3'
+alias tree-git='eza --tree --icons --git --level=3'
+alias tree-type='eza --tree --icons --group-directories-first --color=always --level=3'
+alias tree2='eza --tree --level=2 --icons'
+alias tree4='eza --tree --level=4 --icons'
+
+# Docker with pretty formatting
+alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias dpsa='docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+
+# Fun stuff
+alias fortune='fortune -s'
+alias cowsay-random='fortune -s | cowsay -f $(ls /opt/homebrew/share/cows 2>/dev/null | shuf -n1 || echo "default")'
+alias ascii='figlet'
+alias banner='figlet -f banner'
+
+# Markdown viewer (glow)
+alias md='glow'
+alias mdp='glow -p'
+
+# Note: glog is defined earlier in the Git aliases section
+
+# --------------------------------------------------------------
+# 🛠️ Dev Environment Optimization Aliases
+# --------------------------------------------------------------
+
+# Start all dev tools at once
+alias dev-start="open -a 'iTerm' && open -a 'Raycast' && open -a 'Rectangle' && open -a '1Password' && open -a 'Cursor'"
+
+# Start Docker Desktop
+alias dev-docker="open -a 'Docker'"
+
+# Check status of running dev tools
+alias dev-status="echo '=== Dev Tools Status ===' && pgrep -lf 'Docker|iTerm|Cursor|Raycast|Rectangle' 2>/dev/null | sort || echo 'No dev tools running'"
+
+# Spotlight control
+alias spotlight-off="sudo mdutil -a -i off && echo 'Spotlight indexing disabled'"
+alias spotlight-on="sudo mdutil -a -i on && echo 'Spotlight indexing enabled'"
+
+# Quick system health check
+alias dev-health="echo '=== CPU ===' && top -l 1 | head -10 | tail -4; echo '=== Memory ===' && vm_stat | head -5; echo '=== Disk ===' && df -h / | tail -1"
+
+# --------------------------------------------------------------
+# 🖥️ iTerm2 Optimizations
+# --------------------------------------------------------------
+
+# iTerm2 badge with current directory, git branch, and tool versions
+function iterm2_print_user_vars() {
+  local git_branch=$((git branch 2> /dev/null) | grep \* | cut -c3-)
+  local python_version=$(python3 --version 2>/dev/null | cut -d' ' -f2)
+  local node_version=$(node --version 2>/dev/null)
+
+  iterm2_set_user_var gitBranch "$git_branch"
+  iterm2_set_user_var currentDir "$(basename "$PWD")"
+  iterm2_set_user_var pythonVersion "$python_version"
+  iterm2_set_user_var nodeVersion "$node_version"
+}
+
+# Quick iTerm2 profile switching
+function iterm-profile() {
+  echo -e "\033]50;SetProfile=$1\a"
+}
+
+# Set iTerm2 tab color based on directory
+function iterm-tab-color() {
+  echo -ne "\033]6;1;bg;red;brightness;$1\a"
+  echo -ne "\033]6;1;bg;green;brightness;$2\a"
+  echo -ne "\033]6;1;bg;blue;brightness;$3\a"
+}
+
+# Auto-set tab colors based on directory
+function set_tab_color_by_dir() {
+  case "$PWD" in
+    *production*|*prod*) iterm-tab-color 220 50 50 ;;  # Red for production
+    *staging*|*stg*) iterm-tab-color 220 165 0 ;;      # Orange for staging
+    *development*|*dev*) iterm-tab-color 50 220 50 ;;  # Green for dev
+    *test*) iterm-tab-color 50 50 220 ;;               # Blue for test
+    *) iterm-tab-color 0 0 0 ;;                        # Black (default)
+  esac
+}
+
+# Run on every directory change
+chpwd_functions+=(set_tab_color_by_dir)
+
+# iTerm2 marks for quick navigation
+alias mark="iterm2_set_user_var mark 📍"
+
+# Split pane shortcuts (requires iTerm2 shell integration)
+alias vsplit="echo -e '\033]1337;SetProfile=DevOps Optimized\a' && echo 'Use ⌘D for vertical split'"
+alias hsplit="echo -e '\033]1337;SetProfile=DevOps Optimized\a' && echo 'Use ⌘⇧D for horizontal split'"
+
+# Clear scrollback buffer
+alias clear-all="clear && printf '\e[3J'"
+
+# iTerm2 profile shortcuts
+alias iterm-dev="iterm-profile 'DevOps Optimized'"
+alias iterm-light="iterm-profile 'Light'"
+alias iterm-dark="iterm-profile 'Dark'"
+alias iterm-here="open -a iTerm \$PWD"
+
+# Set iTerm2 title dynamically
+function set-iterm-title() {
+  echo -ne "\033]0;$1\007"
+}
+
+# Auto-set title based on command
+function preexec() {
+  set-iterm-title "$1"
+}
+
+# Reset title after command
+function precmd() {
+  set-iterm-title "$(basename $PWD)"
+}
+
+# Send notification when long nvim sessions end
+alias nvim-notify='nvim; echo -e "\a"; osascript -e "display notification \"Nvim session ended\" with title \"iTerm2\""'
+
+# --------------------------------------------------------------
+# 🔗 Unified Tool Integration (Raycast + Default Apps)
+# --------------------------------------------------------------
+
+# Default Tool Aliases
+alias tp='open -a "TablePlus"'           # TablePlus (default DB client)
+alias db='open -a "TablePlus"'           # Alias for database
+alias api='open -a "Insomnia"'           # Insomnia (default API client)
+alias lg='lazygit'                       # LazyGit (default git GUI)
+alias linear='open -a "Linear"'          # Linear (project management)
+
+# Quick Note (adds timestamped note to daily file)
+qn() {
+  local notes_dir="$HOME/notes"
+  local today=$(date +%Y-%m-%d)
+  local note_file="$notes_dir/$today.md"
+
+  mkdir -p "$notes_dir"
+
+  if [ ! -f "$note_file" ]; then
+    echo "# Notes for $today" > "$note_file"
+    echo "" >> "$note_file"
+  fi
+
+  local timestamp=$(date +%H:%M)
+  echo "- [$timestamp] $*" >> "$note_file"
+  echo "✅ Note added to $today.md"
+}
+
+# Open today's notes
+alias notes='nvim ~/notes/$(date +%Y-%m-%d).md'
+
+# Development environment docs
+alias dev-docs='glow ~/.local/docs/dev-environment.md'
+
+# Open Raycast script folder (for adding new scripts)
+alias raycast-scripts='open ~/.local/scripts/raycast'
+
+# Unified search commands
+search-github() { open "https://github.com/search?q=$(echo "$*" | sed 's/ /+/g')&type=repositories"; }
+search-so() { open "https://stackoverflow.com/search?q=$(echo "$*" | sed 's/ /+/g')"; }
+search-go() { open "https://pkg.go.dev/search?q=$(echo "$*" | sed 's/ /+/g')"; }
+search-pypi() { open "https://pypi.org/search/?q=$(echo "$*" | sed 's/ /+/g')"; }
+
+# Aliases for searches
+alias gh-search='search-github'
+alias so='search-so'
+alias godoc='search-go'
+alias pydoc='search-pypi'
+
+# Quick open in browser
+ghub() {
+  # Open current repo in GitHub
+  local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
+  [ -n "$url" ] && open "$url" || echo "Not a git repo or no origin"
+}
+
+ghub-pr() {
+  # Open PRs for current repo
+  local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
+  [ -n "$url" ] && open "$url/pulls" || echo "Not a git repo"
+}
+
+ghub-issues() {
+  # Open issues for current repo
+  local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
+  [ -n "$url" ] && open "$url/issues" || echo "Not a git repo"
+}
+
+ghub-actions() {
+  # Open GitHub Actions for current repo
+  local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
+  [ -n "$url" ] && open "$url/actions" || echo "Not a git repo"
+}
+
+# Quick Claude Code launcher
+cc() {
+  local dir="${1:-.}"
+  cd "$dir" && claude
+}
+
+# Combined dev opener - open project with all tools
+dev-open() {
+  local project_dir="${1:-.}"
+  cd "$project_dir"
+
+  # Start Docker if docker-compose exists
+  [ -f "docker-compose.yml" ] && dcup
+
+  # Open in Neovim
+  nvim
+}
+
+# Check all projects for uncommitted changes
+git-check-all() {
+  echo "🔍 Checking projects for uncommitted changes..."
+  for dir in ~/projects/*/; do
+    if [ -d "$dir/.git" ]; then
+      cd "$dir"
+      local status=$(git status --porcelain 2>/dev/null)
+      local branch=$(git branch --show-current 2>/dev/null)
+      if [ -n "$status" ]; then
+        local name=$(basename "$dir")
+        local changes=$(echo "$status" | wc -l | tr -d ' ')
+        echo "📁 $name ($branch) - $changes uncommitted changes"
+      fi
+    fi
+  done
+  echo "✅ Done"
+}
+
+alias gca='git-check-all'
+
+# --------------------------------------------------------------
+# 🎯 End of Unified Tool Integration
+# --------------------------------------------------------------
+

@@ -1,0 +1,14 @@
+# ==============================================================
+# 🔐 Local/Private Configuration
+# ==============================================================
+# Copy this file to ~/.zshrc.local and add your secrets
+# This file should NOT be committed to version control
+
+# Supermemory API Key (Claude Code plugin)
+export SUPERMEMORY_CC_API_KEY="your-api-key-here"
+
+# Add other sensitive environment variables here
+# export GITHUB_TOKEN="your-token"
+# export OPENAI_API_KEY="your-key"
+# export AWS_ACCESS_KEY_ID="your-key"
+# export AWS_SECRET_ACCESS_KEY="your-secret"

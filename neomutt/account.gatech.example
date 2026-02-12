@@ -1,0 +1,23 @@
+# Georgia Tech / Office 365 Account Configuration Template
+# Copy this to ~/.neomutt/account.gatech and fill in your details
+
+set from = "your-username@gatech.edu"
+set realname = "Your Name"
+
+# IMAP Configuration (OAuth2)
+set imap_user = "your-username@gatech.edu"
+set imap_authenticators = "xoauth2"
+set imap_oauth_refresh_command = "~/.neomutt/mutt_oauth2.py ~/.neomutt/gatech_oauth2.cfg"
+set folder = "imaps://outlook.office365.com:993"
+set spoolfile = "+INBOX"
+set postponed = "+Drafts"
+set record = "+Sent Items"
+set trash = "+Deleted Items"
+
+# SMTP Configuration (OAuth2)
+set smtp_url = "smtp://your-username@gatech.edu@smtp.office365.com:587"
+set smtp_authenticators = "xoauth2"
+set smtp_oauth_refresh_command = "~/.neomutt/mutt_oauth2.py ~/.neomutt/gatech_oauth2.cfg"
+
+# Mailboxes to show in sidebar
+mailboxes =INBOX =Sent\ Items =Drafts =Deleted\ Items =Junk\ Email =Archive

@@ -203,6 +203,6 @@ source ~/.neomutt/aliases
 # ============================================================================
 
 # Uncomment to enable notmuch search
-# set nm_default_url = "notmuch:///Users/adjalali3/Mail"
+# set nm_default_url = "notmuch://$HOME/Mail"
 # virtual-mailboxes "Inbox" "notmuch://?query=folder:INBOX"
 # virtual-mailboxes "Archive" "notmuch://?query=folder:archive"

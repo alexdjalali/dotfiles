@@ -1,15 +1,6 @@
 ---@type LazySpec
 return {
-  -- persistence.nvim - 700+ stars (folke = quality)
-  {
-    "folke/persistence.nvim",
-    event = "BufReadPre",
-    opts = {},
-    keys = {
-      { "<leader>qs", function() require("persistence").load() end, desc = "Restore session" },
-      { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Last session" },
-    },
-  },
+  -- Session management via auto-session (below) — persistence.nvim removed to avoid conflicts
 
   -- zen-mode.nvim - 2k+ stars (folke)
   {
@@ -133,22 +124,7 @@ return {
     },
   },
 
-  -- nvim-surround - 3k+ stars - surround text objects
-  {
-    "kylechui/nvim-surround",
-    version = "*",
-    event = "VeryLazy",
-    opts = {},
-  },
-
-  -- undotree - 4k+ stars - visualize undo history
-  {
-    "mbbill/undotree",
-    cmd = "UndotreeToggle",
-    keys = {
-      { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Undotree" },
-    },
-  },
+  -- nvim-surround and undotree configured in editing.lua
 
   -- yanky.nvim - 400+ stars - improved yank/paste
   {
@@ -168,18 +144,7 @@ return {
     },
   },
 
-  -- nvim-spectre - 2k+ stars - search and replace
-  {
-    "nvim-pack/nvim-spectre",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    cmd = "Spectre",
-    keys = {
-      { "<leader>sr", function() require("spectre").open() end, desc = "Search & replace (Spectre)" },
-      { "<leader>sw", function() require("spectre").open_visual({ select_word = true }) end, desc = "Search word (Spectre)" },
-      { "<leader>sf", function() require("spectre").open_file_search() end, desc = "Search in file (Spectre)" },
-    },
-    opts = {},
-  },
+  -- nvim-spectre configured in editing.lua
 
   -- wakatime - time tracking (DISABLED)
   -- {

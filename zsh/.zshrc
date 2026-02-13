@@ -12,6 +12,10 @@ fi
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
+# Disable Oh My Zsh auto-update (must be set before sourcing)
+DISABLE_AUTO_UPDATE="true"
+DISABLE_UPDATE_PROMPT="true"
+
 # Plugins
 plugins=(
   git
@@ -32,15 +36,7 @@ source $ZSH/oh-my-zsh.sh
 # 🧩 Completions and Performance
 # --------------------------------------------------------------
 
-# Fast, cached completions
-autoload -Uz compinit
-if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
-  compinit
-else
-  compinit -C
-fi
-
-# Completion tweaks
+# Completion tweaks (compinit already run by Oh My Zsh)
 zstyle ':completion:*' menu select
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
@@ -222,10 +218,6 @@ bindkey -M isearch " " magic-space
 export NVM_DIR="$HOME/.nvm"
 alias nvm='unalias nvm; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; nvm $@'
 
-# Disable Oh My Zsh auto-update (saves time)
-DISABLE_AUTO_UPDATE="true"
-DISABLE_UPDATE_PROMPT="true"
-
 # --------------------------------------------------------------
 # 🧠 Aliases (Common Dev Shortcuts)
 # --------------------------------------------------------------
@@ -250,11 +242,12 @@ if command -v bat &> /dev/null; then
   alias cat='bat --style=plain'
   alias ccat='/bin/cat'  # Original cat
 fi
+# Use rg/fd directly — don't alias over grep/find (breaks scripts using GNU flags)
 if command -v rg &> /dev/null; then
-  alias grep='rg'
+  alias rgg='rg'
 fi
 if command -v fd &> /dev/null; then
-  alias find='fd'
+  alias fdd='fd'
 fi
 if command -v dust &> /dev/null; then
   alias du='dust'
@@ -289,8 +282,8 @@ alias gundo='git reset --soft HEAD~1'
 alias glog='git log --oneline --graph --decorate --all'
 alias gst='git stash'
 alias gstp='git stash pop'
-alias gclean='git clean -fd'
-alias grh='git reset --hard'
+alias gclean='echo "Run: git clean -fd (destructive, no alias)"'
+alias grh='echo "Run: git reset --hard (destructive, no alias)"'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
 alias gpr='gh pr create --fill'
@@ -311,10 +304,10 @@ alias docs-quality='glow ~/.local/docs/code-quality.md'
 alias docs-productivity='glow ~/.local/docs/productivity.md'
 alias docs-scripts='glow ~/.local/docs/custom-scripts.md'
 
-# Docker (safe versions)
+# Docker
 alias d='docker'
-alias dps='docker ps'
-alias dpsa='docker ps -a'
+alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias dpsa='docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias di='docker images'
 
 # Kubernetes
@@ -391,8 +384,7 @@ alias aireview="$HOME/.local/scripts/git-ai-review.sh"
 # Ports
 alias ports='lsof -i -P -n'
 
-# History helpers
-alias hgrep='history | grep'
+# History helpers (h defined above)
 alias htop10='history | awk "{print \$2}" | sort | uniq -c | sort -rn | head -10'
 
 # --------------------------------------------------------------
@@ -623,20 +615,18 @@ light() {
 # 🎨 Visual Enhancements
 # --------------------------------------------------------------
 
-# Command execution time tracker (macOS compatible)
+# Command execution time tracker (pure zsh, no python fork)
+zmodload zsh/datetime 2>/dev/null
 VISUAL_TIMER_START=0
 function visual_preexec() {
-  VISUAL_TIMER_START=$(python3 -c 'import time; print(int(time.time() * 1000))')
+  VISUAL_TIMER_START=$EPOCHREALTIME
 }
 
 function visual_precmd() {
-  if [ $VISUAL_TIMER_START -ne 0 ]; then
-    local now=$(python3 -c 'import time; print(int(time.time() * 1000))')
-    local elapsed=$(($now-$VISUAL_TIMER_START))
-
-    if [ $elapsed -gt 1000 ]; then
-      local elapsed_seconds=$(echo "scale=2; $elapsed/1000" | bc)
-      echo -e "\n\033[0;36m⏱  Took ${elapsed_seconds}s\033[0m"
+  if (( VISUAL_TIMER_START > 0 )); then
+    local elapsed=$(( EPOCHREALTIME - VISUAL_TIMER_START ))
+    if (( elapsed > 1 )); then
+      printf '\n\033[0;36m⏱  Took %.2fs\033[0m\n' $elapsed
     fi
     VISUAL_TIMER_START=0
   fi
@@ -645,15 +635,14 @@ function visual_precmd() {
 preexec_functions+=(visual_preexec)
 precmd_functions+=(visual_precmd)
 
-# Directory info panel
+# Directory info panel (pure zsh glob — no subprocess)
 function dir_info() {
-  local total_files=$(find . -maxdepth 1 -type f 2>/dev/null | wc -l | tr -d ' ')
-  local total_dirs=$(find . -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
-  total_dirs=$((total_dirs - 1)) # Exclude current dir
+  local files=( *(N.) )
+  local dirs=( *(N/) )
   local git_branch=$(git branch --show-current 2>/dev/null)
 
-  if [[ $total_files -gt 0 || $total_dirs -gt 0 ]]; then
-    echo -e "\n\033[0;36m📁 Files: $total_files | 📂 Dirs: $total_dirs\033[0m"
+  if (( ${#files} > 0 || ${#dirs} > 0 )); then
+    echo -e "\n\033[0;36m📁 Files: ${#files} | 📂 Dirs: ${#dirs}\033[0m"
   fi
   [[ -n "$git_branch" ]] && echo -e "\033[0;32m  $git_branch\033[0m"
 }
@@ -768,7 +757,7 @@ fcd() {
 
 # FZF git checkout
 fco() {
-  local branch=$(git branch -a | grep -v HEAD | sed 's/^..//' | fzf --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {}')
+  local branch=$(git branch -a | command grep -v HEAD | sed 's/^..//' | fzf --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {}')
   [[ -n "$branch" ]] && git checkout "$branch"
 }
 
@@ -808,7 +797,7 @@ fi
 # Makefile target completion
 _make_targets() {
   if [[ -f Makefile ]]; then
-    local targets=$(grep -E '^[a-zA-Z_-]+:' Makefile | cut -d: -f1)
+    local targets=$(command grep -E '^[a-zA-Z_-]+:' Makefile | cut -d: -f1)
     _arguments "1: :($targets)"
   fi
 }
@@ -852,7 +841,6 @@ fi
 
 # Git branch visualization
 alias gtree="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
-alias git-graph="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
 alias git-tree-all="git log --all --graph --decorate --oneline --abbrev-commit"
 
 # Enhanced git status with icons
@@ -882,10 +870,6 @@ alias tree-git='eza --tree --icons --git --level=3'
 alias tree-type='eza --tree --icons --group-directories-first --color=always --level=3'
 alias tree2='eza --tree --level=2 --icons'
 alias tree4='eza --tree --level=4 --icons'
-
-# Docker with pretty formatting
-alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
-alias dpsa='docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
 
 # Fun stuff
 alias fortune='fortune -s'
@@ -923,16 +907,15 @@ alias dev-health="echo '=== CPU ===' && top -l 1 | head -10 | tail -4; echo '===
 # 🖥️ iTerm2 Optimizations
 # --------------------------------------------------------------
 
-# iTerm2 badge with current directory, git branch, and tool versions
+# iTerm2 badge with current directory and git branch
+# (cache tool versions at shell startup instead of on every prompt)
+_CACHED_PYTHON_VERSION=$(python3 --version 2>/dev/null | cut -d' ' -f2)
+_CACHED_NODE_VERSION=$(node --version 2>/dev/null)
 function iterm2_print_user_vars() {
-  local git_branch=$((git branch 2> /dev/null) | grep \* | cut -c3-)
-  local python_version=$(python3 --version 2>/dev/null | cut -d' ' -f2)
-  local node_version=$(node --version 2>/dev/null)
-
-  iterm2_set_user_var gitBranch "$git_branch"
+  iterm2_set_user_var gitBranch "$(git branch --show-current 2>/dev/null)"
   iterm2_set_user_var currentDir "$(basename "$PWD")"
-  iterm2_set_user_var pythonVersion "$python_version"
-  iterm2_set_user_var nodeVersion "$node_version"
+  iterm2_set_user_var pythonVersion "$_CACHED_PYTHON_VERSION"
+  iterm2_set_user_var nodeVersion "$_CACHED_NODE_VERSION"
 }
 
 # Quick iTerm2 profile switching
@@ -982,15 +965,17 @@ function set-iterm-title() {
   echo -ne "\033]0;$1\007"
 }
 
-# Auto-set title based on command
-function preexec() {
+# Auto-set title based on command (use hook arrays, not bare functions)
+function _iterm_title_preexec() {
   set-iterm-title "$1"
 }
 
-# Reset title after command
-function precmd() {
+function _iterm_title_precmd() {
   set-iterm-title "$(basename $PWD)"
 }
+
+preexec_functions+=(_iterm_title_preexec)
+precmd_functions+=(_iterm_title_precmd)
 
 # Send notification when long nvim sessions end
 alias nvim-notify='nvim; echo -e "\a"; osascript -e "display notification \"Nvim session ended\" with title \"iTerm2\""'

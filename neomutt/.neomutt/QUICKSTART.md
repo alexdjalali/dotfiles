@@ -133,8 +133,8 @@ Then when composing, type `bob` and it expands to the full address!
 - Consider using `mbsync` or `offlineimap` for offline mail.
 
 ### Colors Look Wrong
-- Config uses Solarized Dark theme
-- Edit colors in `~/.neomuttrc` under "Colors" section
+- Config uses Nord theme (sourced from `~/.neomutt/nord.neomuttrc`)
+- Edit colors in `~/.neomutt/nord.neomuttrc`
 
 ## Advanced: Offline Mail (Optional)
 

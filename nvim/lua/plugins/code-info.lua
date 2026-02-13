@@ -51,10 +51,10 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "Neogen",
     keys = {
-      { "<leader>nf", function() require("neogen").generate({ type = "func" }) end, desc = "Generate function doc" },
-      { "<leader>nc", function() require("neogen").generate({ type = "class" }) end, desc = "Generate class doc" },
-      { "<leader>nt", function() require("neogen").generate({ type = "type" }) end, desc = "Generate type doc" },
-      { "<leader>nF", function() require("neogen").generate({ type = "file" }) end, desc = "Generate file doc" },
+      { "<leader>ngf", function() require("neogen").generate({ type = "func" }) end, desc = "Generate function doc" },
+      { "<leader>ngc", function() require("neogen").generate({ type = "class" }) end, desc = "Generate class doc" },
+      { "<leader>ngt", function() require("neogen").generate({ type = "type" }) end, desc = "Generate type doc" },
+      { "<leader>ngF", function() require("neogen").generate({ type = "file" }) end, desc = "Generate file doc" },
     },
     opts = {
       snippet_engine = "luasnip",

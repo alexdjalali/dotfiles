@@ -14,7 +14,7 @@
 # @raycast.description Search GitHub repositories
 # @raycast.author Alex Djalali
 
-QUERY=$(echo "$1" | sed 's/ /+/g')
+QUERY=$(python3 -c "import urllib.parse; print(urllib.parse.quote_plus('$1'))")
 open "https://github.com/search?q=$QUERY&type=repositories"
 
 echo "Searching GitHub for: $1"

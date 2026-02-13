@@ -13,7 +13,7 @@ return {
       trim_scope = "outer",
     },
     keys = {
-      { "<leader>tc", "<cmd>TSContextToggle<cr>", desc = "Toggle context" },
+      { "<leader>uc", "<cmd>TSContextToggle<cr>", desc = "Toggle treesitter context" },
     },
   },
 

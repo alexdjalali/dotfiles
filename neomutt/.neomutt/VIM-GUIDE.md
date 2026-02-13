@@ -2,7 +2,7 @@
 
 ## Visual Improvements
 
-✨ **Modern Tokyo Night color scheme**
+✨ **Nord color scheme** (arctic-inspired, matches terminal and editor)
 📎 **Unicode symbols** for attachments and threads
 📊 **Mini-index above messages** (split view like vim)
 │  **Sidebar divider** with unicode character
@@ -161,14 +161,14 @@ bind index,pager \Cl redraw-screen  # Ctrl-l like vim
 
 ## Color Scheme
 
-Using Tokyo Night inspired colors:
-- Green/teal for new messages
-- Yellow/gold for important items
-- Red for errors/flagged
-- Muted colors for read messages
-- Syntax highlighting in quoted text
+Using **Nord** theme (arctic-inspired, consistent with zsh/nvim/iTerm):
+- Frost (cyan/teal) for new messages
+- Aurora yellow for important/flagged items
+- Aurora red for errors/deleted
+- Aurora green for replied messages
+- Polar Night for backgrounds, Snow Storm for foregrounds
 
-To customize, edit the "Colors" section in `~/.neomuttrc`.
+To customize, edit `~/.neomutt/nord.neomuttrc`.
 
 ## Quick Reference Card
 

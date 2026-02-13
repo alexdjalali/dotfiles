@@ -14,7 +14,7 @@
 # @raycast.description Search Stack Overflow
 # @raycast.author Alex Djalali
 
-QUERY=$(echo "$1" | sed 's/ /+/g')
+QUERY=$(python3 -c "import urllib.parse; print(urllib.parse.quote_plus('$1'))")
 open "https://stackoverflow.com/search?q=$QUERY"
 
 echo "Searching Stack Overflow for: $1"

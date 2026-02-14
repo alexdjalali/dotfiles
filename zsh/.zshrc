@@ -86,21 +86,22 @@ export LC_ALL=en_US.UTF-8
 # Editor
 export EDITOR="nvim"
 
-# PATHs (ordered for macOS developer stack)
-export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
-
 # Go
 export GOPATH="$HOME/go"
-export PATH="$PATH:$GOPATH/bin"
 
-# Python - dynamic version detection
-python_path=$(echo $HOME/Library/Python/3.*/bin | tr ' ' ':')
-[[ -n "$python_path" ]] && export PATH="$python_path:$PATH"
-
-# Rust/Cargo (for uv, etc.)
-[[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
+# PATHs (consolidated, zsh array form, deduplicated)
+path=(
+  $HOME/bin
+  $HOME/.local/bin
+  $HOME/.local/scripts
+  $HOME/.cargo/bin(N)
+  $HOME/Library/Python/3.*/bin(N)
+  /usr/local/bin
+  /opt/homebrew/bin
+  $path
+  $GOPATH/bin
+)
+typeset -U path  # deduplicate
 
 # Catppuccin Mocha theme for bat
 export BAT_THEME="Catppuccin Mocha"
@@ -128,8 +129,7 @@ if [ -e "${HOME}/.iterm2_shell_integration.zsh" ]; then
   source "${HOME}/.iterm2_shell_integration.zsh"
 fi
 
-# Scripts
-export PATH="$HOME/.local/scripts:$PATH"
+# Scripts (PATH set above in consolidated path array)
 
 # --------------------------------------------------------------
 # 🎨 Powerlevel10k
@@ -231,37 +231,28 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 
 # Modern CLI replacements (install: brew install eza bat ripgrep fd dust)
-if command -v eza &> /dev/null; then
+# Uses $+commands (zsh hash lookup, no fork)
+if (( $+commands[eza] )); then
   alias ls='eza --icons --group-directories-first'
   alias la='eza --icons -a --group-directories-first'
   alias ll='eza -la --icons --group-directories-first --git'
   alias lt='eza --icons --tree --level=2'
   alias llt='eza -la --icons --tree --level=2 --git'
 fi
-if command -v bat &> /dev/null; then
+if (( $+commands[bat] )); then
   alias cat='bat --style=plain'
   alias ccat='/bin/cat'  # Original cat
 fi
 # Use rg/fd directly — don't alias over grep/find (breaks scripts using GNU flags)
-if command -v rg &> /dev/null; then
-  alias rgg='rg'
-fi
-if command -v fd &> /dev/null; then
-  alias fdd='fd'
-fi
-if command -v dust &> /dev/null; then
-  alias du='dust'
-fi
-if command -v procs &> /dev/null; then
-  alias ps='procs'
-fi
-if command -v btop &> /dev/null; then
+(( $+commands[rg] )) && alias rgg='rg'
+(( $+commands[fd] )) && alias fdd='fd'
+(( $+commands[dust] )) && alias du='dust'
+(( $+commands[procs] )) && alias ps='procs'
+if (( $+commands[btop] )); then
   alias top='btop'
   alias htop='btop'
 fi
-if command -v duf &> /dev/null; then
-  alias df='duf'
-fi
+(( $+commands[duf] )) && alias df='duf'
 
 # Safety aliases
 alias rm='rm -i'
@@ -271,7 +262,7 @@ alias cp='cp -i'
 
 # Git
 alias gs='git status'
-alias ga='git add .'
+alias ga='git add -u'  # only tracked files; use git add . explicitly when needed
 alias gc='git commit -m'
 alias gp='git push'
 alias gl='git pull'
@@ -677,19 +668,17 @@ function dir_info() {
 
 chpwd_functions+=(dir_info)
 
-# Background jobs indicator
+# Background jobs indicator (pure zsh — no subprocess)
 function check_background_jobs() {
-  local job_count=$(jobs | wc -l | tr -d ' ')
-  if [ $job_count -gt 0 ]; then
-    echo -e "\033[1;33m⚙️  $job_count background job(s) running\033[0m"
-  fi
+  local job_count=${#jobstates}
+  (( job_count > 0 )) && echo -e "\033[1;33m⚙️  $job_count background job(s) running\033[0m"
 }
 
 precmd_functions+=(check_background_jobs)
 
 # Kubernetes context visual indicator
 function k8s_context_visual() {
-  if command -v kubectl &> /dev/null; then
+  if (( $+commands[kubectl] )); then
     local ctx=$(kubectl config current-context 2>/dev/null)
     if [[ -n "$ctx" ]]; then
       case "$ctx" in
@@ -744,7 +733,7 @@ function iterm_profile_switch() {
 
 # Show project banner if .project-name exists
 function show_project_banner() {
-  if [[ -f .project-name ]] && command -v figlet &> /dev/null; then
+  if [[ -f .project-name ]] && (( $+commands[figlet] )); then
     figlet -f small "$(cat .project-name)" | lolcat 2>/dev/null || figlet -f small "$(cat .project-name)"
   fi
 }
@@ -867,9 +856,13 @@ bindkey '^[h' _helpme_widget  # Alt+H (Ctrl+H often conflicts with backspace)
 # 🔧 Tool Completions
 # --------------------------------------------------------------
 
-# GitHub CLI completions
-if command -v gh &> /dev/null; then
-  eval "$(gh completion -s zsh)"
+# GitHub CLI completions (cached to avoid fork on every shell start)
+if (( $+commands[gh] )); then
+  if [[ ! -f ~/.zsh_completions/_gh || ~/.zsh_completions/_gh -ot $(whence -p gh) ]]; then
+    mkdir -p ~/.zsh_completions
+    gh completion -s zsh > ~/.zsh_completions/_gh
+  fi
+  fpath=(~/.zsh_completions $fpath)
 fi
 
 # Makefile target completion
@@ -886,30 +879,22 @@ compdef _make_targets make
 # --------------------------------------------------------------
 
 # Zoxide - smarter cd (install: brew install zoxide)
-if command -v zoxide &> /dev/null; then
+if (( $+commands[zoxide] )); then
   eval "$(zoxide init zsh)"
   alias cd='z'
 fi
 
 # Direnv - load directory-specific env (install: brew install direnv)
-if command -v direnv &> /dev/null; then
-  eval "$(direnv hook zsh)"
-fi
+(( $+commands[direnv] )) && eval "$(direnv hook zsh)"
 
 # Atuin - magical shell history (install: brew install atuin)
-if command -v atuin &> /dev/null; then
-  eval "$(atuin init zsh --disable-up-arrow)"
-fi
+(( $+commands[atuin] )) && eval "$(atuin init zsh --disable-up-arrow)"
 
 # Mise - universal version manager (install: brew install mise)
-if command -v mise &> /dev/null; then
-  eval "$(mise activate zsh)"
-fi
+(( $+commands[mise] )) && eval "$(mise activate zsh)"
 
 # Delta - beautiful git diffs (install: brew install delta)
-if command -v delta &> /dev/null; then
-  export GIT_PAGER='delta'
-fi
+(( $+commands[delta] )) && export GIT_PAGER='delta'
 
 # --------------------------------------------------------------
 # 💡 Final Touches
@@ -919,14 +904,14 @@ fi
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
 
 # lsd - another beautiful ls replacement
-if command -v lsd &> /dev/null; then
+if (( $+commands[lsd] )); then
   alias lsd='lsd --icon always --group-directories-first'
   alias lsda='lsd -la --icon always --group-directories-first'
   alias lsdt='lsd --tree --depth 2 --icon always'
 fi
 
 # Fastfetch splash on new terminal (only for interactive, non-nested shells)
-if [[ $- == *i* ]] && [[ -z "$FASTFETCH_SHOWN" ]] && command -v fastfetch &> /dev/null; then
+if [[ $- == *i* ]] && [[ -z "$FASTFETCH_SHOWN" ]] && (( $+commands[fastfetch] )); then
   export FASTFETCH_SHOWN=1
   fastfetch
 fi
@@ -1004,12 +989,14 @@ alias dev-health="echo '=== CPU ===' && top -l 1 | head -10 | tail -4; echo '===
 # --------------------------------------------------------------
 
 # iTerm2 badge with current directory and git branch
-# (cache tool versions at shell startup instead of on every prompt)
-_CACHED_PYTHON_VERSION=$(python3 --version 2>/dev/null | cut -d' ' -f2)
-_CACHED_NODE_VERSION=$(node --version 2>/dev/null)
+# (lazy-cache tool versions on first prompt, not at shell startup)
 function iterm2_print_user_vars() {
   iterm2_set_user_var gitBranch "$(git branch --show-current 2>/dev/null)"
   iterm2_set_user_var currentDir "$(basename "$PWD")"
+  if [[ -z "$_CACHED_PYTHON_VERSION" ]]; then
+    _CACHED_PYTHON_VERSION=$(python3 --version 2>/dev/null | cut -d' ' -f2)
+    _CACHED_NODE_VERSION=$(node --version 2>/dev/null)
+  fi
   iterm2_set_user_var pythonVersion "$_CACHED_PYTHON_VERSION"
   iterm2_set_user_var nodeVersion "$_CACHED_NODE_VERSION"
 }

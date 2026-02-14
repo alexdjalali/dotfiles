@@ -1,15 +1,15 @@
 # dotfiles
 
-Personal config files for macOS. Nord theme throughout.
+Personal dev environment for macOS. Catppuccin Mocha theme throughout.
 
 ## What's included
 
 | Directory | Description |
 |-----------|-------------|
 | `zsh/` | Zsh config with Powerlevel10k prompt, aliases, functions |
-| `tmux/` | tmux config with Nord colors and vim-style keybindings |
+| `tmux/` | tmux config with Catppuccin colors and vim-style keybindings |
 | `nvim/` | Neovim (AstroNvim-based) with LSP, DAP, and 25+ plugin configs |
-| `iterm/` | iTerm2 preferences and Nord color scheme |
+| `iterm/` | iTerm2 preferences and Catppuccin color scheme |
 | `raycast/` | 28 Raycast script commands for dev workflows |
 | `neomutt/` | Neomutt with multi-account (Gmail + Georgia Tech OAuth2) |
 

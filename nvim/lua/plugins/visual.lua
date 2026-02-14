@@ -50,16 +50,16 @@ return {
     },
   },
 
-  -- modes.nvim - visual mode indicators (Nord theme)
+  -- modes.nvim - visual mode indicators (Catppuccin Mocha)
   {
     "mvllow/modes.nvim",
     event = "BufReadPost",
     opts = {
       colors = {
-        copy = "#EBCB8B",   -- Nord Yellow
-        delete = "#BF616A", -- Nord Red
-        insert = "#8FBCBB", -- Nord Frost (cyan)
-        visual = "#B48EAD", -- Nord Purple
+        copy = "#f9e2af",   -- Catppuccin Yellow
+        delete = "#f38ba8", -- Catppuccin Red
+        insert = "#94e2d5", -- Catppuccin Teal
+        visual = "#cba6f7", -- Catppuccin Mauve
       },
       line_opacity = 0.15,
       set_cursor = true,
@@ -68,21 +68,21 @@ return {
     },
   },
 
-  -- nvim-scrollbar - 800+ stars - scrollbar with diagnostics (Nord theme)
+  -- nvim-scrollbar - 800+ stars - scrollbar with diagnostics (Catppuccin Mocha)
   {
     "petertriho/nvim-scrollbar",
     event = "BufReadPost",
     opts = {
-      handle = { color = "#4C566A" },
+      handle = { color = "#585b70" },
       marks = {
-        Search = { color = "#EBCB8B" },
-        Error = { color = "#BF616A" },
-        Warn = { color = "#D08770" },
-        Info = { color = "#88C0D0" },
-        Hint = { color = "#8FBCBB" },
-        GitAdd = { color = "#A3BE8C" },
-        GitChange = { color = "#EBCB8B" },
-        GitDelete = { color = "#BF616A" },
+        Search = { color = "#f9e2af" },
+        Error = { color = "#f38ba8" },
+        Warn = { color = "#fab387" },
+        Info = { color = "#89dceb" },
+        Hint = { color = "#94e2d5" },
+        GitAdd = { color = "#a6e3a1" },
+        GitChange = { color = "#f9e2af" },
+        GitDelete = { color = "#f38ba8" },
       },
       excluded_filetypes = { "neo-tree", "alpha", "noice" },
     },

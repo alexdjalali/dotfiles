@@ -2,6 +2,6 @@
 return {
   "AstroNvim/astroui",
   opts = {
-    colorscheme = "nord",
+    colorscheme = "catppuccin-mocha",
   },
 }

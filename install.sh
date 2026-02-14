@@ -50,6 +50,18 @@ backup_and_link "$DOTFILES/neomutt/.neomutt"    "$HOME/.neomutt"
 backup_and_link "$DOTFILES/raycast"             "$HOME/.local/scripts/raycast"
 
 # ---------------------------------------------------------------------------
+# Tmux Plugin Manager
+# ---------------------------------------------------------------------------
+
+info "Installing Tmux Plugin Manager (TPM)..."
+if [ -d "$HOME/.tmux/plugins/tpm" ]; then
+    ok "TPM already installed"
+else
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    ok "TPM installed (run 'prefix + I' inside tmux to install plugins)"
+fi
+
+# ---------------------------------------------------------------------------
 # Post-install reminders
 # ---------------------------------------------------------------------------
 
@@ -71,7 +83,5 @@ echo ""
 echo "  4. Raycast scripts: add $HOME/.local/scripts/raycast as a"
 echo "     Script Command directory in Raycast preferences."
 echo ""
-echo "  5. Tmux plugins: install TPM and plugins:"
-echo "     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
-echo "     tmux source ~/.tmux.conf  # then press prefix + I to install plugins"
+echo "  5. Tmux plugins: run 'prefix + I' inside tmux to install plugins."
 echo ""

@@ -22,7 +22,7 @@ plugins=(
   fzf-tab
   zsh-autosuggestions
   zsh-syntax-highlighting
-  autojump
+  # autojump  # removed — using zoxide instead
   docker
   kubectl
   fzf
@@ -44,11 +44,11 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' complete-options true
 
-# Group completions by category with Nord-styled headers
+# Group completions by category with Catppuccin Mocha-styled headers
 zstyle ':completion:*' group-name ''
-zstyle ':completion:*:descriptions' format $'\e[1;34m-- %d --\e[0m'
-zstyle ':completion:*:messages' format $'\e[1;33m-- %d --\e[0m'
-zstyle ':completion:*:warnings' format $'\e[1;31m-- no matches --\e[0m'
+zstyle ':completion:*:descriptions' format $'\e[38;2;137;180;250m-- %d --\e[0m'
+zstyle ':completion:*:messages' format $'\e[38;2;249;226;175m-- %d --\e[0m'
+zstyle ':completion:*:warnings' format $'\e[38;2;243;139;168m-- no matches --\e[0m'
 
 # Better sorting and caching
 zstyle ':completion:*' file-sort modification
@@ -65,7 +65,7 @@ zstyle ':fzf-tab:complete:ls:*' fzf-preview 'eza --icons --color=always --group-
 zstyle ':fzf-tab:complete:cat:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
 zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
 zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
-zstyle ':fzf-tab:*' fzf-flags --color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C --color=fg:#D8DEE9,header:#A3BE8C,info:#88C0D0,pointer:#81A1C1 --color=marker:#EBCB8B,fg+:#ECEFF4,prompt:#88C0D0,hl+:#A3BE8C --color=border:#4C566A
+zstyle ':fzf-tab:*' fzf-flags --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 --color=border:#6c7086
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # --------------------------------------------------------------
@@ -102,26 +102,26 @@ python_path=$(echo $HOME/Library/Python/3.*/bin | tr ' ' ':')
 # Rust/Cargo (for uv, etc.)
 [[ -d "$HOME/.cargo/bin" ]] && export PATH="$HOME/.cargo/bin:$PATH"
 
-# Nord theme for bat
-export BAT_THEME="Nord"
+# Catppuccin Mocha theme for bat
+export BAT_THEME="Catppuccin Mocha"
 
-# Nord-inspired colors for eza/ls
+# Catppuccin Mocha-inspired colors for eza/ls
 export EZA_COLORS="\
-uu=36:\
-gu=37:\
-sn=32:\
-sb=32:\
-da=34:\
-ur=34:\
-uw=35:\
-ux=36:\
-ue=36:\
-gr=34:\
-gw=35:\
-gx=36:\
-tr=34:\
-tw=35:\
-tx=36:"
+uu=38;5;137:\
+gu=38;5;109:\
+sn=38;5;150:\
+sb=38;5;150:\
+da=38;5;110:\
+ur=38;5;110:\
+uw=38;5;204:\
+ux=38;5;150:\
+ue=38;5;150:\
+gr=38;5;110:\
+gw=38;5;204:\
+gx=38;5;150:\
+tr=38;5;110:\
+tw=38;5;204:\
+tx=38;5;150:"
 
 # iTerm2 integration
 if [ -e "${HOME}/.iterm2_shell_integration.zsh" ]; then
@@ -149,50 +149,50 @@ setopt SHARE_HISTORY
 setopt HIST_IGNORE_SPACE  # Don't save commands starting with space
 
 # --------------------------------------------------------------
-# 🔍 Autosuggestions and Syntax Highlighting (Nord theme)
+# 🔍 Autosuggestions and Syntax Highlighting (Catppuccin Mocha)
 # --------------------------------------------------------------
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#4C566A,standout"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#585b70"
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 
-# Nord-themed syntax highlighting
+# Catppuccin Mocha-themed syntax highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 
-# Main highlighter colors (Nord palette)
+# Main highlighter colors (Catppuccin Mocha palette)
 ZSH_HIGHLIGHT_STYLES[default]=none
-ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=#BF616A,bold
-ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=#81A1C1,bold
-ZSH_HIGHLIGHT_STYLES[suffix-alias]=fg=#A3BE8C,underline
-ZSH_HIGHLIGHT_STYLES[global-alias]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[precommand]=fg=#A3BE8C,underline
-ZSH_HIGHLIGHT_STYLES[commandseparator]=fg=#88C0D0,bold
-ZSH_HIGHLIGHT_STYLES[autodirectory]=fg=#A3BE8C,underline
-ZSH_HIGHLIGHT_STYLES[path]=underline
-ZSH_HIGHLIGHT_STYLES[globbing]=fg=#88C0D0,bold
-ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=#88C0D0,bold
-ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]=fg=#88C0D0,bold
-ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=#EBCB8B
-ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=#EBCB8B
-ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]=fg=#EBCB8B
-ZSH_HIGHLIGHT_STYLES[rc-quote]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]=fg=#B48EAD
-ZSH_HIGHLIGHT_STYLES[redirection]=fg=#88C0D0,bold
-ZSH_HIGHLIGHT_STYLES[comment]=fg=#4C566A,bold
-ZSH_HIGHLIGHT_STYLES[arg0]=fg=#A3BE8C
+ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=#f38ba8,bold
+ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=#cba6f7,bold
+ZSH_HIGHLIGHT_STYLES[suffix-alias]=fg=#a6e3a1,underline
+ZSH_HIGHLIGHT_STYLES[global-alias]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[precommand]=fg=#a6e3a1,underline
+ZSH_HIGHLIGHT_STYLES[commandseparator]=fg=#89dceb,bold
+ZSH_HIGHLIGHT_STYLES[autodirectory]=fg=#a6e3a1,underline
+ZSH_HIGHLIGHT_STYLES[path]=fg=#cdd6f4,underline
+ZSH_HIGHLIGHT_STYLES[globbing]=fg=#89dceb,bold
+ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=#89dceb,bold
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]=fg=#89dceb,bold
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=#f9e2af
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=#f9e2af
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]=fg=#f9e2af
+ZSH_HIGHLIGHT_STYLES[rc-quote]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]=fg=#f5c2e7
+ZSH_HIGHLIGHT_STYLES[redirection]=fg=#89dceb,bold
+ZSH_HIGHLIGHT_STYLES[comment]=fg=#585b70,bold
+ZSH_HIGHLIGHT_STYLES[arg0]=fg=#a6e3a1
 
-# Bracket highlighter (Nord colors)
-ZSH_HIGHLIGHT_STYLES[bracket-error]=fg=#BF616A,bold
-ZSH_HIGHLIGHT_STYLES[bracket-level-1]=fg=#88C0D0,bold
-ZSH_HIGHLIGHT_STYLES[bracket-level-2]=fg=#A3BE8C,bold
-ZSH_HIGHLIGHT_STYLES[bracket-level-3]=fg=#B48EAD,bold
-ZSH_HIGHLIGHT_STYLES[bracket-level-4]=fg=#EBCB8B,bold
-ZSH_HIGHLIGHT_STYLES[bracket-level-5]=fg=#81A1C1,bold
+# Bracket highlighter (Catppuccin Mocha colors)
+ZSH_HIGHLIGHT_STYLES[bracket-error]=fg=#f38ba8,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-1]=fg=#89dceb,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-2]=fg=#a6e3a1,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-3]=fg=#cba6f7,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-4]=fg=#f9e2af,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-5]=fg=#89b4fa,bold
 ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]=standout
 
 # --------------------------------------------------------------
@@ -391,6 +391,26 @@ alias htop10='history | awk "{print \$2}" | sort | uniq -c | sort -rn | head -10
 # 🛠️ Useful Functions
 # --------------------------------------------------------------
 
+# Terminal environment detection
+detect_terminal() {
+  local env=""
+  [[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && env+="ssh "
+  [[ -n "$TMUX" ]] && env+="tmux "
+  [[ -n "$ITERM_SESSION_ID" ]] && env+="iterm "
+  [[ -z "$env" ]] && env="plain "
+  echo "${env% }"  # trim trailing space
+}
+
+# Export flags for use in conditionals
+export TERM_IS_SSH=$([[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && echo 1 || echo 0)
+export TERM_IS_TMUX=$([[ -n "$TMUX" ]] && echo 1 || echo 0)
+export TERM_IS_ITERM=$([[ -n "$ITERM_SESSION_ID" ]] && echo 1 || echo 0)
+
+# Visual SSH indicator
+if [[ "$TERM_IS_SSH" == "1" ]]; then
+  export SSH_INDICATOR="[remote] "
+fi
+
 # Unalias any conflicting aliases before defining functions
 unalias dstop drm dprune dexec dlogs gcb gac gbdel kexec kpf v ve vrg vr vs vl vw proj tn ta gdiff dark light vf vg 2>/dev/null
 
@@ -575,6 +595,10 @@ proj() {
 
 # Create tmux session with nvim
 tn() {
+  if [[ -n "$TMUX" ]]; then
+    echo "Already inside tmux. Use 'tmux new-session -d -s name' to create a detached session."
+    return 1
+  fi
   local session_name="${1:-$(basename $PWD)}"
   tmux new-session -s "$session_name" -d
   tmux send-keys -t "$session_name" "nvim" C-m
@@ -583,6 +607,10 @@ tn() {
 
 # Attach to existing tmux or create new
 ta() {
+  if [[ -n "$TMUX" ]]; then
+    echo "Already inside tmux. Use 'tmux switch-client -t <session>' to switch sessions."
+    return 1
+  fi
   if tmux ls 2>/dev/null; then
     tmux attach -t "$(tmux ls | fzf | cut -d: -f1)"
   else
@@ -711,8 +739,8 @@ function iterm_profile_switch() {
   esac
 }
 
-# Uncomment to enable auto profile switching
-# chpwd_functions+=(iterm_profile_switch)
+# Enable auto profile switching (iTerm2 only — no-op if profiles don't exist)
+[[ -n "$ITERM_SESSION_ID" ]] && chpwd_functions+=(iterm_profile_switch)
 
 # Show project banner if .project-name exists
 function show_project_banner() {
@@ -728,16 +756,17 @@ chpwd_functions+=(show_project_banner)
 # --------------------------------------------------------------
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Enhanced FZF settings with Nord theme
+# Enhanced FZF settings with Catppuccin Mocha theme
 export FZF_DEFAULT_OPTS="
   --height 40%
   --layout=reverse
-  --border
+  --border rounded
   --info=inline
-  --color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C
-  --color=fg:#D8DEE9,header:#A3BE8C,info:#88C0D0,pointer:#81A1C1
-  --color=marker:#EBCB8B,fg+:#D8DEE9,prompt:#88C0D0,hl+:#A3BE8C
-  --color=border:#4C566A"
+  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
+  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
+  --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
+  --color=border:#6c7086,selected-bg:#45475a
+  --prompt '  ' --pointer '' --marker ''"
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git 2>/dev/null || find .'
 
 # Use fzf for history search
@@ -785,6 +814,55 @@ fgd() {
   [[ -n "$file" ]] && nvim "$file"
 }
 
+# Alias & function cheatsheet — searchable with fzf
+helpme() {
+  local zshrc="${ZDOTDIR:-$HOME}/.zshrc"
+  local section=""
+  local section_next=""
+  local entries=()
+
+  while IFS= read -r line; do
+    # Detect section headers: "# ------" followed by "# Title" followed by "# ------"
+    if [[ "$line" =~ '^# [-]+$' ]]; then
+      section_next=1
+      continue
+    elif [[ -n "$section_next" && "$line" =~ '^# [^-]' ]]; then
+      section="${line#\# }"
+      section="${section#* }"  # strip leading emoji
+      unset section_next
+      continue
+    elif [[ -n "$section_next" ]]; then
+      unset section_next
+    fi
+
+    # Capture alias definitions
+    if [[ "$line" =~ "^alias " ]]; then
+      local name="${line#alias }"
+      name="${name%%=*}"
+      local value="${line#*=}"
+      entries+=("$(printf '%-14s  %-40s  %s' "$name" "$value" "[$section]")")
+    fi
+
+    # Capture function definitions (oneliner and block)
+    if [[ "$line" =~ '^[a-zA-Z_][a-zA-Z0-9_-]*\(\)' ]]; then
+      local fname="${line%%\(*}"
+      entries+=("$(printf '%-14s  %-40s  %s' "$fname" "(function)" "[$section]")")
+    fi
+  done < "$zshrc"
+
+  printf '%s\n' "${entries[@]}" | fzf \
+    --header="Aliases & Functions  (Enter=copy, Ctrl-X=run)" \
+    --preview='echo {}' \
+    --preview-window=hidden \
+    --bind "enter:execute-silent(echo {} | awk '{print \$1}' | tr -d '\n' | pbcopy)+abort" \
+    --bind "ctrl-x:become(eval \$(echo {} | awk '{print \$1}'))"
+}
+
+# Bind Alt+H to helpme widget
+_helpme_widget() { helpme; zle redisplay }
+zle -N _helpme_widget
+bindkey '^[h' _helpme_widget  # Alt+H (Ctrl+H often conflicts with backspace)
+
 # --------------------------------------------------------------
 # 🔧 Tool Completions
 # --------------------------------------------------------------
@@ -823,6 +901,11 @@ if command -v atuin &> /dev/null; then
   eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
+# Mise - universal version manager (install: brew install mise)
+if command -v mise &> /dev/null; then
+  eval "$(mise activate zsh)"
+fi
+
 # Delta - beautiful git diffs (install: brew install delta)
 if command -v delta &> /dev/null; then
   export GIT_PAGER='delta'
@@ -834,6 +917,19 @@ fi
 
 # Custom aliases file (optional)
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+
+# lsd - another beautiful ls replacement
+if command -v lsd &> /dev/null; then
+  alias lsd='lsd --icon always --group-directories-first'
+  alias lsda='lsd -la --icon always --group-directories-first'
+  alias lsdt='lsd --tree --depth 2 --icon always'
+fi
+
+# Fastfetch splash on new terminal (only for interactive, non-nested shells)
+if [[ $- == *i* ]] && [[ -z "$FASTFETCH_SHOWN" ]] && command -v fastfetch &> /dev/null; then
+  export FASTFETCH_SHOWN=1
+  fastfetch
+fi
 
 # --------------------------------------------------------------
 # 🧹 End of .zshrc

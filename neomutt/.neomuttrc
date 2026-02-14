@@ -157,10 +157,10 @@ set sidebar_divider_char = "│"
 set sidebar_new_mail_only = no
 
 # ============================================================================
-# Colors (Nord Theme - matches zshrc and nvim)
+# Colors (Catppuccin Mocha - matches zshrc, nvim, and tmux)
 # ============================================================================
 
-source ~/.neomutt/nord.neomuttrc
+source ~/.neomutt/catppuccin-mocha.neomuttrc
 
 # ============================================================================
 # HTML Email

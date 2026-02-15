@@ -1,0 +1,35 @@
+---@type LazySpec
+return {
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    ensure_installed = {
+      "lua",
+      "vim",
+      "vimdoc",
+      "python",
+      "go",
+      "gomod",
+      "gosum",
+      "typescript",
+      "tsx",
+      "javascript",
+      "json",
+      "yaml",
+      "toml",
+      "bash",
+      "dockerfile",
+      "hcl",       -- terraform
+      "html",
+      "css",
+      "markdown",
+      "markdown_inline",
+      "regex",
+      "query",
+      "http",
+      "sql",
+      "diff",
+      "gitcommit",
+      "git_rebase",
+    },
+  },
+}

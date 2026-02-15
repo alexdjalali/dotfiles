@@ -1,0 +1,125 @@
+# vim: filetype=neomuttrc
+# Catppuccin Mocha theme for Neomutt
+# Matches the Catppuccin Mocha color scheme used in zshrc, nvim, and tmux
+#
+# Catppuccin Mocha palette (256-color terminal approximations):
+# Base (backgrounds): color233 (#1e1e2e), color234 (#181825), color235 (#11111b)
+# Surface: color236 (#313244), color237 (#45475a), color240 (#585b70)
+# Overlay: color243 (#6c7086), color245 (#7f849c)
+# Text: color252 (#cdd6f4), color249 (#a6adc8), color251 (#bac2de)
+# Rosewater: color224 (#f5e0dc), Flamingo: color217 (#f2cdcd)
+# Pink: color218 (#f5c2e7), Mauve: color141 (#cba6f7)
+# Red: color211 (#f38ba8), Maroon: color217 (#eba0ac)
+# Peach: color216 (#fab387), Yellow: color223 (#f9e2af)
+# Green: color150 (#a6e3a1), Teal: color115 (#94e2d5)
+# Sky: color117 (#89dceb), Sapphire: color110 (#74c7ec)
+# Blue: color111 (#89b4fa), Lavender: color147 (#b4befe)
+
+# Basic colors
+color normal        color252        color233        # Default text (Text on Base)
+color error         color211        color233        # Error messages (Red)
+color tilde         color240        color233        # ~ at end of pager (Surface2)
+color message       color117        color233        # Info messages (Sky)
+color markers       color211        color234        # + for wrapped lines (Red)
+color attachment    color223        color233        # Attachment indicator (Yellow)
+color search        color233        color223        # Search highlighting (inverted Yellow)
+color status        color252        color236        # Status bar (Text on Surface0)
+color indicator     color233        color141        # Selected message (inverted Mauve)
+color tree          color141        color233        # Thread tree arrows (Mauve)
+
+# Basic monocolor screen
+mono  bold          bold
+mono  underline     underline
+mono  indicator     reverse
+mono  error         bold
+
+# Index - Message list
+color index         color252        color233        "~A"                        # All messages
+color index         color211        color233        "~E"                        # Expired messages
+color index         color117        color233        "~N"                        # New messages
+color index         color111        color233        "~O"                        # Old messages
+color index         color150        color233        "~Q"                        # Replied messages
+color index         color240        color233        "~R"                        # Read messages
+color index         color117        color233        "~U"                        # Unread messages
+color index         color117        color233        "~U~$"                      # Unread, unreferenced
+color index         color240        color233        "~v"                        # Collapsed thread
+color index         color240        color233        "~P"                        # From me
+color index         color117        color233        "~p!~F"                     # To me
+color index         color117        color233        "~N~p!~F"                   # New to me
+color index         color117        color233        "~U~p!~F"                   # Unread to me
+color index         color240        color233        "~R~p!~F"                   # Read to me
+color index         color223        color233        "~F"                        # Flagged
+color index         color223        color233        "~F~p"                      # Flagged to me
+color index         color223        color233        "~N~F"                      # New flagged
+color index         color223        color233        "~N~F~p"                    # New flagged to me
+color index         color223        color233        "~U~F~p"                    # Unread flagged to me
+color index         color233        color211        "~D"                        # Deleted (inverted Red)
+color index         color240        color233        "~v~(!~N)"                  # Collapsed, no unread
+color index         color117        color233        "~v~(~N)"                   # Collapsed with unread
+color index         color150        color233        "~N~v~(~N)"                 # Collapsed unread parent
+
+# Collapsed threads with flags
+color index         color223        color236        "~v~(~F)!~N"                # Collapsed flagged, no unread
+color index         color223        color236        "~v~(~F~N)"                 # Collapsed flagged with unread
+color index         color150        color236        "~N~v~(~F~N)"               # Collapsed unread parent + flagged
+color index         color150        color236        "~N~v~(~F)"                 # Collapsed unread parent, flagged inside
+color index         color117        color236        "~v~(~p)"                   # Collapsed with messages to me
+color index         color223        color211        "~v~(~D)"                   # Collapsed with deleted
+
+# Message headers
+color hdrdefault    color240        color233        # Default header color
+color header        color252        color233        "^(From)"
+color header        color141        color233        "^(Subject)"
+color header        color111        color233        "^(To|Cc|Bcc)"
+color header        color150        color233        "^(Date)"
+color header        color115        color233        "^(Reply-To)"
+
+# Message body
+color quoted        color111        color233        # Quoted text level 1 (Blue)
+color quoted1       color117        color233        # Quoted text level 2 (Sky)
+color quoted2       color115        color233        # Quoted text level 3 (Teal)
+color quoted3       color150        color233        # Quoted text level 4 (Green)
+color quoted4       color223        color233        # Quoted text level 5 (Yellow)
+
+color signature     color240        color233        # Signature (muted)
+color bold          color251        color233        # Bold text
+color underline     color251        color233        # Underlined text
+
+# Emoticons and acronyms
+color body          color240        color233        "[;:][-o][)/(|]"            # :-) etc
+color body          color240        color233        "[;:][)(|]"                 # :) etc
+color body          color240        color233        "[*]?((N)?ACK|CU|LOL|SCNR|BRB|BTW|CWYL|\
+                                                     |FWIW|vbg|GD&R|HTH|HTHBE|IMHO|IMNSHO|\
+                                                     |IRL|RTFM|ROTFL|ROFL|YMMV)[*]?"
+
+# PGP/GPG
+color body          color211        color233        "(BAD signature)"           # Bad signature (Red)
+color body          color150        color233        "(Good signature)"          # Good signature (Green)
+color body          color233        color150        "^gpg: Good signature .*"   # GPG good (inverted)
+color body          color240        color233        "^gpg: "                    # GPG info
+color body          color252        color211        "^gpg: BAD signature from.*" # GPG bad (bold red)
+mono  body          bold                            "^gpg: Good signature"
+mono  body          bold                            "^gpg: BAD signature from.*"
+
+# URLs (Peach for visibility)
+color body          color216        color233        "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
+
+# Email addresses (Sky)
+color body          color117        color233        "[\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+"
+
+# Markdown/formatting (if you use text emails with markdown-style formatting)
+color body          color141        color233        "(^|[[:space:]])\\*[^*]+\\*([[:space:]]|$)"     # *bold*
+color body          color111        color233        "(^|[[:space:]])_[^_]+_([[:space:]]|$)"         # _underline_
+color body          color115        color233        "(^|[[:space:]])/[^/]+/([[:space:]]|$)"         # /italic/
+
+# Sidebar (if enabled)
+color sidebar_new       color117        color233        # Mailboxes with new mail (Sky)
+color sidebar_flagged   color223        color233        # Mailboxes with flagged mail (Yellow)
+color sidebar_divider   color240        color233        # Sidebar divider (Surface2)
+color sidebar_highlight color233        color141        # Selected mailbox (inverted Mauve)
+color sidebar_indicator color233        color150        # Mailbox with indicator (inverted Green)
+color sidebar_ordinary  color252        color233        # Regular mailboxes (Text)
+color sidebar_spoolfile color223        color233        # Spoolfile (Yellow)
+
+# Progress bar
+color progress          color233        color141        # Progress bar (inverted Mauve)

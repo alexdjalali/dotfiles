@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+._*
+
+# ZSH secrets & runtime
+zsh/.zshrc.local
+zsh/.zcompdump*
+
+# Neovim runtime
+nvim/sessions/
+nvim/plugin/
+nvim/mason/
+
+# Neomutt secrets & runtime
+neomutt/.neomutt/*.pass
+neomutt/.neomutt/*.tokens
+neomutt/.neomutt/*_oauth2.cfg
+neomutt/.neomutt/account.gmail
+neomutt/.neomutt/account.gatech
+neomutt/.neomutt/cache/
+neomutt/.neomutt/tmp/
+neomutt/.neomutt/certificates

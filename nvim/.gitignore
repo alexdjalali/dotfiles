@@ -1,0 +1,15 @@
+# Lazy.nvim
+lazy-lock.json
+
+# Plugin data
+plugin/
+data/
+
+# Mason installed packages
+mason/
+
+# LSP logs
+*.log
+
+# Misc
+.DS_Store

@@ -1,0 +1,21 @@
+# Gmail Account Configuration Template
+# Copy this to ~/.neomutt/account.gmail and fill in your details
+
+set from = "your-email@gmail.com"
+set realname = "Your Name"
+
+# IMAP Configuration
+set imap_user = "your-email@gmail.com"
+set imap_pass = "`cat ~/.neomutt/gmail.pass`"  # Store password in this file
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+set postponed = "+[Gmail]/Drafts"
+set record = "+[Gmail]/Sent Mail"
+set trash = "+[Gmail]/Trash"
+
+# SMTP Configuration
+set smtp_url = "smtps://your-email@gmail.com@smtp.gmail.com:465"
+set smtp_pass = "`cat ~/.neomutt/gmail.pass`"
+
+# Mailboxes to show in sidebar
+mailboxes =INBOX =[Gmail]/Sent\ Mail =[Gmail]/Drafts =[Gmail]/Spam =[Gmail]/Trash =[Gmail]/All\ Mail

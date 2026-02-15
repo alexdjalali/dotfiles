@@ -1,0 +1,79 @@
+[user]
+	name = Alex Djalali
+	email = alex.djalali@gmail.com
+	signingkey = DFFA768E09D343E7
+[core]
+	editor = nvim
+	pager = delta
+	fsmonitor = true
+	untrackedCache = true
+	preloadIndex = true
+[init]
+	defaultBranch = main
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = true
+	sort = -version:refname
+[gpg]
+	program = gpg
+[alias]
+	lsd = log --graph --pretty=format:'%C(yellow)%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	light = false
+	line-numbers = true
+	side-by-side = true
+	syntax-theme = "Catppuccin Mocha"
+	plus-style = "syntax #1a3a2a"
+	plus-emph-style = "syntax #2d5a3d"
+	minus-style = "syntax #3a1a2a"
+	minus-emph-style = "syntax #5a2d3d"
+	line-numbers-minus-style = "#f38ba8"
+	line-numbers-plus-style = "#a6e3a1"
+	line-numbers-zero-style = "#585b70"
+	hunk-header-decoration-style = "box ul"
+	file-style = "#cba6f7 bold"
+	file-decoration-style = "#6c7086 ul"
+[diff]
+	algorithm = histogram
+	colorMoved = default
+[merge]
+	conflictstyle = diff3
+	tool = nvimdiff
+[mergetool]
+	keepBackup = false
+[mergetool "nvimdiff"]
+	layout = "LOCAL,BASE,REMOTE / MERGED"
+[fetch]
+	prune = true
+	pruneTags = true
+	writeCommitGraph = true
+[push]
+	autoSetupRemote = true
+[pull]
+	rebase = true
+[rebase]
+	autoStash = true
+	autoSquash = true
+[rerere]
+	enabled = true
+[branch]
+	sort = -committerdate
+[status]
+	showStash = true
+[help]
+	autocorrect = prompt
+[pack]
+	threads = 0
+[feature]
+	manyFiles = true
+[color]
+	ui = true

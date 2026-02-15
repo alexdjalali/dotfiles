@@ -1,0 +1,1317 @@
+{
+    AIFeatureFunctionCalling = 1;
+    AIFeatureHostedCodeInterpeter = 1;
+    AIFeatureHostedFileSearch = 1;
+    AIFeatureHostedWebSearch = 1;
+    AIFeatureStreamingResponses = 1;
+    AITermAPI = 2;
+    AIVectorStore = 0;
+    AiMaxTokens = 400000;
+    AiModel = "gpt-5.1";
+    AiResponseMaxTokens = 128000;
+    AitermURL = "https://api.openai.com/v1/responses";
+    AppleAntiAliasingThreshold = 1;
+    ApplePressAndHoldEnabled = 0;
+    AppleScrollAnimationEnabled = 0;
+    AppleSmoothFixedFontsSizeThreshold = 1;
+    AppleWindowTabbingMode = manual;
+    "Custom Color Presets" =     {
+        Nord =         {
+            "Ansi 0 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Ansi 1 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3416893780231476";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2943579256534576";
+                "Red Component" = "0.688555896282196";
+            };
+            "Ansi 10 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4759744107723236";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7002110481262207";
+                "Red Component" = "0.5760542154312134";
+            };
+            "Ansi 11 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4728026986122131";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7557785511016846";
+                "Red Component" = "0.8990201950073242";
+            };
+            "Ansi 12 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7045942544937134";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.5608044862747192";
+                "Red Component" = "0.4340144395828247";
+            };
+            "Ansi 13 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6157113313674927";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.4748716652393341";
+                "Red Component" = "0.6428365707397461";
+            };
+            "Ansi 14 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6777905225753784";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.6861472129821777";
+                "Red Component" = "0.4934451580047607";
+            };
+            "Ansi 15 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.945746898651123";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.9209208488464355";
+                "Red Component" = "0.9072774648666382";
+            };
+            "Ansi 2 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4759744107723236";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7002110481262207";
+                "Red Component" = "0.5760542154312134";
+            };
+            "Ansi 3 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4728026986122131";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7557785511016846";
+                "Red Component" = "0.8990201950073242";
+            };
+            "Ansi 4 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7045942544937134";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.5608044862747192";
+                "Red Component" = "0.4340144395828247";
+            };
+            "Ansi 5 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6157113313674927";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.4748716652393341";
+                "Red Component" = "0.6428365707397461";
+            };
+            "Ansi 6 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7735686302185059";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7021664381027222";
+                "Red Component" = "0.4660642147064209";
+            };
+            "Ansi 7 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9262098073959351";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8916594386100769";
+                "Red Component" = "0.8736777901649475";
+            };
+            "Ansi 8 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3406426012516022";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2652154266834259";
+                "Red Component" = "0.2330617606639862";
+            };
+            "Ansi 9 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3416893780231476";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2943579256534576";
+                "Red Component" = "0.688555896282196";
+            };
+            "Background Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1918390095233917";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1525594741106033";
+                "Red Component" = "0.1357133686542511";
+            };
+            "Badge Color" =             {
+                "Alpha Component" = "0.7057952880859375";
+                "Blue Component" = "0.2960072755813599";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2304649949073792";
+                "Red Component" = "0.2025250792503357";
+            };
+            "Bold Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.945746898651123";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.9209208488464355";
+                "Red Component" = "0.9072774648666382";
+            };
+            "Cursor Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922592401504517";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121471405029297";
+            };
+            "Cursor Guide Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Cursor Text Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Foreground Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922591209411621";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121472597122192";
+            };
+            "Link Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9262098073959351";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8916594386100769";
+                "Red Component" = "0.8736777901649475";
+            };
+            "Selected Text Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922592401504517";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121471405029297";
+            };
+            "Selection Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3406426012516022";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2652154266834259";
+                "Red Component" = "0.2330617606639862";
+            };
+            "Tab Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+        };
+        "iTerm2 Solarized Dark" =         {
+            "Ansi 0 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2588235437870026";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2117647081613541";
+                "Red Component" = "0.02745098061859608";
+            };
+            "Ansi 1 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1843137294054031";
+                "Color Space" = sRGB;
+                "Green Component" = "0.196078434586525";
+                "Red Component" = "0.8627451062202454";
+            };
+            "Ansi 10 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4588235318660736";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4313725531101227";
+                "Red Component" = "0.3450980484485626";
+            };
+            "Ansi 11 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5137255191802979";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4823529422283173";
+                "Red Component" = "0.3960784375667572";
+            };
+            "Ansi 12 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5882353186607361";
+                "Color Space" = sRGB;
+                "Green Component" = "0.5803921818733215";
+                "Red Component" = "0.5137255191802979";
+            };
+            "Ansi 13 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7686274647712708";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4431372582912445";
+                "Red Component" = "0.4235294163227081";
+            };
+            "Ansi 14 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6313725709915161";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6313725709915161";
+                "Red Component" = "0.5764706134796143";
+            };
+            "Ansi 15 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8901960849761963";
+                "Color Space" = sRGB;
+                "Green Component" = "0.9647058844566345";
+                "Red Component" = "0.9921568632125854";
+            };
+            "Ansi 2 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.6000000238418579";
+                "Red Component" = "0.5215686559677124";
+            };
+            "Ansi 3 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.5372549295425415";
+                "Red Component" = "0.7098039388656616";
+            };
+            "Ansi 4 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8235294222831726";
+                "Color Space" = sRGB;
+                "Green Component" = "0.5450980663299561";
+                "Red Component" = "0.1490196138620377";
+            };
+            "Ansi 5 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5098039507865906";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2117647081613541";
+                "Red Component" = "0.8274509906768799";
+            };
+            "Ansi 6 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5960784554481506";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6313725709915161";
+                "Red Component" = "0.1647058874368668";
+            };
+            "Ansi 7 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8352941274642944";
+                "Color Space" = sRGB;
+                "Green Component" = "0.9098039269447327";
+                "Red Component" = "0.9333333373069763";
+            };
+            "Ansi 8 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2117647081613541";
+                "Color Space" = sRGB;
+                "Green Component" = "0.168627455830574";
+                "Red Component" = 0;
+            };
+            "Ansi 9 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.08627451211214066";
+                "Color Space" = sRGB;
+                "Green Component" = "0.294117659330368";
+                "Red Component" = "0.7960784435272217";
+            };
+            "Background Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2117647081613541";
+                "Color Space" = sRGB;
+                "Green Component" = "0.168627455830574";
+                "Red Component" = 0;
+            };
+            "Badge Color" =             {
+                "Alpha Component" = "0.5";
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.1491003036499023";
+                "Red Component" = 1;
+            };
+            "Bold Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6313725709915161";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6313725709915161";
+                "Red Component" = "0.5764706134796143";
+            };
+            "Cursor Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5882353186607361";
+                "Color Space" = sRGB;
+                "Green Component" = "0.5803921818733215";
+                "Red Component" = "0.5137255191802979";
+            };
+            "Cursor Guide Color" =             {
+                "Alpha Component" = "0.25";
+                "Blue Component" = 1;
+                "Color Space" = sRGB;
+                "Green Component" = "0.9268137812614441";
+                "Red Component" = "0.7021402716636658";
+            };
+            "Cursor Text Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2588235437870026";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2117647081613541";
+                "Red Component" = "0.02745098061859608";
+            };
+            "Foreground Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5882353186607361";
+                "Color Space" = sRGB;
+                "Green Component" = "0.5803921818733215";
+                "Red Component" = "0.5137255191802979";
+            };
+            "Link Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7342270612716675";
+                "Color Space" = sRGB;
+                "Green Component" = "0.3591529428958893";
+                "Red Component" = 0;
+            };
+            "Selected Text Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6313725709915161";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6313725709915161";
+                "Red Component" = "0.5764706134796143";
+            };
+            "Selection Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2588235437870026";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2117647081613541";
+                "Red Component" = "0.02745098061859608";
+            };
+        };
+    };
+    "Default Bookmark Guid" = "77CC0BB2-689F-47A6-B5B0-B93D64054E7C";
+    FocusFollowsMouse = 1;
+    HapticFeedbackForEsc = 0;
+    HotkeyMigratedFromSingleToMulti = 1;
+    NSAutoFillHeuristicControllerEnabled = 0;
+    NSNavPanelExpandedSizeForOpenMode = "{800, 448}";
+    NSOSPLastRootDirectory = {length = 752, bytes = 0x626f6f6b f0020000 00000410 30000000 ... 90010000 00000000 };
+    NSOverlayScrollersFallBackForAccessoryViews = 0;
+    NSQuotedKeystrokeBinding = "";
+    NSRepeatCountBinding = "";
+    NSScrollAnimationEnabled = 0;
+    NSScrollViewShouldScrollUnderTitlebar = 0;
+    "NSSplitView Subview Frames NSColorPanelSplitView" =     (
+        "0.000000, 0.000000, 230.000000, 262.000000, NO, NO",
+        "0.000000, 263.000000, 230.000000, 67.000000, NO, NO"
+    );
+    "NSToolbar Configuration com.apple.NSColorPanel" =     {
+        "TB Is Shown" = 1;
+    };
+    "NSWindow Frame NSColorPanel" = "0 83 250 297 0 0 1512 949 ";
+    "NSWindow Frame NSNavPanelAutosaveName" = "2232 447 800 448 0 0 5120 1409 ";
+    "NSWindow Frame SUStatusFrame" = "1480 936 400 139 0 0 3360 1387 ";
+    "NSWindow Frame SUUpdateAlert" = "1370 738 620 402 0 0 3360 1387 ";
+    "NSWindow Frame iTerm Window 0" = "0 0 1512 949 0 0 1512 949 ";
+    "NSWindow Frame iTerm Window 1" = "0 462 650 487 0 0 1512 949 ";
+    "NSWindow Frame iTerm Window 2" = "0 487 650 462 0 0 1512 949 ";
+    "NSWindow Frame iTerm Window 3" = "790 89 650 462 0 0 5120 1409 ";
+    "NSWindow Frame iTerm Window 4" = "2560 0 2560 1409 0 0 5120 1409 ";
+    "NeverWarnAboutShortLivedSessions_77CC0BB2-689F-47A6-B5B0-B93D64054E7C" = 1;
+    "NeverWarnAboutShortLivedSessions_77CC0BB2-689F-47A6-B5B0-B93D64054E7C_selection" = 0;
+    "New Bookmarks" =     (
+                {
+            "ASCII Anti Aliased" = 1;
+            "Ambiguous Double Width" = 0;
+            "Ansi 0 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1176470592617989";
+                "Color Space" = sRGB;
+                "Green Component" = "0.09803921729326248";
+                "Red Component" = "0.0784313753247261";
+            };
+            "Ansi 0 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Ansi 0 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Ansi 1 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1630003750324249";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2366006970405579";
+                "Red Component" = "0.7074432373046875";
+            };
+            "Ansi 1 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3416893780231476";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2943579256534576";
+                "Red Component" = "0.688555896282196";
+            };
+            "Ansi 1 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3416893780231476";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2943579256534576";
+                "Red Component" = "0.688555896282196";
+            };
+            "Ansi 10 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5654193758964539";
+                "Color Space" = sRGB;
+                "Green Component" = "0.9042816162109375";
+                "Red Component" = "0.3450070321559906";
+            };
+            "Ansi 10 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4759744107723236";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7002110481262207";
+                "Red Component" = "0.5760542154312134";
+            };
+            "Ansi 10 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4759744107723236";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7002110481262207";
+                "Red Component" = "0.5760542154312134";
+            };
+            "Ansi 11 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.8833775520324707";
+                "Red Component" = "0.9259033203125";
+            };
+            "Ansi 11 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4728026986122131";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7557785511016846";
+                "Red Component" = "0.8990201950073242";
+            };
+            "Ansi 11 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4728026986122131";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7557785511016846";
+                "Red Component" = "0.8990201950073242";
+            };
+            "Ansi 12 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9485321044921875";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6704471707344055";
+                "Red Component" = "0.6534907817840576";
+            };
+            "Ansi 12 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7045942544937134";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.5608044862747192";
+                "Red Component" = "0.4340144395828247";
+            };
+            "Ansi 12 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7045942544937134";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.5608044862747192";
+                "Red Component" = "0.4340144395828247";
+            };
+            "Ansi 13 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8821563720703125";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4927266538143158";
+                "Red Component" = "0.8821563720703125";
+            };
+            "Ansi 13 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6157113313674927";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.4748716652393341";
+                "Red Component" = "0.6428365707397461";
+            };
+            "Ansi 13 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6157113313674927";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.4748716652393341";
+                "Red Component" = "0.6428365707397461";
+            };
+            "Ansi 14 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 1;
+                "Color Space" = sRGB;
+                "Green Component" = "0.9926329255104065";
+                "Red Component" = "0.3759753108024597";
+            };
+            "Ansi 14 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6777905225753784";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.6861472129821777";
+                "Red Component" = "0.4934451580047607";
+            };
+            "Ansi 14 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6777905225753784";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.6861472129821777";
+                "Red Component" = "0.4934451580047607";
+            };
+            "Ansi 15 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 1;
+                "Color Space" = sRGB;
+                "Green Component" = 1;
+                "Red Component" = "0.9999960064888";
+            };
+            "Ansi 15 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.945746898651123";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.9209208488464355";
+                "Red Component" = "0.9072774648666382";
+            };
+            "Ansi 15 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.945746898651123";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.9209208488464355";
+                "Red Component" = "0.9072774648666382";
+            };
+            "Ansi 2 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.7607843279838562";
+                "Red Component" = 0;
+            };
+            "Ansi 2 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4759744107723236";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7002110481262207";
+                "Red Component" = "0.5760542154312134";
+            };
+            "Ansi 2 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4759744107723236";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7002110481262207";
+                "Red Component" = "0.5760542154312134";
+            };
+            "Ansi 3 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.7695948481559753";
+                "Red Component" = "0.7805864810943604";
+            };
+            "Ansi 3 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4728026986122131";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7557785511016846";
+                "Red Component" = "0.8990201950073242";
+            };
+            "Ansi 3 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4728026986122131";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7557785511016846";
+                "Red Component" = "0.8990201950073242";
+            };
+            "Ansi 4 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7821617722511292";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2647435665130615";
+                "Red Component" = "0.1540430039167404";
+            };
+            "Ansi 4 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7045942544937134";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.5608044862747192";
+                "Red Component" = "0.4340144395828247";
+            };
+            "Ansi 4 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7045942544937134";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.5608044862747192";
+                "Red Component" = "0.4340144395828247";
+            };
+            "Ansi 5 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7449436187744141";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2493168413639069";
+                "Red Component" = "0.752197265625";
+            };
+            "Ansi 5 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6157113313674927";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.4748716652393341";
+                "Red Component" = "0.6428365707397461";
+            };
+            "Ansi 5 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.6157113313674927";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.4748716652393341";
+                "Red Component" = "0.6428365707397461";
+            };
+            "Ansi 6 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7816620469093323";
+                "Color Space" = sRGB;
+                "Green Component" = "0.7742590308189392";
+                "Red Component" = 0;
+            };
+            "Ansi 6 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7735686302185059";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7021664381027222";
+                "Red Component" = "0.4660642147064209";
+            };
+            "Ansi 6 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7735686302185059";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.7021664381027222";
+                "Red Component" = "0.4660642147064209";
+            };
+            "Ansi 7 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7810482978820801";
+                "Color Space" = sRGB;
+                "Green Component" = "0.7810582518577576";
+                "Red Component" = "0.7810397744178772";
+            };
+            "Ansi 7 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9262098073959351";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8916594386100769";
+                "Red Component" = "0.8736777901649475";
+            };
+            "Ansi 7 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9262098073959351";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8916594386100769";
+                "Red Component" = "0.8736777901649475";
+            };
+            "Ansi 8 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4078223705291748";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4078278839588165";
+                "Red Component" = "0.4078176021575928";
+            };
+            "Ansi 8 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3406426012516022";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2652154266834259";
+                "Red Component" = "0.2330617606639862";
+            };
+            "Ansi 8 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3406426012516022";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2652154266834259";
+                "Red Component" = "0.2330617606639862";
+            };
+            "Ansi 9 Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.4583322405815125";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4752407670021057";
+                "Red Component" = "0.8659515380859375";
+            };
+            "Ansi 9 Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3416893780231476";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2943579256534576";
+                "Red Component" = "0.688555896282196";
+            };
+            "Ansi 9 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3416893780231476";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2943579256534576";
+                "Red Component" = "0.688555896282196";
+            };
+            "BM Growl" = 1;
+            "Background Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.98";
+                "Color Space" = sRGB;
+                "Green Component" = "0.98";
+                "Red Component" = "0.98";
+            };
+            "Background Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1918390095233917";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1525594741106033";
+                "Red Component" = "0.1357133686542511";
+            };
+            "Background Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1918390095233917";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1525594741106033";
+                "Red Component" = "0.1357133686542511";
+            };
+            "Background Image Location" = "";
+            "Badge Color" =             {
+                "Alpha Component" = "0.5";
+                "Blue Component" = "0.1161063313484192";
+                "Color Space" = sRGB;
+                "Green Component" = "0.1161063313484192";
+                "Red Component" = "0.7461385726928711";
+            };
+            "Badge Color (Dark)" =             {
+                "Alpha Component" = "0.7057952880859375";
+                "Blue Component" = "0.2960072755813599";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2304649949073792";
+                "Red Component" = "0.2025250792503357";
+            };
+            "Badge Color (Light)" =             {
+                "Alpha Component" = "0.7057952880859375";
+                "Blue Component" = "0.2960072755813599";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2304649949073792";
+                "Red Component" = "0.2025250792503357";
+            };
+            "Blinking Cursor" = 0;
+            Blur = 1;
+            "Blur Radius" = 15;
+            "Bold Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.062745101749897";
+                "Color Space" = sRGB;
+                "Green Component" = "0.062745101749897";
+                "Red Component" = "0.062745101749897";
+            };
+            "Bold Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.945746898651123";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.9209208488464355";
+                "Red Component" = "0.9072774648666382";
+            };
+            "Bold Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.945746898651123";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.9209208488464355";
+                "Red Component" = "0.9072774648666382";
+            };
+            "Brighten Bold Text (Dark)" = 1;
+            "Brighten Bold Text (Light)" = 1;
+            "Character Encoding" = 4;
+            "Close Sessions On End" = 1;
+            Columns = 80;
+            Command = "";
+            "Cursor Boost (Dark)" = 0;
+            "Cursor Boost (Light)" = 0;
+            "Cursor Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = 0;
+                "Red Component" = 0;
+            };
+            "Cursor Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922592401504517";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121471405029297";
+            };
+            "Cursor Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922592401504517";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121471405029297";
+            };
+            "Cursor Guide Color" =             {
+                "Alpha Component" = "0.25";
+                "Blue Component" = "0.8531928062438965";
+                "Color Space" = sRGB;
+                "Green Component" = "0.7721771597862244";
+                "Red Component" = "0.5233826041221619";
+            };
+            "Cursor Guide Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Cursor Guide Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Cursor Text Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 1;
+                "Color Space" = sRGB;
+                "Green Component" = 1;
+                "Red Component" = 1;
+            };
+            "Cursor Text Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Cursor Text Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Custom Command" = No;
+            "Custom Directory" = No;
+            "Default Bookmark" = No;
+            Description = Default;
+            "Disable Window Resizing" = 0;
+            "Draw Powerline Glyphs" = 1;
+            "Faint Text Alpha (Dark)" = "0.5";
+            "Faint Text Alpha (Light)" = "0.5";
+            "Flashing Bell" = 0;
+            "Foreground Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.062745101749897";
+                "Color Space" = sRGB;
+                "Green Component" = "0.062745101749897";
+                "Red Component" = "0.062745101749897";
+            };
+            "Foreground Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922591209411621";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121472597122192";
+            };
+            "Foreground Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922591209411621";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121472597122192";
+            };
+            Guid = "77CC0BB2-689F-47A6-B5B0-B93D64054E7C";
+            "Horizontal Spacing" = 1;
+            "Idle Code" = 0;
+            "Jobs to Ignore" =             (
+                rlogin,
+                ssh,
+                slogin,
+                telnet
+            );
+            "Keyboard Map" =             {
+            };
+            "Link Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9337158203125";
+                "Color Space" = sRGB;
+                "Green Component" = "0.5578983426094055";
+                "Red Component" = "0.1980242282152176";
+            };
+            "Link Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9262098073959351";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8916594386100769";
+                "Red Component" = "0.8736777901649475";
+            };
+            "Link Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9262098073959351";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8916594386100769";
+                "Red Component" = "0.8736777901649475";
+            };
+            "Match Background Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3211612701416016";
+                "Color Space" = P3;
+                "Green Component" = "0.9860088229179382";
+                "Red Component" = "0.9969714283943176";
+            };
+            "Match Background Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3211612701416016";
+                "Color Space" = P3;
+                "Green Component" = "0.9860088229179382";
+                "Red Component" = "0.9969714283943176";
+            };
+            "Minimum Contrast" = 0;
+            "Minimum Contrast (Dark)" = 0;
+            "Minimum Contrast (Light)" = 0;
+            "Mouse Reporting" = 1;
+            Name = Default;
+            "Non Ascii Font" = "Monaco 12";
+            "Non-ASCII Anti Aliased" = 1;
+            "Normal Font" = "JetBrainsMonoNFM-Regular 13";
+            "Only The Default BG Color Uses Transparency" = 1;
+            "Option Key Sends" = 0;
+            "Prompt Before Closing 2" = 0;
+            "Right Option Key Sends" = 0;
+            Rows = 25;
+            Screen = "-1";
+            "Scrollback Lines" = 0;
+            "Selected Text Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = 0;
+                "Red Component" = 0;
+            };
+            "Selected Text Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922592401504517";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121471405029297";
+            };
+            "Selected Text Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8922592401504517";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.8385788202285767";
+                "Red Component" = "0.8121471405029297";
+            };
+            "Selection Color" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 1;
+                "Color Space" = sRGB;
+                "Green Component" = "0.843137264251709";
+                "Red Component" = "0.7019608020782471";
+            };
+            "Selection Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3406426012516022";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2652154266834259";
+                "Red Component" = "0.2330617606639862";
+            };
+            "Selection Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.3406426012516022";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.2652154266834259";
+                "Red Component" = "0.2330617606639862";
+            };
+            "Send Code When Idle" = 0;
+            Shortcut = "";
+            "Silence Bell" = 0;
+            "Smart Cursor Color (Dark)" = 0;
+            "Smart Cursor Color (Light)" = 0;
+            "Sync Title" = 0;
+            "Tab Color (Dark)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            "Tab Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.2530012428760529";
+                "Color Space" = Calibrated;
+                "Green Component" = "0.1969218552112579";
+                "Red Component" = "0.1762142032384872";
+            };
+            Tags =             (
+            );
+            "Terminal Type" = "xterm-256color";
+            Transparency = "0.12";
+            "Unlimited Scrollback" = 1;
+            "Use Bold Font" = 1;
+            "Use Bright Bold" = 1;
+            "Use Bright Bold (Dark)" = 1;
+            "Use Bright Bold (Light)" = 1;
+            "Use Cursor Guide (Dark)" = 0;
+            "Use Cursor Guide (Light)" = 0;
+            "Use Italic Font" = 1;
+            "Use Non-ASCII Font" = 0;
+            "Use Selected Text Color (Dark)" = 1;
+            "Use Selected Text Color (Light)" = 1;
+            "Use Separate Colors for Light and Dark Mode" = 1;
+            "Use Tab Color (Dark)" = 0;
+            "Use Tab Color (Light)" = 0;
+            "Use Underline Color (Dark)" = 0;
+            "Use Underline Color (Light)" = 0;
+            "Vertical Spacing" = 1;
+            "Visual Bell" = 1;
+            "Window Type" = 0;
+            "Working Directory" = "/Users/adjalali3";
+        },
+                {
+            "ASCII Anti Aliased" = 1;
+            "ASCII Ligatures" = 1;
+            "Allow Title Reporting" = 1;
+            "Ambiguous Double Width" = 0;
+            "Ansi 0 Color" =             {
+                "Blue Component" = "0.259";
+                "Green Component" = "0.212";
+                "Red Component" = "0.027";
+            };
+            "Ansi 0 Color (Dark)" =             {
+                "Blue Component" = "0.2588235294117647";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2117647058823529";
+                "Red Component" = "0.02745098039215686";
+            };
+            "Ansi 0 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1176470592617989";
+                "Color Space" = sRGB;
+                "Green Component" = "0.09803921729326248";
+                "Red Component" = "0.0784313753247261";
+            };
+            "Ansi 1 Color" =             {
+                "Blue Component" = "0.184";
+                "Green Component" = "0.196";
+                "Red Component" = "0.863";
+            };
+            "Ansi 1 Color (Dark)" =             {
+                "Blue Component" = "0.1843137254901961";
+                "Color Space" = sRGB;
+                "Green Component" = "0.196078431372549";
+                "Red Component" = "0.8627450980392157";
+            };
+            "Ansi 1 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.1630003750324249";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2366006970405579";
+                "Red Component" = "0.7074432373046875";
+            };
+            "Ansi 10 Color" =             {
+                "Blue Component" = "0.459";
+                "Green Component" = "0.431";
+                "Red Component" = "0.345";
+            };
+            "Ansi 10 Color (Dark)" =             {
+                "Blue Component" = "0.4588235294117647";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4313725490196079";
+                "Red Component" = "0.3450980392156863";
+            };
+            "Ansi 10 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.5654193758964539";
+                "Color Space" = sRGB;
+                "Green Component" = "0.9042816162109375";
+                "Red Component" = "0.3450070321559906";
+            };
+            "Ansi 11 Color" =             {
+                "Blue Component" = "0.514";
+                "Green Component" = "0.482";
+                "Red Component" = "0.396";
+            };
+            "Ansi 11 Color (Dark)" =             {
+                "Blue Component" = "0.5137254901960784";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4823529411764706";
+                "Red Component" = "0.396078431372549";
+            };
+            "Ansi 11 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.8833775520324707";
+                "Red Component" = "0.9259033203125";
+            };
+            "Ansi 12 Color" =             {
+                "Blue Component" = "0.588";
+                "Green Component" = "0.58";
+                "Red Component" = "0.514";
+            };
+            "Ansi 12 Color (Dark)" =             {
+                "Blue Component" = "0.5882352941176471";
+                "Color Space" = sRGB;
+                "Green Component" = "0.5803921568627451";
+                "Red Component" = "0.5137254901960784";
+            };
+            "Ansi 12 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.9485321044921875";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6704471707344055";
+                "Red Component" = "0.6534907817840576";
+            };
+            "Ansi 13 Color" =             {
+                "Blue Component" = "0.769";
+                "Green Component" = "0.443";
+                "Red Component" = "0.424";
+            };
+            "Ansi 13 Color (Dark)" =             {
+                "Blue Component" = "0.7686274509803922";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4431372549019608";
+                "Red Component" = "0.4235294117647059";
+            };
+            "Ansi 13 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.8821563720703125";
+                "Color Space" = sRGB;
+                "Green Component" = "0.4927266538143158";
+                "Red Component" = "0.8821563720703125";
+            };
+            "Ansi 14 Color" =             {
+                "Blue Component" = "0.631";
+                "Green Component" = "0.631";
+                "Red Component" = "0.576";
+            };
+            "Ansi 14 Color (Dark)" =             {
+                "Blue Component" = "0.6313725490196078";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6313725490196078";
+                "Red Component" = "0.5764705882352941";
+            };
+            "Ansi 14 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 1;
+                "Color Space" = sRGB;
+                "Green Component" = "0.9926329255104065";
+                "Red Component" = "0.3759753108024597";
+            };
+            "Ansi 15 Color" =             {
+                "Blue Component" = "0.89";
+                "Green Component" = "0.965";
+                "Red Component" = "0.992";
+            };
+            "Ansi 15 Color (Dark)" =             {
+                "Blue Component" = "0.8901960784313725";
+                "Color Space" = sRGB;
+                "Green Component" = "0.9647058823529412";
+                "Red Component" = "0.9921568627450981";
+            };
+            "Ansi 15 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 1;
+                "Color Space" = sRGB;
+                "Green Component" = 1;
+                "Red Component" = "0.9999960064888";
+            };
+            "Ansi 2 Color" =             {
+                "Blue Component" = 0;
+                "Green Component" = "0.6";
+                "Red Component" = "0.522";
+            };
+            "Ansi 2 Color (Dark)" =             {
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.6";
+                "Red Component" = "0.5215686274509804";
+            };
+            "Ansi 2 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.7607843279838562";
+                "Red Component" = 0;
+            };
+            "Ansi 3 Color" =             {
+                "Blue Component" = 0;
+                "Green Component" = "0.537";
+                "Red Component" = "0.71";
+            };
+            "Ansi 3 Color (Dark)" =             {
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.5372549019607843";
+                "Red Component" = "0.7098039215686275";
+            };
+            "Ansi 3 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = 0;
+                "Color Space" = sRGB;
+                "Green Component" = "0.7695948481559753";
+                "Red Component" = "0.7805864810943604";
+            };
+            "Ansi 4 Color" =             {
+                "Blue Component" = "0.824";
+                "Green Component" = "0.545";
+                "Red Component" = "0.149";
+            };
+            "Ansi 4 Color (Dark)" =             {
+                "Blue Component" = "0.8235294117647058";
+                "Color Space" = sRGB;
+                "Green Component" = "0.5450980392156862";
+                "Red Component" = "0.1490196078431373";
+            };
+            "Ansi 4 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7821617722511292";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2647435665130615";
+                "Red Component" = "0.1540430039167404";
+            };
+            "Ansi 5 Color" =             {
+                "Blue Component" = "0.51";
+                "Green Component" = "0.212";
+                "Red Component" = "0.827";
+            };
+            "Ansi 5 Color (Dark)" =             {
+                "Blue Component" = "0.5098039215686274";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2117647058823529";
+                "Red Component" = "0.8274509803921568";
+            };
+            "Ansi 5 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7449436187744141";
+                "Color Space" = sRGB;
+                "Green Component" = "0.2493168413639069";
+                "Red Component" = "0.752197265625";
+            };
+            "Ansi 6 Color" =             {
+                "Blue Component" = "0.596";
+                "Green Component" = "0.631";
+                "Red Component" = "0.165";
+            };
+            "Ansi 6 Color (Dark)" =             {
+                "Blue Component" = "0.596078431372549";
+                "Color Space" = sRGB;
+                "Green Component" = "0.6313725490196078";
+                "Red Component" = "0.1647058823529412";
+            };
+            "Ansi 6 Color (Light)" =             {
+                "Alpha Component" = 1;
+                "Blue Component" = "0.7816620469093323";
+                "Color Spac

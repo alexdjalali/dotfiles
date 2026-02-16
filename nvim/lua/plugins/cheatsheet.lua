@@ -330,7 +330,7 @@ return {
           "  <leader>?l    Languages             Go & Python shortcuts",
           "  <leader>?w    Workflows             Step-by-step guides",
           "  <leader>?d    Data Infra            DB, Kafka, Redis tools",
-          "  <leader>?c    Cursor Agent          Cursor CLI agent keys",
+          "  <leader>?c    AI Agents             Claude, Cursor, Kilo keys",
           "",
           "  Press <Esc> or q to close this window",
           "",

@@ -150,6 +150,16 @@ backup_and_link "$DOTFILES/neomutt/.neomuttrc"  "$HOME/.neomuttrc"
 backup_and_link "$DOTFILES/neomutt/.neomutt"    "$HOME/.neomutt"
 backup_and_link "$DOTFILES/raycast"             "$HOME/.local/scripts/raycast"
 
+# Claude Code (individual files — ~/.claude/ also contains runtime data we don't track)
+backup_and_link "$DOTFILES/.claude/CLAUDE.md"           "$HOME/.claude/CLAUDE.md"
+backup_and_link "$DOTFILES/.claude/settings.json"       "$HOME/.claude/settings.json"
+backup_and_link "$DOTFILES/.claude/settings.local.json" "$HOME/.claude/settings.local.json"
+backup_and_link "$DOTFILES/.claude/commands"             "$HOME/.claude/commands"
+
+# Cursor (global rules and skills — ~/.cursor/ also contains runtime data we don't track)
+backup_and_link "$DOTFILES/cursor/rules"                "$HOME/.cursor/rules"
+backup_and_link "$DOTFILES/cursor/skills-cursor"        "$HOME/.cursor/skills-cursor"
+
 # ---------------------------------------------------------------------------
 # 7. fzf shell integration
 # ---------------------------------------------------------------------------
@@ -299,5 +309,12 @@ echo ""
 echo "  6. FONT: Set your terminal font to 'MesloLGS Nerd Font' in"
 echo "     iTerm > Settings > Profiles > Text > Font."
 echo ""
-echo "  7. Open a new shell to pick up all changes."
+echo "  7. CLAUDE CODE: Review ~/.claude/settings.local.json for"
+echo "     machine-specific permissions. Runtime data (sessions,"
+echo "     cache, history) stays in ~/.claude/ untracked."
+echo ""
+echo "  8. CURSOR: Global rules are symlinked to ~/.cursor/rules/."
+echo "     Project rules go in each repo's .cursor/rules/ dir."
+echo ""
+echo "  9. Open a new shell to pick up all changes."
 echo ""

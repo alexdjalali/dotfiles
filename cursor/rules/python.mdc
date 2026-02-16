@@ -1,0 +1,18 @@
+---
+description: "Python coding standards (3.14+)"
+globs: ["*.py"]
+alwaysApply: false
+---
+
+# Python Standards (3.14+)
+
+- Package manager: `uv` (never pip/poetry)
+- Lint + format: `ruff check` + `ruff format`
+- Type check: `basedpyright` (strict) or `mypy --strict`
+- Test: `pytest` with markers per layer (unit, integration, e2e)
+- Models: `@attrs.define(frozen=True, slots=True)` or frozen dataclasses
+- Async: `async def` + `await`; `asyncio.run()` only at boundaries
+- Imports: absolute only; no cross-package relative imports
+- Docstrings: Google style. Line length: 100.
+- No `print()` in production; use structured logging
+- No bare `except:`

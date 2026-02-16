@@ -20,3 +20,28 @@ neomutt/.neomutt/account.gatech
 neomutt/.neomutt/cache/
 neomutt/.neomutt/tmp/
 neomutt/.neomutt/certificates
+
+# Claude Code runtime (we only track CLAUDE.md, settings.json, settings.local.json, commands/)
+.claude/cache/
+.claude/debug/
+.claude/file-history/
+.claude/ide/
+.claude/paste-cache/
+.claude/plans/
+.claude/plugins/
+.claude/projects/
+.claude/session-env/
+.claude/sessions/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/tasks/
+.claude/telemetry/
+.claude/todos/
+.claude/homunculus/
+.claude/history.jsonl
+.claude/stats-cache.json
+
+# Cursor runtime (we only track rules/ and skills-cursor/)
+cursor/ai-tracking/
+cursor/extensions/
+cursor/projects/

@@ -121,21 +121,17 @@ return {
           "  <leader>xX    Buffer Diag       Current buffer only",
           "  <leader>xl    LSP References    Show references",
           "",
-          "  Claude Code (AI Assistant)",
-          "  ──────────────────────────",
-          "  <leader>ac    Claude Code       Launch Claude terminal",
-          "  <leader>af    Claude + File     Claude with file context",
-          "  <leader>aF    Claude Float      Claude in floating window",
-          "",
-          "  Claude Commands (inside claude)",
-          "  ───────────────────────────────",
-          "  /commit       Git Commit        Create commit with AI",
-          "  /review-pr    Review PR         Review pull request",
-          "  /plan         Plan Mode         Plan implementation",
-          "  /help         Help              Claude Code help",
-          "  /clear        Clear             Clear conversation",
-          "  /tasks        Task List         View task list",
-          "  Ctrl-c Ctrl-c Cancel            Cancel operation",
+          "  AI Assistants",
+          "  ─────────────",
+          "  <leader>aT    Claude Toggle     Launch Claude terminal",
+          "  <leader>af    Claude Focus      Focus Claude window",
+          "  <leader>ar    Claude Resume     Resume last conversation",
+          "  <leader>ab    Claude Buffer     Send current file",
+          "  <leader>as    Claude Send       Send selection (visual)",
+          "  <leader>Ct    Cursor Toggle     Open Cursor Agent",
+          "  <leader>Cf    Cursor Fix        Fix error at cursor",
+          "  <leader>Cs    Cursor Send       Send selection (visual)",
+          "  <leader>?c    Cursor Sheet      Full Cursor Agent cheatsheet",
           "",
           "  Visual Enhancements",
           "  ───────────────────",
@@ -163,11 +159,12 @@ return {
           "",
           "  Help Cheatsheets",
           "  ────────────────",
-          "  <leader>?     DevOps            This window (tools)",
+          "  <leader>?     DevOps tools      This window (you are here)",
           "  <leader>??    Vim essentials    Basic Neovim commands",
           "  <leader>?l    Languages         Go & Python shortcuts",
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
+          "  <leader>?c    Cursor Agent      Cursor CLI agent keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -329,6 +326,9 @@ return {
           "  <leader>?     DevOps tools          Productivity & tools",
           "  <leader>??    Vim essentials        This window (you are here)",
           "  <leader>?l    Languages             Go & Python shortcuts",
+          "  <leader>?w    Workflows             Step-by-step guides",
+          "  <leader>?d    Data Infra            DB, Kafka, Redis tools",
+          "  <leader>?c    Cursor Agent          Cursor CLI agent keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -507,7 +507,10 @@ return {
           "  ────────────────",
           "  <leader>?     DevOps tools      Productivity & tools",
           "  <leader>??    Vim essentials    Basic Neovim commands",
-          "  <leader>?l    This window       Language-specific (you are here)",
+          "  <leader>?l    Languages         This window (you are here)",
+          "  <leader>?w    Workflows         Step-by-step guides",
+          "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
+          "  <leader>?c    Cursor Agent      Cursor CLI agent keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -663,6 +666,15 @@ return {
           "  9. <leader>Lk        K9s → check pods/services",
           "  10. <leader>k        Kubectl → native K8s commands",
           "  11. <leader>gg       Commit infra changes",
+          "",
+          "  Help Cheatsheets",
+          "  ────────────────",
+          "  <leader>?     DevOps tools      Productivity & tools",
+          "  <leader>??    Vim essentials    Basic Neovim commands",
+          "  <leader>?l    Languages         Go & Python shortcuts",
+          "  <leader>?w    Workflows         This window (you are here)",
+          "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
+          "  <leader>?c    Cursor Agent      Cursor CLI agent keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -831,6 +843,15 @@ return {
           "  <leader>Lx    Pod Exec         Pick pod → floating shell",
           "  <leader>Lr    Restart          Pick workload → rollout restart",
           "",
+          "  Help Cheatsheets",
+          "  ────────────────",
+          "  <leader>?     DevOps tools      Productivity & tools",
+          "  <leader>??    Vim essentials    Basic Neovim commands",
+          "  <leader>?l    Languages         Go & Python shortcuts",
+          "  <leader>?w    Workflows         Step-by-step guides",
+          "  <leader>?d    Data Infra        This window (you are here)",
+          "  <leader>?c    Cursor Agent      Cursor CLI agent keys",
+          "",
           "  Press <Esc> or q to close this window",
           "",
         }
@@ -892,6 +913,128 @@ return {
         end, { buffer = buf, nowait = true })
       end
 
+      -- Create function for Cursor Agent cheatsheet
+      local function show_cursor_agent_cheatsheet()
+        local lines = {
+          "╭─────────────────────────────────────────────────────────╮",
+          "│           Cursor Agent (CLI) Commands                   │",
+          "╰─────────────────────────────────────────────────────────╯",
+          "",
+          "  Session Management",
+          "  ──────────────────",
+          "  <leader>Ct    Toggle            Open agent (or create session)",
+          "  <leader>Cc    Close             Close agent window",
+          "  <leader>Cr    Restart           Start a new session",
+          "  <leader>CR    Resume            Resume last session",
+          "  <leader>Cl    List Sessions     Show all sessions",
+          "",
+          "  Sending Context",
+          "  ───────────────",
+          "  <leader>Cs    Send Selection    Send visual selection (visual)",
+          "  <leader>Cf    Fix Error         Fix diagnostic at cursor",
+          "  <leader>CF    New + Fix Error   New session, fix error (normal)",
+          "  <leader>CF    New + Selection   New session, send sel (visual)",
+          "  <leader>Ce    Quick Edit        Edit prompt for selection (visual)",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Floating Window                         │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  The agent opens in a floating terminal (90% x 80%).",
+          "  Auto-enters insert mode. Use normal terminal keybinds",
+          "  inside the window (<C-\\><C-n> to exit insert).",
+          "",
+          "  References are sent as @file:start-end format.",
+          "  Paths are relative to the current working directory.",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Quick Edit (Experimental)               │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  1. Visual-select code you want to change",
+          "  2. <leader>Ce     Opens prompt popover",
+          "  3. Type your edit instruction",
+          "  4. Enter           Submit (Edit mode)",
+          "     Shift+Enter     Submit (Ask mode, no auto-apply)",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Claude Code (for comparison)            │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  <leader>aT    Toggle Claude     Launch Claude terminal",
+          "  <leader>af    Focus Claude      Focus existing window",
+          "  <leader>ar    Resume            Resume last conversation",
+          "  <leader>aC    Continue          Continue last conversation",
+          "  <leader>ab    Add Buffer        Send current file to Claude",
+          "  <leader>as    Send Selection    Send visual selection",
+          "  <leader>aa    Accept Diff       Accept Claude's diff",
+          "  <leader>ad    Deny Diff         Reject Claude's diff",
+          "",
+          "  Help Cheatsheets",
+          "  ────────────────",
+          "  <leader>?     DevOps tools      Productivity & tools",
+          "  <leader>??    Vim essentials    Basic Neovim commands",
+          "  <leader>?l    Languages         Go & Python shortcuts",
+          "  <leader>?w    Workflows         Step-by-step guides",
+          "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
+          "  <leader>?c    Cursor Agent      This window (you are here)",
+          "",
+          "  Press <Esc> or q to close this window",
+          "",
+        }
+
+        local buf = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+        vim.api.nvim_buf_set_option(buf, "modifiable", false)
+        vim.api.nvim_buf_set_option(buf, "filetype", "cheatsheet")
+
+        local width = 63
+        local height = math.min(#lines, vim.o.lines - 4)
+        local row = math.floor((vim.o.lines - height) / 2)
+        local col = math.floor((vim.o.columns - width) / 2)
+
+        local win = vim.api.nvim_open_win(buf, true, {
+          relative = "editor",
+          width = width,
+          height = height,
+          row = row,
+          col = col,
+          style = "minimal",
+          border = "rounded",
+        })
+
+        vim.api.nvim_win_set_option(win, "winblend", 0)
+        vim.api.nvim_win_set_option(win, "cursorline", false)
+
+        -- Highlights
+        vim.api.nvim_buf_add_highlight(buf, -1, "Title", 1, 0, -1)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Comment", 0, 0, -1)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Comment", 2, 0, -1)
+
+        for i, line in ipairs(lines) do
+          if line:match("^  ╭") or line:match("^  │") or line:match("^  ╰") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Function", i - 1, 0, -1)
+          end
+          if line:match("^  [%w%s%(%)]+$") and not line:match("^  ╭") and not line:match("^  The ") and not line:match("^  Auto") and not line:match("^  References") and not line:match("^  Paths") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Type", i - 1, 0, -1)
+          end
+          if line:match("^  <leader>") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+          if line:match("^  %d+%.") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 5, 22)
+          end
+        end
+
+        vim.keymap.set("n", "q", function()
+          vim.api.nvim_win_close(win, true)
+        end, { buffer = buf, nowait = true })
+
+        vim.keymap.set("n", "<Esc>", function()
+          vim.api.nvim_win_close(win, true)
+        end, { buffer = buf, nowait = true })
+      end
+
       -- Add keybinding to opts.mappings
       if not opts.mappings then opts.mappings = {} end
       if not opts.mappings.n then opts.mappings.n = {} end
@@ -919,6 +1062,11 @@ return {
       opts.mappings.n["<leader>?d"] = {
         show_data_infra_cheatsheet,
         desc = "Show data infrastructure tools",
+      }
+
+      opts.mappings.n["<leader>?c"] = {
+        show_cursor_agent_cheatsheet,
+        desc = "Show Cursor Agent cheatsheet",
       }
 
       return opts

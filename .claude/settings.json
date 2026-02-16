@@ -1,0 +1,141 @@
+{
+  "respectGitignore": false,
+  "cleanupPeriodDays": 7,
+  "env": {
+    "CLAUDE_CODE_ENABLE_TASKS": "true",
+    "CLAUDE_CODE_HIDE_ACCOUNT_INFO": "true",
+    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "true",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "false",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "true",
+    "ENABLE_TOOL_SEARCH": "true",
+    "ENABLE_LSP_TOOL": "true",
+    "DISABLE_AUTO_COMPACT": "false",
+    "DISABLE_COMPACT": "false",
+    "DISABLE_MICROCOMPACT": "false",
+    "DISABLE_AUTO_COMPACT_THRESHOLD": "80",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "true",
+    "DISABLE_INSTALLATION_CHECKS": "true",
+    "DISABLE_ERROR_REPORTING": "true",
+    "DISABLE_AUTOUPDATER": "true",
+    "DISABLE_TELEMETRY": "true"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Bash(basedpyright:*)",
+      "Bash(mypy:*)",
+      "Bash(pyright:*)",
+      "Bash(ruff:*)",
+      "Bash(pytest:*)",
+      "Bash(python:*)",
+      "Bash(uv:*)",
+      "Bash(go:*)",
+      "Bash(gofumpt:*)",
+      "Bash(goimports:*)",
+      "Bash(golangci-lint:*)",
+      "Bash(pnpm:*)",
+      "Bash(npx:*)",
+      "Bash(vitest:*)",
+      "Bash(tsc:*)",
+      "Bash(eslint:*)",
+      "Bash(prettier:*)",
+      "Bash(docker:*)",
+      "Bash(docker-compose:*)",
+      "Bash(kubectl:*)",
+      "Bash(helm:*)",
+      "Bash(kind:*)",
+      "Bash(stern:*)",
+      "Bash(terraform:*)",
+      "Bash(git:*)",
+      "Bash(gh:*)",
+      "Bash(make:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(fd:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "Bash(bat:*)",
+      "Bash(eza:*)",
+      "Bash(delta:*)",
+      "Bash(jq:*)",
+      "Bash(yq:*)",
+      "Bash(curl:*)",
+      "Bash(wc:*)",
+      "Bash(tree:*)",
+      "Edit",
+      "Glob",
+      "Grep",
+      "NotebookEdit",
+      "Read",
+      "TodoWrite",
+      "WebFetch",
+      "WebSearch",
+      "Write",
+      "mcp__*",
+      "LSP"
+    ],
+    "deny": []
+  },
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'CMD=\"$CLAUDE_TOOL_INPUT\"; if echo \"$CMD\" | grep -qE \"git\\s+push\\s+--force\\s+origin\\s+(main|master)\"; then echo \"BLOCKED: Never force-push to main/master\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"rm\\s+-rf\\s+/[^a-zA-Z]\"; then echo \"BLOCKED: Refusing rm -rf /\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+reset\\s+--hard\"; then echo \"BLOCKED: git reset --hard is destructive. Use with explicit confirmation.\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+checkout\\s+\\.\"; then echo \"BLOCKED: git checkout . discards all changes. Use with explicit confirmation.\" >&2; exit 2; fi; exit 0'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; case \"$FILE\" in *.py) ruff format --quiet \"$FILE\" 2>/dev/null ;; *.go) gofumpt -w \"$FILE\" 2>/dev/null ;; *.ts|*.tsx|*.js|*.jsx) prettier --write --log-level silent \"$FILE\" 2>/dev/null ;; esac; exit 0'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; WARNINGS=\"\"; case \"$FILE\" in *.py) if grep -n \"print(\" \"$FILE\" 2>/dev/null | grep -v \"#.*print\" | grep -v \"logging\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: print() found — use structured logging instead\"; fi; if grep -n \"except:\" \"$FILE\" 2>/dev/null | grep -v \"#\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: bare except: found — catch specific exceptions\"; fi ;; *.ts|*.tsx|*.js|*.jsx) if grep -n \"console\\.log\" \"$FILE\" 2>/dev/null | grep -v \"//.*console\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: console.log found — remove before committing\"; fi; if grep -n \": any\" \"$FILE\" 2>/dev/null | grep -v \"//\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: any type found — use unknown + type guards\"; fi ;; esac; if [ -n \"$WARNINGS\" ]; then echo -e \"$WARNINGS\"; fi; exit 0'",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  },
+  "outputStyle": "default",
+  "spinnerTipsEnabled": false,
+  "alwaysThinkingEnabled": true,
+  "prefersReducedMotion": true,
+  "mcpServers": {
+    "github": {
+      "type": "url",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    }
+  },
+  "showTurnDuration": false
+}

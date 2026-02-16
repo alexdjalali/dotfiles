@@ -77,3 +77,5 @@
 	manyFiles = true
 [color]
 	ui = true
+[gc]
+	auto = 256

@@ -1,4 +1,4 @@
--- Claude Code native IDE integration
+-- Claude Code native IDE integration (floating terminal)
 ---@type LazySpec
 return {
   {
@@ -8,16 +8,21 @@ return {
       terminal_cmd = vim.env.HOME .. "/.local/bin/claude",
       env = { CLAUDECODE = "" },
       terminal = {
-        split_side = "right",
-        split_width_percentage = 0.40,
+        snacks_win_opts = {
+          position = "float",
+          width = 0.9,
+          height = 0.9,
+          border = "rounded",
+        },
       },
     },
     keys = {
       { "<leader>a", nil, desc = "AI/Claude Code" },
-      { "<leader>aT", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude (native)" },
+      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
       { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
       { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
       { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+      { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select model" },
       { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
       { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
       {

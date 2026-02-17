@@ -137,5 +137,6 @@
       ]
     }
   },
-  "showTurnDuration": false
+  "showTurnDuration": false,
+  "model": "sonnet"
 }

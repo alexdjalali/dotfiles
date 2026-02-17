@@ -41,12 +41,20 @@ return {
       -- ╰─────────────────────────────────────────────────────────╯
       -- mypy - Static type checker (complementary to basedpyright)
       b.diagnostics.mypy.with({
+        command = function()
+          local venv_mypy = vim.fn.getcwd() .. "/.venv/bin/mypy"
+          if vim.fn.executable(venv_mypy) == 1 then
+            return venv_mypy
+          end
+          return "mypy"
+        end,
         extra_args = function()
           local venv = vim.fn.getcwd() .. "/.venv"
+          local args = { "--no-incremental" }
           if vim.fn.isdirectory(venv) == 1 then
-            return { "--python-executable", venv .. "/bin/python" }
+            vim.list_extend(args, { "--python-executable", venv .. "/bin/python" })
           end
-          return {}
+          return args
         end,
       }),
       -- ruff - Fast linter and formatter (from none-ls-extras)

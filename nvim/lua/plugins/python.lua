@@ -60,22 +60,9 @@ return {
     },
     ft = "python",
     opts = {
-      name = { "venv", ".venv", "env", ".env" },
-      auto_refresh = true,
-      search_venv_managers = true,
-      search_workspace = true,
-      search = true,
-      parents = 2,
-      -- Notify on venv change
-      notify_user_on_venv_activation = true,
-      -- Search paths
-      anaconda_base_path = vim.fn.expand("~/anaconda3"),
-      anaconda_envs_path = vim.fn.expand("~/anaconda3/envs"),
-      poetry_path = vim.fn.expand("~/.cache/pypoetry/virtualenvs"),
-      pipenv_path = vim.fn.expand("~/.local/share/virtualenvs"),
-      -- Also search for uv managed venvs
-      search_dirs = {
-        vim.fn.expand("~/.local/share/uv/python"),
+      options = {
+        notify_user_on_venv_activation = true,
+        enable_default_searches = true,
       },
     },
     keys = {

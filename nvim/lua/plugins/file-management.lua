@@ -8,7 +8,17 @@ return {
         filtered_items = {
           visible = true,
           hide_dotfiles = false,
-          hide_gitignored = false,
+          hide_gitignored = true, -- exclude gitignored dirs (node_modules, .venv, etc.) from tree + fuzzy filter
+          never_show = { ".git", "__pycache__", ".venv", "node_modules", ".mypy_cache", ".ruff_cache" },
+        },
+        window = {
+          -- fuzzy_finder_mappings must live under filesystem.window, not filesystem
+          fuzzy_finder_mappings = {
+            ["<down>"] = "move_cursor_down",
+            ["<C-n>"] = "move_cursor_down",
+            ["<up>"] = "move_cursor_up",
+            ["<C-p>"] = "move_cursor_up",
+          },
         },
       },
     },

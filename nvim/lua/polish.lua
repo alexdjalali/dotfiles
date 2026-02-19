@@ -1,6 +1,16 @@
 -- Disable swap files
 vim.opt.swapfile = false
 
+-- Workaround: Neovim 0.11 TermRequest bug — OSC 133 prompt handler calls
+-- nvim_buf_set_extmark with out-of-range line when scrollback is trimmed.
+-- Remove the specific autocommand until upstream fix lands.
+for _, ac in ipairs(vim.api.nvim_get_autocmds({ event = "TermRequest" })) do
+  if ac.desc and ac.desc:match("OSC 133") then
+    vim.api.nvim_del_autocmd(ac.id)
+    break
+  end
+end
+
 -- Focus window on mouse hover (skip floating windows like Telescope, popups, etc.)
 vim.opt.mousemoveevent = true
 vim.keymap.set("n", "<MouseMove>", function()

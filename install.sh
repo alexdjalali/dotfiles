@@ -77,7 +77,7 @@ fi
 # ---------------------------------------------------------------------------
 
 info "Installing packages from Brewfile..."
-brew bundle --file="$DOTFILES/Brewfile" --no-lock
+brew bundle --file="$DOTFILES/Brewfile"
 ok "Homebrew packages installed"
 
 # ---------------------------------------------------------------------------
@@ -153,7 +153,14 @@ backup_and_link "$DOTFILES/raycast"             "$HOME/.local/scripts/raycast"
 # Claude Code (individual files — ~/.claude/ also contains runtime data we don't track)
 backup_and_link "$DOTFILES/.claude/CLAUDE.md"           "$HOME/.claude/CLAUDE.md"
 backup_and_link "$DOTFILES/.claude/settings.json"       "$HOME/.claude/settings.json"
-backup_and_link "$DOTFILES/.claude/settings.local.json" "$HOME/.claude/settings.local.json"
+# settings.local.json is machine-specific (not tracked in git) — scaffold if missing
+if [ ! -f "$HOME/.claude/settings.local.json" ]; then
+    mkdir -p "$HOME/.claude"
+    printf '{\n  "permissions": {\n    "allow": []\n  }\n}\n' > "$HOME/.claude/settings.local.json"
+    ok "Scaffolded ~/.claude/settings.local.json — edit to add local permissions"
+else
+    ok "~/.claude/settings.local.json already exists"
+fi
 backup_and_link "$DOTFILES/.claude/commands"             "$HOME/.claude/commands"
 
 # Cursor (global rules and skills — ~/.cursor/ also contains runtime data we don't track)

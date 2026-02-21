@@ -7,6 +7,7 @@ return {
     opts = {
       notifier = { enabled = false },
       image = { enabled = false },
+      input = { enabled = true },
     },
   },
 

@@ -1,3 +1,7 @@
+---
+model: opus
+---
+
 # Code Review
 
 Analyze uncommitted and staged changes with language-aware checks, automated tooling, and a structured report.

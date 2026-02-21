@@ -206,28 +206,24 @@ TaskCreate: "Task 4: Add documentation"            → id=4, addBlockedBy: [2]
 **For EVERY task, follow this exact sequence:**
 
 1. **READ PLAN'S IMPLEMENTATION STEPS** - List all files to create/modify/delete
-2. **Perform Call Chain Analysis:**
-   - **Trace Upwards (Callers):** Identify what calls the code you're modifying
-   - **Trace Downwards (Callees):** Identify what the modified code calls
-   - **Side Effects:** Check for database, cache, external system impacts
-3. **Mark task as `in_progress`** - `TaskUpdate(taskId="<id>", status="in_progress")`
-4. **Execute TDD Flow (RED → GREEN → REFACTOR):**
-   - Write failing test first, **verify it fails**
-   - Implement minimal code to pass
-   - Refactor if needed (keep tests green)
-5. **Verify tests pass** - Run the project's test runner (e.g., `uv run pytest -q`, `bun test`, `npm test`)
-6. **Run actual program** - Use the plan's Runtime Environment section to start the service/program. Show real output with sample data.
-7. **Check diagnostics** - Must be zero errors
-8. **Validate Definition of Done** - Check all criteria from plan
-9. **Per-task commit (worktree mode only)** - If `Worktree: Yes` in the plan, commit task changes immediately:
+2. **Mark task as `in_progress`** - `TaskUpdate(taskId="<id>", status="in_progress")`
+3. **Delegate to /tdd for the TDD cycle:**
+   ```
+   Skill(skill='tdd', args='--task <N> --plan <plan-path>')
+   ```
+   The `/tdd` skill handles: call chain analysis, RED → GREEN → REFACTOR, property-based testing (when applicable), and test verification. It reads the task context directly from the plan file.
+4. **Run actual program** - Use the plan's Runtime Environment section to start the service/program. Show real output with sample data.
+5. **Check diagnostics** - Must be zero errors
+6. **Validate Definition of Done** - Check all criteria from plan
+7. **Per-task commit (worktree mode only)** - If `Worktree: Yes` in the plan, commit task changes immediately:
    ```bash
    git add <task-specific-files>  # Stage only files related to this task
    git commit -m "{type}(spec): {task-name}"
    ```
    Use `feat(spec):` for new features, `fix(spec):` for bug fixes, `test(spec):` for test-only tasks, `refactor(spec):` for refactoring. Skip this step when `Worktree: No` (normal git rules apply).
-10. **Mark task as `completed`** - `TaskUpdate(taskId="<id>", status="completed")`
-11. **UPDATE PLAN FILE IMMEDIATELY** (see Step 2.4)
-12. **Check context usage** - Run `~/.pilot/bin/pilot check-context --json`
+8. **Mark task as `completed`** - `TaskUpdate(taskId="<id>", status="completed")`
+9. **UPDATE PLAN FILE IMMEDIATELY** (see Step 2.4)
+10. **Check context usage** - Run `~/.pilot/bin/pilot check-context --json`
 
 **⚠️ NEVER SKIP TASKS:**
 

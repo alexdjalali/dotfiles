@@ -1,11 +1,36 @@
+---
+model: sonnet
+---
+
 # TDD Cycle
 
-Focused red-green-refactor cycle for a single feature or function.
+Focused red-green-refactor cycle for a single feature or function. Used standalone or delegated to by `spec-implement` for each plan task.
 
 ## Arguments
-$ARGUMENTS — Description of the feature, function, or behavior to implement via TDD.
+$ARGUMENTS — One of:
+- Feature/behavior description (standalone mode)
+- `--task <N> --plan <path>` (pipeline mode, invoked by spec-implement)
 
 ## Instructions
+
+### 0. Determine Mode
+
+```
+IF $ARGUMENTS contains "--task" AND "--plan":
+    → Pipeline mode: extract task context from plan, skip quality gate
+    Parse: task number and plan path
+
+ELSE:
+    → Standalone mode: full cycle with quality gate and checklist
+```
+
+**Pipeline mode context gathering:**
+1. Read the plan file at `<path>`
+2. Find the task section matching `Task <N>`
+3. Extract: objective, files (create/modify/test), key decisions, DoD criteria
+4. Use these to guide what tests to write and what code to implement
+
+---
 
 ### 1. Detect Language & Test Framework
 
@@ -14,9 +39,19 @@ Check project configuration to determine:
 - **Go**: Look for `go.mod` → use `go test` with table-driven tests
 - **TypeScript**: Look for `package.json` (vitest/jest config) → use `vitest`
 
-### 2. RED — Write Failing Test First
+### 2. Call Chain Analysis (pipeline mode) / Scope Analysis (standalone)
 
-Based on `$ARGUMENTS`, write a test that:
+Before writing any code, understand the impact:
+
+1. **Trace Upwards (Callers):** Identify what calls the code you're modifying
+2. **Trace Downwards (Callees):** Identify what the modified code calls
+3. **Side Effects:** Check for database, cache, external system impacts
+
+In standalone mode, read the relevant source files to understand the interface boundaries.
+
+### 3. RED — Write Failing Test First
+
+Based on task context (pipeline) or `$ARGUMENTS` (standalone), write a test that:
 - Tests the **behavior**, not the implementation
 - Has a descriptive name that reads as a specification
 - Covers the primary success case
@@ -71,7 +106,7 @@ describe('functionName', () => {
 
 Run the test — confirm it **FAILS** with a clear error (not a syntax/import error).
 
-### 3. GREEN — Minimal Implementation
+### 4. GREEN — Minimal Implementation
 
 Write the **simplest code** that makes the test pass:
 - No optimization
@@ -81,7 +116,7 @@ Write the **simplest code** that makes the test pass:
 
 Run the test — confirm it **PASSES**.
 
-### 4. REFACTOR — Improve Without Changing Behavior
+### 5. REFACTOR — Improve Without Changing Behavior
 
 Now clean up:
 - Extract duplicated logic
@@ -91,7 +126,7 @@ Now clean up:
 
 Run the test again — confirm it still **PASSES**.
 
-### 5. Property-Based Testing (when applicable)
+### 6. Property-Based Testing (when applicable)
 
 If the function has well-defined input/output invariants, add property-based tests:
 
@@ -127,13 +162,26 @@ Good candidates for property-based tests:
 - Parser/formatter pairs
 - Mathematical properties (associativity, identity elements)
 
-### 6. Expand (if needed)
+### 7. Expand (if needed)
 
-If `$ARGUMENTS` implies additional cases:
+If the task (pipeline) or `$ARGUMENTS` (standalone) implies additional cases:
 - Add another failing test (back to RED)
 - Repeat the cycle
 
-### 7. Quality Gate
+### 8. Verify Tests Pass
+
+Run the project's test runner on all tests for the affected module:
+- `uv run pytest <test_files> -q`
+- `go test <packages> -count=1`
+- `npx vitest run <test_files>`
+
+**In pipeline mode:** Also check diagnostics (lint, type check) — must be zero errors.
+
+---
+
+### 9. Quality Gate (standalone mode only)
+
+**⚠️ Skip this step in pipeline mode.** When called from spec-implement, quality gates are handled by spec-verify.
 
 After all cycles are complete, run the full quality suite on the changed files:
 - Format check
@@ -143,7 +191,9 @@ After all cycles are complete, run the full quality suite on the changed files:
 
 Report results and any remaining issues.
 
-### 8. Completion Checklist
+### 10. Completion Checklist (standalone mode only)
+
+**⚠️ Skip this step in pipeline mode.** When called from spec-implement, the plan's DoD criteria and spec-verify handle completion tracking.
 
 #### Coding Patterns (verify where appropriate)
 
@@ -170,6 +220,28 @@ Report results and any remaining issues.
 - [ ] Public API documentation on new/changed classes, methods, and functions
 - [ ] Inline comments for non-obvious logic only
 - [ ] Type annotations on all public APIs
+
+### 11. Pipeline: Next Step (standalone mode only)
+
+**⚠️ Skip this step in pipeline mode.** Control returns to spec-implement automatically.
+
+After the TDD cycle completes, suggest the next step:
+
+Use AskUserQuestion:
+
+```
+question: "TDD cycle complete. What's next?"
+header: "Pipeline"
+options:
+  - "/preflight — Run quality gates" - Format, lint, type check, and test before committing
+  - "/review — Code review" - Review the changes before committing
+  - "Done — Commit manually" - No further automated steps
+```
+
+Based on the user's choice, invoke the corresponding skill:
+- `/preflight`: `Skill(skill='preflight')`
+- `/review`: `Skill(skill='review')`
+- Done: End the workflow
 
 ## Rules
 - NEVER write implementation before a failing test

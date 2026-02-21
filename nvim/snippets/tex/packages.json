@@ -1,0 +1,253 @@
+{
+  "Article Document": {
+    "prefix": "article",
+    "body": [
+      "\\documentclass[${1:12pt, a4paper}]{article}",
+      "",
+      "% Typography & Layout",
+      "\\usepackage[utf8]{inputenc}",
+      "\\usepackage[T1]{fontenc}",
+      "\\usepackage{microtype}",
+      "\\usepackage[margin=${2:1in}]{geometry}",
+      "",
+      "% Math",
+      "\\usepackage{amsmath, amssymb, amsthm}",
+      "",
+      "% Graphics & Figures",
+      "\\usepackage{graphicx}",
+      "\\usepackage[dvipsnames]{xcolor}",
+      "\\usepackage{tikz}",
+      "\\usepackage{pgfplots}",
+      "\\pgfplotsset{compat=newest}",
+      "",
+      "% Tables",
+      "\\usepackage{booktabs}",
+      "\\usepackage{siunitx}",
+      "",
+      "% References & Links",
+      "\\usepackage{hyperref}",
+      "\\usepackage{cleveref}",
+      "",
+      "% Bibliography",
+      "\\usepackage[style=${3:numeric}, backend=biber]{biblatex}",
+      "\\addbibresource{${4:references}.bib}",
+      "",
+      "\\title{${5:Title}}",
+      "\\author{${6:Author}}",
+      "\\date{\\today}",
+      "",
+      "\\begin{document}",
+      "\\maketitle",
+      "",
+      "$0",
+      "",
+      "\\printbibliography",
+      "\\end{document}"
+    ],
+    "description": "Full article with recommended packages"
+  },
+  "Booktabs Table": {
+    "prefix": "btable",
+    "body": [
+      "\\begin{table}[${1:htbp}]",
+      "  \\centering",
+      "  \\caption{${2:Caption}}",
+      "  \\label{tab:${3:label}}",
+      "  \\begin{tabular}{${4:lcc}}",
+      "    \\toprule",
+      "    ${5:Header 1} & ${6:Header 2} & ${7:Header 3} \\\\\\\\",
+      "    \\midrule",
+      "    $0 \\\\\\\\",
+      "    \\bottomrule",
+      "  \\end{tabular}",
+      "\\end{table}"
+    ],
+    "description": "Professional table with booktabs"
+  },
+  "SI Unit": {
+    "prefix": "si",
+    "body": ["\\SI{${1:value}}{${2:unit}}"],
+    "description": "siunitx SI unit"
+  },
+  "SI Number": {
+    "prefix": "num",
+    "body": ["\\num{${1:value}}"],
+    "description": "siunitx formatted number"
+  },
+  "SI Range": {
+    "prefix": "sirange",
+    "body": ["\\SIrange{${1:low}}{${2:high}}{${3:unit}}"],
+    "description": "siunitx range with units"
+  },
+  "Clever Reference": {
+    "prefix": "cref",
+    "body": ["\\cref{${1:label}}"],
+    "description": "cleveref auto-named reference"
+  },
+  "Clever Reference Range": {
+    "prefix": "crefrange",
+    "body": ["\\crefrange{${1:label1}}{${2:label2}}"],
+    "description": "cleveref range reference"
+  },
+  "Glossary Entry": {
+    "prefix": "glsentry",
+    "body": [
+      "\\newglossaryentry{${1:label}}{",
+      "  name={${2:Name}},",
+      "  description={${3:Description}}",
+      "}"
+    ],
+    "description": "glossaries-extra entry"
+  },
+  "Acronym Entry": {
+    "prefix": "acronym",
+    "body": [
+      "\\newacronym{${1:label}}{${2:ABBR}}{${3:Full Name}}"
+    ],
+    "description": "glossaries-extra acronym"
+  },
+  "Minted Code Block": {
+    "prefix": "minted",
+    "body": [
+      "\\begin{minted}[${1:linenos, frame=lines}]{${2:python}}",
+      "$0",
+      "\\end{minted}"
+    ],
+    "description": "minted syntax-highlighted code block"
+  },
+  "Inline Minted": {
+    "prefix": "mintinline",
+    "body": ["\\mintinline{${1:python}}{${2:code}}"],
+    "description": "minted inline code"
+  },
+  "Hyperref Link": {
+    "prefix": "href",
+    "body": ["\\href{${1:url}}{${2:text}}"],
+    "description": "hyperref URL link"
+  },
+  "Algorithm": {
+    "prefix": "algo",
+    "body": [
+      "\\begin{algorithm}[${1:H}]",
+      "  \\SetAlgoLined",
+      "  \\caption{${2:Algorithm Name}}",
+      "  \\label{alg:${3:label}}",
+      "  \\KwIn{${4:Input}}",
+      "  \\KwOut{${5:Output}}",
+      "  $0",
+      "\\end{algorithm}"
+    ],
+    "description": "algorithm2e algorithm"
+  },
+  "Todo Note": {
+    "prefix": "todo",
+    "body": ["\\todo[${1:inline}]{${2:note}}"],
+    "description": "todonotes todo note"
+  },
+  "Subfigures": {
+    "prefix": "subfig",
+    "body": [
+      "\\begin{figure}[${1:htbp}]",
+      "  \\centering",
+      "  \\begin{subfigure}[b]{${2:0.45}\\textwidth}",
+      "    \\centering",
+      "    \\includegraphics[width=\\textwidth]{${3:img1}}",
+      "    \\caption{${4:Sub caption 1}}",
+      "    \\label{fig:${5:sub1}}",
+      "  \\end{subfigure}",
+      "  \\hfill",
+      "  \\begin{subfigure}[b]{${6:0.45}\\textwidth}",
+      "    \\centering",
+      "    \\includegraphics[width=\\textwidth]{${7:img2}}",
+      "    \\caption{${8:Sub caption 2}}",
+      "    \\label{fig:${9:sub2}}",
+      "  \\end{subfigure}",
+      "  \\caption{${10:Overall caption}}",
+      "  \\label{fig:${11:label}}",
+      "\\end{figure}"
+    ],
+    "description": "Two subfigures side by side"
+  },
+  "Figure": {
+    "prefix": "fig",
+    "body": [
+      "\\begin{figure}[${1:htbp}]",
+      "  \\centering",
+      "  \\includegraphics[width=${2:0.8}\\textwidth]{${3:image}}",
+      "  \\caption{${4:Caption}}",
+      "  \\label{fig:${5:label}}",
+      "\\end{figure}"
+    ],
+    "description": "Figure with caption and label"
+  },
+  "Adjustbox": {
+    "prefix": "adjbox",
+    "body": [
+      "\\begin{adjustbox}{${1:max width=\\textwidth}}",
+      "  $0",
+      "\\end{adjustbox}"
+    ],
+    "description": "adjustbox scaled container"
+  },
+  "Equation": {
+    "prefix": "eq",
+    "body": [
+      "\\begin{equation}",
+      "  \\label{eq:${1:label}}",
+      "  $0",
+      "\\end{equation}"
+    ],
+    "description": "Labeled equation"
+  },
+  "Align": {
+    "prefix": "align",
+    "body": [
+      "\\begin{align}",
+      "  $0",
+      "\\end{align}"
+    ],
+    "description": "amsmath align environment"
+  },
+  "Theorem": {
+    "prefix": "thm",
+    "body": [
+      "\\begin{theorem}[${1:Name}]",
+      "  \\label{thm:${2:label}}",
+      "  $0",
+      "\\end{theorem}"
+    ],
+    "description": "Theorem environment"
+  },
+  "Proof": {
+    "prefix": "proof",
+    "body": [
+      "\\begin{proof}",
+      "  $0",
+      "\\end{proof}"
+    ],
+    "description": "Proof environment"
+  },
+  "Listings Code": {
+    "prefix": "listing",
+    "body": [
+      "\\begin{lstlisting}[language=${1:Python}, caption={${2:Caption}}, label={lst:${3:label}}]",
+      "$0",
+      "\\end{lstlisting}"
+    ],
+    "description": "listings code block"
+  },
+  "Geometry Setup": {
+    "prefix": "geom",
+    "body": [
+      "\\usepackage[${1:margin=1in, top=1.25in, bottom=1.25in}]{geometry}"
+    ],
+    "description": "geometry page layout"
+  },
+  "Microtype Setup": {
+    "prefix": "micro",
+    "body": [
+      "\\usepackage[${1:protrusion=true, expansion=true}]{microtype}"
+    ],
+    "description": "microtype typographic refinement"
+  }
+}

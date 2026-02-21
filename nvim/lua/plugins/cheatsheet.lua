@@ -138,6 +138,7 @@ return {
           "  <leader>Kt    Kilo Toggle       Open Kilo AI (float)",
           "  <leader>Kr    Kilo New          New Kilo session",
           "  <leader>?c    AI Agents Sheet   Full AI agents cheatsheet",
+          "  <leader>?t    LaTeX Sheet       TeX editing & compilation",
           "",
           "  Visual Enhancements",
           "  ───────────────────",
@@ -171,6 +172,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -335,6 +337,7 @@ return {
           "  <leader>?w    Workflows             Step-by-step guides",
           "  <leader>?d    Data Infra            DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents             All 5 AI tool keys",
+          "  <leader>?t    LaTeX                 TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -517,6 +520,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -681,6 +685,7 @@ return {
           "  <leader>?w    Workflows         This window (you are here)",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -857,6 +862,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        This window (you are here)",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -1018,6 +1024,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         This window (you are here)",
+          "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -1078,6 +1085,226 @@ return {
         end, { buffer = buf, nowait = true })
       end
 
+      -- Create function for LaTeX cheatsheet
+      local function show_latex_cheatsheet()
+        local lines = {
+          "╭─────────────────────────────────────────────────────────╮",
+          "│              LaTeX Editing & Compilation                │",
+          "╰─────────────────────────────────────────────────────────╯",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               VimTeX (Compilation & Viewing)          │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  \\ll             Compile          Start/stop continuous build",
+          "  \\lv             View PDF         Forward search to Skim",
+          "  \\lt             TOC              Table of contents sidebar",
+          "  \\le             Errors           View errors/warnings",
+          "  \\lc             Clean            Remove auxiliary files",
+          "  \\lC             Full clean       Remove aux + output files",
+          "  \\lk             Stop             Kill compilation",
+          "  \\lg             Status           Show compilation status",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Text Objects & Motions                  │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  vie / vae       Select env       \\begin{}...\\end{} (in/around)",
+          "  dse / cse       Del/Change env   Surrounding environment",
+          "  tse             Toggle starred    equation ↔ equation*",
+          "  vic / vac       Select cmd        \\command{...} (in/around)",
+          "  dsc / csc       Del/Change cmd   Surrounding command",
+          "  tsc             Toggle starred    \\section ↔ \\section*",
+          "  vid / vad       Select delim      \\left(..\\right) pair",
+          "  dsd / tsd       Del/Toggle delim  \\left( ↔ (",
+          "  ]] / [[         Next/prev section Jump \\section{}",
+          "  ]m / [m         Next/prev env     Jump environments",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               texlab LSP + Skim SyncTeX               │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  gd              Definition        Label/citation definition",
+          "  gr              References        All \\ref/\\cite uses",
+          "  K               Hover             Preview citation/label",
+          "  <leader>la      Code actions      Fix warnings, add imports",
+          "  <leader>lr      Rename            Rename label across files",
+          "  Ctrl-Space      Complete          Labels, cites, commands",
+          "  \\lv             Forward search    Neovim → Skim PDF position",
+          "  Cmd-Shift-Click Inverse search    Skim PDF → Neovim line",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               TikZ & PGFPlots Snippets                │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  tikzpic         \\begin{tikzpicture}...\\end{tikzpicture}",
+          "  tikznode         \\node[opts] (name) at (x,y) {label};",
+          "  tikzdraw         \\draw[opts] (a) -- (b);",
+          "  tikzarrow        \\draw[->] (start) -- (end);",
+          "  tikzflow         Flowchart template (block+decision styles)",
+          "  tikzcd           Commutative diagram (tikz-cd)",
+          "  tikzfor          \\foreach loop",
+          "  tikzscope        Scoped transformations",
+          "  tikzgrid         Coordinate grid",
+          "  tikzaxes         X/Y coordinate axes",
+          "  tikzplot         Function plot (\\draw plot)",
+          "  pgfaxis          pgfplots \\begin{axis}",
+          "  pgffunc          \\addplot function curve",
+          "  pgfbar           Bar chart",
+          "  pgffig           Complete figure with axis + caption",
+          "",
+          "  TikZ Externalization (speeds up rebuilds):",
+          "  \\usetikzlibrary{external}",
+          "  \\tikzexternalize  % cache figures as separate PDFs",
+          "  Requires: -shell-escape (already configured)",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Beamer Snippets                         │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  beamerdoc        Full presentation scaffold",
+          "  frame            \\begin{frame}{Title}",
+          "  framesub         Frame with subtitle",
+          "  framefrag        Fragile frame (for code)",
+          "  frametikz        Frame with centered TikZ picture",
+          "  framefig         Frame with figure",
+          "  columns          Two-column layout",
+          "  block            \\begin{block}",
+          "  alertblock       \\begin{alertblock} (red)",
+          "  exblock          \\begin{exampleblock} (green)",
+          "  bitem / benum    Itemize/enumerate with \\pause reveal",
+          "  pause            \\pause (incremental reveal)",
+          "  only / uncover   Show on specific slides <2->",
+          "  bsec             Section + first frame",
+          "",
+          "  Themes: Madrid, Berlin, Boadilla, CambridgeUS",
+          "  Colors: default, crane, dolphin, seahorse, wolverine",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Package Snippets (Top 10)               │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  article          Full document with all recommended pkgs",
+          "  btable           Professional table (booktabs)",
+          "  si / num         SI units/numbers (siunitx)",
+          "  cref             Smart reference (cleveref)",
+          "  fig / subfig     Figure / side-by-side subfigures",
+          "  adjbox           Scaled container (adjustbox)",
+          "  minted           Syntax-highlighted code block",
+          "  algo             Algorithm pseudocode (algorithm2e)",
+          "  todo             Todo note (todonotes)",
+          "  glsentry         Glossary entry (glossaries-extra)",
+          "  acronym          Acronym definition",
+          "  eq / align       Equation / aligned equations (amsmath)",
+          "  listing          Code listing (listings)",
+          "  href             Hyperlink (hyperref)",
+          "  micro            Typographic refinement (microtype)",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Build Optimization                      │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  Configured in ~/.latexmkrc:",
+          "  - Biber/BibTeX runs only when .bib changes",
+          "  - Glossary compilation (makeglossaries)",
+          "  - Shell-escape enabled (minted, TikZ external)",
+          "  - SyncTeX + Skim preview auto-configured",
+          "",
+          "  Speed tips:",
+          "  - TikZ externalize: cache figures as PDFs",
+          "  - Draft mode: \\documentclass[draft]{article}",
+          "  - Precompiled preamble: mylatexformat.ltx",
+          "",
+          "  Citations & Bibliography:",
+          "  BibTeX:    \\bibliography{refs} + \\bibliographystyle{}",
+          "  Biblatex:  \\addbibresource{refs.bib} (preferred)",
+          "  latexmk auto-detects bibtex vs biber",
+          "",
+          "  Help Cheatsheets",
+          "  ────────────────",
+          "  <leader>?     DevOps tools      Productivity & tools",
+          "  <leader>??    Vim essentials    Basic Neovim commands",
+          "  <leader>?l    Languages         Go & Python shortcuts",
+          "  <leader>?w    Workflows         Step-by-step guides",
+          "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
+          "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?t    LaTeX             This window (you are here)",
+          "",
+          "  Press <Esc> or q to close this window",
+          "",
+        }
+
+        local buf = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+        vim.api.nvim_buf_set_option(buf, "modifiable", false)
+        vim.api.nvim_buf_set_option(buf, "filetype", "cheatsheet")
+
+        local width = 63
+        local height = math.min(#lines, vim.o.lines - 4)
+        local row = math.floor((vim.o.lines - height) / 2)
+        local col = math.floor((vim.o.columns - width) / 2)
+
+        local win = vim.api.nvim_open_win(buf, true, {
+          relative = "editor",
+          width = width,
+          height = height,
+          row = row,
+          col = col,
+          style = "minimal",
+          border = "rounded",
+        })
+
+        vim.api.nvim_win_set_option(win, "winblend", 0)
+        vim.api.nvim_win_set_option(win, "cursorline", false)
+
+        -- Highlights
+        vim.api.nvim_buf_add_highlight(buf, -1, "Title", 1, 0, -1)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Comment", 0, 0, -1)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Comment", 2, 0, -1)
+
+        for i, line in ipairs(lines) do
+          if line:match("^  ╭") or line:match("^  │") or line:match("^  ╰") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Function", i - 1, 0, -1)
+          end
+          -- VimTeX keybindings (backslash commands)
+          if line:match("^  \\%a") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+          -- Text object keybindings
+          if line:match("^  [vdct][iase][eScdm]") or line:match("^  %]") or line:match("^  %[") or line:match("^  Cmd%-") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+          -- LSP keybindings
+          if line:match("^  gd") or line:match("^  gr") or line:match("^  K ") or line:match("^  <leader>") or line:match("^  Ctrl%-") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+          -- Snippet prefixes (tikz*, pgf*, frame*, block*, etc.)
+          if line:match("^  tikz%w") or line:match("^  pgf%w") or line:match("^  beamerdoc") or line:match("^  frame%w?%s") or line:match("^  columns%s") or line:match("^  block%s") or line:match("^  alertblock") or line:match("^  exblock") or line:match("^  bitem") or line:match("^  benum") or line:match("^  pause%s") or line:match("^  only%s") or line:match("^  bsec%s") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+          -- Package snippet prefixes
+          if line:match("^  article%s") or line:match("^  btable%s") or line:match("^  si ") or line:match("^  cref%s") or line:match("^  fig ") or line:match("^  adjbox%s") or line:match("^  minted%s") or line:match("^  algo%s") or line:match("^  todo%s") or line:match("^  glsentry%s") or line:match("^  acronym%s") or line:match("^  eq ") or line:match("^  listing%s") or line:match("^  href%s") or line:match("^  micro%s") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+          -- Label lines (BibTeX:, Biblatex:, Configured, Speed, etc.)
+          if line:match("^  BibTeX:") or line:match("^  Biblatex:") or line:match("^  Configured") or line:match("^  Speed") or line:match("^  Citations") or line:match("^  Themes:") or line:match("^  Colors:") or line:match("^  Requires:") or line:match("^  Draft") or line:match("^  Precompiled") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Keyword", i - 1, 2, -1)
+          end
+          -- TikZ Externalization label
+          if line:match("^  TikZ Externalization") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Type", i - 1, 0, -1)
+          end
+        end
+
+        vim.keymap.set("n", "q", function()
+          vim.api.nvim_win_close(win, true)
+        end, { buffer = buf, nowait = true })
+
+        vim.keymap.set("n", "<Esc>", function()
+          vim.api.nvim_win_close(win, true)
+        end, { buffer = buf, nowait = true })
+      end
+
       -- Add keybinding to opts.mappings
       if not opts.mappings then opts.mappings = {} end
       if not opts.mappings.n then opts.mappings.n = {} end
@@ -1110,6 +1337,11 @@ return {
       opts.mappings.n["<leader>?c"] = {
         show_cursor_agent_cheatsheet,
         desc = "Show AI Agents cheatsheet",
+      }
+
+      opts.mappings.n["<leader>?t"] = {
+        show_latex_cheatsheet,
+        desc = "Show LaTeX cheatsheet",
       }
 
       return opts

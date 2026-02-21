@@ -63,6 +63,28 @@ return {
       ansiblels = {
         filetypes = { "yaml.ansible", "ansible" },
       },
+      texlab = {
+        settings = {
+          texlab = {
+            build = {
+              executable = "latexmk",
+              args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "-shell-escape", "%f" },
+              onSave = true,
+              forwardSearchAfter = true,
+            },
+            forwardSearch = {
+              executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
+              args = { "-g", "%l", "%p", "%f" },
+            },
+            chktex = {
+              onOpenAndSave = true, -- lint on open and save
+            },
+            latexindent = {
+              modifyLineBreaks = true,
+            },
+          },
+        },
+      },
     },
     -- customize how language servers are attached
     handlers = {

@@ -1,0 +1,190 @@
+{
+  "TikZ Picture": {
+    "prefix": "tikzpic",
+    "body": [
+      "\\begin{tikzpicture}[${1:options}]",
+      "  $0",
+      "\\end{tikzpicture}"
+    ],
+    "description": "TikZ picture environment"
+  },
+  "TikZ Node": {
+    "prefix": "tikznode",
+    "body": [
+      "\\node[${1:options}] (${2:name}) at (${3:0,0}) {${4:label}};"
+    ],
+    "description": "TikZ node"
+  },
+  "TikZ Draw": {
+    "prefix": "tikzdraw",
+    "body": [
+      "\\draw[${1:options}] (${2:0,0}) ${3:--} (${4:1,1});"
+    ],
+    "description": "TikZ draw command"
+  },
+  "TikZ Arrow": {
+    "prefix": "tikzarrow",
+    "body": [
+      "\\draw[->, ${1:thick}] (${2:start}) -- (${3:end});"
+    ],
+    "description": "TikZ arrow"
+  },
+  "TikZ Fill": {
+    "prefix": "tikzfill",
+    "body": [
+      "\\fill[${1:color}] (${2:0,0}) ${3:rectangle} (${4:1,1});"
+    ],
+    "description": "TikZ filled shape"
+  },
+  "TikZ Circle": {
+    "prefix": "tikzcirc",
+    "body": [
+      "\\draw[${1:options}] (${2:0,0}) circle (${3:1cm});"
+    ],
+    "description": "TikZ circle"
+  },
+  "TikZ Foreach": {
+    "prefix": "tikzfor",
+    "body": [
+      "\\foreach \\${1:x} in {${2:1,...,5}} {",
+      "  $0",
+      "}"
+    ],
+    "description": "TikZ foreach loop"
+  },
+  "TikZ Scope": {
+    "prefix": "tikzscope",
+    "body": [
+      "\\begin{scope}[${1:options}]",
+      "  $0",
+      "\\end{scope}"
+    ],
+    "description": "TikZ scope environment"
+  },
+  "TikZ Grid": {
+    "prefix": "tikzgrid",
+    "body": [
+      "\\draw[step=${1:1cm}, ${2:gray, very thin}] (${3:0,0}) grid (${4:5,5});"
+    ],
+    "description": "TikZ grid"
+  },
+  "TikZ Axes": {
+    "prefix": "tikzaxes",
+    "body": [
+      "\\draw[->] (${1:-0.5},0) -- (${2:5},0) node[right] {$${3:x}$};",
+      "\\draw[->] (0,${4:-0.5}) -- (0,${5:5}) node[above] {$${6:y}$};"
+    ],
+    "description": "TikZ coordinate axes"
+  },
+  "TikZ Plot Function": {
+    "prefix": "tikzplot",
+    "body": [
+      "\\draw[${1:domain=0:4, smooth, variable=\\x, blue}] plot ({\\x}, {${2:\\x*\\x}});"
+    ],
+    "description": "TikZ function plot"
+  },
+  "TikZ Path": {
+    "prefix": "tikzpath",
+    "body": [
+      "\\path[${1:draw}] (${2:0,0}) ${3:-- (1,1) -- (2,0)} -- cycle;"
+    ],
+    "description": "TikZ path (closed shape)"
+  },
+  "TikZ Matrix of Nodes": {
+    "prefix": "tikzmatrix",
+    "body": [
+      "\\matrix[matrix of nodes, column sep=${1:1cm}, row sep=${2:1cm}] {",
+      "  ${3:A} & ${4:B} \\\\\\\\",
+      "  ${5:C} & ${6:D} \\\\\\\\",
+      "};"
+    ],
+    "description": "TikZ matrix of nodes"
+  },
+  "TikZ Flowchart Styles": {
+    "prefix": "tikzflow",
+    "body": [
+      "\\begin{tikzpicture}[",
+      "  block/.style={rectangle, draw, minimum height=${1:2em}, minimum width=${2:5em}, align=center},",
+      "  decision/.style={diamond, draw, minimum height=${3:2em}, aspect=2, align=center},",
+      "  arrow/.style={->, thick},",
+      "]",
+      "  \\node[block] (${4:start}) {${5:Start}};",
+      "  \\node[block, below=of $4] (${6:process}) {${7:Process}};",
+      "  \\draw[arrow] ($4) -- ($6);",
+      "  $0",
+      "\\end{tikzpicture}"
+    ],
+    "description": "TikZ flowchart template with styles"
+  },
+  "TikZ Commutative Diagram": {
+    "prefix": "tikzcd",
+    "body": [
+      "\\begin{tikzcd}",
+      "  ${1:A} \\arrow[r, \"${2:f}\"] \\arrow[d, \"${3:g}\"'] & ${4:B} \\arrow[d, \"${5:h}\"] \\\\\\\\",
+      "  ${6:C} \\arrow[r, \"${7:k}\"'] & ${8:D}",
+      "\\end{tikzcd}"
+    ],
+    "description": "TikZ commutative diagram (tikz-cd)"
+  },
+  "PGFPlots Axis": {
+    "prefix": "pgfaxis",
+    "body": [
+      "\\begin{axis}[",
+      "  xlabel={${1:x}},",
+      "  ylabel={${2:y}},",
+      "  ${3:grid=major},",
+      "]",
+      "  \\addplot[${4:blue, mark=*}] coordinates {",
+      "    $0",
+      "  };",
+      "\\end{axis}"
+    ],
+    "description": "pgfplots axis environment"
+  },
+  "PGFPlots Function": {
+    "prefix": "pgffunc",
+    "body": [
+      "\\addplot[${1:domain=-5:5, samples=100, smooth, thick, blue}] {${2:x^2}};"
+    ],
+    "description": "pgfplots function plot"
+  },
+  "PGFPlots Bar Chart": {
+    "prefix": "pgfbar",
+    "body": [
+      "\\begin{axis}[",
+      "  ybar,",
+      "  xlabel={${1:Category}},",
+      "  ylabel={${2:Value}},",
+      "  symbolic x coords={${3:A, B, C, D}},",
+      "  xtick=data,",
+      "]",
+      "  \\addplot coordinates {${4:(A,10) (B,20) (C,15) (D,25)}};",
+      "  $0",
+      "\\end{axis}"
+    ],
+    "description": "pgfplots bar chart"
+  },
+  "PGFPlots Figure": {
+    "prefix": "pgffig",
+    "body": [
+      "\\begin{figure}[${1:htbp}]",
+      "  \\centering",
+      "  \\begin{tikzpicture}",
+      "    \\begin{axis}[",
+      "      xlabel={${2:x}},",
+      "      ylabel={${3:y}},",
+      "      grid=major,",
+      "      legend pos=${4:north west},",
+      "    ]",
+      "      \\addplot[${5:blue, thick}] {${6:x^2}};",
+      "      \\legend{${7:\\$x^2\\$}}",
+      "      $0",
+      "    \\end{axis}",
+      "  \\end{tikzpicture}",
+      "  \\caption{${8:Caption}}",
+      "  \\label{fig:${9:label}}",
+      "\\end{figure}"
+    ],
+    "description": "Complete pgfplots figure with caption and label"
+  }
+}

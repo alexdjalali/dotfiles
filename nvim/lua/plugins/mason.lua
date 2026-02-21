@@ -48,6 +48,10 @@ return {
         -- Markdown
         "markdownlint",
         "marksman", -- Markdown LSP
+
+        -- LaTeX
+        "texlab", -- LaTeX LSP (completion, diagnostics, build, forward search)
+        "latexindent", -- LaTeX formatter
       },
       auto_update = true,
       run_on_start = true,

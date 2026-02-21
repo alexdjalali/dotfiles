@@ -55,16 +55,3 @@ ZSH_HIGHLIGHT_STYLES[bracket-level-3]=fg=#cba6f7,bold
 ZSH_HIGHLIGHT_STYLES[bracket-level-4]=fg=#f9e2af,bold
 ZSH_HIGHLIGHT_STYLES[bracket-level-5]=fg=#89b4fa,bold
 ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]=standout
-
-# Global alias expansion
-globalias() {
-   if [[ $LBUFFER =~ '[a-zA-Z0-9]+$' ]]; then
-       zle _expand_alias
-       zle expand-word
-   fi
-   zle self-insert
-}
-zle -N globalias
-bindkey " " globalias
-bindkey "^[[Z" magic-space
-bindkey -M isearch " " magic-space

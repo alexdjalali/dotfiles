@@ -1,4 +1,4 @@
-# External tool initialization (direnv, atuin, mise, delta)
+# External tool initialization (direnv, atuin, mise, nvm)
 
 # Direnv - load directory-specific env (install: brew install direnv)
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)"
@@ -9,11 +9,13 @@
 # Mise - universal version manager (install: brew install mise)
 (( $+commands[mise] )) && eval "$(mise activate zsh)"
 
-# Delta - beautiful git diffs (install: brew install delta)
-(( $+commands[delta] )) && export GIT_PAGER='delta'
-
-# Custom aliases file (optional)
-[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+# Lazy load nvm (saves ~200ms startup time; use function, not alias, for proper arg forwarding)
+export NVM_DIR="$HOME/.nvm"
+nvm() {
+  unfunction nvm
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  nvm "$@"
+}
 
 # Fastfetch splash on new terminal (skip inside tmux panes to avoid noise)
 if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -z "$FASTFETCH_SHOWN" ]] && (( $+commands[fastfetch] )); then

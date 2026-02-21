@@ -1,4 +1,5 @@
 # Completion configuration and fzf-tab
+# Note: fpath additions and compinit are handled in .zshrc before OMZ loads
 
 # Completion tweaks (compinit already run by Oh My Zsh)
 zstyle ':completion:*' menu select
@@ -24,21 +25,22 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=34=31'
 zstyle ':completion:*:*:kill:*' menu yes select
 
 # fzf-tab configuration
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
-zstyle ':fzf-tab:complete:ls:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
-zstyle ':fzf-tab:complete:cat:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
-zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
-zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
-zstyle ':fzf-tab:*' fzf-flags --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 --color=border:#6c7086
-zstyle ':fzf-tab:*' switch-group '<' '>'
+# Disable fzf-tab in Warp — its built-in completion overlay conflicts
+if [[ "$TERM_PROGRAM" == "WarpTerminal" ]]; then
+  zstyle ':fzf-tab:*' fzf-command ''
+else
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
+  zstyle ':fzf-tab:complete:ls:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
+  zstyle ':fzf-tab:complete:cat:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
+  zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
+  zstyle ':fzf-tab:complete:vim:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || cat $realpath'
+  zstyle ':fzf-tab:*' fzf-flags --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 --color=border:#6c7086
+  zstyle ':fzf-tab:*' switch-group '<' '>'
+fi
 
-# GitHub CLI completions (cached to avoid fork on every shell start)
-if (( $+commands[gh] )); then
-  if [[ ! -f ~/.zsh_completions/_gh || ~/.zsh_completions/_gh -ot $(whence -p gh) ]]; then
-    mkdir -p ~/.zsh_completions
-    gh completion -s zsh > ~/.zsh_completions/_gh
-  fi
-  fpath=(~/.zsh_completions $fpath)
+# Zoxide fzf-tab preview (same as cd; skipped in Warp along with fzf-tab above)
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
+  zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
 fi
 
 # Makefile target completion
@@ -49,3 +51,16 @@ _make_targets() {
   fi
 }
 compdef _make_targets make
+
+# Global alias expansion (expand aliases on space)
+globalias() {
+   if [[ $LBUFFER =~ '[a-zA-Z0-9]+$' ]]; then
+       zle _expand_alias
+       zle expand-word
+   fi
+   zle self-insert
+}
+zle -N globalias
+bindkey " " globalias
+bindkey "^[[Z" magic-space
+bindkey -M isearch " " magic-space

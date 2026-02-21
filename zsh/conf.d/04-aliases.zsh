@@ -114,7 +114,6 @@ alias ns='pnpm start'
 # Python
 alias venv='python3 -m venv venv && source venv/bin/activate'
 alias py='python3'
-alias pip='pip3'
 
 # Neovim
 alias nvimrc="nvim ~/.config/nvim/init.lua"
@@ -204,8 +203,7 @@ alias api='open -a "Insomnia"'           # Insomnia (default API client)
 alias lg='lazygit'                       # LazyGit (default git GUI)
 alias linear='open -a "Linear"'          # Linear (project management)
 
-# Notes
-alias notes='nvim ~/notes/$(date +%Y-%m-%d).md'
+# Notes (note defined in Neovim section above)
 alias dev-docs='glow ~/.local/docs/dev-environment.md'
 alias raycast-scripts='open ~/.local/scripts/raycast'
 
@@ -214,6 +212,11 @@ alias gh-search='search-github'
 alias so='search-so'
 alias godoc='search-go'
 alias pydoc='search-pypi'
+
+# Open repo in browser (ghub pulls, ghub issues, ghub actions)
+alias ghub-pr='ghub pulls'
+alias ghub-issues='ghub issues'
+alias ghub-actions='ghub actions'
 
 # Git check all projects
 alias gca='git-check-all'

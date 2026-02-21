@@ -1,4 +1,11 @@
 # iTerm2-specific configuration (badges, tab colors, titles, profiles)
+# Skip entirely if not running inside iTerm2
+[[ -z "$ITERM_SESSION_ID" ]] && return 0
+
+# iTerm2 shell integration
+if [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]]; then
+  source "${HOME}/.iterm2_shell_integration.zsh"
+fi
 
 # iTerm2 badge with current directory and git branch
 # (lazy-cache tool versions on first prompt, not at shell startup)
@@ -41,15 +48,28 @@ function set_tab_color_by_dir() {
   esac
 }
 
-# Run on every directory change
-chpwd_functions+=(set_tab_color_by_dir)
+# Auto-switch iTerm2 profile based on directory
+function iterm_profile_switch() {
+  case "$PWD" in
+    */production*|*/prod*)
+      echo -e "\033]50;SetProfile=Production\a" 2>/dev/null
+      ;;
+    */staging*|*/stage*|*/stg*)
+      echo -e "\033]50;SetProfile=Staging\a" 2>/dev/null
+      ;;
+    */development*|*/dev*)
+      echo -e "\033]50;SetProfile=Development\a" 2>/dev/null
+      ;;
+    *)
+      echo -e "\033]50;SetProfile=Default\a" 2>/dev/null
+      ;;
+  esac
+}
+
+chpwd_functions+=(set_tab_color_by_dir iterm_profile_switch)
 
 # iTerm2 marks for quick navigation
 alias mark="iterm2_set_user_var mark"
-
-# Split pane shortcuts (requires iTerm2 shell integration)
-alias vsplit="echo 'Use Cmd+D for vertical split'"
-alias hsplit="echo 'Use Cmd+Shift+D for horizontal split'"
 
 # Clear scrollback buffer
 alias clear-all="clear && printf '\e[3J'"
@@ -76,6 +96,17 @@ function _iterm_title_precmd() {
 
 preexec_functions+=(_iterm_title_preexec)
 precmd_functions+=(_iterm_title_precmd)
+
+# Override dark/light (defined in 05-functions.zsh) to also switch iTerm profile
+dark() {
+  iterm-profile 'Dark'
+  osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
+}
+
+light() {
+  iterm-profile 'Light'
+  osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
+}
 
 # Send notification when long nvim sessions end
 alias nvim-notify='nvim; echo -e "\a"; osascript -e "display notification \"Nvim session ended\" with title \"iTerm2\""'

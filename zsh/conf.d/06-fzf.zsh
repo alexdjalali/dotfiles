@@ -1,6 +1,11 @@
 # FZF configuration and fzf-powered functions
+# Note: fzf keybindings/completions are loaded via `fzf --zsh` below.
+# The OMZ fzf plugin is NOT used (removed to avoid double-init).
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Load fzf keybindings and completions (single source of truth)
+if (( $+commands[fzf] )); then
+  source <(fzf --zsh)
+fi
 
 # Enhanced FZF settings with Catppuccin Mocha theme
 export FZF_DEFAULT_OPTS="
@@ -15,8 +20,7 @@ export FZF_DEFAULT_OPTS="
   --prompt '  ' --pointer '' --marker ''"
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git 2>/dev/null || find .'
 
-# Use fzf for history search
-bindkey '^R' fzf-history-widget
+# Note: ^R is handled by atuin (09-tools.zsh), not fzf-history-widget
 
 # FZF file opener
 fopen() {

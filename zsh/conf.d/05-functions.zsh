@@ -1,7 +1,7 @@
 # Shell functions (docker, git, k8s, nvim, workflow, utilities)
 
 # Unalias any conflicting aliases before defining functions
-unalias dstop drm dprune dexec dlogs gcb gac gbdel kexec kpf v ve vrg vr vs vl vw proj tn ta dark light vf vg 2>/dev/null
+unalias dstop drm dprune dexec dlogs gcb gac gbdel kexec kpf v ve vrg vr vs vl vw proj tn ta vf vg 2>/dev/null
 
 # Create directory and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -82,7 +82,7 @@ extract() {
 backup() { cp "$1" "$1.bak.$(date +%Y%m%d-%H%M%S)"; }
 
 # Show PATH in readable format
-path() { echo $PATH | tr ':' '\n'; }
+showpath() { echo $PATH | tr ':' '\n'; }
 
 # --- Neovim Functions ---
 
@@ -156,6 +156,9 @@ nvim-backup() {
 nvim-restore() {
   local backup=$(fd -t d . ~/.config/nvim-backups 2>/dev/null | fzf)
   if [[ -n "$backup" ]]; then
+    echo "This will replace ~/.config/nvim/ with: $backup"
+    read "reply?Continue? (y/N) "
+    [[ $reply =~ ^[Yy]$ ]] || return 0
     rm -rf ~/.config/nvim/*
     cp -r "$backup"/* ~/.config/nvim/
     echo "Restored from: $backup"
@@ -202,15 +205,13 @@ ta() {
 vf() { nvim -c "Telescope find_files"; }
 vg() { nvim -c "Telescope live_grep"; }
 
-# Switch to dark mode (iTerm + system)
+# Switch to dark mode (system-wide; iTerm profile switch added in 08-iterm.zsh)
 dark() {
-  iterm-profile 'Dark'
   osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
 }
 
 # Switch to light mode
 light() {
-  iterm-profile 'Light'
   osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
 }
 
@@ -220,25 +221,14 @@ search-so() { open "https://stackoverflow.com/search?q=$(echo "$*" | sed 's/ /+/
 search-go() { open "https://pkg.go.dev/search?q=$(echo "$*" | sed 's/ /+/g')"; }
 search-pypi() { open "https://pypi.org/search/?q=$(echo "$*" | sed 's/ /+/g')"; }
 
-# Quick open in browser
+# Open current repo (or subpage) in browser
 ghub() {
   local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
-  [ -n "$url" ] && open "$url" || echo "Not a git repo or no origin"
-}
-
-ghub-pr() {
-  local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
-  [ -n "$url" ] && open "$url/pulls" || echo "Not a git repo"
-}
-
-ghub-issues() {
-  local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
-  [ -n "$url" ] && open "$url/issues" || echo "Not a git repo"
-}
-
-ghub-actions() {
-  local url=$(git remote get-url origin 2>/dev/null | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
-  [ -n "$url" ] && open "$url/actions" || echo "Not a git repo"
+  if [[ -z "$url" ]]; then
+    echo "Not a git repo or no origin"
+    return 1
+  fi
+  open "$url${1:+/$1}"
 }
 
 # Combined dev opener - open project with all tools

@@ -10,6 +10,9 @@ export LC_ALL=en_US.UTF-8
 # Editor
 export EDITOR="nvim"
 
+# GPG — tell gpg-agent which TTY to use for passphrase prompts
+export GPG_TTY=$(tty)
+
 # Go
 export GOPATH="$HOME/go"
 
@@ -28,6 +31,9 @@ path=(
   $path
 )
 typeset -U path  # deduplicate
+
+# Man pages (user-local)
+export MANPATH="$HOME/local/share/man:$MANPATH"
 
 # Catppuccin Mocha theme for bat
 export BAT_THEME="Catppuccin Mocha"
@@ -49,39 +55,3 @@ gx=38;5;150:\
 tr=38;5;110:\
 tw=38;5;204:\
 tx=38;5;150:"
-
-# iTerm2 integration
-if [ -e "${HOME}/.iterm2_shell_integration.zsh" ]; then
-  source "${HOME}/.iterm2_shell_integration.zsh"
-fi
-
-# Powerlevel10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# Terminal environment detection
-detect_terminal() {
-  local env=""
-  [[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && env+="ssh "
-  [[ -n "$TMUX" ]] && env+="tmux "
-  [[ -n "$ITERM_SESSION_ID" ]] && env+="iterm "
-  [[ -z "$env" ]] && env="plain "
-  echo "${env% }"  # trim trailing space
-}
-
-# Export flags for use in conditionals
-export TERM_IS_SSH=$([[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && echo 1 || echo 0)
-export TERM_IS_TMUX=$([[ -n "$TMUX" ]] && echo 1 || echo 0)
-export TERM_IS_ITERM=$([[ -n "$ITERM_SESSION_ID" ]] && echo 1 || echo 0)
-
-# Visual SSH indicator
-if [[ "$TERM_IS_SSH" == "1" ]]; then
-  export SSH_INDICATOR="[remote] "
-fi
-
-# Lazy load nvm (saves ~200ms startup time; use function, not alias, for proper arg forwarding)
-export NVM_DIR="$HOME/.nvm"
-nvm() {
-  unfunction nvm
-  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-  nvm "$@"
-}

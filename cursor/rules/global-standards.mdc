@@ -28,10 +28,21 @@ Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`golangci-lint`, TS=`
 ## Templates
 
 Use the templates at `~/.claude/templates/` for document generation:
+- **ADR**: `~/.claude/templates/adr.md`
 - **Epic Spec**: `~/.claude/templates/epic.md`
 - **Story/RFP**: `~/.claude/templates/story.md`
 - **Plan**: `~/.claude/templates/plan.md`
-- **ADR**: `~/.claude/templates/adr.md`
+- **Commit Message**: `~/.claude/templates/commit.md`
+- **Pull Request**: `~/.claude/templates/pr.md`
+- **Monorepo Scaffold**: `~/.claude/templates/repo.md`
+
+## Monorepo Standard
+
+New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):
+- Layered architecture: Foundation → Client → Service/Domain → Controller/API → Entrypoint
+- Infrastructure in `zarf/` (Docker, K8s, Terraform, observability)
+- Spec pipeline in `docs/adr/` + `docs/spec/{arch,epics,stories,plans}`
+- Language conventions: Go=`pkg/`+`apps/`, Python=`src/`+`entrypoints/`, TS=`packages/`+`apps/`
 
 ## Quality Gates (before every commit)
 

@@ -48,17 +48,32 @@ Read the actual diffs (`git diff` and `git diff --cached`) and check for:
 - [ ] Import cycles or circular dependencies
 - [ ] Tests cover the changed behavior
 
+**DRY & Pattern Analysis**:
+- [ ] Duplicated logic — similar code blocks across changed files (extract to shared function)
+- [ ] Pattern consistency — does new code follow existing project patterns?
+- [ ] Missed abstractions — 3+ similar lines that could be a function or type
+- [ ] Copy-paste drift — near-identical code with subtle variations (source of bugs)
+- [ ] Reuse opportunities — does the codebase already have a util/helper for this?
+
+**Functional Style & Mutation Checks**:
+- [ ] Unnecessary mutation — prefer immutable data, transform over mutate
+- [ ] Side effects in pure logic — separate I/O from computation
+- [ ] Deep nesting → use early returns, guard clauses, or `map`/`filter`/`reduce`
+- [ ] Mutable shared state across goroutines/async tasks
+
 **Python-Specific**:
 - [ ] `print()` instead of structured logging
 - [ ] Bare `except:` clauses
 - [ ] Missing type annotations on public functions
 - [ ] Relative imports across packages
+- [ ] Mutable default arguments (`def f(x=[])`)
 
 **Go-Specific**:
 - [ ] Unchecked errors
 - [ ] `fmt.Println` in production code
 - [ ] Missing `defer` for cleanup
 - [ ] `interface{}` without type assertion
+- [ ] Exported functions missing doc comments
 
 **TypeScript-Specific**:
 - [ ] `any` type usage

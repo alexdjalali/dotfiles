@@ -91,13 +91,49 @@ Now clean up:
 
 Run the test again — confirm it still **PASSES**.
 
-### 5. Expand (if needed)
+### 5. Property-Based Testing (when applicable)
+
+If the function has well-defined input/output invariants, add property-based tests:
+
+**Python (hypothesis)**:
+```python
+from hypothesis import given, strategies as st
+
+@given(st.lists(st.integers()))
+def test_sort_preserves_length(xs):
+    assert len(sorted(xs)) == len(xs)
+
+@given(st.lists(st.integers()))
+def test_sort_is_idempotent(xs):
+    assert sorted(sorted(xs)) == sorted(xs)
+```
+
+**Go (rapid)**:
+```go
+func TestSortPreservesLength(t *testing.T) {
+    rapid.Check(t, func(t *rapid.T) {
+        xs := rapid.SliceOf(rapid.Int()).Draw(t, "xs")
+        got := Sort(xs)
+        if len(got) != len(xs) {
+            t.Fatalf("length changed: %d → %d", len(xs), len(got))
+        }
+    })
+}
+```
+
+Good candidates for property-based tests:
+- Pure functions with clear invariants (idempotency, commutativity, roundtrips)
+- Serialization/deserialization roundtrips
+- Parser/formatter pairs
+- Mathematical properties (associativity, identity elements)
+
+### 6. Expand (if needed)
 
 If `$ARGUMENTS` implies additional cases:
 - Add another failing test (back to RED)
 - Repeat the cycle
 
-### 6. Quality Gate
+### 7. Quality Gate
 
 After all cycles are complete, run the full quality suite on the changed files:
 - Format check

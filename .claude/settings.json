@@ -135,6 +135,55 @@
         "-y",
         "@upstash/context7-mcp"
       ]
+    },
+    "mongodb": {
+      "command": "npx",
+      "args": ["-y", "mongodb-mcp-server"],
+      "env": {
+        "MDB_MCP_CONNECTION_STRING": "mongodb://localhost:27017"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://hpc:changeme@localhost:5432/hpc_auth"
+      }
+    },
+    "redis": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-redis", "redis://localhost:6379"]
+    },
+    "elasticsearch": {
+      "command": "npx",
+      "args": ["-y", "@elastic/mcp-server-elasticsearch"],
+      "env": {
+        "ES_URL": "http://localhost:9200"
+      }
+    },
+    "neo4j": {
+      "command": "/Users/adjalali3/.local/bin/neo4j-mcp",
+      "env": {
+        "NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USERNAME": "neo4j",
+        "NEO4J_PASSWORD": "changeme",
+        "NEO4J_DATABASE": "neo4j"
+      }
+    },
+    "s3": {
+      "command": "npx",
+      "args": ["-y", "aws-s3-mcp", "--stdio"],
+      "env": {
+        "AWS_ACCESS_KEY_ID": "minioadmin",
+        "AWS_SECRET_ACCESS_KEY": "minioadmin",
+        "AWS_REGION": "us-east-1",
+        "AWS_ENDPOINT_URL": "http://localhost:9000",
+        "S3_FORCE_PATH_STYLE": "true"
+      }
+    },
+    "kubernetes": {
+      "command": "npx",
+      "args": ["-y", "kubernetes-mcp-server@latest", "--stdio"]
     }
   },
   "showTurnDuration": false

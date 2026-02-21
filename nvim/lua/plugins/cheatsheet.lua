@@ -128,9 +128,13 @@ return {
           "  <leader>ar    Claude Resume     Resume last conversation",
           "  <leader>ab    Claude Buffer     Send current file",
           "  <leader>as    Claude Send       Send selection (visual)",
+          "  <leader>Aa    Avante Ask        Sidebar AI chat",
+          "  <leader>At    Avante Toggle     Toggle Avante sidebar",
+          "  <leader>Ae    Avante Edit       Edit selection (visual)",
+          "  Alt-f (ins)   Copilot           Accept ghost text",
+          "  <leader>it    Copilot           Toggle inline completions",
           "  <leader>Ct    Cursor Toggle     Open Cursor Agent (float)",
           "  <leader>Cf    Cursor Fix        Fix error at cursor",
-          "  <leader>Cs    Cursor Send       Send selection (visual)",
           "  <leader>Kt    Kilo Toggle       Open Kilo AI (float)",
           "  <leader>Kr    Kilo New          New Kilo session",
           "  <leader>?c    AI Agents Sheet   Full AI agents cheatsheet",
@@ -166,7 +170,7 @@ return {
           "  <leader>?l    Languages         Go & Python shortcuts",
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
-          "  <leader>?c    AI Agents         Claude, Cursor, Kilo keys",
+          "  <leader>?c    AI Agents         All 5 AI tool keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -211,7 +215,7 @@ return {
           if line:match("^  %w") and not line:match("^  <leader>") then
             vim.api.nvim_buf_add_highlight(buf, -1, "Function", i - 1, 0, -1)
           end
-          if line:match("^  <leader>") or line:match("^  <S%-") or line:match("^  <C%-") or line:match("^  F%d") then
+          if line:match("^  <leader>") or line:match("^  <S%-") or line:match("^  <C%-") or line:match("^  F%d") or line:match("^  Alt%-") then
             vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 16)
           end
         end
@@ -330,7 +334,7 @@ return {
           "  <leader>?l    Languages             Go & Python shortcuts",
           "  <leader>?w    Workflows             Step-by-step guides",
           "  <leader>?d    Data Infra            DB, Kafka, Redis tools",
-          "  <leader>?c    AI Agents             Claude, Cursor, Kilo keys",
+          "  <leader>?c    AI Agents             All 5 AI tool keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -512,7 +516,7 @@ return {
           "  <leader>?l    Languages         This window (you are here)",
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
-          "  <leader>?c    AI Agents         Claude, Cursor, Kilo keys",
+          "  <leader>?c    AI Agents         All 5 AI tool keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -676,7 +680,7 @@ return {
           "  <leader>?l    Languages         Go & Python shortcuts",
           "  <leader>?w    Workflows         This window (you are here)",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
-          "  <leader>?c    AI Agents         Claude, Cursor, Kilo keys",
+          "  <leader>?c    AI Agents         All 5 AI tool keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -852,7 +856,7 @@ return {
           "  <leader>?l    Languages         Go & Python shortcuts",
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        This window (you are here)",
-          "  <leader>?c    AI Agents         Claude, Cursor, Kilo keys",
+          "  <leader>?c    AI Agents         All 5 AI tool keys",
           "",
           "  Press <Esc> or q to close this window",
           "",
@@ -915,11 +919,11 @@ return {
         end, { buffer = buf, nowait = true })
       end
 
-      -- Create function for AI Agents cheatsheet (Claude, Cursor, Kilo)
+      -- Create function for AI Agents cheatsheet (Claude, Cursor, Kilo, NeoCodeium, Avante)
       local function show_cursor_agent_cheatsheet()
         local lines = {
           "╭─────────────────────────────────────────────────────────╮",
-          "│           AI Coding Agents                              │",
+          "│           AI Coding Agents & Assistants                  │",
           "╰─────────────────────────────────────────────────────────╯",
           "",
           "  ╭───────────────────────────────────────────────────────╮",
@@ -935,6 +939,38 @@ return {
           "  <leader>as    Send Selection    Send visual selection",
           "  <leader>aa    Accept Diff       Accept Claude's diff",
           "  <leader>ad    Deny Diff         Reject Claude's diff",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Avante.nvim (Sidebar AI)                │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  <leader>Aa    Ask               Open sidebar + prompt",
+          "  <leader>Ae    Edit              Edit selection (visual)",
+          "  <leader>At    Toggle            Toggle sidebar",
+          "  <leader>Af    Focus             Focus sidebar window",
+          "  <leader>An    New Chat          Clear / new conversation",
+          "  <leader>Ar    Refresh           Refresh response",
+          "  <leader>As    Stop              Stop generation",
+          "  <leader>Am    Repo Map          Show repo map",
+          "  <leader>Ap    Switch Provider   Change AI provider",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               GitHub Copilot (Inline Ghost Text)      │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  Insert Mode (Alt-based):",
+          "  Alt-f           Accept full      Accept entire suggestion",
+          "  Alt-w           Accept word      Accept next word",
+          "  Alt-a           Accept line      Accept current line",
+          "  Alt-e           Next suggestion  Cycle to next",
+          "  Alt-r           Prev suggestion  Cycle to previous",
+          "  Alt-c           Dismiss          Dismiss suggestion",
+          "",
+          "  Normal Mode (<leader>i):",
+          "  <leader>it    Toggle            Toggle auto-trigger",
+          "  <leader>id    Disable           Disable globally",
+          "  <leader>ie    Enable            Enable globally",
+          "  <leader>is    Status            Show Copilot status",
           "",
           "  ╭───────────────────────────────────────────────────────╮",
           "  │               Cursor Agent (CLI)                      │",
@@ -962,15 +998,17 @@ return {
           "  @general        Invoke subagent  Complex searches",
           "",
           "  ╭───────────────────────────────────────────────────────╮",
-          "  │               All Three Agents                        │",
+          "  │               Summary (All 5 Tools)                   │",
           "  ╰───────────────────────────────────────────────────────╯",
           "",
-          "  All open in floating terminals. Use <C-\\><C-n> to",
-          "  exit terminal insert mode. Toggle key hides/shows.",
+          "  Terminal agents use <C-\\><C-n> to exit insert mode.",
+          "  Toggle key hides/shows the floating terminal.",
           "",
-          "  Claude    Full IDE integration (diffs, context, MCP)",
-          "  Cursor    Session mgmt, quick edit, error fixing",
-          "  Kilo      Lightweight, plan vs build agents, CI/CD",
+          "  <leader>a   Claude Code   Terminal agent (diffs, MCP)",
+          "  <leader>A   Avante        Sidebar chat + inline diffs",
+          "  <leader>i   Copilot       Inline ghost text completions",
+          "  <leader>C   Cursor        Terminal agent (sessions)",
+          "  <leader>K   Kilo          Terminal agent (plan/build)",
           "",
           "  Help Cheatsheets",
           "  ────────────────",
@@ -1017,10 +1055,13 @@ return {
           if line:match("^  ╭") or line:match("^  │") or line:match("^  ╰") then
             vim.api.nvim_buf_add_highlight(buf, -1, "Function", i - 1, 0, -1)
           end
-          if line:match("^  [%w%s%(%)]+$") and not line:match("^  ╭") and not line:match("^  The ") and not line:match("^  Auto") and not line:match("^  References") and not line:match("^  Paths") then
+          if line:match("^  [%w%s%(%)]+$") and not line:match("^  ╭") and not line:match("^  The ") and not line:match("^  Auto") and not line:match("^  References") and not line:match("^  Paths") and not line:match("^  Terminal") then
             vim.api.nvim_buf_add_highlight(buf, -1, "Type", i - 1, 0, -1)
           end
           if line:match("^  <leader>") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+          if line:match("^  Alt%-") then
             vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
           end
           if line:match("^  %d+%.") then

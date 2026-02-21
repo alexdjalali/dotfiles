@@ -274,7 +274,7 @@ If the task is clear and unambiguous with no meaningful gray areas, skip directl
 3. Identify integration points and potential risks
 4. Note reusable patterns
 
-### Step 1.4: Design Decisions
+### Step 1.4: Design Decisions & Architecture Diagram
 
 **Present findings and gather all design decisions (Question Batch 2).**
 
@@ -283,6 +283,12 @@ Summarize what you found, then use AskUserQuestion with all decisions at once.
 **After user answers:**
 
 - Incorporate their choices into the plan design
+- **Draft a Mermaid architecture diagram** showing:
+  - Components affected by this change
+  - New components being introduced
+  - Data flow between components
+  - External dependencies and integration points
+  - Use C4 conventions: `graph TD` for structure, `sequenceDiagram` for interactions, `flowchart LR` for data pipelines
 - Proceed to Step 1.5 — the user will review the full plan at Step 1.8
 
 ### Step 1.5: Implementation Planning
@@ -391,6 +397,19 @@ Worktree: Yes
 **Architecture:** [2-3 sentences about chosen approach]
 
 **Tech Stack:** [Key technologies/libraries]
+
+## Architecture Diagram
+
+```mermaid
+%% C4-style diagram showing components, data flow, and dependencies
+%% Use graph TD for structure, sequenceDiagram for interactions,
+%% flowchart LR for data pipelines
+graph TD
+    %% Replace with actual architecture
+    A[Component A] --> B[Component B]
+```
+
+> Show: affected components (solid border), new components (dashed border), data flow (arrows with labels), external services (rounded boxes). Update this diagram as implementation progresses.
 
 ## Scope
 

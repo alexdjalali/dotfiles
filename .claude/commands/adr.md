@@ -33,6 +33,19 @@ What is the change that we're proposing and/or doing?
 | Option A | ... | ... |
 | Option B | ... | ... |
 
+## Architecture Diagram
+
+```mermaid
+%% C4-style component diagram showing the architectural change
+%% Show: affected components, new components, data flow, dependencies
+graph TD
+    %% Replace with actual architecture
+    A[Component A] --> B[Component B]
+    B --> C[New Component]
+```
+
+> Diagram should show: (1) components affected by this decision, (2) new components introduced, (3) data flow between them, (4) external dependencies. Use C4 conventions: `graph TD` for structure, `sequenceDiagram` for interactions.
+
 ## Consequences
 
 ### Positive

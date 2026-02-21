@@ -1,8 +1,3 @@
----
-description: "Global engineering standards — process, architecture, quality gates, git"
-alwaysApply: true
----
-
 # Global Engineering Standards
 
 ## Process
@@ -17,9 +12,9 @@ All structural changes follow: ADR → Design → TDD → Implement → Verify.
 ## Language Standards
 
 Consult the language-specific rule file for your current language:
-- **Python**: `python.mdc` (`.py` files)
-- **Go**: `go.mdc` (`.go` files)
-- **TypeScript/React/Tailwind**: `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)
+- **Python**: `python.md`
+- **Go**: `go.md`
+- **TypeScript/React/Tailwind**: `typescript.md`
 
 Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`golangci-lint`, TS=`pnpm`+`eslint`+`tsc`.
 

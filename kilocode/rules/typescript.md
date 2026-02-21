@@ -1,6 +1,7 @@
 # TypeScript / React / Next.js Standards
 
 ## Tooling
+
 - Package manager: `pnpm` (never npm/yarn)
 - Lint: ESLint + Prettier. Type check: `tsc --noEmit` (strict)
 - Test: `vitest` for unit/integration; React Testing Library for component tests
@@ -8,6 +9,7 @@
 - Prefer `const`; never `var`.
 
 ## React Conventions
+
 - Functional components only (no class components)
 - Custom hooks for shared logic (`use` prefix); keep hooks composable and focused
 - Props: destructure in function signature; use `interface` for prop types (not `type`)
@@ -18,6 +20,7 @@
 - Error boundaries for failure isolation at route/feature level
 
 ## Tailwind CSS
+
 - Use utility classes directly; avoid `@apply` except in base/component layers
 - Extract repeated patterns into React components, not CSS classes
 - Responsive: mobile-first (`sm:`, `md:`, `lg:` breakpoints)
@@ -27,6 +30,7 @@
 - No inline `style={}` when Tailwind utilities exist
 
 ## Testing Requirements
+
 - `describe`/`it` blocks with descriptive names (reads as a specification)
 - Every test has a comment: **Why important** + **What it tests**
 - React Testing Library for component tests (test behavior, not implementation)
@@ -35,12 +39,14 @@
 - Shared test utilities in `tests/helpers/` or `__tests__/helpers/`
 
 ## Documentation Requirements
+
 - JSDoc on all public functions, types, and exported modules
 - TSDoc for library packages (`@param`, `@returns`, `@example`)
 - Inline comments for non-obvious logic only
 - No comments that restate the code
 
 ## Quality Gates
+
 1. `prettier --check` — code formatting
 2. `eslint` — linting
 3. `tsc --noEmit` — type checking (strict mode)

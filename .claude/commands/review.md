@@ -48,6 +48,16 @@ Read the actual diffs (`git diff` and `git diff --cached`) and check for:
 - [ ] Import cycles or circular dependencies
 - [ ] Tests cover the changed behavior
 
+**Coding Patterns (verify where appropriate)**:
+- [ ] **Fluent Interface** — method chaining used for readable configuration/setup
+- [ ] **Builder Pattern** — complex objects constructed via builder, not sprawling constructors
+- [ ] **DRY** — no duplicated logic; shared utilities extracted
+- [ ] **Decorator Pattern** — cross-cutting concerns (retry, circuit breaker, logging) wrapped cleanly
+- [ ] **Strategy Pattern** — interchangeable algorithms use strategy, not conditionals
+- [ ] **Observer Pattern** — event-driven notifications (metrics, logging hooks) decoupled
+- [ ] **Singleton Pattern** — single instance resources (DB connections, model instances) managed correctly
+- [ ] **Facade Pattern** — complex subsystems exposed through simplified interfaces
+
 **DRY & Pattern Analysis**:
 - [ ] Duplicated logic — similar code blocks across changed files (extract to shared function)
 - [ ] Pattern consistency — does new code follow existing project patterns?
@@ -80,6 +90,19 @@ Read the actual diffs (`git diff` and `git diff --cached`) and check for:
 - [ ] `console.log` in committed code
 - [ ] `var` declarations
 - [ ] Missing dependency arrays in `useEffect`
+
+**Testing Requirements**:
+- [ ] >90% unit test coverage on changed code
+- [ ] Organized test structure with descriptive names
+- [ ] Every test documents: **Why important** + **What it tests**
+- [ ] Shared test fixtures and helpers used (not duplicated setup)
+- [ ] Edge cases covered and documented
+
+**Documentation Requirements**:
+- [ ] Module/package-level documentation on new files
+- [ ] Public API documentation on new/changed classes, methods, and functions
+- [ ] Inline comments for non-obvious logic only (no noise comments)
+- [ ] Type annotations on all public APIs
 
 ### 4. Generate Report
 

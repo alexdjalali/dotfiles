@@ -143,6 +143,34 @@ After all cycles are complete, run the full quality suite on the changed files:
 
 Report results and any remaining issues.
 
+### 8. Completion Checklist
+
+#### Coding Patterns (verify where appropriate)
+
+- [ ] **Fluent Interface** — method chaining for readable configuration/setup
+- [ ] **Builder Pattern** — complex object construction
+- [ ] **DRY** — no duplicated logic; extract shared utilities
+- [ ] **Decorator Pattern** — wrap behavior (retry, circuit breaker, logging)
+- [ ] **Strategy Pattern** — interchangeable algorithms (e.g., error classifiers)
+- [ ] **Observer Pattern** — event-driven notifications (e.g., metrics, logging hooks)
+- [ ] **Singleton Pattern** — single instance resources (e.g., DB connections, model instances)
+- [ ] **Facade Pattern** — simplified interface over complex subsystems
+
+#### Testing Requirements
+
+- [ ] >90% unit test coverage
+- [ ] Organized test structure with descriptive names
+- [ ] Every test documents: **Why important** + **What it tests**
+- [ ] Shared test fixtures and helpers (see language standards)
+- [ ] Edge cases covered and documented
+
+#### Documentation Requirements
+
+- [ ] Module/package-level documentation on new files
+- [ ] Public API documentation on new/changed classes, methods, and functions
+- [ ] Inline comments for non-obvious logic only
+- [ ] Type annotations on all public APIs
+
 ## Rules
 - NEVER write implementation before a failing test
 - NEVER write more test than needed for the current step

@@ -1,9 +1,3 @@
----
-description: "Python coding standards (3.14+)"
-globs: ["*.py"]
-alwaysApply: false
----
-
 # Python Standards (3.14+)
 
 ## Tooling

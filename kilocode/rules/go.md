@@ -1,9 +1,3 @@
----
-description: "Go coding standards (1.26+)"
-globs: ["*.go"]
-alwaysApply: false
----
-
 # Go Standards (1.26+)
 
 ## Tooling

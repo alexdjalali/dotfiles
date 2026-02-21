@@ -62,78 +62,15 @@ Break the epic into independently deliverable stories. Each story should:
 
 ### Step 4: Write Story RFPs
 
-For each story, create `docs/rfp/<epic>.<story>-<slug>.md`:
+For each story, create `docs/rfp/<epic>.<story>-<slug>.md` using the template at `~/.claude/templates/story.md`.
 
-```markdown
-[Back to Spec](../spec/epic-NN-<title>.md) | [Architecture Index](../architecture/README.md)
+**Read the template first:** `Read(file_path="~/.claude/templates/story.md")`
 
-# Story <N.M> — <Title>
-
-**Epic**: <N> — <Epic Title> **Points**: <1-5> **Status**: Todo
-
----
-
-## Story
-
-**As a** <role>, **I want** <capability>, **So that** <benefit>.
-
-**Acceptance Criteria**:
-
-- <Concrete, testable criterion>
-- <Concrete, testable criterion>
-- <Concrete, testable criterion>
-
-**Testing**: >90% unit coverage. Tests:
-
-- `test_<scenario_1>`
-- `test_<scenario_2>`
-- `test_<scenario_3>`
-
----
-
-## Architecture References
-
-- [ARCH-NNN-<name>.md](../architecture/ARCH-NNN-<name>.md)
-
----
-
-## Architecture Diagram
-
-```mermaid
-graph TD
-    %% Show components affected by this story
-    A[Component A] --> B[Component B]
-```
-
----
-
-## Checklist
-
-### Coding Patterns (apply where appropriate)
-
-- [ ] **Fluent Interface** — method chaining for readable configuration/setup
-- [ ] **Builder Pattern** — complex object construction
-- [ ] **DRY** — no duplicated logic; extract shared utilities
-- [ ] **Decorator Pattern** — wrap behavior (retry, circuit breaker, logging)
-- [ ] **Strategy Pattern** — interchangeable algorithms
-- [ ] **Observer Pattern** — event-driven notifications
-- [ ] **Singleton Pattern** — single instance resources
-- [ ] **Facade Pattern** — simplified interface over complex subsystems
-
-### Testing Requirements
-
-- [ ] >90% unit test coverage
-- [ ] Class-based test organization with descriptive names
-- [ ] Every test has docstring: **Why important** + **What it tests**
-- [ ] `conftest.py` fixtures (global + per-service)
-- [ ] Edge cases covered and documented
-
-### Documentation Requirements
-
-- [ ] Module-level docstrings on all files
-- [ ] Google-style docstrings on public functions
-- [ ] Architecture diagram updated (if structural change)
-```
+Fill in all placeholder fields (`<N>`, `<Title>`, etc.) with story-specific values. The template includes:
+- Story metadata (epic, points, status)
+- User story (as/want/so that) with acceptance criteria
+- Architecture references and diagram
+- Checklist: coding patterns, testing, documentation, completion workflow
 
 ### Step 5: Update Epic Spec
 
@@ -245,43 +182,11 @@ ls docs/adr/<epic-num>.* 2>/dev/null | wc -l
 
 ## Epic Spec Template
 
-For creating new epics (`docs/spec/epic-NN-<slug>.md`):
+For creating new epics (`docs/spec/epic-NN-<slug>.md`), use the template at `~/.claude/templates/epic.md`.
 
-```markdown
-# Epic <N> — <Title>
+**Read the template first:** `Read(file_path="~/.claude/templates/epic.md")`
 
-**Status**: Planning **Stories**: -- **Points**: --
-
-## Summary
-
-<2-3 sentences describing what this epic achieves and why>
-
-## Architecture Diagram
-
-```mermaid
-graph TD
-    %% Show the target architecture after this epic is complete
-```
-
-## Stories
-
-| #   | Story | File |
-| --- | ----- | ---- |
-| N.1 | TBD   | --   |
-
-## Key Changes
-
-- <Bullet list of major changes>
-
-## Dependencies
-
-- <Other epics or external requirements>
-
-## Risks
-
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-```
+The template includes: summary, architecture diagram, stories table, key changes, dependencies, and risks.
 
 ## Rules
 - NEVER create stories without reading the affected code first

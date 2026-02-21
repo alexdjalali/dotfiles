@@ -605,16 +605,28 @@ This is the THIRD user interaction point in the `/spec` workflow (first is workt
    - [Test results]
    ```
 
+   Use AskUserQuestion:
+   ```
+   question: "Epic complete! Create a pull request?"
+   header: "Pipeline"
+   options:
+     - "/github pr — Create PR" - Push branch and open a pull request
+     - "Done — Handle git manually" - No automated git actions
+   ```
+   If PR: `Skill(skill='github', args='pr')`
+
    **If there are remaining stories:**
    Use AskUserQuestion:
    ```
-   question: "Story N.M verified. Start the next story?"
+   question: "Story N.M verified. What's next?"
    header: "Pipeline"
    options:
-     - "Yes — start /spec on story N.X" - Begin planning and implementing the next story now
-     - "No — stop here" - Take a break, review, or continue later
+     - "Next story — /spec on story N.X" - Begin planning and implementing the next story now
+     - "/github commit — Commit progress" - Commit verified work before continuing
+     - "Stop here" - Take a break, review, or continue later
    ```
-   If yes: `Skill(skill='spec', args='docs/spec/stories/N.X-<slug>.md')`
+   - Next story: `Skill(skill='spec', args='docs/spec/stories/N.X-<slug>.md')`
+   - Commit: `Skill(skill='github', args='commit')`
 
    **If no story is linked (standalone plan):**
    ```
@@ -625,6 +637,18 @@ This is the THIRD user interaction point in the `/spec` workflow (first is workt
    - [Key files created/modified]
    - [Test results]
    ```
+
+   Use AskUserQuestion:
+   ```
+   question: "Plan verified. Create a pull request?"
+   header: "Pipeline"
+   options:
+     - "/github pr — Create PR" - Push branch and open a pull request
+     - "/github commit — Commit only" - Commit without creating a PR
+     - "Done — Handle git manually" - No automated git actions
+   ```
+   - PR: `Skill(skill='github', args='pr')`
+   - Commit: `Skill(skill='github', args='commit')`
 
 **When verification FAILS (missing features, serious bugs, or unfixed rule violations):**
 

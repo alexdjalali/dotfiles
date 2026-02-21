@@ -233,13 +233,13 @@ Use AskUserQuestion:
 question: "TDD cycle complete. What's next?"
 header: "Pipeline"
 options:
-  - "/preflight — Run quality gates" - Format, lint, type check, and test before committing
-  - "/review — Code review" - Review the changes before committing
-  - "Done — Commit manually" - No further automated steps
+  - "/github commit — Stage, validate, and commit" - Runs preflight, then commits with conventional format
+  - "/review — Code review first" - Review the changes before committing
+  - "Done — No further action" - Handle git manually
 ```
 
 Based on the user's choice, invoke the corresponding skill:
-- `/preflight`: `Skill(skill='preflight')`
+- `/github commit`: `Skill(skill='github', args='commit')` — runs preflight internally, then commits
 - `/review`: `Skill(skill='review')`
 - Done: End the workflow
 

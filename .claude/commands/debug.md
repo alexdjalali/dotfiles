@@ -1,3 +1,7 @@
+---
+model: opus
+---
+
 # Structured Debugging
 
 Scientific method for diagnosing and fixing bugs. No random code changes.
@@ -55,15 +59,21 @@ Format:
 **Introduced**: <commit/PR if identifiable>
 ```
 
-### Phase 4: FIX (via TDD)
+### Phase 4: FIX (via /tdd)
 
-**Goal**: Fix the bug with confidence.
+**Goal**: Fix the bug with confidence using the TDD cycle.
 
-1. **Verify the failing test** from Phase 1 still fails
-2. **Apply the minimal fix** — change only what's necessary to address the root cause
-3. **Run the test** — confirm it passes
-4. **Check for regressions** — run the full test suite for the affected module
-5. **Refactor if needed** — clean up, but don't change behavior
+The failing test from Phase 1 serves as the RED step. Delegate the fix to `/tdd`:
+
+```
+Skill(skill='tdd', args='Fix: <root cause summary from Phase 3>')
+```
+
+The `/tdd` skill will:
+1. Verify the failing test still fails (RED — already done in Phase 1)
+2. Apply the minimal fix (GREEN)
+3. Refactor if needed (keep tests green)
+4. Run the full test suite for regressions
 
 ### Phase 5: VERIFY
 

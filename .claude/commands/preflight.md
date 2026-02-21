@@ -1,3 +1,7 @@
+---
+model: sonnet
+---
+
 # Preflight — Pre-Commit Quality Gate
 
 Run all quality checks on changed files before committing.

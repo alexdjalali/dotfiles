@@ -1417,6 +1417,8 @@ return {
           "  /github review N   Review PR #N (delegates to /review)",
           "  /github merge N    Squash merge + cleanup",
           "  /github status     Local git + open PRs dashboard",
+          "  /repo <name>       Scaffold a new monorepo (interactive)",
+          "  /repo audit        Audit repo against standard structure",
           "  /debug             Structured debugging (delegates fix to /tdd)",
           "  /review            Code review on local changes (opus)",
           "  /preflight         Pre-commit quality gate (sonnet)",

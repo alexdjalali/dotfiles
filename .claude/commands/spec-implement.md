@@ -91,7 +91,7 @@ spec-implement → spec-verify → issues found → spec-implement → spec-veri
 **If `Worktree: Yes` (or missing/default):** All implementation happens in an isolated git worktree. This keeps the main branch clean until verification passes and the user approves sync.
 
 1. **Extract plan slug** from the plan file path:
-   - `docs/plans/2026-02-09-add-auth.md` → plan_slug = `add-auth` (strip date prefix and `.md`)
+   - `docs/spec/plans/2026-02-09-add-auth.md` → plan_slug = `add-auth` (strip date prefix and `.md`)
 
 2. **Check for existing worktree** (continuation session or verify→implement feedback loop):
 
@@ -135,7 +135,7 @@ spec-implement → spec-verify → issues found → spec-implement → spec-veri
 
 7. **Verify worktree is active:** Run `git branch --show-current` in the worktree to confirm you're on the `spec/<plan_slug>` branch.
 
-**⚠️ All subsequent implementation steps happen inside the worktree directory (when worktree is active).** The plan file exists at the same relative path in the worktree (e.g., `docs/plans/...`). Commits within the worktree are expected and allowed.
+**⚠️ All subsequent implementation steps happen inside the worktree directory (when worktree is active).** The plan file exists at the same relative path in the worktree (e.g., `docs/spec/plans/...`). Commits within the worktree are expected and allowed.
 
 ---
 

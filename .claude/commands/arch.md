@@ -1,3 +1,7 @@
+---
+model: opus
+---
+
 # Architecture Diagram Generator
 
 Generate or update Mermaid architecture diagrams from codebase analysis.
@@ -109,16 +113,27 @@ graph TD
 - **Arrow labels**: Protocol or action (`|HTTP|`, `|gRPC|`, `|publish|`)
 - **Subgraphs**: Group by deployment boundary, layer, or namespace
 
-### 5. Output
+### 5. Cross-Reference ADRs
 
-Save to `docs/architecture/` with descriptive filename:
+Before generating the diagram, check for related ADRs:
+
+1. Scan `docs/adr/` for existing ADRs
+2. If any ADR relates to the scope being diagrammed, add a **References** section linking to it:
+   ```markdown
+   ## References
+   - [ADR-NNNN: <title>](../../adr/NNNN-<title>.md)
+   ```
+
+### 6. Output
+
+Save to `docs/spec/arch/` with descriptive filename:
 
 | Scope | Filename |
 |-------|----------|
-| Full system | `docs/architecture/system-overview.md` |
-| Module | `docs/architecture/<module>-components.md` |
-| Data flow | `docs/architecture/data-flow.md` |
-| Dependencies | `docs/architecture/dependency-graph.md` |
+| Full system | `docs/spec/arch/system-overview.md` |
+| Module | `docs/spec/arch/<module>-components.md` |
+| Data flow | `docs/spec/arch/data-flow.md` |
+| Dependencies | `docs/spec/arch/dependency-graph.md` |
 
 **File format:**
 ```markdown
@@ -146,12 +161,32 @@ Generated: [Date]
 - [Known coupling or debt]
 ```
 
-### 6. Verify
+### 7. Verify
 
 - Diagram renders correctly (valid Mermaid syntax)
 - All components identified in exploration appear in diagram
 - Connections match actual import/call patterns (not assumptions)
 - No orphan components (everything connects to something)
+
+### 8. Pipeline: Next Step
+
+After the diagram is saved, determine the next step in the architect → engineer pipeline.
+
+Use AskUserQuestion:
+
+```
+question: "What's the next step?"
+header: "Pipeline"
+options:
+  - "/rfp — Decompose into stories" - Break this architecture into implementable epics and stories
+  - "/spec — Implement directly" - Plan and implement a specific change to this architecture
+  - "Done — Diagram only" - No implementation action needed right now
+```
+
+Based on the user's choice, invoke the corresponding skill:
+- `/rfp`: `Skill(skill='rfp', args='<epic description based on architecture scope>')` — creates an epic in `docs/spec/epics/`
+- `/spec`: `Skill(skill='spec', args='<task description>')` — plans and implements directly
+- Done: End the workflow
 
 ## Rules
 - NEVER guess connections — verify by reading imports and client code

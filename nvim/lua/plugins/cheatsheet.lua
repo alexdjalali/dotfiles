@@ -172,6 +172,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?s    Spec Pipeline     Architect → Engineer flow",
           "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
@@ -520,6 +521,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?s    Spec Pipeline     Architect → Engineer flow",
           "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
@@ -685,6 +687,7 @@ return {
           "  <leader>?w    Workflows         This window (you are here)",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?s    Spec Pipeline     Architect → Engineer flow",
           "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
@@ -862,6 +865,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        This window (you are here)",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?s    Spec Pipeline     Architect → Engineer flow",
           "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
@@ -1016,6 +1020,10 @@ return {
           "  <leader>C   Cursor        Terminal agent (sessions)",
           "  <leader>K   Kilo          Terminal agent (plan/build)",
           "",
+          "  Claude Code Spec Pipeline:",
+          "  /adr → /arch → /rfp → /spec (per story)",
+          "  See <leader>?s for full pipeline reference",
+          "",
           "  Help Cheatsheets",
           "  ────────────────",
           "  <leader>?     DevOps tools      Productivity & tools",
@@ -1024,6 +1032,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         This window (you are here)",
+          "  <leader>?s    Spec Pipeline     Architect → Engineer flow",
           "  <leader>?t    LaTeX             TeX editing & compilation",
           "",
           "  Press <Esc> or q to close this window",
@@ -1228,6 +1237,7 @@ return {
           "  <leader>?w    Workflows         Step-by-step guides",
           "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
           "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?s    Spec Pipeline     Architect → Engineer flow",
           "  <leader>?t    LaTeX             This window (you are here)",
           "",
           "  Press <Esc> or q to close this window",
@@ -1305,6 +1315,192 @@ return {
         end, { buffer = buf, nowait = true })
       end
 
+      -- Create function for Spec Pipeline cheatsheet
+      local function show_spec_pipeline_cheatsheet()
+        local lines = {
+          "╭─────────────────────────────────────────────────────────╮",
+          "│          Spec Pipeline (Architect → Engineer)           │",
+          "╰─────────────────────────────────────────────────────────╯",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Pipeline Flow                           │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  /adr ──→ /arch ──→ /rfp ──→ /spec (per story)",
+          "   why      what      break     plan → implement → verify",
+          "                      down      │",
+          "                                ├── mark story complete",
+          "                                ├── suggest next story",
+          "                                └── mark epic complete",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Slash Commands                          │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  Architect Phase (opus):",
+          "  ──────────────────────",
+          "  /adr <title>          Record architectural decision",
+          "                        → chains to: /arch, /rfp, or /spec",
+          "  /arch <scope>         Generate Mermaid architecture diagram",
+          "                        scope: full | module | data-flow | deps",
+          "                        → chains to: /rfp or /spec",
+          "  /rfp <epic-or-num>    Decompose epic into stories",
+          "                        → chains to: /spec on first story",
+          "  /rfp status           Progress report across all epics",
+          "",
+          "  Engineer Phase (sonnet):",
+          "  ────────────────────────",
+          "  /spec <task>           Plan + implement + verify (full cycle)",
+          "  /spec <plan.md>        Continue existing plan",
+          "  /spec --continue <p>   Resume after session clear",
+          "",
+          "  Spec sub-phases (auto-chained, don't call directly):",
+          "    spec-plan            Explore → design → write plan → approve",
+          "    spec-implement       TDD loop for each task (red→green→refactor)",
+          "    spec-verify          Tests → review → E2E → mark verified",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Entry Points                            │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  Large architectural change:",
+          "    /adr use-event-sourcing",
+          "    → arch → rfp → stories → spec per story → done",
+          "",
+          "  Multi-story feature (no ADR needed):",
+          "    /rfp add user authentication",
+          "    → epic + stories → spec per story → done",
+          "",
+          "  Single focused feature:",
+          "    /spec add rate limiting to the API",
+          "    → plan → implement → verify → done",
+          "",
+          "  Understand system first:",
+          "    /arch full",
+          "    → diagram → rfp or spec",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Directory Structure                     │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  docs/",
+          "    adr/            Architectural decisions (permanent)",
+          "    spec/",
+          "      arch/         Architecture diagrams (living docs)",
+          "      epics/        Epic specs (status tracks completion)",
+          "      stories/      Stories (Todo → In Progress → Complete)",
+          "      plans/        Implementation plans (PENDING → VERIFIED)",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Story Lifecycle                         │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  1. /rfp creates story    → docs/spec/stories/N.M-slug.md",
+          "  2. /spec picks it up     → docs/spec/plans/YYYY-MM-DD-slug.md",
+          "  3. spec-plan plans it    → plan approved by user",
+          "  4. spec-implement builds → TDD, per-task commits",
+          "  5. spec-verify checks    → updates story status to Complete",
+          "  6. → suggests next story → repeat until epic complete",
+          "",
+          "  Stories stay in docs/spec/stories/ forever.",
+          "  Status field tracks completion, no file movement.",
+          "",
+          "  ╭───────────────────────────────────────────────────────╮",
+          "  │               Supporting Skills                       │",
+          "  ╰───────────────────────────────────────────────────────╯",
+          "",
+          "  /tdd              Standalone TDD cycle (no plan needed)",
+          "  /review            Code review on current changes",
+          "  /preflight         Pre-commit quality gate",
+          "  /debug             Structured debugging",
+          "  /patterns          Codebase pattern analysis",
+          "",
+          "  Help Cheatsheets",
+          "  ────────────────",
+          "  <leader>?     DevOps tools      Productivity & tools",
+          "  <leader>??    Vim essentials    Basic Neovim commands",
+          "  <leader>?l    Languages         Go & Python shortcuts",
+          "  <leader>?w    Workflows         Step-by-step guides",
+          "  <leader>?d    Data Infra        DB, Kafka, Redis tools",
+          "  <leader>?c    AI Agents         All 5 AI tool keys",
+          "  <leader>?s    Spec Pipeline     This window (you are here)",
+          "  <leader>?t    LaTeX             TeX editing & compilation",
+          "",
+          "  Press <Esc> or q to close this window",
+          "",
+        }
+
+        local buf = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+        vim.api.nvim_buf_set_option(buf, "modifiable", false)
+        vim.api.nvim_buf_set_option(buf, "filetype", "cheatsheet")
+
+        local width = 63
+        local height = math.min(#lines, vim.o.lines - 4)
+        local row = math.floor((vim.o.lines - height) / 2)
+        local col = math.floor((vim.o.columns - width) / 2)
+
+        local win = vim.api.nvim_open_win(buf, true, {
+          relative = "editor",
+          width = width,
+          height = height,
+          row = row,
+          col = col,
+          style = "minimal",
+          border = "rounded",
+        })
+
+        vim.api.nvim_win_set_option(win, "winblend", 0)
+        vim.api.nvim_win_set_option(win, "cursorline", false)
+
+        -- Highlights
+        vim.api.nvim_buf_add_highlight(buf, -1, "Title", 1, 0, -1)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Comment", 0, 0, -1)
+        vim.api.nvim_buf_add_highlight(buf, -1, "Comment", 2, 0, -1)
+
+        for i, line in ipairs(lines) do
+          if line:match("^  ╭") or line:match("^  │") or line:match("^  ╰") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Function", i - 1, 0, -1)
+          end
+          -- Slash commands
+          if line:match("^  /[%w%-]+") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 24)
+          end
+          -- Pipeline flow
+          if line:match("──→") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Keyword", i - 1, 0, -1)
+          end
+          -- Directory paths
+          if line:match("^    [%w/]+") and line:match("%s%s%s%s%s") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Type", i - 1, 4, 22)
+          end
+          -- Numbered steps
+          if line:match("^  %d+%.") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 5, 27)
+          end
+          -- Phase labels
+          if line:match("^  Architect Phase") or line:match("^  Engineer Phase") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Type", i - 1, 0, -1)
+          end
+          -- Entry point labels
+          if line:match("^  Large ") or line:match("^  Multi%-story") or line:match("^  Single ") or line:match("^  Understand ") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "Type", i - 1, 0, -1)
+          end
+          -- Leader keybindings
+          if line:match("^  <leader>") then
+            vim.api.nvim_buf_add_highlight(buf, -1, "String", i - 1, 2, 18)
+          end
+        end
+
+        vim.keymap.set("n", "q", function()
+          vim.api.nvim_win_close(win, true)
+        end, { buffer = buf, nowait = true })
+
+        vim.keymap.set("n", "<Esc>", function()
+          vim.api.nvim_win_close(win, true)
+        end, { buffer = buf, nowait = true })
+      end
+
       -- Add keybinding to opts.mappings
       if not opts.mappings then opts.mappings = {} end
       if not opts.mappings.n then opts.mappings.n = {} end
@@ -1337,6 +1533,11 @@ return {
       opts.mappings.n["<leader>?c"] = {
         show_cursor_agent_cheatsheet,
         desc = "Show AI Agents cheatsheet",
+      }
+
+      opts.mappings.n["<leader>?s"] = {
+        show_spec_pipeline_cheatsheet,
+        desc = "Show Spec Pipeline cheatsheet",
       }
 
       opts.mappings.n["<leader>?t"] = {

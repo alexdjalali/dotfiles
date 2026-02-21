@@ -511,7 +511,7 @@ Run the test suite and type checker one final time to catch any regressions from
 This is the THIRD user interaction point in the `/spec` workflow (first is worktree choice, second is plan approval).
 
 1. **Extract plan slug** from the plan file path:
-   - `docs/plans/2026-02-09-add-auth.md` → plan_slug = `add-auth` (strip date prefix and `.md`)
+   - `docs/spec/plans/2026-02-09-add-auth.md` → plan_slug = `add-auth` (strip date prefix and `.md`)
 
 2. **Check for active worktree:**
 
@@ -581,8 +581,42 @@ This is the THIRD user interaction point in the `/spec` workflow (first is workt
    ```
 2. **Register status change:** `~/.pilot/bin/pilot register-plan "<plan_path>" "VERIFIED" 2>/dev/null || true`
 3. Read the Iterations count from the plan file
-4. Report completion:
+4. **Pipeline: Story and Epic Completion** (if plan is linked to a story)
 
+   Check the plan's **References** section for a linked story file (e.g., `docs/spec/stories/N.M-*.md`).
+
+   **If a story is linked:**
+   1. Read the story file
+   2. Update its `**Status**` field: `Todo` or `In Progress` → `Complete`
+   3. Find the parent epic from the story's metadata (epic number)
+   4. Read the epic file at `docs/spec/epics/epic-NN-*.md`
+   5. Update the story's row in the epic's Stories table: `Status` → `Complete`
+   6. Check if ALL stories in the epic are now `Complete`:
+      - If yes: Update the epic's `**Status**` to `Complete`
+      - If no: Find the next uncompleted story (lowest number with `Status: Todo`)
+
+   **If all stories in the epic are complete:**
+   ```
+   ✅ Story N.M complete! Epic N fully implemented.
+
+   Summary:
+   - [Brief summary of what was implemented]
+   - [Key files created/modified]
+   - [Test results]
+   ```
+
+   **If there are remaining stories:**
+   Use AskUserQuestion:
+   ```
+   question: "Story N.M verified. Start the next story?"
+   header: "Pipeline"
+   options:
+     - "Yes — start /spec on story N.X" - Begin planning and implementing the next story now
+     - "No — stop here" - Take a break, review, or continue later
+   ```
+   If yes: `Skill(skill='spec', args='docs/spec/stories/N.X-<slug>.md')`
+
+   **If no story is linked (standalone plan):**
    ```
    ✅ Workflow complete! Plan status: VERIFIED
 
@@ -590,8 +624,6 @@ This is the THIRD user interaction point in the `/spec` workflow (first is workt
    - [Brief summary of what was implemented]
    - [Key files created/modified]
    - [Test results]
-
-   Is there anything else you'd like me to help with?
    ```
 
 **When verification FAILS (missing features, serious bugs, or unfixed rule violations):**

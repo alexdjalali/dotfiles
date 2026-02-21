@@ -13,7 +13,7 @@ hooks:
 **Phase 1 of the /spec workflow.** Explores the codebase, designs an implementation plan, verifies it, and gets user approval.
 
 **Input:** Task description (new plan) or plan path (continue unapproved plan)
-**Output:** Approved plan file at `docs/plans/YYYY-MM-DD-<slug>.md`
+**Output:** Approved plan file at `docs/spec/plans/YYYY-MM-DD-<slug>.md`
 **Next phase:** On approval → `Skill(skill='spec-implement', args='<plan-path>')`
 
 ---
@@ -83,7 +83,7 @@ hooks:
 
 **When adding tasks to existing plan:**
 
-1. Load existing plan: `Read(file_path="docs/plans/...")`
+1. Load existing plan: `Read(file_path="docs/spec/plans/...")`
 2. Parse structure (architecture, completed tasks, pending tasks)
 3. Check git status for partially completed work
 4. Verify new tasks are compatible with existing architecture
@@ -164,12 +164,12 @@ hooks:
    - Strip the `--worktree=...` flag from the task description
    - Default to `Yes` if no flag is present (backward compatibility)
 
-2. **Generate filename:** `docs/plans/YYYY-MM-DD-<feature-slug>.md`
+2. **Generate filename:** `docs/spec/plans/YYYY-MM-DD-<feature-slug>.md`
    - Use current date
    - Create slug from first 3-4 words of task description (lowercase, hyphens)
    - Example: "add user authentication" → `2026-01-24-add-user-authentication.md`
 
-3. **Create directory if needed:** `mkdir -p docs/plans`
+3. **Create directory if needed:** `mkdir -p docs/spec/plans`
 
 4. **Write initial header immediately (with worktree choice from dispatcher):**
 
@@ -208,6 +208,28 @@ hooks:
    - Plan is correctly associated with this specific terminal
 
 **CRITICAL:** Do this FIRST, before any exploration or questions.
+
+---
+
+### Step 1.1b: Cross-Reference Pipeline Artifacts
+
+Before exploration, scan `docs/spec/` for related artifacts from upstream pipeline steps:
+
+1. **Architecture diagrams:** Check `docs/spec/arch/` for diagrams relevant to this feature
+2. **Epic specs:** Check `docs/spec/epics/` for the parent epic if this plan is for a story
+3. **Story file:** If the input is a story path (`docs/spec/stories/N.M-*.md`), read it to extract acceptance criteria, architecture references, and context
+4. **ADRs:** Check `docs/adr/` for decisions that constrain this implementation
+
+If related artifacts are found, add a **References** section to the plan linking to them:
+
+```markdown
+## References
+
+- Architecture: [system-overview](../arch/system-overview.md)
+- Epic: [epic-05-data-model](../epics/epic-05-data-model.md)
+- Story: [5.3-add-filtering](../stories/5.3-add-filtering.md)
+- ADR: [0003-use-redis](../../adr/0003-use-redis.md)
+```
 
 ---
 
@@ -367,7 +389,7 @@ Split a task if it has multiple unrelated DoD criteria. Merge tasks if one can't
 
 ### Step 1.6: Write Full Plan
 
-**Save plan to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**Save plan to:** `docs/spec/plans/YYYY-MM-DD-<feature-name>.md`
 
 **Read the plan template first:** `Read(file_path="~/.claude/templates/plan.md")`
 

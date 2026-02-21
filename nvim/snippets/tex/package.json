@@ -1,0 +1,10 @@
+{
+  "name": "latex-snippets",
+  "contributes": {
+    "snippets": [
+      { "language": "tex", "path": "./tikz.json" },
+      { "language": "tex", "path": "./beamer.json" },
+      { "language": "tex", "path": "./packages.json" }
+    ]
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "Beamer Presentation": {
+    "prefix": "beamerdoc",
+    "body": [
+      "\\documentclass{beamer}",
+      "\\usetheme{${1:Madrid}}",
+      "\\usecolortheme{${2:default}}",
+      "",
+      "\\title{${3:Title}}",
+      "\\subtitle{${4:Subtitle}}",
+      "\\author{${5:Author}}",
+      "\\institute{${6:Institute}}",
+      "\\date{\\today}",
+      "",
+      "\\begin{document}",
+      "",
+      "\\begin{frame}",
+      "  \\titlepage",
+      "\\end{frame}",
+      "",
+      "\\begin{frame}{Outline}",
+      "  \\tableofcontents",
+      "\\end{frame}",
+      "",
+      "$0",
+      "",
+      "\\end{document}"
+    ],
+    "description": "Beamer presentation document"
+  },
+  "Beamer Frame": {
+    "prefix": "frame",
+    "body": [
+      "\\begin{frame}{${1:Title}}",
+      "  $0",
+      "\\end{frame}"
+    ],
+    "description": "Beamer frame"
+  },
+  "Beamer Frame with Subtitle": {
+    "prefix": "framesub",
+    "body": [
+      "\\begin{frame}{${1:Title}}{${2:Subtitle}}",
+      "  $0",
+      "\\end{frame}"
+    ],
+    "description": "Beamer frame with subtitle"
+  },
+  "Beamer Frame Fragile": {
+    "prefix": "framefrag",
+    "body": [
+      "\\begin{frame}[fragile]{${1:Title}}",
+      "  $0",
+      "\\end{frame}"
+    ],
+    "description": "Beamer fragile frame (for code listings)"
+  },
+  "Beamer Columns": {
+    "prefix": "columns",
+    "body": [
+      "\\begin{columns}",
+      "  \\begin{column}{${1:0.5}\\textwidth}",
+      "    $2",
+      "  \\end{column}",
+      "  \\begin{column}{${3:0.5}\\textwidth}",
+      "    $0",
+      "  \\end{column}",
+      "\\end{columns}"
+    ],
+    "description": "Beamer two-column layout"
+  },
+  "Beamer Block": {
+    "prefix": "block",
+    "body": [
+      "\\begin{block}{${1:Title}}",
+      "  $0",
+      "\\end{block}"
+    ],
+    "description": "Beamer block"
+  },
+  "Beamer Alert Block": {
+    "prefix": "alertblock",
+    "body": [
+      "\\begin{alertblock}{${1:Title}}",
+      "  $0",
+      "\\end{alertblock}"
+    ],
+    "description": "Beamer alert block"
+  },
+  "Beamer Example Block": {
+    "prefix": "exblock",
+    "body": [
+      "\\begin{exampleblock}{${1:Title}}",
+      "  $0",
+      "\\end{exampleblock}"
+    ],
+    "description": "Beamer example block"
+  },
+  "Beamer Pause": {
+    "prefix": "pause",
+    "body": ["\\pause"],
+    "description": "Beamer pause (incremental reveal)"
+  },
+  "Beamer Only": {
+    "prefix": "only",
+    "body": ["\\only<${1:2-}>{$0}"],
+    "description": "Beamer only (show on specific slides)"
+  },
+  "Beamer Uncover": {
+    "prefix": "uncover",
+    "body": ["\\uncover<${1:2-}>{$0}"],
+    "description": "Beamer uncover (reveal on specific slides)"
+  },
+  "Beamer Section": {
+    "prefix": "bsec",
+    "body": [
+      "\\section{${1:Section Title}}",
+      "",
+      "\\begin{frame}{${2:$1}}",
+      "  $0",
+      "\\end{frame}"
+    ],
+    "description": "Beamer section with first frame"
+  },
+  "Beamer Frame with TikZ": {
+    "prefix": "frametikz",
+    "body": [
+      "\\begin{frame}{${1:Title}}",
+      "  \\begin{center}",
+      "    \\begin{tikzpicture}[${2:scale=0.8}]",
+      "      $0",
+      "    \\end{tikzpicture}",
+      "  \\end{center}",
+      "\\end{frame}"
+    ],
+    "description": "Beamer frame with centered TikZ picture"
+  },
+  "Beamer Frame with Figure": {
+    "prefix": "framefig",
+    "body": [
+      "\\begin{frame}{${1:Title}}",
+      "  \\begin{figure}",
+      "    \\centering",
+      "    \\includegraphics[width=${2:0.8}\\textwidth]{${3:image}}",
+      "    \\caption{${4:Caption}}",
+      "  \\end{figure}",
+      "\\end{frame}"
+    ],
+    "description": "Beamer frame with figure"
+  },
+  "Beamer Enumerate Overlay": {
+    "prefix": "benum",
+    "body": [
+      "\\begin{enumerate}[<+->]",
+      "  \\item $0",
+      "\\end{enumerate}"
+    ],
+    "description": "Beamer enumerate with incremental reveal"
+  },
+  "Beamer Itemize Overlay": {
+    "prefix": "bitem",
+    "body": [
+      "\\begin{itemize}[<+->]",
+      "  \\item $0",
+      "\\end{itemize}"
+    ],
+    "description": "Beamer itemize with incremental reveal"
+  }
+}

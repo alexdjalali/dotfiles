@@ -8,7 +8,8 @@ Personal dev environment for macOS. Catppuccin Mocha theme throughout.
 |-----------|-------------|
 | `zsh/` | Zsh config with Powerlevel10k prompt, aliases, functions |
 | `tmux/` | tmux config with Catppuccin colors and vim-style keybindings |
-| `nvim/` | Neovim (AstroNvim-based) with LSP, DAP, and 25+ plugin configs |
+| `nvim/` | Neovim (AstroNvim-based) with LSP, DAP, and 30+ plugin configs |
+| `latex/` | LaTeX config (latexmkrc with build optimizations) |
 | `git/` | Git config with delta, GPG signing, LFS |
 | `iterm/` | iTerm2 preferences and Catppuccin color scheme |
 | `raycast/` | 28 Raycast script commands for dev workflows |
@@ -43,7 +44,8 @@ cd ~/dotfiles
 11. Scaffolds `~/.zshrc.local` from the example template
 12. Installs TPM and tmux plugins
 13. Initializes git-lfs
-14. Bootstraps Neovim plugins and Treesitter parsers (headless)
+14. Configures LaTeX environment (latexmkrc, Skim inverse search)
+15. Bootstraps Neovim plugins and Treesitter parsers (headless)
 
 The script is idempotent -- safe to run multiple times.
 
@@ -58,6 +60,11 @@ The script is idempotent -- safe to run multiple times.
 ~/.neomuttrc               -> ~/dotfiles/neomutt/.neomuttrc
 ~/.neomutt                 -> ~/dotfiles/neomutt/.neomutt
 ~/.local/scripts/raycast   -> ~/dotfiles/raycast
+~/.claude/CLAUDE.md        -> ~/dotfiles/.claude/CLAUDE.md
+~/.claude/settings.json    -> ~/dotfiles/.claude/settings.json
+~/.claude/commands         -> ~/dotfiles/.claude/commands
+~/.cursor/rules            -> ~/dotfiles/cursor/rules
+~/.cursor/skills-cursor    -> ~/dotfiles/cursor/skills-cursor
 ```
 
 ## Recommended Tools
@@ -124,7 +131,7 @@ Everything below is either installed via `brew bundle` (Brewfile), `brew install
 | `go` | Go runtime |
 | `node` + `nvm` | Node.js runtime |
 | `pnpm` | Fast Node package manager |
-| `bun` | Fast JS runtime + bundler |
+| `bun` | Fast JS runtime + bundler (via `oven-sh/bun` tap) |
 | `rust` | Rust toolchain |
 | `ruby` + `rbenv` | Ruby runtime + version manager |
 | `julia` | Julia runtime |
@@ -201,6 +208,28 @@ Everything below is either installed via `brew bundle` (Brewfile), `brew install
 | `mc` | Midnight Commander (file manager) |
 | `bandwhich` | Network utilization by process |
 
+### LaTeX & Academic Writing
+
+| Tool | Description |
+|------|-------------|
+| MacTeX | Full TeX Live distribution (pdflatex, latexmk, bibtex, biber) |
+| **Skim** | PDF viewer with SyncTeX forward/inverse search |
+| `texlab` | LaTeX LSP (installed via Mason in Neovim) |
+| VimTeX | Neovim plugin: compilation, PDF sync, text objects |
+
+Includes 4000+ packages out of the box: TikZ, pgfplots, Beamer, booktabs, siunitx, microtype, cleveref, glossaries-extra, minted, algorithm2e, adjustbox, hyperref, and more.
+
+The `latex/.latexmkrc` provides optimized build configuration:
+- Biber/BibTeX runs only when `.bib` files change
+- Glossary compilation via `makeglossaries`
+- Shell-escape enabled for minted and TikZ externalization
+- Skim preview with SyncTeX auto-configured
+
+Neovim has 59 custom LuaSnip snippets for LaTeX:
+- 20 TikZ/pgfplots snippets (nodes, flowcharts, commutative diagrams, plots)
+- 17 Beamer snippets (frames, columns, blocks, overlays, incremental reveal)
+- 22 package snippets (article template, booktabs tables, siunitx, equations)
+
 ### macOS Optimization (Casks)
 
 | App | Description |
@@ -211,7 +240,7 @@ Everything below is either installed via `brew bundle` (Brewfile), `brew install
 | **TopNotch** | Hides the MacBook notch with a black menu bar |
 | **HiDock** | Different Dock layouts per display/workspace |
 | **Rectangle** | Window manager (keyboard-driven tiling) |
-| **Amphetamine** | Keep-awake utility (prevent sleep) |
+| **Amphetamine** | Keep-awake utility (Mac App Store only: `mas install 937984704`) |
 | **Raycast** | Spotlight replacement with extensions and scripts |
 
 ### Terminals

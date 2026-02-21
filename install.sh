@@ -77,8 +77,12 @@ fi
 # ---------------------------------------------------------------------------
 
 info "Installing packages from Brewfile..."
-brew bundle --file="$DOTFILES/Brewfile"
-ok "Homebrew packages installed"
+if brew bundle --file="$DOTFILES/Brewfile" --no-lock; then
+    ok "Homebrew packages installed"
+else
+    warn "Some Brewfile entries failed — check output above"
+    warn "Continuing with the rest of the install..."
+fi
 
 # ---------------------------------------------------------------------------
 # 4. Default shell
@@ -271,7 +275,40 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 14. Neovim headless bootstrap
+# 14. LaTeX setup (latexmkrc + Skim inverse search)
+# ---------------------------------------------------------------------------
+
+info "Setting up LaTeX environment..."
+if command -v latexmk &>/dev/null || [ -x /Library/TeX/texbin/latexmk ]; then
+    # Ensure TeX binaries are on PATH for this session
+    if [ -d /Library/TeX/texbin ] && ! command -v latexmk &>/dev/null; then
+        export PATH="/Library/TeX/texbin:$PATH"
+    fi
+
+    # Install latexmkrc (optimized build config)
+    if [ -f "$HOME/.latexmkrc" ]; then
+        ok "~/.latexmkrc already exists"
+    else
+        cp "$DOTFILES/latex/.latexmkrc" "$HOME/.latexmkrc"
+        ok "Installed ~/.latexmkrc (optimized latexmk config)"
+    fi
+
+    # Configure Skim inverse search for Neovim
+    if [ -d "/Applications/Skim.app" ]; then
+        defaults write -app Skim SKTeXEditorPreset -string "Custom"
+        defaults write -app Skim SKTeXEditorCommand -string "nvim"
+        defaults write -app Skim SKTeXEditorArguments -string "--headless -c \"VimtexInverseSearch %line '%file'\""
+        ok "Skim inverse search configured for Neovim"
+    else
+        warn "Skim not found — install it for PDF preview with SyncTeX"
+    fi
+    ok "LaTeX environment configured"
+else
+    warn "MacTeX not found — LaTeX features unavailable (install via: brew install --cask mactex)"
+fi
+
+# ---------------------------------------------------------------------------
+# 15. Neovim headless bootstrap
 # ---------------------------------------------------------------------------
 
 info "Bootstrapping Neovim plugins (headless)..."

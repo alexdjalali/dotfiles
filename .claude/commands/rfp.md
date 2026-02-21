@@ -1,11 +1,15 @@
+---
+model: opus
+---
+
 # RFP — Request for Proposal
 
-Break an epic spec into implementation stories, or create/complete individual RFP stories.
+Break an epic spec into implementation stories, or create/complete individual stories.
 
 ## Arguments
 $ARGUMENTS — One of:
-- Epic spec path (e.g., `docs/spec/epic-05-data-model.md`) — decompose into stories
-- Story number (e.g., `5.3`) — create or work on a specific RFP story
+- Epic spec path (e.g., `docs/spec/epics/epic-05-data-model.md`) — decompose into stories
+- Story number (e.g., `5.3`) — create or work on a specific story
 - `status` — show progress across all epics and stories
 
 ## Instructions
@@ -17,7 +21,7 @@ IF $ARGUMENTS ends with ".md" AND contains "epic":
     → Mode: DECOMPOSE (break epic into stories)
 
 ELIF $ARGUMENTS matches N.N pattern (e.g., "5.3"):
-    → Mode: STORY (create or complete a single RFP story)
+    → Mode: STORY (create or complete a single story)
 
 ELIF $ARGUMENTS == "status":
     → Mode: STATUS (report progress)
@@ -38,7 +42,13 @@ Read the spec file. Extract:
 - Story count (if stories table exists)
 - Architecture references
 
-If the spec doesn't exist yet, create it at `docs/spec/epic-NN-<slug>.md` using the template below, then proceed.
+If the spec doesn't exist yet, create it at `docs/spec/epics/epic-NN-<slug>.md` using the template at `~/.claude/templates/epic.md`.
+
+**Read the template first:** `Read(file_path="~/.claude/templates/epic.md")`
+
+### Step 1b: Cross-Reference Architecture
+
+Check `docs/spec/arch/` for existing architecture diagrams related to this epic. If found, reference them in the epic and stories to provide architectural context.
 
 ### Step 2: Explore Affected Code
 
@@ -60,9 +70,9 @@ Break the epic into independently deliverable stories. Each story should:
 
 **Ordering**: Dependencies first. Foundation → clients → services → API → tests → docs.
 
-### Step 4: Write Story RFPs
+### Step 4: Write Stories
 
-For each story, create `docs/rfp/<epic>.<story>-<slug>.md` using the template at `~/.claude/templates/story.md`.
+For each story, create `docs/spec/stories/<epic>.<story>-<slug>.md` using the template at `~/.claude/templates/story.md`.
 
 **Read the template first:** `Read(file_path="~/.claude/templates/story.md")`
 
@@ -74,22 +84,23 @@ Fill in all placeholder fields (`<N>`, `<Title>`, etc.) with story-specific valu
 
 ### Step 5: Update Epic Spec
 
-Update the epic's stories table with links to each RFP:
+Update the epic's stories table with links to each story:
 
 ```markdown
 ## Stories
 
-| #   | Story                        | File                                    |
-| --- | ---------------------------- | --------------------------------------- |
-| N.1 | <Story title>                | [N.1-slug.md](../rfp/N.1-slug.md)      |
-| N.2 | <Story title>                | [N.2-slug.md](../rfp/N.2-slug.md)      |
+| #   | Story                        | Status | File                                              |
+| --- | ---------------------------- | ------ | ------------------------------------------------- |
+| N.1 | <Story title>                | Todo   | [N.1-slug.md](../stories/N.1-slug.md)            |
+| N.2 | <Story title>                | Todo   | [N.2-slug.md](../stories/N.2-slug.md)            |
 ```
 
 Update status and points: `**Status**: In Progress **Stories**: N.1--N.M **Points**: <sum>`
 
-### Step 6: Summary
+### Step 6: Pipeline — Start First Story
 
-Report what was created:
+After decomposition, automatically chain to implementation of the first story:
+
 ```
 ## RFP Decomposition Complete
 
@@ -102,47 +113,51 @@ Report what was created:
 | N.1 | <title> | 2 | None |
 | N.2 | <title> | 3 | N.1 |
 | ... | ... | ... | ... |
-
-Next: `/rfp N.1` to start implementing the first story
 ```
+
+Use AskUserQuestion:
+
+```
+question: "Start implementing the first story?"
+header: "Pipeline"
+options:
+  - "Yes — start /spec on story N.1" - Begin planning and implementing the first story now
+  - "No — stop here" - Review the decomposition first, implement later
+```
+
+If yes: `Skill(skill='spec', args='docs/spec/stories/N.1-<slug>.md')`
 
 ---
 
-## Mode: STORY — Work on a Single RFP
+## Mode: STORY — Work on a Single Story
 
 ### Step 1: Find the Story
 
-Look for `docs/rfp/<number>-*.md`. Read it fully.
+Look for `docs/spec/stories/<number>-*.md`. Read it fully.
 
 ### Step 2: Check Status
 
-- **Todo** → Implement via `/spec` workflow (bridge: `Skill(skill='spec', args='docs/rfp/<file>')`)
+- **Todo** → Implement via `/spec` workflow
 - **In Progress** → Continue implementation
-- **Complete** → Move to ADR (see Step 4)
+- **Complete** → Report completion, suggest next story
 
 ### Step 3: Implement
 
 Bridge to the spec workflow for implementation:
 ```
-Skill(skill='spec', args='docs/rfp/<epic>.<story>-<slug>.md')
+Skill(skill='spec', args='docs/spec/stories/<epic>.<story>-<slug>.md')
 ```
 
 The spec workflow handles planning, TDD, and verification.
 
-### Step 4: Complete — Move to ADR
+### Step 4: Story Completion
 
-When all acceptance criteria are met and tests pass:
+Story completion is handled by `/spec-verify` when the plan reaches VERIFIED status. The verify phase:
+1. Updates the story's `**Status**` field to `Complete`
+2. Updates the epic's stories table with the new status
+3. Suggests the next uncompleted story in the epic
 
-1. **Update RFP status**: `**Status**: Complete`
-2. **Move file**: `docs/rfp/<N.M>-<slug>.md` → `docs/adr/<N.M>-<slug>.md`
-3. **Update epic spec**: Change story link from `../rfp/` to `../adr/`
-4. **Update epic status**: If all stories complete, set `**Status**: Complete`
-
-```bash
-mv docs/rfp/<N.M>-<slug>.md docs/adr/<N.M>-<slug>.md
-```
-
-Update back-link in the moved file: `[Back to Spec]` stays the same (relative path still works).
+Stories stay in `docs/spec/stories/` — they are the permanent record of what was built.
 
 ---
 
@@ -151,17 +166,15 @@ Update back-link in the moved file: `[Back to Spec]` stays the same (relative pa
 ### Step 1: Scan All Epics
 
 ```bash
-ls docs/spec/epic-*.md
+ls docs/spec/epics/epic-*.md
 ```
 
-### Step 2: For Each Epic, Count Stories
+### Step 2: For Each Epic, Count Stories by Status
 
 ```bash
-# Stories still in RFP (pending)
-ls docs/rfp/<epic-num>.* 2>/dev/null | wc -l
-
-# Stories moved to ADR (complete)
-ls docs/adr/<epic-num>.* 2>/dev/null | wc -l
+# Read each story file in docs/spec/stories/ and check Status field
+grep -l "Status.*Todo\|Status.*In Progress" docs/spec/stories/<epic-num>.* 2>/dev/null | wc -l
+grep -l "Status.*Complete" docs/spec/stories/<epic-num>.* 2>/dev/null | wc -l
 ```
 
 ### Step 3: Generate Report
@@ -182,7 +195,7 @@ ls docs/adr/<epic-num>.* 2>/dev/null | wc -l
 
 ## Epic Spec Template
 
-For creating new epics (`docs/spec/epic-NN-<slug>.md`), use the template at `~/.claude/templates/epic.md`.
+For creating new epics (`docs/spec/epics/epic-NN-<slug>.md`), use the template at `~/.claude/templates/epic.md`.
 
 **Read the template first:** `Read(file_path="~/.claude/templates/epic.md")`
 
@@ -192,5 +205,5 @@ The template includes: summary, architecture diagram, stories table, key changes
 - NEVER create stories without reading the affected code first
 - NEVER skip the architecture diagram in story RFPs
 - ALWAYS use the `<epic>.<story>` numbering convention
-- Stories move rfp/ → adr/ on completion, never the reverse
+- Stories stay in `docs/spec/stories/` — status field tracks completion, no file movement
 - Points: 1=trivial, 2=small, 3=medium, 5=large (no 4 — force a decision)

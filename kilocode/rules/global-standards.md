@@ -2,10 +2,12 @@
 
 ## Process
 
-All structural changes follow: ADR → Design → TDD → Implement → Verify.
+All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement → Verify).
 
 - **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
-- **Plan before code**: Use `/spec` for non-trivial work.
+- **Architecture**: Diagram affected components in `docs/spec/arch/`.
+- **Decompose**: Break epics into stories via `/rfp` → `docs/spec/epics/` + `docs/spec/stories/`.
+- **Plan before code**: Use `/spec` for non-trivial work → `docs/spec/plans/`.
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
 

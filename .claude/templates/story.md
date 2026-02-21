@@ -76,5 +76,4 @@ graph TD
 - [ ] Run project quality gates (format, lint, type check, tests)
 - [ ] All quality gates pass
 - [ ] Commit with conventional commit message
-- [ ] Move story file from `docs/rfp/` to `docs/adr/`
-- [ ] Update story status from "Todo" to "Done"
+- [ ] Update story status from "Todo" to "Complete" (handled by `/spec-verify`)

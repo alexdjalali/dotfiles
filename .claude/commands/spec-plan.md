@@ -369,165 +369,39 @@ Split a task if it has multiple unrelated DoD criteria. Merge tasks if one can't
 
 **Save plan to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 
-**Required plan template:**
+**Read the plan template first:** `Read(file_path="~/.claude/templates/plan.md")`
 
-```markdown
-# [Feature Name] Implementation Plan
+Use the template at `~/.claude/templates/plan.md` as the starting structure. The template includes all required sections:
+- Header metadata (Status, Approved, Iterations, Worktree)
+- Summary (Goal, Architecture, Tech Stack)
+- Architecture Diagram (Mermaid C4-style)
+- Scope (In/Out)
+- Prerequisites
+- Context for Implementer (patterns, conventions, key files, gotchas, domain context)
+- Runtime Environment (if applicable)
+- Feature Inventory (for migration/refactoring only)
+- Progress Tracking checklist
+- Implementation Tasks (with Objective, Dependencies, Files, Key Decisions, DoD, Verify)
+- Testing Strategy
+- Risks and Mitigations
+- Open Questions / Deferred Ideas
 
-Created: [Date]
-Status: PENDING
-Approved: No
-Iterations: 0
-Worktree: Yes
+**Key rules for plan content:**
 
-> **Status Lifecycle:** PENDING → COMPLETE → VERIFIED
-> **Iterations:** Tracks implement→verify cycles (incremented by verify phase)
->
-> - PENDING: Initial state, awaiting implementation
-> - COMPLETE: All tasks implemented
-> - VERIFIED: All checks passed
->
-> **Approval Gate:** Implementation CANNOT proceed until `Approved: Yes`
-> **Worktree:** Set at plan creation (from dispatcher). `Yes` uses git worktree isolation; `No` works directly on current branch
+**⚠️ DoD criteria must be verifiable.** The verification phase checks each criterion against the actual code and running program.
 
-## Summary
+✅ Good DoD examples:
+- "GET /api/users?role=admin returns only admin users"
+- "Form shows validation error when email field is empty"
+- "CLI exits with code 1 and prints usage when no arguments given"
 
-**Goal:** [One sentence describing what this builds]
+❌ Bad DoD (never use these):
+- "Feature works correctly"
+- "Edge cases handled appropriately"
 
-**Architecture:** [2-3 sentences about chosen approach]
+**⚠️ Risk mitigations are commitments.** The verification phase checks that every mitigation is actually implemented in code. Write them as concrete, implementable behaviors.
 
-**Tech Stack:** [Key technologies/libraries]
-
-## Architecture Diagram
-
-```mermaid
-%% C4-style diagram showing components, data flow, and dependencies
-%% Use graph TD for structure, sequenceDiagram for interactions,
-%% flowchart LR for data pipelines
-graph TD
-    %% Replace with actual architecture
-    A[Component A] --> B[Component B]
-```
-
-> Show: affected components (solid border), new components (dashed border), data flow (arrows with labels), external services (rounded boxes). Update this diagram as implementation progresses.
-
-## Scope
-
-### In Scope
-
-- [What WILL be changed/built]
-- [Specific components affected]
-
-### Out of Scope
-
-- [What will NOT be changed]
-- [Explicit boundaries]
-
-## Prerequisites
-
-- [Any requirements before starting]
-- [Dependencies that must exist]
-- [Environment setup needed]
-
-## Context for Implementer
-
-> This section is critical for cross-session continuity. Write it for an implementer who has never seen the codebase.
-
-- **Patterns to follow:** [Reference existing file:line that demonstrates the pattern, e.g., "Follow the route handler pattern in `src/routes/users.ts:45`"]
-- **Conventions:** [Naming, file organization, error handling approach used in this project]
-- **Key files:** [Important files the implementer must read first, with brief description of each]
-- **Gotchas:** [Non-obvious dependencies, quirks, things that look wrong but are intentional]
-- **Domain context:** [Business logic or domain concepts needed to understand the task]
-
-## Runtime Environment (if applicable)
-
-> Include this section when the project has a running service, API, or UI.
-> Delete if the project is a library or CLI tool with no long-running process.
-
-- **Start command:** [How to start the service, e.g., `bun worker-service.cjs`]
-- **Port:** [What port it listens on]
-- **Deploy path:** [Where built artifacts are installed, if different from source]
-- **Health check:** [How to verify the service is running, e.g., `curl http://localhost:PORT/health`]
-- **Restart procedure:** [How to restart after code changes]
-
-## Feature Inventory (FOR MIGRATION/REFACTORING ONLY)
-
-> **Include this section when replacing existing code. Delete if not applicable.**
-
-### Files Being Replaced
-
-| Old File       | Functions/Classes      | Mapped to Task |
-| -------------- | ---------------------- | -------------- |
-| `old/file1.py` | `func_a()`, `func_b()` | Task 3         |
-| `old/file2.py` | `ClassX`, `func_c()`   | Task 4, Task 5 |
-
-### Feature Mapping Verification
-
-- [ ] All old files listed above
-- [ ] All functions/classes identified
-- [ ] Every feature has a task number
-- [ ] No features accidentally omitted
-
-**⚠️ If any feature shows "❌ MISSING", add a task before implementation!**
-
-## Progress Tracking
-
-**MANDATORY: Update this checklist as tasks complete. Change `[ ]` to `[x]`.**
-
-- [ ] Task 1: [Brief summary]
-- [ ] Task 2: [Brief summary]
-- [ ] ...
-
-**Total Tasks:** [Number] | **Completed:** 0 | **Remaining:** [Number]
-
-## Implementation Tasks
-
-### Task 1: [Component Name]
-
-**Objective:** ...
-**Dependencies:** None
-**Files:** ...
-**Key Decisions / Notes:** ...
-**Definition of Done:** ...
-**Verify:** [Concrete commands to verify this task]
-
-### Task 2: [Component Name]
-
-**Objective:** ...
-**Dependencies:** Task 1
-**Files:** ...
-**Key Decisions / Notes:** ...
-**Definition of Done:** ...
-**Verify:** [Concrete commands to verify this task]
-
-## Testing Strategy
-
-- Unit tests: [What to test in isolation]
-- Integration tests: [What to test together]
-- Manual verification: [Steps to verify manually]
-
-## Risks and Mitigations
-
-> Consider: breaking changes, backward compatibility, data loss/migration, performance regression, security implications, state management complexity, cross-component coupling, external dependency failures.
-
-| Risk     | Likelihood   | Impact       | Mitigation                           |
-| -------- | ------------ | ------------ | ------------------------------------ |
-| [Risk 1] | Low/Med/High | Low/Med/High | [Concrete, implementable mitigation] |
-
-**⚠️ Risk mitigations are commitments.** The verification phase (spec-reviewer-compliance) will check that every mitigation listed here is actually implemented in code. Write mitigations as concrete, implementable behaviors, not vague statements.
-
-✅ Good: "If selected project not in available list, reset to null (All Projects)"
-❌ Bad: "Handle edge cases appropriately"
-
-## Open Questions
-
-- [Any remaining questions for the user]
-- [Decisions deferred to implementation]
-
-### Deferred Ideas
-
-- [Ideas surfaced during discussion that are out of scope for this plan]
-```
+**Zero-context assumption:** Assume implementer knows nothing about codebase. Provide exact file paths, explain domain concepts, list integration points, reference similar patterns.
 
 ### Step 1.7: Plan Verification
 

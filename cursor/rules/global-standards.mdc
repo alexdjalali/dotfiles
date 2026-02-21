@@ -9,16 +9,33 @@ alwaysApply: true
 
 All structural changes follow: ADR → Design → TDD → Implement → Verify.
 
-- **ADR first**: Before architectural changes, write an ADR in `docs/adr/`. No structural code without rationale.
-- **Plan before code**: Use `/spec` for non-trivial work. Explore and design precede implementation.
+- **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
+- **Plan before code**: Use `/spec` for non-trivial work.
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
 
+## Language Standards
+
+Consult the language-specific rule file for your current language:
+- **Python**: `python.mdc` (`.py` files)
+- **Go**: `go.mdc` (`.go` files)
+- **TypeScript/React/Tailwind**: `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)
+
+Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`golangci-lint`, TS=`pnpm`+`eslint`+`tsc`.
+
+## Templates
+
+Use the templates at `~/.claude/templates/` for document generation:
+- **Epic Spec**: `~/.claude/templates/epic.md`
+- **Story/RFP**: `~/.claude/templates/story.md`
+- **Plan**: `~/.claude/templates/plan.md`
+- **ADR**: `~/.claude/templates/adr.md`
+
 ## Quality Gates (before every commit)
 
-1. Format (ruff format / gofumpt / prettier + tailwindcss plugin)
-2. Lint (ruff check / golangci-lint / eslint)
-3. Type check (basedpyright / go vet / tsc --noEmit)
+1. Format (auto-applied by hooks on save)
+2. Lint (`ruff check` / `golangci-lint` / `eslint`)
+3. Type check (`basedpyright` / `go vet` / `tsc --noEmit`)
 4. Unit tests for changed modules
 
 ## Git Conventions
@@ -32,7 +49,6 @@ All structural changes follow: ADR → Design → TDD → Implement → Verify.
 - Clean/layered: Foundation → Client → Service/Domain → Controller/API
 - Dependency injection at composition root
 - Repository pattern for data access
-- Event-driven messaging between services
 - Early returns over nested conditionals
 - Separate persistence models, domain entities, and DTOs
 

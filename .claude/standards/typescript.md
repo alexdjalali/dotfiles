@@ -25,3 +25,24 @@
 - Custom values: extend theme in `tailwind.config.ts` rather than arbitrary values `[...]`
 - Class ordering: follow Tailwind Prettier plugin ordering
 - No inline `style={}` when Tailwind utilities exist
+
+## Testing Requirements
+- `describe`/`it` blocks with descriptive names (reads as a specification)
+- Every test has a comment: **Why important** + **What it tests**
+- React Testing Library for component tests (test behavior, not implementation)
+- MSW (Mock Service Worker) for API mocking in integration tests
+- Test file pattern: `<file>.test.ts` or `<file>.spec.ts` colocated with source
+- Shared test utilities in `tests/helpers/` or `__tests__/helpers/`
+
+## Documentation Requirements
+- JSDoc on all public functions, types, and exported modules
+- TSDoc for library packages (`@param`, `@returns`, `@example`)
+- Inline comments for non-obvious logic only
+- No comments that restate the code
+
+## Quality Gates
+1. `prettier --check` — code formatting
+2. `eslint` — linting
+3. `tsc --noEmit` — type checking (strict mode)
+4. `vitest run` — all tests pass
+5. `vitest run --coverage` — coverage report

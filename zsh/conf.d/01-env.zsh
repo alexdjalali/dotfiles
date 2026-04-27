@@ -28,12 +28,14 @@ path=(
   $HOME/.bun/bin(N)
   $HOME/Library/Python/3.*/bin(N)
   $GOPATH/bin
+  $HOME/TechAI/*/bin(N)
+  $HOME/Personal/*/bin(N)
   $path
 )
 typeset -U path  # deduplicate
 
 # Man pages (user-local)
-export MANPATH="$HOME/local/share/man:$MANPATH"
+export MANPATH="$HOME/.local/share/man:$MANPATH"
 
 # Catppuccin Mocha theme for bat
 export BAT_THEME="Catppuccin Mocha"

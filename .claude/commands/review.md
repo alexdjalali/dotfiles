@@ -138,6 +138,23 @@ Output a structured review:
 APPROVE / REQUEST CHANGES / NEEDS DISCUSSION
 ```
 
-### 5. Suggest Fixes
+### 5. Gate Decision
 
-For any Critical or Warning findings, offer to fix them automatically where possible.
+**Present the user with an explicit approval gate before taking action.**
+
+```
+AskUserQuestion:
+  question: "How should we proceed with these findings?"
+  header: "Review Gate"
+  options:
+    - "Auto-fix all" (Recommended) — Automatically fix Critical and Warning issues
+    - "Fix critical only" — Only fix Critical issues, leave Warnings as-is
+    - "No fixes" — Report only, make no changes to code
+    - "Reject changes" — These changes should not be committed as-is
+```
+
+**Based on response:**
+- **Auto-fix all:** Fix Critical and Warning findings automatically. Run quality gates after.
+- **Fix critical only:** Fix only Critical findings. Report remaining Warnings for manual review.
+- **No fixes:** End review. User handles fixes manually.
+- **Reject changes:** Report that changes need rework. Do not proceed toward commit.

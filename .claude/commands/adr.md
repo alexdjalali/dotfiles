@@ -9,6 +9,23 @@ Generate a numbered ADR before any structural or architectural change.
 ## Arguments
 $ARGUMENTS — Brief title for the decision (e.g., "use-redis-for-caching", "switch-to-grpc")
 
+### Input Validation
+
+```
+IF $ARGUMENTS is empty:
+    AskUserQuestion:
+      question: "What architectural decision needs to be recorded?"
+      header: "ADR Title"
+      options:
+        - "Technology choice" — Choosing between tools, libraries, or platforms
+        - "Pattern change" — Adopting or abandoning an architectural pattern
+        - "Infrastructure" — Deployment, hosting, or infrastructure decision
+```
+
+IF $ARGUMENTS is provided, sanitize to kebab-case for filename:
+- Lowercase, strip special chars, replace spaces with hyphens
+- e.g., "Use Redis for Caching" → "use-redis-for-caching"
+
 ## Instructions
 
 1. **Find the next ADR number**: Look in `docs/adr/` for existing ADRs. If none exist, create the directory and start at `0001`.

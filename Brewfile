@@ -62,7 +62,7 @@ brew "entr"                # File watcher (re-run commands on change)
 # Languages & Package Managers
 # =============================================================================
 brew "go"
-brew "python@3"
+brew "python@3.13"
 brew "uv"                  # Fast Python package manager
 brew "pipx"                # Install Python CLI tools in isolation
 brew "node"

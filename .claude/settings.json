@@ -25,7 +25,6 @@
   },
   "permissions": {
     "allow": [
-      "Bash",
       "Bash(basedpyright:*)",
       "Bash(mypy:*)",
       "Bash(pyright:*)",

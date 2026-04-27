@@ -1,10 +1,11 @@
 ---@type LazySpec
 return {
   -- gitsigns.nvim - 5k+ stars (lewis6991)
+  -- Note: inline blame handled by git-blame.nvim below (better toggle/format)
   {
     "lewis6991/gitsigns.nvim",
     opts = {
-      current_line_blame = true,
+      current_line_blame = false,
       current_line_blame_opts = { delay = 200 },
     },
   },

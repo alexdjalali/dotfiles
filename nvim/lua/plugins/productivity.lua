@@ -17,13 +17,20 @@ return {
     "kristijanhusak/vim-dadbod-ui",
     dependencies = {
       { "tpope/vim-dadbod", lazy = true },
+      { "kristijanhusak/vim-dadbod-completion", lazy = true },
     },
-    cmd = { "DBUI", "DBUIToggle" },
+    cmd = { "DBUI", "DBUIToggle", "DB" },
     keys = {
       { "<leader>D", "<cmd>DBUIToggle<cr>", desc = "Database UI" },
     },
     init = function()
       vim.g.db_ui_use_nerd_fonts = 1
+      local pg_pass = vim.env.HPC_PG_PASSWORD or "changeme"
+      vim.g.dbs = {
+        { name = "HPC Auth (PostgreSQL)", url = "postgresql://hpc:" .. pg_pass .. "@localhost:5432/hpc_auth" },
+        { name = "HPC cspan (MongoDB)", url = "mongodb://localhost:27017/cspan?directConnection=true" },
+        { name = "HPC Redis", url = "redis://localhost:6379" },
+      }
     end,
   },
 

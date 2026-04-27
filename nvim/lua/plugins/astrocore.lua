@@ -34,6 +34,11 @@ return {
         ["<C-s>"] = { "<cmd>w<cr>", desc = "Save" },
         ["<S-h>"] = { "<cmd>bprevious<cr>", desc = "Prev buffer" },
         ["<S-l>"] = { "<cmd>bnext<cr>", desc = "Next buffer" },
+        -- Window navigation
+        ["<C-h>"] = { "<C-w>h", desc = "Move to left window" },
+        ["<C-j>"] = { "<C-w>j", desc = "Move to below window" },
+        ["<C-k>"] = { "<C-w>k", desc = "Move to above window" },
+        ["<C-l>"] = { "<C-w>l", desc = "Move to right window" },
         -- Git
         ["<leader>gg"] = { "<cmd>LazyGit<cr>", desc = "LazyGit" },
         ["<leader>gd"] = { "<cmd>DiffviewOpen<cr>", desc = "Diff view" },

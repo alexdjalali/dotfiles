@@ -1,5 +1,8 @@
 ---@type LazySpec
 return {
+  -- aerial.nvim: unpin to get nvim 0.12.0 iter_matches fix (need ≥3.1.0, v6 pins 2.7.0)
+  { "stevearc/aerial.nvim", version = false },
+
   -- Disable Snacks.notifier (conflicts with noice.nvim/nvim-notify)
   -- Disable Snacks.image (iTerm doesn't support kitty graphics protocol)
   {
@@ -79,7 +82,6 @@ return {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
         },
         hover = { enabled = true },
         signature = { enabled = true, auto_open = { enabled = true } },

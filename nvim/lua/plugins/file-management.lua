@@ -12,11 +12,8 @@ return {
           never_show = { ".git", "__pycache__", ".venv", "node_modules", ".mypy_cache", ".ruff_cache" },
         },
         window = {
-          -- fuzzy_finder_mappings must live under filesystem.window, not filesystem
           fuzzy_finder_mappings = {
-            ["<down>"] = "move_cursor_down",
             ["<C-n>"] = "move_cursor_down",
-            ["<up>"] = "move_cursor_up",
             ["<C-p>"] = "move_cursor_up",
           },
         },
@@ -32,6 +29,24 @@ return {
       vim.list_extend(disable, { "neo-tree", "neo-tree-popup" })
       opts.disable_filetype = disable
     end,
+  },
+
+  -- Disable blink.cmp in neo-tree popup so fuzzy finder Ctrl-N/P and
+  -- arrow key navigation works.  Must preserve AstroNvim's default
+  -- buftype=="prompt" check (which covers NUI inputs) since lazy.nvim
+  -- replaces functions wholesale rather than merging them.
+  {
+    "saghen/blink.cmp",
+    opts = {
+      enabled = function()
+        local astro = require "astrocore"
+        local dap_prompt = astro.is_available "cmp-dap"
+          and vim.tbl_contains({ "dap-repl", "dapui_watches", "dapui_hover" }, vim.bo.filetype)
+        if vim.bo.buftype == "prompt" and not dap_prompt then return false end
+        if vim.bo.filetype == "neo-tree-popup" then return false end
+        return vim.F.if_nil(vim.b.completion, astro.config.features.cmp)
+      end,
+    },
   },
 
   -- project.nvim - 1k+ stars - project management

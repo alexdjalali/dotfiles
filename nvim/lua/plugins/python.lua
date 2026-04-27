@@ -34,7 +34,9 @@ return {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
                 diagnosticMode = "openFilesOnly",
-                -- Additional analysis settings
+                -- Suppress missing type stubs — governed by ruff lint, not pyright stubs.
+                -- Matches pyproject.toml [tool.basedpyright] reportMissingTypeStubs = false.
+                reportMissingTypeStubs = false,
                 inlayHints = {
                   variableTypes = true,
                   functionReturnTypes = true,

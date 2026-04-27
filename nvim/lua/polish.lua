@@ -1,6 +1,43 @@
 -- Disable swap files
 vim.opt.swapfile = false
 
+-- Collapse to a single window when all file buffers are closed.
+-- Prevents the "4 duplicate splits" problem where closing every buffer
+-- leaves the window layout intact with each pane showing the same
+-- fallback buffer.
+vim.api.nvim_create_autocmd("BufDelete", {
+  callback = function()
+    vim.schedule(function()
+      -- Count windows that are normal (not floating, not special)
+      local normal_wins = {}
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local cfg = vim.api.nvim_win_get_config(win)
+        if cfg.relative == "" then
+          table.insert(normal_wins, win)
+        end
+      end
+      if #normal_wins <= 1 then return end
+
+      -- Check if any remaining buffer is a "real" file buffer
+      local has_real_buf = false
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted then
+          local name = vim.api.nvim_buf_get_name(buf)
+          local bt = vim.bo[buf].buftype
+          if name ~= "" and bt == "" then
+            has_real_buf = true
+            break
+          end
+        end
+      end
+
+      if not has_real_buf then
+        vim.cmd("only")
+      end
+    end)
+  end,
+})
+
 -- Workaround: Neovim 0.11 TermRequest bug — OSC 133 prompt handler calls
 -- nvim_buf_set_extmark with out-of-range line when scrollback is trimmed.
 -- Remove the specific autocommand until upstream fix lands.
@@ -12,18 +49,24 @@ for _, ac in ipairs(vim.api.nvim_get_autocmds({ event = "TermRequest" })) do
 end
 
 -- Focus window on mouse hover (skip floating windows like Telescope, popups, etc.)
+-- Debounced to avoid fighting <C-w> and other keyboard window navigation.
 vim.opt.mousemoveevent = true
+local mouse_focus_timer = vim.uv.new_timer()
 vim.keymap.set("n", "<MouseMove>", function()
   local pos = vim.fn.getmousepos()
   if pos.winid ~= 0 and pos.winid ~= vim.api.nvim_get_current_win() then
-    local win_config = vim.api.nvim_win_get_config(pos.winid)
-    if win_config.relative == "" then
-      vim.schedule(function()
-        if vim.api.nvim_win_is_valid(pos.winid) then
-          vim.api.nvim_set_current_win(pos.winid)
+    local ok, win_config = pcall(vim.api.nvim_win_get_config, pos.winid)
+    if ok and win_config.relative == "" then
+      local target = pos.winid
+      mouse_focus_timer:stop()
+      mouse_focus_timer:start(150, 0, vim.schedule_wrap(function()
+        if vim.api.nvim_win_is_valid(target) then
+          vim.api.nvim_set_current_win(target)
         end
-      end)
+      end))
     end
+  else
+    mouse_focus_timer:stop()
   end
 end, { silent = true })
 

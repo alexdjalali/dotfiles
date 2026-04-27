@@ -38,9 +38,9 @@ vim.api.nvim_create_autocmd("BufDelete", {
   end,
 })
 
--- Workaround: Neovim 0.11 TermRequest bug — OSC 133 prompt handler calls
+-- Workaround: Neovim 0.11+ TermRequest bug — OSC 133 prompt handler calls
 -- nvim_buf_set_extmark with out-of-range line when scrollback is trimmed.
--- Remove the specific autocommand until upstream fix lands.
+-- TODO: Remove once confirmed fixed in Neovim 0.12+ (check :h osc133)
 for _, ac in ipairs(vim.api.nvim_get_autocmds({ event = "TermRequest" })) do
   if ac.desc and ac.desc:match("OSC 133") then
     vim.api.nvim_del_autocmd(ac.id)

@@ -32,31 +32,7 @@ return {
     opts = {},
   },
 
-  -- vim-dadbod - database client for Postgres, Mongo, Redis, etc.
-  {
-    "tpope/vim-dadbod",
-    cmd = "DB",
-  },
-  {
-    "kristijanhusak/vim-dadbod-ui",
-    cmd = { "DBUI", "DBUIToggle" },
-    dependencies = {
-      "tpope/vim-dadbod",
-      "kristijanhusak/vim-dadbod-completion",
-    },
-    keys = {
-      { "<leader>D", "<cmd>DBUIToggle<cr>", desc = "Database UI (DadBod)" },
-    },
-    init = function()
-      vim.g.db_ui_use_nerd_fonts = 1
-      local pg_pass = vim.env.HPC_PG_PASSWORD or "changeme"
-      vim.g.dbs = {
-        { name = "HPC Auth (PostgreSQL)", url = "postgresql://hpc:" .. pg_pass .. "@localhost:5432/hpc_auth" },
-        { name = "HPC cspan (MongoDB)", url = "mongodb://localhost:27017/cspan?directConnection=true" },
-        { name = "HPC Redis", url = "redis://localhost:6379" },
-      }
-    end,
-  },
+  -- vim-dadbod configured in productivity.lua (single source of truth)
 
   -- firenvim - 4k+ stars - use Neovim in browser
   {

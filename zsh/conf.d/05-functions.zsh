@@ -169,7 +169,7 @@ nvim-restore() {
 
 # Quick project switcher with fzf + nvim
 proj() {
-  local project=$(fd -t d -d 3 . ~/projects ~/work ~/dev 2>/dev/null | fzf --preview 'eza --tree --level=2 {}')
+  local project=$(fd -t d -d 3 . ~/projects ~/work ~/dev ~/TechAI ~/Personal 2>/dev/null | fzf --preview 'eza --tree --level=2 {}')
   if [[ -n "$project" ]]; then
     cd "$project"
     nvim

@@ -9,6 +9,22 @@ Generate or update Mermaid architecture diagrams from codebase analysis.
 ## Arguments
 $ARGUMENTS — Scope: "full" (whole system), a module/package name, "data-flow", "dependencies", or a specific component to focus on.
 
+### Input Validation
+
+```
+IF $ARGUMENTS is empty:
+    AskUserQuestion:
+      question: "What scope should the architecture diagram cover?"
+      header: "Scope"
+      options:
+        - "Full system" — C4 container diagram of the entire system
+        - "Data flow" — How data moves through the pipeline
+        - "Dependencies" — Import/dependency graph between packages
+        - "Specific module" — Focus on one package or component
+```
+
+Accepted values: `full`, `data-flow`, `dependencies`, or any valid module/package name found in the project.
+
 ## Instructions
 
 ### 1. Determine Scope & Diagram Type

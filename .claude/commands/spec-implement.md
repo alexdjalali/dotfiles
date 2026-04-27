@@ -192,6 +192,37 @@ TaskCreate: "Task 4: Add documentation"            → id=4, addBlockedBy: [2]
 
 ---
 
+### Step 2.2b: Parallelization Check (Fan-Out)
+
+**Before starting sequential implementation, identify parallelizable tasks.**
+
+Independent tasks (those with `Dependencies: None` or whose dependencies are all `[x]` complete)
+can be implemented concurrently to reduce context burn.
+
+**Process:**
+
+1. **Scan uncompleted tasks** — identify all tasks with satisfied dependencies
+2. **If 2+ independent tasks exist:**
+   - Group them into a parallel batch (max concurrency: 2)
+   - Implement each via `Skill(skill='tdd', args='--task <N> --plan <plan-path>')` using the Task tool with `run_in_background=true`
+   - Wait for both to complete, then collect results
+   - Update plan checkboxes and task statuses for all completed tasks
+   - Proceed to next batch of unblocked tasks
+3. **If only 1 task is unblocked:** proceed sequentially (Step 2.3)
+
+**Constraints:**
+- Max concurrency of 2 to avoid context explosion
+- Only parallelize tasks that share NO files in their `Files:` section
+- If tasks modify the same file, they MUST run sequentially regardless of dependencies
+- Per-task commits still happen after each task completes (not batched)
+
+**When NOT to parallelize:**
+- First iteration (initial implementation) — sequential gives better context for later tasks
+- Tasks with overlapping file modifications
+- When context is already above 60% — conserve remaining budget
+
+---
+
 ### Step 2.3: TDD Loop
 
 **TDD is MANDATORY. No production code without a failing test first.**

@@ -33,6 +33,25 @@ Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`golangci-lint`, TS=`
 - Branch naming: `<type>/<short-description>`
 - Never force-push to main/master
 
+## Project Constitution
+
+If a project has `docs/constitution.md` or `.claude/constitution.md`, its principles
+take precedence over global standards for that project. Use constitutions to:
+- Establish non-negotiable project-specific principles (e.g., "no ORM", "gRPC only")
+- Override global defaults when justified (e.g., different coverage thresholds)
+- Document technology constraints and quality budgets
+
+Template: `~/.claude/templates/constitution.md`
+
+## Project Memory
+
+Significant decisions, domain context, and learnings persist in `docs/spec/memory/`
+(or `.claude/memory/`) per project. Review before starting work on unfamiliar areas.
+
+- Use `/learn` to capture reusable knowledge into skills or memory
+- Memory files survive session clears and provide cross-session continuity
+- Store: domain concepts, past architectural decisions, team conventions, gotchas
+
 ## Templates
 
 Use the templates at `~/.claude/templates/` for document generation:
@@ -43,6 +62,8 @@ Use the templates at `~/.claude/templates/` for document generation:
 - **Commit Message**: `~/.claude/templates/commit.md`
 - **Pull Request**: `~/.claude/templates/pr.md`
 - **Monorepo Scaffold**: `~/.claude/templates/repo.md`
+- **Constitution**: `~/.claude/templates/constitution.md`
+- **Checklist**: `~/.claude/templates/checklist.md`
 
 ## Monorepo Standard
 
@@ -60,6 +81,15 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 - Repository pattern for data access
 - Early returns over nested conditionals
 - Separate persistence models, domain entities, and DTOs
+
+## Cross-Agent Sync
+
+Commands in `~/.claude/commands/` are the source of truth. When updating commands,
+sync equivalents to other agent configs:
+- **Cursor**: `cursor/` rules directory
+- **Kilocode**: `kilocode/` config directory
+
+Use `/sync` to propagate changes across agent configurations.
 
 ## Anti-Patterns to Avoid
 

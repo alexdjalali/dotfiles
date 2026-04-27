@@ -102,6 +102,35 @@ If all gates pass (READY), suggest a conventional commit message based on the ch
 
 Where type is one of: feat, fix, refactor, docs, test, chore, perf, ci
 
-### 5. If NOT READY
+### 5. Gate Decision
 
-List the specific failures and offer to fix them. Do not suggest committing with known failures.
+**If NOT READY, present an explicit gate before proceeding.**
+
+```
+AskUserQuestion:
+  question: "Preflight found issues. How should we proceed?"
+  header: "Preflight Gate"
+  options:
+    - "Auto-fix and re-run" (Recommended) — Fix all auto-fixable issues, then re-run gates
+    - "Fix and commit anyway" — Fix what's possible, commit with remaining warnings
+    - "Abort" — Do not commit; user will fix manually
+```
+
+**Based on response:**
+- **Auto-fix and re-run:** Apply all auto-fixes, re-run all 4 gates. If still NOT READY, report remaining issues.
+- **Fix and commit anyway:** Apply fixes, commit with a note about known issues (only if remaining issues are warnings, not errors).
+- **Abort:** Report the full issue list and stop. Do not modify files or commit.
+
+### 6. If READY
+
+All gates passed. Suggest commit message and offer to proceed:
+
+```
+AskUserQuestion:
+  question: "All gates pass. Commit with this message?"
+  header: "Commit"
+  options:
+    - "Yes, commit" (Recommended) — Commit with the suggested message
+    - "Edit message" — Let me provide a different commit message
+    - "Skip commit" — Gates passed but don't commit yet
+```

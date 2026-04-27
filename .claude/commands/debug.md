@@ -9,6 +9,20 @@ Scientific method for diagnosing and fixing bugs. No random code changes.
 ## Arguments
 $ARGUMENTS — Description of the bug, error message, or unexpected behavior.
 
+### Input Validation
+
+```
+IF $ARGUMENTS is empty:
+    AskUserQuestion:
+      question: "What's the bug or unexpected behavior you're seeing?"
+      header: "Bug report"
+      options:
+        - "Error message" — I have a specific error or stack trace
+        - "Wrong behavior" — Code runs but produces incorrect results
+        - "Regression" — Something that used to work is now broken
+        - "Intermittent" — Bug only happens sometimes or under specific conditions
+```
+
 ## Instructions
 
 ### Phase 1: REPRODUCE

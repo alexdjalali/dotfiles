@@ -4,10 +4,12 @@ Created: [Date]
 Status: PENDING
 Approved: No
 Iterations: 0
+Max Iterations: 3
 Worktree: Yes
 
 > **Status Lifecycle:** PENDING → COMPLETE → VERIFIED
 > **Iterations:** Tracks implement→verify cycles (incremented by verify phase)
+> **Max Iterations:** Hard cap on verify→implement loops (default 3). When reached, remaining issues are reported to user for manual decision.
 >
 > - PENDING: Initial state, awaiting implementation
 > - COMPLETE: All tasks implemented

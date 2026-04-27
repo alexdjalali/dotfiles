@@ -198,7 +198,21 @@ This is a serious issue - the implementation is incomplete.
    - Update the Progress Tracking section with new task count
    - Add note: `> Extended [Date]: Tasks X-Y added for missing features found during verification`
 
-2. **Set plan status to PENDING and increment Iterations:**
+2. **⛔ Max Iteration Guard:** Read `Iterations` and `Max Iterations` from the plan header.
+
+   ```
+   IF Iterations + 1 >= Max Iterations:
+       STOP. Do NOT loop back to implementation.
+       Report remaining issues to user:
+       "⛔ Max iterations (N) reached. Remaining issues require manual decision:"
+       - [List missing features / unresolved issues]
+       Ask user: AskUserQuestion with options:
+         - "Increase max and continue" — Bump Max Iterations and loop back
+         - "Fix manually" — Leave plan as COMPLETE, user handles remaining issues
+         - "Accept as-is" — Mark VERIFIED despite known gaps
+   ```
+
+3. **Set plan status to PENDING and increment Iterations:**
 
    ```
    Edit the plan file:
@@ -206,9 +220,9 @@ This is a serious issue - the implementation is incomplete.
    Iterations: N     →  Iterations: N+1
    ```
 
-3. **Register status change:** `~/.pilot/bin/pilot register-plan "<plan_path>" "PENDING" 2>/dev/null || true`
+4. **Register status change:** `~/.pilot/bin/pilot register-plan "<plan_path>" "PENDING" 2>/dev/null || true`
 
-4. **Inform user:**
+5. **Inform user:**
 
    ```
    🔄 Iteration N+1: Missing features detected, looping back to implement...
@@ -220,8 +234,8 @@ This is a serious issue - the implementation is incomplete.
    The plan has been updated with [N] new tasks.
    ```
 
-5. **⛔ Phase Transition Context Guard:** Run `~/.pilot/bin/pilot check-context --json`. If >= 80%, hand off instead (see spec.md Section 0.3).
-6. **Invoke implementation phase:** `Skill(skill='spec-implement', args='<plan-path>')`
+6. **⛔ Phase Transition Context Guard:** Run `~/.pilot/bin/pilot check-context --json`. If >= 80%, hand off instead (see spec.md Section 0.3).
+7. **Invoke implementation phase:** `Skill(skill='spec-implement', args='<plan-path>')`
 
 ### Step 3.4: Call Chain Analysis
 
@@ -653,16 +667,27 @@ This is the THIRD user interaction point in the `/spec` workflow (first is workt
 **When verification FAILS (missing features, serious bugs, or unfixed rule violations):**
 
 1. Add new tasks to the plan for missing features/bugs
-2. **Set status back to PENDING and increment Iterations:**
+2. **⛔ Max Iteration Guard:** Read `Iterations` and `Max Iterations` from plan header.
+   ```
+   IF Iterations + 1 >= Max Iterations:
+       STOP. Report remaining issues to user:
+       "⛔ Max iterations (N) reached. Remaining issues require manual decision:"
+       - [List unresolved issues]
+       AskUserQuestion:
+         - "Increase max and continue" — Bump Max Iterations and loop back
+         - "Fix manually" — Leave plan at COMPLETE, user handles remaining
+         - "Accept as-is" — Mark VERIFIED despite known gaps
+   ```
+3. **Set status back to PENDING and increment Iterations:**
    ```
    Edit the plan file:
    Status: COMPLETE  →  Status: PENDING
    Iterations: N     →  Iterations: N+1
    ```
-3. **Register status change:** `~/.pilot/bin/pilot register-plan "<plan_path>" "PENDING" 2>/dev/null || true`
-4. Inform user: "🔄 Iteration N+1: Issues found, fixing and re-verifying..."
-5. **⛔ Phase Transition Context Guard:** Run `~/.pilot/bin/pilot check-context --json`. If >= 80%, hand off instead (see spec.md Section 0.3).
-6. **Invoke implementation phase:** `Skill(skill='spec-implement', args='<plan-path>')`
+4. **Register status change:** `~/.pilot/bin/pilot register-plan "<plan_path>" "PENDING" 2>/dev/null || true`
+5. Inform user: "🔄 Iteration N+1: Issues found, fixing and re-verifying..."
+6. **⛔ Phase Transition Context Guard:** Run `~/.pilot/bin/pilot check-context --json`. If >= 80%, hand off instead (see spec.md Section 0.3).
+7. **Invoke implementation phase:** `Skill(skill='spec-implement', args='<plan-path>')`
 
 ---
 

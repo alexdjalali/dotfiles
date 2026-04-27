@@ -5,6 +5,16 @@ DOTFILES="$HOME/dotfiles"
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d_%H%M%S)"
 
 # ---------------------------------------------------------------------------
+# Flags
+# ---------------------------------------------------------------------------
+
+UPDATE_ONLY=false
+if [[ "${1:-}" == "--update" ]]; then
+    UPDATE_ONLY=true
+    shift
+fi
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -37,8 +47,12 @@ backup_and_link() {
 }
 
 # ---------------------------------------------------------------------------
-# 1. Xcode Command Line Tools
+# 1. Xcode Command Line Tools (skip with --update)
 # ---------------------------------------------------------------------------
+
+if $UPDATE_ONLY; then
+    info "Update mode: skipping install steps 1-5, jumping to symlinks..."
+else
 
 info "Checking Xcode Command Line Tools..."
 if xcode-select -p &>/dev/null; then
@@ -139,6 +153,9 @@ else
     ok "Powerlevel10k installed"
 fi
 
+# End of --update skip block
+fi
+
 # ---------------------------------------------------------------------------
 # 6. Symlinks
 # ---------------------------------------------------------------------------
@@ -154,6 +171,9 @@ backup_and_link "$DOTFILES/neomutt/.neomuttrc"  "$HOME/.neomuttrc"
 backup_and_link "$DOTFILES/neomutt/.neomutt"    "$HOME/.neomutt"
 backup_and_link "$DOTFILES/raycast"             "$HOME/.local/scripts/raycast"
 
+# Ensure Raycast scripts are executable
+chmod +x "$DOTFILES/raycast/"*.sh 2>/dev/null || true
+
 # Claude Code (individual files — ~/.claude/ also contains runtime data we don't track)
 backup_and_link "$DOTFILES/.claude/CLAUDE.md"           "$HOME/.claude/CLAUDE.md"
 backup_and_link "$DOTFILES/.claude/settings.json"       "$HOME/.claude/settings.json"
@@ -166,10 +186,15 @@ else
     ok "~/.claude/settings.local.json already exists"
 fi
 backup_and_link "$DOTFILES/.claude/commands"             "$HOME/.claude/commands"
+backup_and_link "$DOTFILES/.claude/standards"            "$HOME/.claude/standards"
+backup_and_link "$DOTFILES/.claude/templates"            "$HOME/.claude/templates"
 
 # Cursor (global rules and skills — ~/.cursor/ also contains runtime data we don't track)
 backup_and_link "$DOTFILES/cursor/rules"                "$HOME/.cursor/rules"
 backup_and_link "$DOTFILES/cursor/skills-cursor"        "$HOME/.cursor/skills-cursor"
+
+# Kilocode (global rules)
+backup_and_link "$DOTFILES/kilocode/rules"              "$HOME/.kilocode/rules"
 
 # ---------------------------------------------------------------------------
 # 7. fzf shell integration
@@ -286,12 +311,7 @@ if command -v latexmk &>/dev/null || [ -x /Library/TeX/texbin/latexmk ]; then
     fi
 
     # Install latexmkrc (optimized build config)
-    if [ -f "$HOME/.latexmkrc" ]; then
-        ok "~/.latexmkrc already exists"
-    else
-        cp "$DOTFILES/latex/.latexmkrc" "$HOME/.latexmkrc"
-        ok "Installed ~/.latexmkrc (optimized latexmk config)"
-    fi
+    backup_and_link "$DOTFILES/latex/.latexmkrc" "$HOME/.latexmkrc"
 
     # Configure Skim inverse search for Neovim
     if [ -d "/Applications/Skim.app" ]; then
@@ -360,5 +380,10 @@ echo ""
 echo "  8. CURSOR: Global rules are symlinked to ~/.cursor/rules/."
 echo "     Project rules go in each repo's .cursor/rules/ dir."
 echo ""
-echo "  9. Open a new shell to pick up all changes."
+echo "  9. KILOCODE: Global rules are symlinked to ~/.kilocode/rules/."
+echo ""
+echo " 10. Open a new shell to pick up all changes."
+echo ""
+echo "  TIP: Run './install.sh --update' to re-sync symlinks without"
+echo "       reinstalling packages."
 echo ""

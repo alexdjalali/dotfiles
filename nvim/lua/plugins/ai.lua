@@ -5,7 +5,7 @@ return {
     "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     opts = {
-      terminal_cmd = vim.env.HOME .. "/.local/bin/claude",
+      terminal_cmd = vim.fn.exepath("claude") ~= "" and vim.fn.exepath("claude") or "claude",
       env = { CLAUDECODE = "" },
       terminal = {
         snacks_win_opts = {

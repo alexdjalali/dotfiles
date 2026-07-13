@@ -43,6 +43,20 @@ return {
     ---@diagnostic disable: missing-fields
     config = {
       -- clangd = { capabilities = { offsetEncoding = "utf-8" } },
+      -- ruff LSP: launch the project-local ruff (<root>/.venv/bin/ruff) when it
+      -- exists so live diagnostics use the version the repo pins, not the global
+      -- Mason copy. Falls back to whatever `ruff` is on PATH outside a venv.
+      ruff = {
+        cmd = function(dispatchers)
+          local exe = "ruff"
+          local root = vim.fs.root(0, { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" })
+          if root then
+            local local_ruff = root .. "/.venv/bin/ruff"
+            if vim.fn.executable(local_ruff) == 1 then exe = local_ruff end
+          end
+          return vim.lsp.rpc.start({ exe, "server" }, dispatchers)
+        end,
+      },
       terraformls = {
         filetypes = { "terraform", "tf", "hcl" },
       },
@@ -94,6 +108,12 @@ return {
       -- the key is the server that is being setup with `lspconfig`
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
       -- pyright = function(_, opts) require("lspconfig").pyright.setup(opts) end -- or a custom handler function can be passed
+
+      -- Python: keep only basedpyright (types) + ruff (lint/format). The
+      -- astrocommunity python pack also ships these newer type-checkers; we
+      -- don't want three overlapping checkers fighting over the same buffer.
+      ty = false, -- pre-release Astral type checker — overlaps basedpyright
+      pyrefly = false, -- Meta's type checker — overlaps basedpyright
     },
     -- Configure buffer local auto commands to add when attaching a language server
     autocmds = {

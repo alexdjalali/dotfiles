@@ -343,6 +343,33 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# 16. Python CLI tools (uv) — isolated per-tool virtualenvs
+# ---------------------------------------------------------------------------
+
+# Installed as standalone `uv tool` environments (NOT via Mason). Each gets its
+# own isolated venv with no --system-site-packages pollution — Mason's pip
+# installer hardcodes --system-site-packages, which makes its mypy resolve
+# imports against the global site-packages and crash / emit wrong-env
+# diagnostics. Neovim's null-ls prefers ~/.local/bin/mypy over Mason's copy
+# (see nvim/lua/plugins/none-ls.lua). Runs in both fresh and --update modes.
+info "Installing Python CLI tools via uv..."
+if command -v uv &>/dev/null; then
+    for tool in mypy basedpyright ruff; do
+        if uv tool list 2>/dev/null | grep -q "^${tool} "; then
+            ok "uv tool '$tool' already installed"
+        else
+            if uv tool install "$tool"; then
+                ok "uv tool '$tool' installed"
+            else
+                warn "uv tool '$tool' failed to install"
+            fi
+        fi
+    done
+else
+    warn "uv not found — skipping Python CLI tools (check Brewfile)"
+fi
+
+# ---------------------------------------------------------------------------
 # Done
 # ---------------------------------------------------------------------------
 

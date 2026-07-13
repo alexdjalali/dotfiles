@@ -1,0 +1,26 @@
+{
+  "builtinSkillIds": [
+    "create-rule",
+    "create-skill",
+    "create-subagent",
+    "migrate-to-skills",
+    "shell",
+    "update-cursor-settings"
+  ],
+  "managedSkillIds": [
+    "babysit",
+    "canvas",
+    "clone",
+    "create-hook",
+    "cursor",
+    "cursor-blame",
+    "cursor-sdk",
+    "loop",
+    "onboard",
+    "review-cursor-links",
+    "sdk",
+    "split-to-prs",
+    "statusline",
+    "update-cli-config"
+  ]
+}

@@ -1,68 +1,31 @@
 ---
-model: opus
+description: Write an Architecture Decision Record for a significant design decision
 ---
 
-# Architecture Decision Record
+Create an Architecture Decision Record in `docs/adr/` using `~/.claude/templates/adr.md`.
 
-Generate a numbered ADR before any structural or architectural change.
+## Steps
 
-## Arguments
-$ARGUMENTS — Brief title for the decision (e.g., "use-redis-for-caching", "switch-to-grpc")
+1. Scan `docs/adr/` for existing files; determine the next sequential number.
+2. Create `docs/adr/NNN-<kebab-slug>.md` from the template.
+3. Fill in: title, status (Proposed), context, decision, rationale, consequences, and the alternatives table with rejected options and their trade-offs.
+4. Cross-reference related or superseded ADRs.
 
-### Input Validation
+## Rules
 
-```
-IF $ARGUMENTS is empty:
-    AskUserQuestion:
-      question: "What architectural decision needs to be recorded?"
-      header: "ADR Title"
-      options:
-        - "Technology choice" — Choosing between tools, libraries, or platforms
-        - "Pattern change" — Adopting or abandoning an architectural pattern
-        - "Infrastructure" — Deployment, hosting, or infrastructure decision
-```
+- NEVER write an ADR without a concrete decision statement
+- NEVER omit the alternatives table -- rejected options and trade-offs are mandatory
+- Status is always `Proposed` until explicitly accepted by the team
+- An ADR records a decision, not a to-do list
 
-IF $ARGUMENTS is provided, sanitize to kebab-case for filename:
-- Lowercase, strip special chars, replace spaces with hyphens
-- e.g., "Use Redis for Caching" → "use-redis-for-caching"
+## Next Step
 
-## Instructions
+Ask:
 
-1. **Find the next ADR number**: Look in `docs/adr/` for existing ADRs. If none exist, create the directory and start at `0001`.
+> What's the next step for this decision?
+> - `/arch` -- Diagram affected components
+> - `/rfp` -- Decompose into stories
+> - `/spec` -- Implement directly
+> - Done -- Record only
 
-2. **Create the ADR file**: `docs/adr/NNNN-<title>.md` using the template at `~/.claude/templates/adr.md`.
-
-   **Read the template first:** `Read(file_path="~/.claude/templates/adr.md")`
-
-   The template includes: context, decision, alternatives table, architecture diagram, consequences, implementation notes, and quality checklist (architecture, coding patterns, implementation readiness).
-
-3. **Fill in the template** based on the context provided in `$ARGUMENTS` and any relevant codebase context. Ask clarifying questions if the decision scope is unclear.
-
-4. **Pipeline: Next Step**
-
-   After the ADR is written, determine the next step in the architect → engineer pipeline.
-
-   Use AskUserQuestion:
-
-   ```
-   question: "What's the next step for this decision?"
-   header: "Pipeline"
-   options:
-     - "/arch — Diagram affected architecture" - Visualize the components and data flows this decision impacts
-     - "/rfp — Decompose into stories" - Break this into implementable epics and stories
-     - "/spec — Implement directly" - Plan and implement this as a single feature
-     - "Done — Record only" - No implementation action needed right now
-   ```
-
-   Based on the user's choice, invoke the corresponding skill:
-   - `/arch`: `Skill(skill='arch', args='<scope derived from ADR context>')` — pass the ADR path so arch can reference it
-   - `/rfp`: `Skill(skill='rfp', args='<epic description from ADR>')` — creates an epic in `docs/spec/epics/`
-   - `/spec`: `Skill(skill='spec', args='<task description from ADR>')` — plans and implements directly
-   - Done: End the workflow
-
-## Quality Checks
-
-Verify the Quality Checklist at the bottom of the ADR (included in the template). It covers:
-- **Architecture & Design** — real concern, genuine alternatives, honest trade-offs, testing strategy
-- **Coding Patterns** — which of the 8 standard patterns apply to this decision
-- **Implementation Readiness** — clear for unfamiliar implementer, files identified, rollback plan
+Invoke the chosen command.

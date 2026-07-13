@@ -99,3 +99,5 @@ Use `/sync` to propagate changes across agent configurations.
 - `any`/`interface{}` without type narrowing
 - Import cycles
 - Testing implementation details instead of behavior
+
+@RTK.md

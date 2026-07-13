@@ -1,160 +1,52 @@
 ---
-model: opus
+description: Review code changes for correctness, quality, and adherence to standards
 ---
 
-# Code Review
+Review the current diff or specified files across all quality dimensions.
 
-Analyze uncommitted and staged changes with language-aware checks, automated tooling, and a structured report.
+## Scope
 
-## Arguments
-$ARGUMENTS — Optional: specific files or directories to focus on. If empty, review all uncommitted changes.
+- Args specify files or a PR number -> review those
+- No args -> review `git diff HEAD` (staged and unstaged changes)
 
-## Instructions
+## Dimensions
 
-### 1. Gather Changes
+Review each independently:
 
-```bash
-git diff --stat
-git diff --cached --stat
-git status --short
-```
+1. **Correctness**: logic errors, off-by-ones, race conditions, null/empty not handled, errors not propagated
+2. **Security**: injection vectors, auth not checked, secrets in code, input not validated at system boundaries
+3. **Tests**: critical paths covered, assertions test behavior not internals, no obvious coverage gaps
+4. **Standards**: file > 800 lines, function > 50 lines, nesting > 4 levels, `any`/`interface{}`, bare `except:`
+5. **Design**: SOLID violations, premature abstraction, missing abstraction, inappropriate coupling
+6. **Docs**: public API changes reflected in README/docs, breaking changes called out
 
-If `$ARGUMENTS` specifies files, scope the review to those files only.
-
-### 2. Run Automated Checks
-
-Detect project languages and run the appropriate tools on changed files:
-
-**Python (.py)**:
-- `ruff check <files>` (linting)
-- `ruff format --check <files>` (formatting)
-- `basedpyright <files>` or `mypy --strict <files>` (type checking)
-
-**Go (.go)**:
-- `golangci-lint run <packages>` (linting)
-- `gofumpt -l <files>` (formatting)
-- `go vet <packages>` (static analysis)
-
-**TypeScript/JavaScript (.ts/.tsx/.js/.jsx)**:
-- `npx eslint <files>` (linting)
-- `npx prettier --check <files>` (formatting)
-- `npx tsc --noEmit` (type checking)
-
-### 3. Manual Code Review
-
-Read the actual diffs (`git diff` and `git diff --cached`) and check for:
-
-**All Languages**:
-- [ ] Hardcoded secrets, URLs, or config values
-- [ ] Files >800 lines, functions >50 lines
-- [ ] Nesting >4 levels deep
-- [ ] Missing error handling
-- [ ] Import cycles or circular dependencies
-- [ ] Tests cover the changed behavior
-
-**Coding Patterns (verify where appropriate)**:
-- [ ] **Fluent Interface** — method chaining used for readable configuration/setup
-- [ ] **Builder Pattern** — complex objects constructed via builder, not sprawling constructors
-- [ ] **DRY** — no duplicated logic; shared utilities extracted
-- [ ] **Decorator Pattern** — cross-cutting concerns (retry, circuit breaker, logging) wrapped cleanly
-- [ ] **Strategy Pattern** — interchangeable algorithms use strategy, not conditionals
-- [ ] **Observer Pattern** — event-driven notifications (metrics, logging hooks) decoupled
-- [ ] **Singleton Pattern** — single instance resources (DB connections, model instances) managed correctly
-- [ ] **Facade Pattern** — complex subsystems exposed through simplified interfaces
-
-**DRY & Pattern Analysis**:
-- [ ] Duplicated logic — similar code blocks across changed files (extract to shared function)
-- [ ] Pattern consistency — does new code follow existing project patterns?
-- [ ] Missed abstractions — 3+ similar lines that could be a function or type
-- [ ] Copy-paste drift — near-identical code with subtle variations (source of bugs)
-- [ ] Reuse opportunities — does the codebase already have a util/helper for this?
-
-**Functional Style & Mutation Checks**:
-- [ ] Unnecessary mutation — prefer immutable data, transform over mutate
-- [ ] Side effects in pure logic — separate I/O from computation
-- [ ] Deep nesting → use early returns, guard clauses, or `map`/`filter`/`reduce`
-- [ ] Mutable shared state across goroutines/async tasks
-
-**Python-Specific**:
-- [ ] `print()` instead of structured logging
-- [ ] Bare `except:` clauses
-- [ ] Missing type annotations on public functions
-- [ ] Relative imports across packages
-- [ ] Mutable default arguments (`def f(x=[])`)
-
-**Go-Specific**:
-- [ ] Unchecked errors
-- [ ] `fmt.Println` in production code
-- [ ] Missing `defer` for cleanup
-- [ ] `interface{}` without type assertion
-- [ ] Exported functions missing doc comments
-
-**TypeScript-Specific**:
-- [ ] `any` type usage
-- [ ] `console.log` in committed code
-- [ ] `var` declarations
-- [ ] Missing dependency arrays in `useEffect`
-
-**Testing Requirements**:
-- [ ] >90% unit test coverage on changed code
-- [ ] Organized test structure with descriptive names
-- [ ] Every test documents: **Why important** + **What it tests**
-- [ ] Shared test fixtures and helpers used (not duplicated setup)
-- [ ] Edge cases covered and documented
-
-**Documentation Requirements**:
-- [ ] Module/package-level documentation on new files
-- [ ] Public API documentation on new/changed classes, methods, and functions
-- [ ] Inline comments for non-obvious logic only (no noise comments)
-- [ ] Type annotations on all public APIs
-
-### 4. Generate Report
-
-Output a structured review:
+## Output
 
 ```
-## Code Review Report
+## Findings
 
-### Summary
-<1-2 sentence overview of changes>
+### must_fix
+- [file:line] Issue -- failure scenario if not fixed
 
-### Automated Tool Results
-- Linting: PASS/FAIL (N issues)
-- Formatting: PASS/FAIL
-- Type Check: PASS/FAIL (N errors)
+### should_fix
+- [file:line] Issue -- why it degrades maintainability or coverage
 
-### Manual Review Findings
-
-#### Critical (must fix)
-- ...
-
-#### Warning (should fix)
-- ...
-
-#### Suggestion (nice to have)
-- ...
-
-### Verdict
-APPROVE / REQUEST CHANGES / NEEDS DISCUSSION
+### suggestion
+- [file:line] Optional improvement
 ```
 
-### 5. Gate Decision
+## Severity Definitions
 
-**Present the user with an explicit approval gate before taking action.**
+- `must_fix`: breaks correctness or security
+- `should_fix`: degrades maintainability, test coverage, or violates documented standards
+- `suggestion`: optional improvement; no obligation
 
-```
-AskUserQuestion:
-  question: "How should we proceed with these findings?"
-  header: "Review Gate"
-  options:
-    - "Auto-fix all" (Recommended) — Automatically fix Critical and Warning issues
-    - "Fix critical only" — Only fix Critical issues, leave Warnings as-is
-    - "No fixes" — Report only, make no changes to code
-    - "Reject changes" — These changes should not be committed as-is
-```
+## Rules
 
-**Based on response:**
-- **Auto-fix all:** Fix Critical and Warning findings automatically. Run quality gates after.
-- **Fix critical only:** Fix only Critical findings. Report remaining Warnings for manual review.
-- **No fixes:** End review. User handles fixes manually.
-- **Reject changes:** Report that changes need rework. Do not proceed toward commit.
+- NEVER report style preferences -- the formatter handles those
+- NEVER flag something `must_fix` without naming the failure scenario
+- NEVER suggest adding features that are not called anywhere (YAGNI)
+
+## Next Step
+
+Apply all `must_fix` and `should_fix` items. Run the affected tests after each fix.

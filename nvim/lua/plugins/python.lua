@@ -1,6 +1,22 @@
 -- Python development enhancements
 ---@type LazySpec
 return {
+  -- Keep ruff as the sole Python formatter. mason-null-ls auto-registers a
+  -- null-ls source for every mason-installed tool, which silently pulls in
+  -- black + isort (from the astrocommunity python pack) alongside ruff_format
+  -- — three formatters fighting over the same buffer on save. An empty handler
+  -- tells mason-null-ls to skip registering that source. Matches the project
+  -- standard: "ruff replaces flake8/black/isort".
+  {
+    "jay-babu/mason-null-ls.nvim",
+    opts = {
+      handlers = {
+        black = function() end,
+        isort = function() end,
+      },
+    },
+  },
+
   -- Configure basedpyright with enhanced settings
   {
     "AstroNvim/astrolsp",

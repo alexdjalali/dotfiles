@@ -56,3 +56,5 @@ done
 if (( $+commands[zoxide] )); then
   eval "$(zoxide init zsh)"
 fi
+
+export PATH="$HOME/.bun/bin:$PATH"

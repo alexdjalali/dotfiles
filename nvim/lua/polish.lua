@@ -48,6 +48,45 @@ for _, ac in ipairs(vim.api.nvim_get_autocmds({ event = "TermRequest" })) do
   end
 end
 
+-- Workaround: Neovim 0.12 throws "Index out of bounds" from the built-in
+-- diagnostic handlers when a file is opened (e.g. via Neo-tree) while it still
+-- carries a diagnostic whose line number is past the file's last line. The
+-- handlers defer display to a BufRead autocmd, then call
+--   nvim_buf_get_lines(bufnr, lnum, lnum + 1, true)   -- strict indexing
+-- (runtime/lua/vim/diagnostic.lua:1845, M.handlers.underline.show), which
+-- errors instead of clamping. Wrapping vim.diagnostic.show does NOT help: the
+-- throw escapes through the deferred autocmd, detached from the show() call
+-- stack. Instead, guard each built-in handler so it only ever sees in-range
+-- diagnostics, dropping stale out-of-bounds ones once the buffer is loaded.
+-- The diagnostics themselves stay in the store and redisplay correctly when the
+-- source republishes valid line numbers.
+-- TODO: Remove once strict indexing is dropped upstream.
+local function guard_diagnostic_handler(name)
+  local handler = vim.diagnostic.handlers[name]
+  if not handler or type(handler.show) ~= "function" then return end
+  local orig_show = handler.show
+  handler.show = function(namespace, bufnr, diagnostics, opts)
+    local b = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+    local function run()
+      if not vim.api.nvim_buf_is_valid(b) then return end
+      local line_count = vim.api.nvim_buf_line_count(b)
+      local safe = {}
+      for _, d in ipairs(diagnostics) do
+        if (d.lnum or 0) < line_count then safe[#safe + 1] = d end
+      end
+      pcall(orig_show, namespace, b, safe, opts)
+    end
+    if vim.api.nvim_buf_is_loaded(b) then
+      run()
+    else
+      vim.api.nvim_create_autocmd("BufReadPost", { buffer = b, once = true, callback = run })
+    end
+  end
+end
+for _, name in ipairs({ "underline", "virtual_text", "virtual_lines", "signs" }) do
+  guard_diagnostic_handler(name)
+end
+
 -- Focus window on mouse hover (skip floating windows like Telescope, popups, etc.)
 -- Debounced to avoid fighting <C-w> and other keyboard window navigation.
 vim.opt.mousemoveevent = true
@@ -516,7 +555,7 @@ local function setup_pilot()
   end
 
   local pilot_term = Terminal.Terminal:new({
-    cmd = vim.env.HOME .. "/.local/bin/claude",
+    cmd = vim.fn.exepath("claude") ~= "" and vim.fn.exepath("claude") or "claude",
     count = 10,
     direction = "horizontal",
     hidden = true,

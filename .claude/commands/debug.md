@@ -1,135 +1,46 @@
 ---
-model: opus
+description: Debug a problem using the scientific method -- reproduce, isolate, hypothesize, fix, verify
 ---
 
-# Structured Debugging
+## Phase 1 -- Reproduce
 
-Scientific method for diagnosing and fixing bugs. No random code changes.
+1. Read the error completely. Don't skim stack traces.
+2. Reproduce the failure consistently before touching any code.
+3. Write a failing test that captures the bug now -- before any fix attempt.
 
-## Arguments
-$ARGUMENTS — Description of the bug, error message, or unexpected behavior.
+If you can't reproduce it reliably, investigate why before proceeding.
 
-### Input Validation
+## Phase 2 -- Isolate
 
-```
-IF $ARGUMENTS is empty:
-    AskUserQuestion:
-      question: "What's the bug or unexpected behavior you're seeing?"
-      header: "Bug report"
-      options:
-        - "Error message" — I have a specific error or stack trace
-        - "Wrong behavior" — Code runs but produces incorrect results
-        - "Regression" — Something that used to work is now broken
-        - "Intermittent" — Bug only happens sometimes or under specific conditions
-```
+1. `git diff` -- what changed recently that could have caused this?
+2. Trace data flow from symptom to source using `codegraph_callers` and `codegraph_callees`.
+3. Use Semble to find similar working code and compare -- what is structurally different?
+4. Add minimal instrumentation at boundaries to observe actual values (not assumed values).
 
-## Instructions
+## Phase 3 -- Hypothesize
 
-### Phase 1: REPRODUCE
+State a specific, falsifiable hypothesis before touching code:
+> "The bug occurs because X when Y, causing Z."
 
-**Goal**: Create a reliable, minimal reproduction of the bug.
+Test with the minimal possible change. One variable at a time.
 
-1. **Understand the report**: Parse `$ARGUMENTS` for error messages, stack traces, expected vs actual behavior.
+## Phase 4 -- Fix
 
-2. **Write a failing test** that demonstrates the bug:
-   - The test should pass when the bug is fixed
-   - It should fail with the same error/behavior described in the report
-   - Keep it minimal — isolate the specific behavior
+1. Fix at the root cause -- not at the symptom.
+2. The failing test from Phase 1 must now pass.
+3. Run the full test suite. Fix all regressions before declaring done.
 
-3. **Confirm reproduction**: Run the test and verify it fails consistently.
+## Defense-in-Depth
 
-If the bug cannot be reproduced with a test, document why and proceed with manual investigation.
-
-### Phase 2: ISOLATE
-
-**Goal**: Narrow down the root cause location.
-
-Use these techniques as appropriate:
-
-- **Read the stack trace**: Follow the call chain from the error to its origin
-- **Binary search / bisect**: If the bug is in a sequence of operations, find which step causes it
-- **Trace data flow**: Follow the data from input to the point of failure
-- **Check recent changes**: `git log --oneline -20` and `git diff HEAD~5` for recent modifications
-- **Inspect state**: Add targeted logging or use debugger to examine variable state at key points
-- **Check boundaries**: Look at the interfaces between components where the bug manifests
-
-### Phase 3: DIAGNOSE
-
-**Goal**: State the root cause clearly.
-
-Write a diagnosis that includes:
-1. **What** is happening (the symptom)
-2. **Where** in the code it occurs (file, function, line)
-3. **Why** it happens (the root cause, not the symptom)
-4. **When** it was introduced (if identifiable from git history)
-
-Format:
-```
-## Diagnosis
-
-**Symptom**: <what the user sees>
-**Location**: <file:line>
-**Root Cause**: <why it happens>
-**Introduced**: <commit/PR if identifiable>
-```
-
-### Phase 4: FIX (via /tdd)
-
-**Goal**: Fix the bug with confidence using the TDD cycle.
-
-The failing test from Phase 1 serves as the RED step. Delegate the fix to `/tdd`:
-
-```
-Skill(skill='tdd', args='Fix: <root cause summary from Phase 3>')
-```
-
-The `/tdd` skill will:
-1. Verify the failing test still fails (RED — already done in Phase 1)
-2. Apply the minimal fix (GREEN)
-3. Refactor if needed (keep tests green)
-4. Run the full test suite for regressions
-
-### Phase 5: VERIFY
-
-**Goal**: Ensure the fix is complete and hasn't introduced new issues.
-
-1. Run the full quality suite on changed files:
-   - Format, lint, type check, tests
-2. Check for similar patterns elsewhere:
-   - If the bug was caused by a common mistake, search for the same pattern in the codebase
-3. Document the fix:
-   - What was the root cause?
-   - What was changed?
-   - Are there related areas that should be reviewed?
-
-### Report
-
-```
-## Debug Report
-
-### Bug
-<original description>
-
-### Diagnosis
-- **Root Cause**: <explanation>
-- **Location**: <file:line>
-
-### Fix
-- **Changes**: <list of files modified>
-- **Test**: <test file and test name that covers this>
-
-### Verification
-- [ ] Failing test now passes
-- [ ] No regressions in module tests
-- [ ] Quality gates pass (format, lint, type check)
-- [ ] Similar patterns checked elsewhere
-
-### Prevention
-<suggestions to prevent similar bugs>
-```
+After fixing, make the bug structurally impossible:
+- Entry point: reject invalid input at the API boundary
+- Business logic: validate preconditions
+- Test: the reproducing test stays in the suite permanently
 
 ## Rules
+
 - NEVER change code before understanding the root cause
 - NEVER fix a bug without a test that reproduces it
-- NEVER apply a fix that you can't explain
-- If the fix is complex, consider whether the underlying design needs an ADR
+- NEVER apply a fix you can't explain in one sentence
+- 3+ failed fixes = the approach is wrong, not the fix -- stop and reconsider
+- If the fix requires a design change, write an ADR first

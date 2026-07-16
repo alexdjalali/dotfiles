@@ -11,6 +11,7 @@ Read the codebase. Compare against existing rules and docs. Update what is stale
    - Wrong paths? Update.
    - Removed tools or commands? Remove the reference.
    - New patterns with no documentation? Flag them.
+   - A symbol or behavior changed? Update its **direct** doc references AND the **indirect** ones — docs, READMEs, and docstrings describing callers or higher-level behavior that depend on it (`codegraph_callers` / `codegraph_impact`).
 3. **Update stale entries**: change only what is now wrong. Do not rewrite accurate prose.
 4. **Document new patterns**: for each undocumented pattern found, update or create the relevant rule file.
 5. **Verify counts and lists**: if docs say "supports X, Y, Z" and Z was removed, fix it.

@@ -17,6 +17,7 @@ Design 3-12 implementation tasks. Each task must be:
 - Independently testable (a failing test can be written for it in isolation)
 - Small enough to complete in one focused TDD cycle
 - Sequenced so later tasks build on earlier ones without circular dependencies
+- Aligned with the repo's existing patterns — reuse established helpers, naming, and conventions rather than introducing parallel ones (consistency, DRY); tests use mocks and fixtures, not fakes
 
 ## Phase 3 -- Write the Plan
 

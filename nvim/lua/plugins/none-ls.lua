@@ -26,7 +26,7 @@ return {
       -- golangci-lint - Meta linter (runs 50+ linters)
       b.diagnostics.golangci_lint.with {
         extra_args = {
-          "--fast",
+          "--fast-only", -- golangci-lint v2 renamed --fast -> --fast-only
           "--enable=gosec,prealloc,revive,gocritic,errorlint,exhaustive",
         },
       },

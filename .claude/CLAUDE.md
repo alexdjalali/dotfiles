@@ -13,12 +13,11 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 
 ## Language Standards
 
-Consult the detailed reference for the language you're working in:
-- **Python**: `~/.claude/standards/python.md`
-- **Go**: `~/.claude/standards/go.md`
-- **TypeScript/React/Tailwind**: `~/.claude/standards/typescript.md`
+Per-language standards **auto-load** from `~/.claude/rules/standards-*.md` when you edit a matching file — Go, Python, TypeScript, plus `standards-backend.md` and `standards-frontend.md`. They attach by path; no manual consult needed.
 
-Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`golangci-lint`, TS=`pnpm`+`eslint`+`tsc`.
+**Precedence:** a project's own `.claude/rules/*` overrides these global rules. Repo-specific architecture (layered stacks, DI frameworks, employer conventions) belongs in that repo's `.claude/`, not in global config.
+
+Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`goimports`+`golangci-lint`, TS=`pnpm`/detect+`eslint`+`tsc`+`vitest`.
 
 ## Quality Gates (before every commit)
 
@@ -89,7 +88,7 @@ sync equivalents to other agent configs:
 - **Cursor**: `cursor/` rules directory
 - **Kilocode**: `kilocode/` config directory
 
-Use `/sync` to propagate changes across agent configurations.
+Keep the other agent configs in sync manually when commands change. (Not to be confused with `/sync-docs`, which reconciles docs against the codebase — a different task.)
 
 ## Anti-Patterns to Avoid
 

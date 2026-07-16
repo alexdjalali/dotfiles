@@ -8,7 +8,7 @@ alwaysApply: false
 
 ## Tooling
 
-- Package manager: `pnpm` (never npm/yarn)
+- Package manager: detect the project's lockfile (pnpm/bun/yarn/npm) and use it; prefer `pnpm` for greenfield. Never mix.
 - Lint: ESLint + Prettier. Type check: `tsc --noEmit` (strict)
 - Test: `vitest` for unit/integration; React Testing Library for component tests
 - No `any` type (use `unknown` + type guards). No `console.log` in committed code.
@@ -21,7 +21,7 @@ alwaysApply: false
 - Props: destructure in function signature; use `interface` for prop types (not `type`)
 - State: prefer `useReducer` for complex state; `useState` for simple values
 - Effects: always specify dependency arrays; clean up subscriptions/listeners
-- Memoization: `useMemo`/`useCallback` only when profiling shows a need, not by default
+- React 19 + **React Compiler** handles memoization — don't scatter `useMemo`/`useCallback`; add manually only where profiling shows the compiler can't help
 - Component files: one exported component per file; colocate styles and tests
 - Error boundaries for failure isolation at route/feature level
 
@@ -31,7 +31,7 @@ alwaysApply: false
 - Extract repeated patterns into React components, not CSS classes
 - Responsive: mobile-first (`sm:`, `md:`, `lg:` breakpoints)
 - Dark mode: use `dark:` variant consistently
-- Custom values: extend theme in `tailwind.config.ts` rather than arbitrary values `[...]`
+- Tailwind v4: configure the theme **CSS-first** via `@theme` in the stylesheet (not `tailwind.config.ts`); merge conditional classes with `tailwind-merge`. Avoid arbitrary values `[...]` where a token exists.
 - Class ordering: follow Tailwind Prettier plugin ordering
 - No inline `style={}` when Tailwind utilities exist
 

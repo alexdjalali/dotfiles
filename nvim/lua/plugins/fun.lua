@@ -135,14 +135,14 @@ return {
   {
     "tamton-aquib/duck.nvim",
     keys = {
-      { "<leader>dd", function() require("duck").hatch("🦆", 10) end, desc = "Hatch a duck" },
-      { "<leader>dk", function() require("duck").cook() end, desc = "Cook a duck" },
-      { "<leader>da", function() require("duck").cook_all() end, desc = "Cook all ducks" },
+      { "<leader>Dd", function() require("duck").hatch("🦆", 10) end, desc = "Hatch a duck" },
+      { "<leader>Dk", function() require("duck").cook() end, desc = "Cook a duck" },
+      { "<leader>Da", function() require("duck").cook_all() end, desc = "Cook all ducks" },
       -- More animals!
-      { "<leader>dc", function() require("duck").hatch("🐱", 8) end, desc = "Hatch a cat" },
-      { "<leader>dg", function() require("duck").hatch("🐶", 6) end, desc = "Hatch a dog" },
-      { "<leader>dr", function() require("duck").hatch("🦀", 12) end, desc = "Hatch a crab" },
-      { "<leader>ds", function() require("duck").hatch("🐍", 4) end, desc = "Hatch a snake" },
+      { "<leader>Dc", function() require("duck").hatch("🐱", 8) end, desc = "Hatch a cat" },
+      { "<leader>Dg", function() require("duck").hatch("🐶", 6) end, desc = "Hatch a dog" },
+      { "<leader>Dr", function() require("duck").hatch("🦀", 12) end, desc = "Hatch a crab" },
+      { "<leader>Ds", function() require("duck").hatch("🐍", 4) end, desc = "Hatch a snake" },
     },
   },
 

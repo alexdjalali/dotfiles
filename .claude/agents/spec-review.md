@@ -2,7 +2,7 @@
 name: spec-review
 description: Spec review agent that verifies alignment with user requirements and challenges dangerous assumptions. Returns structured JSON findings.
 tools: Read, Grep, Glob, Write
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 background: true
 permissionMode: plan
 ---

@@ -10,7 +10,7 @@ paths:
 
 ## TypeScript Development Standards
 
-**Standards:** Detect package manager | Strict types | No `any` | Self-documenting code
+**Standards:** Detect package manager (prefer pnpm greenfield) | Strict types | No `any` | Self-documenting code
 
 ### Package Manager - DETECT FIRST
 
@@ -18,7 +18,7 @@ paths:
 
 - `bun.lockb` → **bun** | `pnpm-lock.yaml` → **pnpm** | `yarn.lock` → **yarn** | `package-lock.json` → **npm**
 
-No lock file? Check `packageManager` in `package.json`, or default to npm.
+No lock file? Check `packageManager` in `package.json`, or default to **pnpm** (preferred for greenfield).
 
 ### Type Safety
 
@@ -41,6 +41,8 @@ No lock file? Check `packageManager` in `package.json`, or default to npm.
 
 ### Testing - Minimal Output
 
+`vitest` is the modern default (`vitest run`, `vitest run --coverage`); the flags below also work with any Jest-compatible runner. (React/component specifics live in `standards-frontend.md`.)
+
 ```bash
 npm test -- --silent         # Suppress console.log
 npm test -- --reporters=dot  # Minimal reporter
@@ -52,7 +54,7 @@ npm test -- --bail           # Stop on first failure
 Check `package.json` scripts first — projects often have custom configurations.
 
 - [ ] `tsc --noEmit` — no type errors
-- [ ] Lint clean (eslint/biome)
+- [ ] Lint clean (eslint flat config / biome)
 - [ ] Tests pass
 - [ ] Explicit return types on exports
 - [ ] No `any` types
@@ -61,8 +63,8 @@ Check `package.json` scripts first — projects often have custom configurations
 
 ### Quick Reference
 
-| Task | npm | yarn | pnpm | bun |
-|------|-----|------|------|-----|
-| Install | `npm install` | `yarn` | `pnpm install` | `bun install` |
-| Add pkg | `npm install pkg` | `yarn add pkg` | `pnpm add pkg` | `bun add pkg` |
-| Run script | `npm run x` | `yarn x` | `pnpm x` | `bun x` |
+| Task | pnpm | bun | npm | yarn |
+|------|------|-----|-----|------|
+| Install | `pnpm install` | `bun install` | `npm install` | `yarn` |
+| Add pkg | `pnpm add pkg` | `bun add pkg` | `npm install pkg` | `yarn add pkg` |
+| Run script | `pnpm x` | `bun x` | `npm run x` | `yarn x` |

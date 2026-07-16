@@ -21,7 +21,7 @@ Design 3-12 implementation tasks. Each task must be:
 
 ## Phase 3 -- Write the Plan
 
-Write to `docs/plans/YYYY-MM-DD-<slug>.md`:
+Write to `docs/spec/plans/YYYY-MM-DD-<slug>.md`:
 
 ```
 # Plan: <Title>
@@ -48,11 +48,7 @@ Iteration: 1
 
 ## Phase 4 -- Verify the Plan
 
-Launch two agents in parallel:
-1. **Alignment**: "Does this plan fully cover the stated requirements? What's missing or misrepresented?"
-2. **Risk**: "What assumptions does this plan make that could be wrong? What edge cases are unhandled?"
-
-Incorporate findings before presenting the plan to the user.
+Launch the `spec-review` agent (background; it writes a findings JSON file — poll for the file, then read it once). It runs a single combined alignment + adversarial-assumption review: does the plan fully cover the stated requirements, and what assumptions or unhandled edge cases could break it? Incorporate `must_fix` / `should_fix` before presenting the plan to the user.
 
 ## Phase 5 -- Approval
 
@@ -70,4 +66,4 @@ On approval: set `Approved: Yes` in the plan file, then invoke `/spec-implement`
 - NEVER begin implementation without explicit approval
 - NEVER design more than 12 tasks -- split into multiple plans if needed
 - NEVER include tasks that don't trace directly to the user's request
-- NEVER skip the parallel verification agents -- they catch the gaps you missed
+- NEVER skip the spec-review pass -- it catches the gaps and bad assumptions you missed

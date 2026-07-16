@@ -53,7 +53,10 @@ return {
         "texlab", -- LaTeX LSP (completion, diagnostics, build, forward search)
         "latexindent", -- LaTeX formatter
       },
-      auto_update = true,
+      -- auto_update disabled: Mason rebuilds mypy's venv with --system-site-packages
+      -- on every update, re-introducing the wrong-env diagnostics that none-ls.lua
+      -- works around. Update deliberately via :MasonUpdate instead.
+      auto_update = false,
       run_on_start = true,
     },
   },

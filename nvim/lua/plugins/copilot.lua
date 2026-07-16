@@ -49,17 +49,12 @@ return {
       vim.keymap.set("n", "<leader>ie", "<cmd>Copilot enable<cr>", { desc = "Enable Copilot" })
       vim.keymap.set("n", "<leader>is", "<cmd>Copilot status<cr>", { desc = "Copilot status" })
 
-      -- Suppress ghost text when nvim-cmp menu is visible
-      local ok, cmp = pcall(require, "cmp")
-      if ok then
-        cmp.event:on("menu_opened", function()
-          require("copilot.suggestion").dismiss()
-          vim.b.copilot_suggestion_hidden = true
-        end)
-        cmp.event:on("menu_closed", function()
-          vim.b.copilot_suggestion_hidden = false
-        end)
-      end
+      -- NOTE: AstroNvim v6 uses blink.cmp, which (unlike nvim-cmp) emits no menu
+      -- open/close autocmds to hook — the old `cmp.event` suppression was a dead
+      -- no-op (nvim-cmp is only present transitively via avante) and was removed.
+      -- Copilot ghost text and the blink menu coexist; if the overlap bothers you,
+      -- route Copilot through blink's `blink-cmp-copilot` source instead of
+      -- standalone ghost text.
     end,
   },
 }

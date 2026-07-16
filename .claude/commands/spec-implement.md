@@ -2,7 +2,7 @@
 description: Implement an approved plan task-by-task using TDD
 ---
 
-Read the plan from `docs/plans/`. Status must be `PENDING` with `Approved: Yes`.
+Read the plan from `docs/spec/plans/`. Status must be `PENDING` with `Approved: Yes`.
 
 ## Execution Loop
 
@@ -20,7 +20,7 @@ Repeat for each task.
 
 ## After All Tasks Complete
 
-1. Run `/preflight` -- all four gates must pass.
+1. Run `/preflight` -- all gates must pass.
 2. Set plan `Status: COMPLETE` in the header.
 3. Invoke `/spec-verify`.
 

@@ -8,14 +8,15 @@ alwaysApply: false
 
 ## Tooling
 
-- Package manager: `uv` (never pip/poetry)
+- Package manager: `uv` (never pip/poetry); `uv add` for deps (updates pyproject + lockfile)
 - Lint + format: `ruff check` + `ruff format`
 - Type check: `basedpyright` (strict) or `mypy --strict`
 - Test: `pytest` with markers per layer (unit, integration, e2e)
 
 ## Code Style
 
-- Models: `@attrs.define(frozen=True, slots=True)` or frozen dataclasses
+- Boundary models & config: `pydantic` v2 (`BaseModel`, `pydantic-settings`); `@attrs.define(frozen=True, slots=True)` or frozen dataclasses for internal value objects
+- Logging: `structlog` (structured); HTTP: `httpx` (async-capable)
 - Async: `async def` + `await`; `asyncio.run()` only at boundaries
 - Imports: absolute only; no cross-package relative imports
 - Docstrings: Google style. Line length: 100.

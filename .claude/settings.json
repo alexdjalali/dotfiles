@@ -10,7 +10,6 @@
     "CLAUDE_CODE_NO_FLICKER": "true",
     "DISABLE_ERROR_REPORTING": "true",
     "DISABLE_MICROCOMPACT": "false",
-    "DISABLE_AUTO_COMPACT_THRESHOLD": "80",
     "CLAUDE_CODE_WORKFLOWS": "true",
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "true",
     "DISABLE_AUTOUPDATER": "false",
@@ -20,7 +19,7 @@
     "CLAUDE_CODE_HIDE_ACCOUNT_INFO": "true",
     "DISABLE_TELEMETRY": "true",
     "DISABLE_COMPACT": "false",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-6",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-5",
     "FORCE_AUTOUPDATE_PLUGINS": "true",
     "CLAUDE_CODE_ENABLE_TASKS": "true",
     "CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS": "true",
@@ -98,13 +97,23 @@
   },
   "enableAllProjectMcpServers": true,
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/patch-gopls-lsp.sh\""
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'CMD=\"$CLAUDE_TOOL_INPUT\"; if echo \"$CMD\" | grep -qE \"git\\s+push\\s+--force\\s+origin\\s+(main|master)\"; then echo \"BLOCKED: Never force-push to main/master\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"rm\\s+-rf\\s+/[^a-zA-Z]\"; then echo \"BLOCKED: Refusing rm -rf /\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+reset\\s+--hard\"; then echo \"BLOCKED: git reset --hard is destructive. Use with explicit confirmation.\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+checkout\\s+\\.\"; then echo \"BLOCKED: git checkout . discards all changes. Use with explicit confirmation.\" >&2; exit 2; fi; exit 0'"
+            "command": "bash -c 'CMD=$(jq -r \".tool_input.command // empty\"); if echo \"$CMD\" | grep -qE \"git[[:space:]]+push[[:space:]]+--force[[:space:]]+origin[[:space:]]+(main|master)\"; then echo \"BLOCKED: Never force-push to main/master\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"rm[[:space:]]+-rf[[:space:]]+/[^a-zA-Z]\"; then echo \"BLOCKED: Refusing rm -rf /\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git[[:space:]]+reset[[:space:]]+--hard\"; then echo \"BLOCKED: git reset --hard is destructive. Use with explicit confirmation.\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git[[:space:]]+checkout[[:space:]]+\\.\"; then echo \"BLOCKED: git checkout . discards all changes. Use with explicit confirmation.\" >&2; exit 2; fi; exit 0'"
           }
         ]
       },
@@ -124,7 +133,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; case \"$FILE\" in *.py) ruff format --quiet \"$FILE\" 2>/dev/null ;; *.go) gofumpt -w \"$FILE\" 2>/dev/null ;; *.ts|*.tsx|*.js|*.jsx) prettier --write --log-level silent \"$FILE\" 2>/dev/null ;; esac; exit 0'"
+            "command": "bash -c 'FILE=$(jq -r \".tool_input.file_path // empty\"); if [ -z \"$FILE\" ]; then exit 0; fi; case \"$FILE\" in *.py) ruff format --quiet \"$FILE\" 2>/dev/null ;; *.go) gofumpt -w \"$FILE\" 2>/dev/null ;; *.ts|*.tsx|*.js|*.jsx) prettier --write --log-level silent \"$FILE\" 2>/dev/null ;; esac; exit 0'"
           }
         ]
       },
@@ -133,7 +142,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; WARNINGS=\"\"; case \"$FILE\" in *.py) if grep -n \"print(\" \"$FILE\" 2>/dev/null | grep -v \"#.*print\" | grep -v \"logging\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: print() found - use structured logging instead\"; fi; if grep -n \"except:\" \"$FILE\" 2>/dev/null | grep -v \"#\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: bare except: found - catch specific exceptions\"; fi ;; *.ts|*.tsx|*.js|*.jsx) if grep -n \"console\\.log\" \"$FILE\" 2>/dev/null | grep -v \"//.*console\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: console.log found - remove before committing\"; fi; if grep -n \": any\" \"$FILE\" 2>/dev/null | grep -v \"//\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: any type found - use unknown + type guards\"; fi ;; esac; if [ -n \"$WARNINGS\" ]; then echo -e \"$WARNINGS\"; fi; exit 0'",
+            "command": "bash -c 'FILE=$(jq -r \".tool_input.file_path // empty\"); if [ -z \"$FILE\" ]; then exit 0; fi; WARNINGS=\"\"; case \"$FILE\" in *.py) if grep -n \"print(\" \"$FILE\" 2>/dev/null | grep -v \"#.*print\" | grep -v \"logging\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: print() found - use structured logging instead\"; fi; if grep -n \"except:\" \"$FILE\" 2>/dev/null | grep -v \"#\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: bare except: found - catch specific exceptions\"; fi ;; *.ts|*.tsx|*.js|*.jsx) if grep -n \"console\\.log\" \"$FILE\" 2>/dev/null | grep -v \"//.*console\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: console.log found - remove before committing\"; fi; if grep -n \": any\" \"$FILE\" 2>/dev/null | grep -v \"//\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: any type found - use unknown + type guards\"; fi ;; esac; if [ -n \"$WARNINGS\" ]; then echo -e \"$WARNINGS\"; fi; exit 0'",
             "timeout": 10000
           }
         ]
@@ -143,7 +152,14 @@
   "enabledPlugins": {
     "chrome-devtools-mcp@chrome-devtools-plugins": true,
     "basedpyright@claude-code-lsps": true,
-    "gopls@claude-code-lsps": true
+    "gopls@claude-code-lsps": true,
+    "vtsls@claude-code-lsps": true,
+    "webapp-testing@awesome-claude-skills": true,
+    "github-automation@awesome-claude-skills": true,
+    "slack-automation@awesome-claude-skills": true,
+    "sentry-automation@awesome-claude-skills": true,
+    "datadog-automation@awesome-claude-skills": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "chrome-devtools-plugins": {
@@ -172,5 +188,10 @@
   "preferredNotifChannel": "auto",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "showThinkingHint": true
+  "showThinkingHint": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/dotfiles/.claude/scripts/statusline.sh\"",
+    "padding": 0
+  }
 }

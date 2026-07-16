@@ -588,7 +588,7 @@ local function setup_pilot()
       if not shell_term.bufnr or not vim.api.nvim_buf_is_valid(shell_term.bufnr) then
         local buf = vim.api.nvim_create_buf(false, true)
         vim.api.nvim_win_set_buf(0, buf)
-        shell_term.job_id = vim.fn.termopen(vim.o.shell)
+        shell_term.job_id = vim.fn.jobstart(vim.o.shell, { term = true })
         shell_term.bufnr = buf
       else
         vim.api.nvim_win_set_buf(0, shell_term.bufnr)
@@ -601,7 +601,7 @@ local function setup_pilot()
   end, {})
 
   -- Keymap for quick access
-  vim.keymap.set("n", "<leader>ac", "<cmd>Pilot<cr>", { desc = "Toggle Pilot split" })
+  vim.keymap.set("n", "<leader>ap", "<cmd>Pilot<cr>", { desc = "Toggle Pilot split" })
 end
 
 -- Run after toggleterm is loaded (VeryLazy + safe retry)

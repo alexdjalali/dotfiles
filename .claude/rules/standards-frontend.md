@@ -24,6 +24,14 @@ paths:
 - **Naming:** Components: PascalCase nouns. Props: camelCase, booleans `is*`/`has*`. Events: `on*` for props, `handle*` internal.
 - **Split when:** >600-800 lines, multiple responsibilities, reusable elsewhere, testing becomes difficult.
 
+## React (when applicable)
+
+- **React 19**, functional components only. **React Compiler** handles memoization — don't scatter `useMemo`/`useCallback`; add manual memoization only where profiling shows the compiler can't help.
+- Custom hooks (`use*`) for shared logic; `useReducer` for complex state, `useState` for simple. Always specify effect dependency arrays and clean up subscriptions/listeners.
+- Props: destructure in the signature; `interface` for prop types. One exported component per file; colocate styles and tests. Error boundaries at route/feature level.
+- **Tailwind v4** (`@tailwindcss/vite`): theme is configured CSS-first via `@theme`, not `tailwind.config.ts`. Merge conditional classes with `tailwind-merge`; extract repeated patterns into components, not `@apply`.
+- **Testing:** `vitest` + React Testing Library; test behavior not implementation. Mock the network boundary (MSW / `vi.mock`) — mocks and fixtures, not fakes.
+
 ## CSS
 
 **Follow project methodology consistently. Identify first: Utility-first (Tailwind), CSS Modules, BEM, or CSS-in-JS. Never mix.**

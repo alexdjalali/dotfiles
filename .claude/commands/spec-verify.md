@@ -2,13 +2,12 @@
 description: Verify a completed plan -- code review, automated gates, execution check, loop back if issues found
 ---
 
-Read the plan from `docs/plans/`. Status must be `COMPLETE`.
+Read the plan from `docs/spec/plans/`. Status must be `COMPLETE`.
 
 ## Phase 1 -- Code Review
 
-Launch two agents in parallel:
-1. **Process agent**: "Did the implementation follow the plan exactly? Are all tasks marked complete? Are there undocumented deviations?"
-2. **Quality agent**: "Review the diff for correctness bugs, missing error handling, and untested paths; DRY/SOLID violations and reinvented helpers; consistency with the established patterns/naming of the touched files; tests that hand-roll fakes where a mock or existing fixture would serve; and any inline comment, docstring, README, or architecture doc that references the changed code — directly or indirectly — and was not updated."
+1. **Built-in code review** (correctness + quality): run inline via `Skill(skill='code-review', args='xhigh')`. On Claude Code the changes review is this built-in skill, not a sub-agent.
+2. **Plan-compliance & goal audit** (inline): did the implementation follow the plan exactly, are all tasks marked complete, are there undocumented deviations, and does the result achieve the plan's stated goal?
 
 Categorize findings: `must_fix`, `should_fix`, `suggestion`.
 

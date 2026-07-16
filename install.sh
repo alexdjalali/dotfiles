@@ -91,7 +91,7 @@ fi
 # ---------------------------------------------------------------------------
 
 info "Installing packages from Brewfile..."
-if brew bundle --file="$DOTFILES/Brewfile" --no-lock; then
+if brew bundle --file="$DOTFILES/Brewfile"; then
     ok "Homebrew packages installed"
 else
     warn "Some Brewfile entries failed — check output above"
@@ -176,6 +176,7 @@ chmod +x "$DOTFILES/raycast/"*.sh 2>/dev/null || true
 
 # Claude Code (individual files — ~/.claude/ also contains runtime data we don't track)
 backup_and_link "$DOTFILES/.claude/CLAUDE.md"           "$HOME/.claude/CLAUDE.md"
+backup_and_link "$DOTFILES/.claude/RTK.md"             "$HOME/.claude/RTK.md"
 backup_and_link "$DOTFILES/.claude/settings.json"       "$HOME/.claude/settings.json"
 # settings.local.json is machine-specific (not tracked in git) — scaffold if missing
 if [ ! -f "$HOME/.claude/settings.local.json" ]; then
@@ -186,7 +187,6 @@ else
     ok "~/.claude/settings.local.json already exists"
 fi
 backup_and_link "$DOTFILES/.claude/commands"             "$HOME/.claude/commands"
-backup_and_link "$DOTFILES/.claude/standards"            "$HOME/.claude/standards"
 backup_and_link "$DOTFILES/.claude/templates"            "$HOME/.claude/templates"
 backup_and_link "$DOTFILES/.claude/rules"                "$HOME/.claude/rules"
 backup_and_link "$DOTFILES/.claude/agents"               "$HOME/.claude/agents"

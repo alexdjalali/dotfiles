@@ -1,4 +1,8 @@
 {
+  "respectGitignore": false,
+  "cleanupPeriodDays": 7,
+  "skillListingMaxDescChars": 2048,
+  "skillListingBudgetFraction": 0.05,
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "false",
     "DISABLE_INSTALLATION_CHECKS": "false",
@@ -27,9 +31,11 @@
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-8[1m]",
     "ENABLE_TOOL_SEARCH": "true"
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
-    "deny": [],
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(basedpyright:*)",
       "Bash(mypy:*)",
@@ -86,14 +92,86 @@
       "WebSearch",
       "Write",
       "LSP"
+    ],
+    "deny": [],
+    "defaultMode": "bypassPermissions"
+  },
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'CMD=\"$CLAUDE_TOOL_INPUT\"; if echo \"$CMD\" | grep -qE \"git\\s+push\\s+--force\\s+origin\\s+(main|master)\"; then echo \"BLOCKED: Never force-push to main/master\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"rm\\s+-rf\\s+/[^a-zA-Z]\"; then echo \"BLOCKED: Refusing rm -rf /\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+reset\\s+--hard\"; then echo \"BLOCKED: git reset --hard is destructive. Use with explicit confirmation.\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+checkout\\s+\\.\"; then echo \"BLOCKED: git checkout . discards all changes. Use with explicit confirmation.\" >&2; exit 2; fi; exit 0'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; case \"$FILE\" in *.py) ruff format --quiet \"$FILE\" 2>/dev/null ;; *.go) gofumpt -w \"$FILE\" 2>/dev/null ;; *.ts|*.tsx|*.js|*.jsx) prettier --write --log-level silent \"$FILE\" 2>/dev/null ;; esac; exit 0'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; WARNINGS=\"\"; case \"$FILE\" in *.py) if grep -n \"print(\" \"$FILE\" 2>/dev/null | grep -v \"#.*print\" | grep -v \"logging\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: print() found - use structured logging instead\"; fi; if grep -n \"except:\" \"$FILE\" 2>/dev/null | grep -v \"#\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: bare except: found - catch specific exceptions\"; fi ;; *.ts|*.tsx|*.js|*.jsx) if grep -n \"console\\.log\" \"$FILE\" 2>/dev/null | grep -v \"//.*console\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: console.log found - remove before committing\"; fi; if grep -n \": any\" \"$FILE\" 2>/dev/null | grep -v \"//\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: any type found - use unknown + type guards\"; fi ;; esac; if [ -n \"$WARNINGS\" ]; then echo -e \"$WARNINGS\"; fi; exit 0'",
+            "timeout": 10000
+          }
+        ]
+      }
     ]
   },
-  "skillListingMaxDescChars": 2048,
+  "enabledPlugins": {
+    "chrome-devtools-mcp@chrome-devtools-plugins": true,
+    "basedpyright@claude-code-lsps": true,
+    "gopls@claude-code-lsps": true
+  },
+  "extraKnownMarketplaces": {
+    "chrome-devtools-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "ChromeDevTools/chrome-devtools-mcp"
+      }
+    },
+    "claude-code-lsps": {
+      "source": {
+        "source": "github",
+        "repo": "Piebald-AI/claude-code-lsps"
+      }
+    }
+  },
+  "outputStyle": "default",
+  "viewMode": "verbose",
+  "spinnerTipsEnabled": false,
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "xhigh",
   "prefersReducedMotion": true,
-  "companyAnnouncements": [
-    "features: /spec | bugfixes: /fix | requirements: /prd | rules & skills: /setup-rules, /create-skill, /benchmark"
-  ],
-  "cleanupPeriodDays": 7,
+  "autoDreamEnabled": false,
+  "showThinkingSummaries": true,
+  "skipDangerousModePermissionPrompt": true,
+  "verbose": true,
+  "preferredNotifChannel": "auto",
+  "showTurnDuration": true,
+  "terminalProgressBarEnabled": true,
   "mcpServers": {
     "github": {
       "type": "url",
@@ -177,345 +255,5 @@
       ]
     }
   },
-  "effortLevel": "xhigh",
-  "showThinkingSummaries": true,
-  "statusLine": {
-    "type": "command",
-    "command": "/Users/adjalali3/.pilot/bin/pilot statusline",
-    "padding": 0
-  },
-  "alwaysThinkingEnabled": true,
-  "showTurnDuration": true,
-  "skipDangerousModePermissionPrompt": true,
-  "viewMode": "verbose",
-  "preferredNotifChannel": "auto",
-  "enableAllProjectMcpServers": true,
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'CMD=\"$CLAUDE_TOOL_INPUT\"; if echo \"$CMD\" | grep -qE \"git\\s+push\\s+--force\\s+origin\\s+(main|master)\"; then echo \"BLOCKED: Never force-push to main/master\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"rm\\s+-rf\\s+/[^a-zA-Z]\"; then echo \"BLOCKED: Refusing rm -rf /\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+reset\\s+--hard\"; then echo \"BLOCKED: git reset --hard is destructive. Use with explicit confirmation.\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git\\s+checkout\\s+\\.\"; then echo \"BLOCKED: git checkout . discards all changes. Use with explicit confirmation.\" >&2; exit 2; fi; exit 0'"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/plan_mode_tracker.py\""
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|WebSearch|WebFetch|Grep|Glob|Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/tool_redirect.py\""
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/tool_token_saver.py\""
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/session_end.py\"",
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/pre_compact.py\"",
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/license_check.py\"",
-            "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/session_announcements.py\"",
-            "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/session_startup_maintenance.py\"",
-            "async": true,
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/codegraph_init.py\"",
-            "async": true,
-            "timeout": 120
-          },
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/codex_skill_sync.py\"",
-            "async": true,
-            "timeout": 30
-          },
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/cc_skill_sync.py\"",
-            "async": true,
-            "timeout": 30
-          }
-        ]
-      },
-      {
-        "matcher": "startup|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun \"$HOME/.pilot/scripts/worker-service.cjs\" hook claude-code context",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "bun \"$HOME/.pilot/scripts/worker-service.cjs\" hook claude-code user-message",
-            "async": true,
-            "timeout": 15
-          }
-        ]
-      },
-      {
-        "matcher": "clear",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/session_clear.py\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/post_compact_restore.py\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; case \"$FILE\" in *.py) ruff format --quiet \"$FILE\" 2>/dev/null ;; *.go) gofumpt -w \"$FILE\" 2>/dev/null ;; *.ts|*.tsx|*.js|*.jsx) prettier --write --log-level silent \"$FILE\" 2>/dev/null ;; esac; exit 0'"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'FILE=\"$CLAUDE_FILE_PATH\"; if [ -z \"$FILE\" ]; then exit 0; fi; WARNINGS=\"\"; case \"$FILE\" in *.py) if grep -n \"print(\" \"$FILE\" 2>/dev/null | grep -v \"#.*print\" | grep -v \"logging\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: print() found \u2014 use structured logging instead\"; fi; if grep -n \"except:\" \"$FILE\" 2>/dev/null | grep -v \"#\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: bare except: found \u2014 catch specific exceptions\"; fi ;; *.ts|*.tsx|*.js|*.jsx) if grep -n \"console\\.log\" \"$FILE\" 2>/dev/null | grep -v \"//.*console\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: console.log found \u2014 remove before committing\"; fi; if grep -n \": any\" \"$FILE\" 2>/dev/null | grep -v \"//\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: any type found \u2014 use unknown + type guards\"; fi ;; esac; if [ -n \"$WARNINGS\" ]; then echo -e \"$WARNINGS\"; fi; exit 0'",
-            "timeout": 10000
-          }
-        ]
-      },
-      {
-        "matcher": "EnterPlanMode|ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/plan_mode_tracker.py\""
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/file_checker.py\""
-          }
-        ]
-      },
-      {
-        "matcher": "Read|Write|Edit|MultiEdit|Bash|Task|Skill|Grep|Glob",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/context_monitor.py\""
-          }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun \"$HOME/.pilot/scripts/worker-service.cjs\" hook claude-code observation",
-            "async": true,
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/spec_stop_guard.py\""
-          },
-          {
-            "type": "command",
-            "command": "bun \"$HOME/.pilot/scripts/worker-service.cjs\" hook claude-code summarize",
-            "async": true,
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/auto_approve_plan.py\""
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project --python python3 python \"$HOME/.pilot/hooks/spec_mode_guard.py\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun \"$HOME/.pilot/scripts/worker-service.cjs\" hook claude-code session-init",
-            "async": true,
-            "timeout": 15
-          }
-        ]
-      }
-    ]
-  },
-  "respectGitignore": false,
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "spinnerTipsOverride": {
-    "tips": [
-      "[PILOT] Run /setup-rules after installation to generate project rules",
-      "[PILOT] Use /spec for features and /fix for bugs - structured planning, TDD, and code review for both",
-      "[PILOT] Quick Mode: Just chat for small changes and exploration (all quality hooks still apply)",
-      "[PILOT] Press Ctrl+R to search command history | Ctrl+C to cancel current operation",
-      "[PILOT] Press Escape twice to cancel a running operation",
-      "[PILOT] Check /help for all available commands and shortcuts",
-      "[PILOT] Use /clear to start fresh while keeping project context loaded",
-      "[PILOT] Run /ide to enable real-time diagnostics from your IDE",
-      "[PILOT] Use @file.py to reference files directly in your prompts",
-      "[PILOT] Pilot Memory: Claude remembers your past sessions and relevant context automatically",
-      "[PILOT] Auto-compaction preserves state seamlessly - no context is ever lost between compaction cycles",
-      "[PILOT] Context Monitor tracks usage - auto-compaction fires automatically, no context is ever lost",
-      "[PILOT] Pilot Shell Console: Browse your memory, sessions, and specs at localhost:41777",
-      "[PILOT] Semble: Hybrid semantic+lexical code search that ranks by meaning AND identifiers - and tracks token savings",
-      "[PILOT] Context7: Claude fetches up-to-date library docs when you use unfamiliar packages",
-      "[PILOT] grep-mcp: Search 1M+ public GitHub repos for real-world code patterns and examples",
-      "[PILOT] TDD Enforcer: Warns when modifying code without failing tests first",
-      "[PILOT] Quality hooks auto-run on every edit: Python, TypeScript, Go, and more",
-      "[PILOT] Hooks fire across 7 lifecycle events - quality enforcement is automatic and comprehensive",
-      "[PILOT] Coding standards activate conditionally by file type - Python rules only load for .py files",
-      "[PILOT] LSP: Language servers provide real-time diagnostics, go-to-definition, and hover info",
-      "[PILOT] LSP servers (Python, TypeScript, Go) are installed automatically with Pilot",
-      "[PILOT] Add custom rules in .claude/rules/ to guide Claude's behavior",
-      "[PILOT] MCP servers extend capabilities: web search, memory, docs, IDE integration",
-      "[PILOT] Add custom MCP servers to .mcp.json, then run /setup-rules to generate documentation",
-      "[PILOT] Browser automation prefers Claude Code Chrome; falls back to agent-browser in dev containers or headless environments",
-      "[PILOT] Quality hooks validate your code changes automatically before completion",
-      "[PILOT] Spec-Driven: /spec -> Plan -> Approve -> Implement -> Verify (with feedback loop)",
-      "[PILOT] Plans live in docs/plans/ as markdown - you can edit them before approval",
-      "[PILOT] Smart Model Routing: Opus for planning and verification, Sonnet for fast implementation",
-      "[PILOT] Plan-verifier catches gaps, missing edge cases, and requirement mismatches before coding",
-      "[PILOT] Verifier sub-agents perform independent code review against the plan before completion",
-      "[PILOT] Spec stop guard blocks the session from ending until verification is complete",
-      "[PILOT] Worktree Isolation: /spec can run in isolated git worktrees - main branch stays clean",
-      "[PILOT] Per-task commits in worktree mode enable git bisect to isolate regressions",
-      "[PILOT] Rules: Always loaded | Commands: On-demand via /cmd | Skills: Auto-loaded when relevant",
-      "[PILOT] Add your own rules, commands, and skills - they survive Pilot updates",
-      "[PILOT] Standard rules in ~/.claude/rules/ are updated on install - don't edit them",
-      "[PILOT] Custom rules in .claude/rules/ are yours - Pilot never touches them",
-      "[PILOT] Skills are auto-loaded when relevant - no need to manually invoke them",
-      "[PILOT] Skills provide coding standards for Python, TypeScript, Go, testing, and more",
-      "[PILOT] Create your own skills in .claude/skills/ (avoid standards-* prefix)",
-      "[PILOT] Run /setup-rules after adding MCP servers or changing project structure",
-      "[PILOT] /setup-rules discovers undocumented patterns in your codebase and generates rules automatically",
-      "[PILOT] Share Dashboard -> Manage and sync skills across machines and teams in the Console at localhost:41777/#/share",
-      "[PILOT] /create-skill builds a reusable skill from any topic - explores codebase and creates it interactively",
-      "[PILOT] Both /spec and Quick Mode benefit from auto-compaction and persistent memory",
-      "[PILOT] Multi-Session: Run multiple pilot sessions in the same project - each is fully isolated",
-      "[PILOT] Verification loops back automatically if tests fail or issues are found",
-      "[PILOT] Work is verified before marked complete - no more 'hope it works'",
-      "[PILOT] /spec explores your codebase and asks clarifying questions before writing the plan",
-      "[PILOT] Code is auto-formatted, linted, and type-checked on every edit",
-      "[PILOT] When a new release is available, pilot prints a one-line banner - run 'pilot update' (or 'pilot upgrade') to update both Claude Code and Pilot Shell",
-      "[PILOT] Shell integration: pilot and ccp commands work in bash, fish, and zsh automatically",
-      "[PILOT] Zero API keys needed - web search and scraping work out of the box",
-      "[PILOT] All Pilot CLI commands support --json for structured, machine-readable output",
-      "[PILOT] Privacy: No code, files, or project data ever leaves your machine through Pilot",
-      "[PILOT] Pilot works with any existing project - no scaffolding, no restructuring required",
-      "[PILOT] Install a specific version: export VERSION=x.y.z before running the install script",
-      "[PILOT] Platforms: macOS, Linux, and Windows (WSL2) are all supported",
-      "[PILOT] Works on macOS, Linux, and Windows (WSL2) - one installer, all platforms",
-      "[PILOT] CodeGraph: Code knowledge graph for symbol search, call tracing, and impact analysis",
-      "[PILOT] RTK: Token-optimized CLI proxy - saves 60-90% tokens on dev operations, transparent via hooks",
-      "[PILOT] Spec Workflow Toggles: Configure worktree, questions, approval, and reviewers in Console Settings",
-      "[PILOT] Please star the repository: github.com/maxritter/pilot-shell",
-      "[PILOT] Fun fact: Pilot is built with Pilot - a self-improving development loop"
-    ],
-    "excludeDefault": true
-  },
-  "terminalProgressBarEnabled": true,
-  "outputStyle": "default",
-  "verbose": true,
-  "showThinkingHint": true,
-  "spinnerTipsEnabled": false,
-  "skillListingBudgetFraction": 0.05,
-  "autoDreamEnabled": false
+  "showThinkingHint": true
 }

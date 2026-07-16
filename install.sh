@@ -188,6 +188,8 @@ fi
 backup_and_link "$DOTFILES/.claude/commands"             "$HOME/.claude/commands"
 backup_and_link "$DOTFILES/.claude/standards"            "$HOME/.claude/standards"
 backup_and_link "$DOTFILES/.claude/templates"            "$HOME/.claude/templates"
+backup_and_link "$DOTFILES/.claude/rules"                "$HOME/.claude/rules"
+backup_and_link "$DOTFILES/.claude/agents"               "$HOME/.claude/agents"
 
 # Cursor (global rules and skills — ~/.cursor/ also contains runtime data we don't track)
 backup_and_link "$DOTFILES/cursor/rules"                "$HOME/.cursor/rules"

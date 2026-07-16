@@ -21,7 +21,7 @@ neomutt/.neomutt/cache/
 neomutt/.neomutt/tmp/
 neomutt/.neomutt/certificates
 
-# Claude Code runtime (we only track CLAUDE.md, settings.json, settings.local.json, commands/)
+# Claude Code runtime (we track CLAUDE.md, settings*.json, commands/, standards/, templates/, rules/, agents/; ignore the rest)
 .claude/cache/
 .claude/debug/
 .claude/file-history/

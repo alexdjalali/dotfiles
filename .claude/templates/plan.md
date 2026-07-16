@@ -5,7 +5,6 @@ Status: PENDING
 Approved: No
 Iterations: 0
 Max Iterations: 3
-Worktree: Yes
 
 > **Status Lifecycle:** PENDING → COMPLETE → VERIFIED
 > **Iterations:** Tracks implement→verify cycles (incremented by verify phase)
@@ -16,7 +15,6 @@ Worktree: Yes
 > - VERIFIED: All checks passed
 >
 > **Approval Gate:** Implementation CANNOT proceed until `Approved: Yes`
-> **Worktree:** Set at plan creation (from dispatcher). `Yes` uses git worktree isolation; `No` works directly on current branch
 
 ## Summary
 

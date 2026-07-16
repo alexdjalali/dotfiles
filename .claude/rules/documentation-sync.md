@@ -29,7 +29,7 @@ Skip doc updates for:
 
 ### How To Do It
 
-1. **Locate** — grep the docs tree for the symbol/flag/feature being changed. Don't rely on memory; references hide in unexpected places (blog posts, FAQ entries, examples).
+1. **Locate — direct AND indirect references.** Grep the docs tree AND inline comments/docstrings for the symbol/flag/feature being changed (direct references). Then trace one hop out for indirect references: use `codegraph_callers` / `codegraph_impact` to find what depends on the changed code, then check whether any caller, higher-level feature, or documented behavior that relies on it is described in a README, architecture doc, module docstring, or example — and update those too. Don't rely on memory; references hide in unexpected places (blog posts, FAQ entries, examples, module docstrings, architecture docs).
 2. **Update minimally** — change only what's now wrong. Don't rewrite surrounding prose.
 3. **Verify counts and lists** — if docs say "11 phases" or "supports X, Y, Z", update the count and list. Off-by-one numbers are the most common stale-doc bug.
 4. **Match terminology** — use the same name in code, docs, and CLI help. Pick one and propagate.

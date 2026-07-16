@@ -145,7 +145,7 @@ return {
       { "y", "<Plug>(YankyYank)", mode = { "n", "x" }, desc = "Yank text" },
       { "p", "<Plug>(YankyPutAfter)", mode = { "n", "x" }, desc = "Put after" },
       { "P", "<Plug>(YankyPutBefore)", mode = { "n", "x" }, desc = "Put before" },
-      { "<leader>p", "<cmd>Telescope yank_history<cr>", desc = "Yank history" },
+      { "<leader>yh", "<cmd>Telescope yank_history<cr>", desc = "Yank history" },
       { "<c-n>", "<Plug>(YankyCycleForward)", desc = "Cycle forward" },
       { "<c-p>", "<Plug>(YankyCycleBackward)", desc = "Cycle backward" },
     },

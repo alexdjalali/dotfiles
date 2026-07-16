@@ -194,7 +194,7 @@ alias dev-docker="open -a 'Docker'"
 alias dev-status="echo '=== Dev Tools Status ===' && pgrep -lf 'Docker|iTerm|Cursor|Raycast|Rectangle' 2>/dev/null | sort || echo 'No dev tools running'"
 alias spotlight-off="sudo mdutil -a -i off && echo 'Spotlight indexing disabled'"
 alias spotlight-on="sudo mdutil -a -i on && echo 'Spotlight indexing enabled'"
-alias dev-health="echo '=== CPU ===' && top -l 1 | head -10 | tail -4; echo '=== Memory ===' && vm_stat | head -5; echo '=== Disk ===' && df -h / | tail -1"
+alias dev-health="echo '=== CPU ===' && command top -l 1 | head -10 | tail -4; echo '=== Memory ===' && vm_stat | head -5; echo '=== Disk ===' && command df -h / | tail -1"
 
 # Default Tool Aliases
 alias tp='open -a "TablePlus"'           # TablePlus (default DB client)

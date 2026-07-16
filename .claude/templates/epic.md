@@ -18,8 +18,8 @@ graph TD
 
 | #   | Story         | File                               |
 | --- | ------------- | ---------------------------------- |
-| N.1 | <Story title> | [N.1-slug.md](../rfp/N.1-slug.md) |
-| N.2 | <Story title> | [N.2-slug.md](../rfp/N.2-slug.md) |
+| N.1 | <Story title> | [N.1-slug.md](../stories/N.1-slug.md) |
+| N.2 | <Story title> | [N.2-slug.md](../stories/N.2-slug.md) |
 
 ## Key Changes
 

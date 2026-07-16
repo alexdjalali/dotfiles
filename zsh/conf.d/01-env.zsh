@@ -11,7 +11,7 @@ export LC_ALL=en_US.UTF-8
 export EDITOR="nvim"
 
 # GPG — tell gpg-agent which TTY to use for passphrase prompts
-export GPG_TTY=$(tty)
+export GPG_TTY=${TTY:-$(tty)}
 
 # Go
 export GOPATH="$HOME/go"

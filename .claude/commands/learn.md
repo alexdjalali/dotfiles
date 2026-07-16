@@ -19,9 +19,14 @@ Capture what was learned this session as a reusable skill file.
 
 1. Identify the most reusable insight from the session. One insight per skill.
 2. Determine the category (debugging, tooling, testing, architecture, etc.).
-3. Write to `.claude/skills/<category>/<slug>/orchestrator.md`:
+3. Write to `.claude/skills/<slug>/SKILL.md` (the folder name is the skill name and MUST match the frontmatter `name`; use a short kebab-case slug). Claude Code only discovers skills that are a `SKILL.md` with `name` + `description` frontmatter — a bare body or an `orchestrator.md` will never load:
 
 ```markdown
+---
+name: <slug>
+description: <what it does AND when to use it — this line is what Claude matches on, so make it specific and trigger-oriented>
+---
+
 # <Title>
 
 ## Context

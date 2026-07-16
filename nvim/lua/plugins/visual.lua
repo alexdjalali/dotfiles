@@ -236,7 +236,7 @@ return {
     "folke/twilight.nvim",
     cmd = "Twilight",
     keys = {
-      { "<leader>tw", "<cmd>Twilight<cr>", desc = "Toggle twilight" },
+      { "<leader>uT", "<cmd>Twilight<cr>", desc = "Toggle twilight (dim inactive)" },
     },
     opts = {
       dimming = {

@@ -117,7 +117,7 @@
 │   ├── chaos/                    # Resilience under failure
 │   ├── performance/              # Benchmarks
 │   ├── fixtures/                 # Static test data
-│   └── shared/                   # Shared test utilities (mocks, fakes)
+│   └── shared/                   # Shared test utilities (mocks, fixtures)
 │
 ├── scripts/                      # Helper scripts
 │   ├── setup/                    # bootstrap.sh, install-hooks.sh

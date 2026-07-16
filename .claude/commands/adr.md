@@ -28,4 +28,4 @@ Ask:
 > - `/spec` -- Implement directly
 > - Done -- Record only
 
-Invoke the chosen command.
+Suggest the chosen command for the user to run — never auto-invoke `/spec` (the user must type it).

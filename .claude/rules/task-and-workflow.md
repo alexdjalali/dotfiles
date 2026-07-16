@@ -4,7 +4,7 @@
 
 `/spec` is the structured alternative to CC's built-in plan mode — it adds TDD, verification, and code review. Guide users to `/spec` for planned work. Users should NOT manually enter plan mode (Shift+Tab) before `/spec`: the spec skills manage the plan → approve → implement → verify flow themselves.
 
-The plan file always lives at `docs/plans/YYYY-MM-DD-<slug>.md`. You write the plan file (plus any edits the user authorizes) normally — `bypassPermissions` keeps writes flowing.
+The plan file always lives at `docs/spec/plans/YYYY-MM-DD-<slug>.md`. You write the plan file (plus any edits the user authorizes) normally — `bypassPermissions` keeps writes flowing.
 
 **⛔ NEVER auto-invoke `/spec` or `Skill('spec')`.** The user MUST explicitly type it. Suggest, don't invoke.
 

@@ -2,7 +2,7 @@
 description: Run all quality gates before committing -- format, lint, type check, tests
 ---
 
-Four gates in order. All must pass before committing. Run only gates relevant to languages in the diff.
+Five gates in order. All must pass before committing. Run only gates relevant to languages in the diff.
 
 ## Gate 1 -- Format (auto-fix in place)
 

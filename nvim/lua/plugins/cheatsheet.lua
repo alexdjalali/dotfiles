@@ -144,7 +144,7 @@ return {
           "  Visual Enhancements",
           "  ───────────────────",
           "  <leader>tc    Context           Toggle sticky headers",
-          "  <leader>tw    Twilight          Dim inactive code",
+          "  <leader>uT    Twilight          Dim inactive code",
           "  <leader>ut    Transparency      Toggle transparent bg",
           "  <leader>wp    Window Pick       Visual window select",
           "",

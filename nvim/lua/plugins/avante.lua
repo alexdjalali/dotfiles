@@ -19,9 +19,9 @@ return {
       providers = {
         claude = {
           endpoint = "https://api.anthropic.com",
-          model = "claude-sonnet-4-20250514",
+          model = "claude-sonnet-5",
           extra_request_body = {
-            max_tokens = 4096,
+            max_tokens = 8192,
           },
         },
         ollama = {
@@ -46,7 +46,7 @@ return {
           default = "<leader>At",
           debug = "<leader>Ad",
           hint = "<leader>Ah",
-          suggestion = "<leader>As",
+          suggestion = "<leader>AS",
           repomap = "<leader>AR",
         },
         diff = {
@@ -62,7 +62,7 @@ return {
       -- Prevent auto-setting default keymaps that would conflict with Claude Code
       -- The mappings table above handles all bindings under <leader>A
       behaviour = {
-        auto_suggestions = false, -- Prevent conflict with NeoCodeium ghost text
+        auto_suggestions = false, -- Prevent conflict with Copilot ghost text
         auto_set_keymaps = true,
         auto_set_highlight_group = true,
       },

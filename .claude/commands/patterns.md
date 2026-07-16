@@ -20,7 +20,7 @@ Scan the codebase and produce a severity-ranked findings report.
 
 1. Use `codegraph_impact` and `codegraph_callers` to map coupling and blast radius.
 2. Use Semble to surface duplicated patterns across files.
-3. Use `find . -name "*.py" -o -name "*.go" -o -name "*.ts"` piped through `wc -l` to flag files over 800 lines.
+3. Flag oversized files with `find . -type f \( -name "*.py" -o -name "*.go" -o -name "*.ts" \) | xargs wc -l | awk '$1 > 800'` — use `xargs wc -l` (a bare `... | wc -l` only counts the *number of files*, not lines per file). Or use CodeGraph to list large symbols.
 4. Rank all findings by severity: `critical`, `high`, `medium`, `low`.
 
 ## Output Format

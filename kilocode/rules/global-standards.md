@@ -18,7 +18,7 @@ Consult the language-specific rule file for your current language:
 - **Go**: `go.md`
 - **TypeScript/React/Tailwind**: `typescript.md`
 
-Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`golangci-lint`, TS=`pnpm`+`eslint`+`tsc`.
+Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`goimports`+`golangci-lint`, TS=`pnpm`/detect+`eslint`+`tsc`+`vitest`.
 
 ## Project Constitution
 

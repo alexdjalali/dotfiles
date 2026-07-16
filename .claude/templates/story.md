@@ -1,4 +1,4 @@
-[Back to Spec](../spec/epic-NN-<title>.md)
+[Back to Epic](../epics/epic-NN-<title>.md)
 
 # Story <N.M> — <Title>
 
@@ -16,7 +16,7 @@
 - <Concrete, testable criterion>
 - <Concrete, testable criterion>
 
-**Testing**: >90% unit coverage. Tests:
+**Testing**: cover critical-path behavior (coverage is a diagnostic, not a quota — see testing.md). Tests:
 
 - `test_<scenario_1>`
 - `test_<scenario_2>`
@@ -26,7 +26,7 @@
 
 ## Architecture References
 
-- [ARCH-NNN-<name>.md](../architecture/ARCH-NNN-<name>.md)
+- [ARCH-NNN-<name>.md](../arch/ARCH-NNN-<name>.md)
 
 ---
 
@@ -55,7 +55,7 @@ graph TD
 
 ### Testing Requirements
 
-- [ ] >90% unit test coverage
+- [ ] Critical-path behavior covered (no numeric quota — see testing.md)
 - [ ] Organized test structure with descriptive names
 - [ ] Every test documents: **Why important** + **What it tests**
 - [ ] Shared test fixtures and helpers (see language standards)

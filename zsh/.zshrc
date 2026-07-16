@@ -53,8 +53,9 @@ done
 
 # Zoxide - smarter cd (MUST be at end of .zshrc)
 # Use `z` / `zi` directly — aliasing cd breaks fzf-tab previews and scripts
-if (( $+commands[zoxide] )); then
-  eval "$(zoxide init zsh)"
-fi
+# _cache_init is defined in conf.d/09-tools.zsh (sourced above) — caches the
+# init script so zoxide isn't forked on every shell start.
+_cache_init zoxide zoxide init zsh
 
-export PATH="$HOME/.bun/bin:$PATH"
+# NOTE: $HOME/.bun/bin is already in $path (conf.d/01-env.zsh, deduped by typeset -U);
+# no need to re-prepend it here.

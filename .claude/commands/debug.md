@@ -6,7 +6,7 @@ description: Debug a problem using the scientific method -- reproduce, isolate, 
 
 1. Read the error completely. Don't skim stack traces.
 2. Reproduce the failure consistently before touching any code.
-3. Write a failing test that captures the bug now -- before any fix attempt.
+3. Write a failing test that captures the bug now -- before any fix attempt. Use mocks and fixtures, not fakes.
 
 If you can't reproduce it reliably, investigate why before proceeding.
 
@@ -29,6 +29,7 @@ Test with the minimal possible change. One variable at a time.
 1. Fix at the root cause -- not at the symptom.
 2. The failing test from Phase 1 must now pass.
 3. Run the full test suite. Fix all regressions before declaring done.
+4. Update any comment, docstring, or README that describes the fixed behavior -- directly or indirectly (a caller or higher-level behavior that depended on the bug).
 
 ## Defense-in-Depth
 

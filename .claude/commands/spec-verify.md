@@ -8,7 +8,7 @@ Read the plan from `docs/plans/`. Status must be `COMPLETE`.
 
 Launch two agents in parallel:
 1. **Process agent**: "Did the implementation follow the plan exactly? Are all tasks marked complete? Are there undocumented deviations?"
-2. **Quality agent**: "Review the diff for correctness bugs, missing error handling, untested paths, and DRY/SOLID violations."
+2. **Quality agent**: "Review the diff for correctness bugs, missing error handling, and untested paths; DRY/SOLID violations and reinvented helpers; consistency with the established patterns/naming of the touched files; tests that hand-roll fakes where a mock or existing fixture would serve; and any inline comment, docstring, README, or architecture doc that references the changed code — directly or indirectly — and was not updated."
 
 Categorize findings: `must_fix`, `should_fix`, `suggestion`.
 

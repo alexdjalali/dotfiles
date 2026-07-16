@@ -13,7 +13,8 @@ Scan the codebase and produce a severity-ranked findings report.
 | Complexity | Functions > 50 lines; nesting > 4 levels; high cyclomatic complexity |
 | Anti-patterns | God objects, primitive obsession, feature envy, shotgun surgery |
 | Dead code | Exported symbols with no callers; commented-out blocks > 10 lines |
-| Test gaps | Public logic with no tests; assertions that test structure not behavior |
+| Convention drift | Code that ignores an established repo pattern, naming, or error-handling idiom; a reinvented helper that duplicates an existing one |
+| Test gaps | Public logic with no tests; assertions that test structure not behavior; hand-rolled fakes where a mock or existing fixture would serve |
 
 ## Steps
 

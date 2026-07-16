@@ -80,6 +80,8 @@ npm test -- --silent               # Jest/Vitest
 
 Mock at module level (where imported, not where defined). Test > 1 s = likely unmocked I/O.
 
+**Test doubles: prefer mocks and fixtures over fakes.** Reuse the project's existing fixtures and mock the external boundary directly; do NOT hand-roll a fake / in-memory reimplementation of a dependency when a mock or fixture will serve. A new fake where a fixture or mock already exists is a `should_fix`.
+
 ### ⛔ E2E: Frontend/UI (MANDATORY for web apps)
 
 Any change that affects what the user sees MUST be verified with browser automation — both `/spec` and quick mode. Unit tests don't catch layout bugs, stale bundles, or wiring issues. Tier priority and procedure: see `browser-automation.md` and `verification.md`.

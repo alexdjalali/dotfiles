@@ -39,4 +39,5 @@ All specified behaviors are implemented and tested. Run `/preflight` before comm
 - NEVER write more test than needed to make the current step fail
 - NEVER skip the refactor step -- "it looks fine" is not a reason
 - NEVER mock internal collaborators -- only external boundaries (network, disk, time, DB)
+- Use mocks and fixtures for those external boundaries -- NEVER hand-rolled fakes/stubs that reimplement the dependency
 - A test passing on first run means the test is probably wrong -- investigate

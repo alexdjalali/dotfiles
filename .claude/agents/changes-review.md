@@ -60,6 +60,7 @@ Focus on issues hooks CANNOT catch. Review the diff for:
   - New **public function on an existing class** with no test (unit OR functional) AND no `Trivial:` justification on the task → **should_fix**
   - New private helper / internal function → no must-have test (covered transitively by the public-API test that exercises it)
   - Tests with no mocking of external deps → **must_fix**
+  - Hand-rolled fake / in-memory reimplementation of a dependency where a mock or existing fixture would serve → **should_fix** (we use mocks and fixtures, not fakes)
 - **Test parsimony (per `~/.claude/rules/testing.md` § Test Parsimony):**
   - More than 2 new test classes for the same production class without a `Why >2 test classes:` note in the plan's Key Decisions → **must_fix**
   - Per-method test classes (e.g. `DoSomethingTests` for `Foo.DoSomething()`) → **must_fix**
@@ -67,6 +68,8 @@ Focus on issues hooks CANNOT catch. Review the diff for:
   - Test class structure that mirrors a recently-refactored production-class structure (test moved purely because the code moved, not because behaviour changed) → **suggestion**
   - Task declares `Trivial:` but does not name an existing covering test/verification command, OR the diff shows >5 net new lines of production code, OR introduces a new branch (`if`/`else`/`match`/`try`/`for` with a non-trivial body), OR adds a new public method/function, OR adds a new error path → **must_fix** (the implementer must remove the `Trivial:` field and write a real RED test)
 - **Error handling:** bare except, swallowed errors → **should_fix**
+- **Consistency & DRY:** change diverges from an established repo pattern / naming / error-handling idiom, or duplicates an existing helper instead of reusing it (cite the `file:line` it diverges from or duplicates) → **should_fix**
+- **Docs sync:** a code change whose symbol or behavior is referenced by an inline comment, docstring, README, or architecture doc — directly or indirectly (via a caller) — that was NOT updated in the same change → **should_fix**
 
 ### 4. Goal Achievement
 

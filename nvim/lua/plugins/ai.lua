@@ -1,4 +1,8 @@
--- Claude Code native IDE integration (floating terminal)
+-- Claude Code native IDE integration (native bottom split)
+-- Primary toggle is <leader>ac -> :Pilot (Claude + shell dual-pane, defined in
+-- lua/polish.lua). The claudecode.nvim commands below (focus/send/diff/model)
+-- drive the plugin's own WebSocket-connected session and open as a native
+-- bottom split rather than a float.
 ---@type LazySpec
 return {
   {
@@ -8,17 +12,18 @@ return {
       terminal_cmd = vim.fn.exepath("claude") ~= "" and vim.fn.exepath("claude") or "claude",
       env = { CLAUDECODE = "" },
       terminal = {
+        -- Native fallback (native provider only supports vertical splits)
+        split_side = "right",
+        split_width_percentage = 0.40,
+        -- Snacks provider (default when snacks is available): real bottom split
         snacks_win_opts = {
-          position = "float",
-          width = 0.9,
-          height = 0.9,
-          border = "rounded",
+          position = "bottom",
+          height = 0.35,
         },
       },
     },
     keys = {
       { "<leader>a", nil, desc = "AI/Claude Code" },
-      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
       { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
       { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
       { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },

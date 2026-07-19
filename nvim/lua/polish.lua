@@ -600,7 +600,8 @@ local function setup_pilot()
     end
   end, {})
 
-  -- Keymap for quick access
+  -- Keymap for quick access (<leader>ac is the primary Claude toggle; <leader>ap is an alias)
+  vim.keymap.set("n", "<leader>ac", "<cmd>Pilot<cr>", { desc = "Toggle Claude (split + shell)" })
   vim.keymap.set("n", "<leader>ap", "<cmd>Pilot<cr>", { desc = "Toggle Pilot split" })
 end
 

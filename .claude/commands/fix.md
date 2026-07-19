@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Fix a bug in the quick lane -- reproduce, failing test, minimal fix, revert-test proof
 argument-hint: <bug description or file:line>
 ---
@@ -30,3 +31,7 @@ STOP and tell the user to use `/spec` (bugfix lane) if the fix would:
 - NEVER fix a symptom when the root cause is reachable
 - NEVER expand scope -- if it grows, escalate to `/spec`
 - NEVER leave the affected suite failing -- fix all failures before done
+
+## Next Step
+
+Fixed, revert-proven, suite green (`/preflight` already ran in step 6) → ship: `/github`. If the root cause spans several bugs worth recording, capture it with `/rca` first. If scope grew past a quick fix, stop and escalate to `/spec`.

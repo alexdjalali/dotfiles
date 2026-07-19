@@ -61,7 +61,7 @@ Use the templates at `~/.claude/templates/` for document generation:
 New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):
 - Layered architecture: Foundation → Client → Service/Domain → Controller/API → Entrypoint
 - Infrastructure in `zarf/` (Docker, K8s, Terraform, observability)
-- Spec pipeline in `docs/adr/` + `docs/spec/{arch,epics,stories,plans}`
+- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,plans,audits,rca,demos}`
 - Language conventions: Go=`pkg/`+`apps/`, Python=`src/`+`entrypoints/`, TS=`packages/`+`apps/`
 
 ## Quality Gates (before every commit)

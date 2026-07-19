@@ -1,5 +1,6 @@
 ---
 description: Verify a completed plan -- code review, automated gates, execution check, loop back if issues found
+model: opus
 ---
 
 Read the plan from `docs/spec/plans/`. Status must be `COMPLETE`.
@@ -33,6 +34,8 @@ Tests passing is not the same as the program working. Both must be true.
 **If all `must_fix` and `should_fix` items are resolved and all gates pass:**
 - Set plan `Status: VERIFIED`
 - Report what was verified and the evidence for each check
+- **Persist the proof (user-facing epics/stories)** — if this completes a user-visible flow, offer to capture the end-to-end walkthrough (the same one Phase 3 just ran) as a `/demo` doc, so the proof is durable and shareable. Suggest, do NOT auto-run.
+- **Next Step (Ship)** — suggest, do NOT auto-run: `/github` to commit and open a PR, preserving the traceability chain Decision -> Epic -> Story -> Plan -> PR. Git writes always require the user to run the command themselves.
 
 **If issues remain:**
 - Add fix tasks to the plan's task list

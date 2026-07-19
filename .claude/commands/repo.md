@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Scaffold a new monorepo or audit an existing one for structural compliance
 ---
 

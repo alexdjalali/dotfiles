@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Extract a reusable skill from a session discovery and save it to .claude/skills/
 ---
 

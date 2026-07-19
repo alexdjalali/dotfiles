@@ -1,8 +1,12 @@
 ---
+model: opus
 description: Decompose an epic into independently testable stories, or show epic/story progress
+argument-hint: "[status | <epic name or file>]"
 ---
 
 If args = "status", run the status report. Otherwise decompose the named epic.
+
+The epic-level sequencing that feeds this -- dependencies, phasing, and the critical path -- is owned by `/roadmap` (one level up). `/roadmap` orders the epics; `/rfp` breaks one into stories.
 
 ## Status Report (`/rfp status`)
 

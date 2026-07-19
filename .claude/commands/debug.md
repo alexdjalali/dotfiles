@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Debug a problem using the scientific method -- reproduce, isolate, hypothesize, fix, verify
 ---
 
@@ -45,3 +46,10 @@ After fixing, make the bug structurally impossible:
 - NEVER apply a fix you can't explain in one sentence
 - 3+ failed fixes = the approach is wrong, not the fix -- stop and reconsider
 - If the fix requires a design change, write an ADR first
+- To hand a diagnosis off instead of fixing now (several related bugs, or someone else owns the fix), record it with `/rca` -- diagnosis-only, `file:line`-cited -- then `/fix` or `/spec` from it
+
+## Next Step
+
+- **Fixed and verified** → ship: `/preflight`, then `/github`.
+- **Investigated but not fixing now** (or several related bugs surfaced) → record the diagnosis with `/rca`, then `/fix` (small) or `/spec` (large).
+- **Fix needs a design change** → `/adr` first, then `/design` / `/spec`.

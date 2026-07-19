@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Sync documentation and rules to match the current state of the codebase
 ---
 
@@ -23,3 +24,7 @@ Read the codebase. Compare against existing rules and docs. Update what is stale
 - NEVER rewrite prose that is still accurate -- minimal diffs only
 - NEVER add documentation for future plans -- document what exists now
 - Update `CLAUDE.md` when directory structure or key commands change
+
+## Next Step
+
+Report every doc changed, then `/preflight` and `/github` to commit the doc updates (alongside the code change that prompted them, if any).

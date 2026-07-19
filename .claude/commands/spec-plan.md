@@ -1,5 +1,6 @@
 ---
 description: Plan an implementation -- explore the codebase, design tasks, verify the plan, get approval
+model: opus
 ---
 
 ## Phase 1 -- Explore

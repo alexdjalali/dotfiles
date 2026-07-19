@@ -1,5 +1,6 @@
 ---
 description: Verify a bugfix -- Behavior Contract audit, revert-test proof, regression + gates
+model: opus
 ---
 
 Read the plan from `docs/spec/plans/`. Status must be `COMPLETE`, `Type: Bugfix`.
@@ -33,6 +34,7 @@ A reproducing test that still passes with the fix reverted is not pinning the bu
 
 **All `must_fix` / `should_fix` resolved, revert-test proven, gates pass:**
 - Set `Status: VERIFIED`; report the revert-test evidence and the execution proof.
+- **Next Step (Ship)** — suggest, do NOT auto-run: `/github` to commit and open a PR (traceability: Decision -> Epic -> Story -> Plan -> PR). Git writes always require the user to run the command themselves.
 
 **Issues remain:**
 - Add fix tasks; set `Status: PENDING`, `Approved: Yes`, increment `Iteration`; invoke `/spec-implement`. Do NOT ask whether to fix.

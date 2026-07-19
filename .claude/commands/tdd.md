@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Implement a behavior using strict red-green-refactor TDD
 ---
 

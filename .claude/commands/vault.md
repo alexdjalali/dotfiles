@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Save or retrieve reusable knowledge -- snippets, patterns, solutions -- from .claude/vault/
 ---
 

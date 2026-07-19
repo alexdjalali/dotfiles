@@ -1,5 +1,6 @@
 ---
 description: Implement an approved plan task-by-task using TDD
+model: opus
 ---
 
 Read the plan from `docs/spec/plans/`. Status must be `PENDING` with `Approved: Yes`.

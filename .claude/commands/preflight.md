@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Run all quality gates before committing -- format, lint, type check, tests
 ---
 
@@ -45,3 +46,7 @@ Changed modules must have passing tests. New tests use **mocks and fixtures, not
 - NEVER commit with stale docs -- Gate 5 is not optional
 - Gates run in order -- do not parallelize them
 - If a test was already failing before your change, fix it or document it; "pre-existing" is not an excuse
+
+## Next Step
+
+All gates green → `/github` to commit and open a PR. Any gate red → fix and re-run `/preflight`; do not commit.

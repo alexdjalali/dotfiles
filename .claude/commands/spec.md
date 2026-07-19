@@ -1,5 +1,7 @@
 ---
+model: opus
 description: Dispatch to the right phase of the implementation workflow based on plan status
+argument-hint: "[<plan file> | <description>]"
 disable-model-invocation: true
 ---
 

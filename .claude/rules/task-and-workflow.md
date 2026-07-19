@@ -21,6 +21,19 @@ Default is quick mode (direct execution).
 
 **⛔ Do NOT suggest `/spec` for:** bugfixes (use `/fix`), single-feature additions, refactors inside one module, CLI flag changes, config tweaks, dependency updates, test additions, or anything already scoped to a clear outcome. Reserve the suggestion for genuinely large, multi-system work where upfront planning materially reduces risk — when in doubt, execute in quick mode.
 
+## Bug Lane — which skill
+
+Four entry points; pick by what you know and how big the fix is:
+
+| Situation | Skill | Output |
+|-----------|-------|--------|
+| Cause unknown — need to investigate | `/debug` | live root-cause + fix (scientific method) |
+| Cause known, fix small & contained | `/fix` | quick-lane fix: reproducing test + revert-proof |
+| Cause found but not fixing now, or several related bugs | `/rca` | persisted, `file:line`-cited diagnosis (no fix) |
+| Fix is large / crosses layers / needs a schema-API change | `/spec` (bugfix lane) | planned fix → implement → verify |
+
+Chain: **`/debug` or `/rca` (diagnose) → `/fix` (small) or `/spec` (large) → `/github` (ship)**. A reproducing test is non-negotiable in every lane except `/rca` (diagnosis only). Never silently upgrade a `/fix` that outgrew the quick lane — stop and escalate to `/spec`.
+
 ## Task Management
 
 **Use task management in quick mode.** Tasks are working memory — without them, requests get lost during compaction. Skip only for a truly trivial one-shot with empty `TaskList`.

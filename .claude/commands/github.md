@@ -1,4 +1,5 @@
 ---
+model: sonnet
 description: Handle branching, committing, pull requests, and merges
 ---
 

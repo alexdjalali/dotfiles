@@ -1,4 +1,5 @@
 ---
+model: opus
 description: Generate Mermaid architecture diagrams from codebase analysis
 ---
 

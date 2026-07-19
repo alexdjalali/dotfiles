@@ -1,8 +1,11 @@
 ---
+model: opus
 description: Audit the codebase for DRY violations, anti-patterns, coupling problems, and complexity hotspots
 ---
 
 Scan the codebase and produce a severity-ranked findings report.
+
+For a **durable, standard-scoped** audit -- one that persists to `docs/spec/audits/`, cites a specific charter/ADR/budget, and feeds a refactor epic -- use `/audit` instead. `/patterns` reports structural hotspots to chat; `/audit` writes the report and maps findings to plans.
 
 ## What to Look For
 

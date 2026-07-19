@@ -2,6 +2,7 @@
 
 **Date**: <today>
 **Status**: Proposed
+**Status history**: Proposed <today>
 **Deciders**: <team/author>
 
 ## Context

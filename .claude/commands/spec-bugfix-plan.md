@@ -1,5 +1,6 @@
 ---
 description: Plan a bugfix -- reproduce, root-cause, design the fix with a reproducing test first
+model: opus
 ---
 
 ## Phase 1 -- Reproduce & Root-Cause

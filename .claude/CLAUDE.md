@@ -2,7 +2,9 @@
 
 ## Process
 
-All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement → Verify).
+All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement → Verify) → Ship (`/github`).
+
+**Model policy:** every command is pinned to Opus via `model:` frontmatter, except `/github`, which runs on Sonnet — judgment, planning, and verification stay on the strongest model; git/PR plumbing runs on the cheaper one. The `verify → implement` loop re-runs automatically until the plan is `VERIFIED`, then `/github` ships it (`git` writes always require explicit user confirmation). Run each phase as its own prompt to get its pinned model reliably — the `model:` switch is scoped to that command's turn, and chained auto-invocation honoring it is undocumented.
 
 - **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
 - **Architecture**: Diagram affected components in `docs/spec/arch/`.
@@ -10,6 +12,13 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 - **Plan before code**: Use `/spec` for non-trivial work → `docs/spec/plans/`.
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
+
+**Supporting artifact skills** (each writes to a `docs/spec/` folder, models the same command shape, and chains into the pipeline above):
+- **`/roadmap`** → `docs/spec/roadmap/` — sequences epics *above* `/rfp` (dependency map, phasing, critical path).
+- **`/design`** → `docs/spec/design/` — the detailed "how it works" narrative *between* `/adr` (decision) and `/spec` (tasks).
+- **`/audit`** → `docs/spec/audits/` — a durable, standard-scoped codebase audit (the persistent sibling of `/patterns`); feeds `/rfp` or `/spec`.
+- **`/rca`** → `docs/spec/rca/` — an evidence-cited, diagnosis-only bug root-cause (the persistent sibling of `/debug`); feeds `/fix` or `/spec`.
+- **`/demo`** → `docs/spec/demos/` — an E2E walkthrough (+ companion `.sh`) proving a shipped epic works (the persistent sibling of `/verify`).
 
 ## Language Standards
 
@@ -63,13 +72,18 @@ Use the templates at `~/.claude/templates/` for document generation:
 - **Monorepo Scaffold**: `~/.claude/templates/repo.md`
 - **Constitution**: `~/.claude/templates/constitution.md`
 - **Checklist**: `~/.claude/templates/checklist.md`
+- **Roadmap**: `~/.claude/templates/roadmap.md`
+- **Design Doc**: `~/.claude/templates/design.md`
+- **Audit**: `~/.claude/templates/audit.md`
+- **RCA**: `~/.claude/templates/rca.md`
+- **Demo Walkthrough**: `~/.claude/templates/demo.md`
 
 ## Monorepo Standard
 
 New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):
 - Layered architecture: Foundation → Client → Service/Domain → Controller/API → Entrypoint
 - Infrastructure in `zarf/` (Docker, K8s, Terraform, observability)
-- Spec pipeline in `docs/adr/` + `docs/spec/{arch,epics,stories,plans}`
+- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,plans,audits,rca,demos}`
 - Language conventions: Go=`pkg/`+`apps/`, Python=`src/`+`entrypoints/`, TS=`packages/`+`apps/`
 - Use `/repo <name>` to scaffold, `/repo audit` to check compliance
 

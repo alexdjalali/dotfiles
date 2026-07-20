@@ -20,6 +20,19 @@ Design 3-12 implementation tasks. Each task must be:
 - Sequenced so later tasks build on earlier ones without circular dependencies
 - Aligned with the repo's existing patterns — reuse established helpers, naming, and conventions rather than introducing parallel ones (consistency, DRY); tests use mocks and fixtures, not fakes
 
+**Code-addition checklist.** For work that adds or changes code, make the plan answer these eight before you finalize the tasks — a "yes" to infra/CLI/config is its own task, not an afterthought:
+
+1. **Infra/deploy?** does it need a dev environment change and a staging/prod (IaC) change?
+2. **CLI/tooling?** does it need a change to the project's CLI or task runner?
+3. **Philosophy / gold-standard?** is it consistent with the project's design philosophy, and does it mirror an existing reference/gold-standard implementation? (a deviation is an ADR, not a silent exception)
+4. **Right test *types*?** unit / integration / e2e — plus property/fuzz and chaos/resiliency when the code warrants it.
+5. **Config?** does it need a config change (ideally selecting an impl by configuration, not a hard-coded import)?
+6. **As simple as possible?** DRY, YAGNI — no duplicated logic, no speculative knobs.
+7. **As general as possible?** behind an interface, selected by config, injected explicitly — balanced against YAGNI (Q6 is the ceiling).
+8. **Reuse shared abstractions?** does it reuse the patterns/helpers in the shared library tier rather than reinventing them?
+
+If the repo defines `.claude/rules/code-addition-checklist.md`, follow its concrete answers (that file supplies the project's real infra tiers, CLI, test layers, and shared-library packages).
+
 ## Phase 3 -- Write the Plan
 
 Write to `docs/spec/plans/YYYY-MM-DD-<slug>.md`:

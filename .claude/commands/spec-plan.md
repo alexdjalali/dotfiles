@@ -51,6 +51,9 @@ Iteration: 1
 ## Affected Files
 <list of files to create or modify>
 
+## Proposed Repository Structure
+<INCLUDE ONLY IF NEW FILES ARE CREATED — omit otherwise. A tree of the new/changed paths relative to the repo root (mark `(new)` / `(modified)`), consistent with the current repository layout and language conventions. Inspect the real tree first (`codegraph_files` / `ls`); the monorepo standard is `~/.claude/templates/repo.md`. If the needed layout DEVIATES from the current structure, STOP and ask the user to confirm before finalizing the plan.>
+
 ## Tasks
 - [ ] Task 1: <verb phrase> -- <what done looks like>
 - [ ] Task 2: ...
@@ -80,4 +83,5 @@ On approval: set `Approved: Yes` in the plan file, then invoke `/spec-implement`
 - NEVER begin implementation without explicit approval
 - NEVER design more than 12 tasks -- split into multiple plans if needed
 - NEVER include tasks that don't trace directly to the user's request
+- NEVER add new files without a Proposed Repository Structure that matches the current repo layout -- if the layout must deviate, ask the user before finalizing
 - NEVER skip the spec-review pass -- it catches the gaps and bad assumptions you missed

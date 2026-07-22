@@ -49,6 +49,25 @@ graph TD
 - [What will NOT be changed]
 - [Explicit boundaries]
 
+## Proposed Repository Structure
+
+> **Include only when this plan creates new files.** Delete this section if nothing is added.
+
+Show where new files land as a tree relative to the repo root; mark added paths `(new)` and changed paths `(modified)`. The layout MUST be consistent with the current repository structure and the project's language conventions — inspect the real tree first (`codegraph_files` / `ls`; the monorepo standard is `~/.claude/templates/repo.md`). If any new file requires a directory or layout that **deviates** from the current structure, STOP and ask the user to confirm before finalizing the plan.
+
+```text
+src/
+├── <area>/
+│   ├── <existing_file>        # modified
+│   └── <new_file>             # (new)
+└── tests/
+    └── <area>/
+        └── test_<new_file>    # (new)
+```
+
+- [ ] Matches the current repository layout
+- [ ] Deviates from current layout — described above and **confirmed with the user** (note what/why)
+
 ## Prerequisites
 
 - [Any requirements before starting]

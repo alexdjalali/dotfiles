@@ -40,6 +40,9 @@ Given <...>, did <...>, must <...>.
 ## Affected Files
 <files to change>
 
+## Proposed Repository Structure
+<INCLUDE ONLY IF THE FIX ADDS NEW FILES — omit otherwise. A tree of the new paths relative to the repo root, consistent with the current repository layout. If the layout must deviate from the current structure, ask the user to confirm before finalizing.>
+
 ## Tasks
 - [ ] Task 1: <verb phrase> -- <what done looks like>
 ```

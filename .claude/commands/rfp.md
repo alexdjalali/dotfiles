@@ -25,6 +25,7 @@ Scan `docs/spec/stories/` and `docs/spec/epics/`. For each epic, count stories b
    - Have a single, testable acceptance criterion
    - Be implementable without depending on an unfinished sibling
    - Answer the **code-addition checklist** so the *how* is scoped, not just the *what*: (1) infra/deploy change? (2) CLI/tooling change? (3) consistent with the project's philosophy & mirrors gold-standard/reference code? (4) right test *types* (unit/integration/e2e; fuzz/chaos when warranted)? (5) config change? (6) as simple as possible (DRY/YAGNI)? (7) as general as possible — interface + config-selected, balanced against YAGNI? (8) reuses shared-library abstractions? If the repo defines `.claude/rules/code-addition-checklist.md`, fold in its concrete answers.
+   - **Propose a repository structure when the story creates new files** — a tree of the new/changed paths (see the *Proposed Repository Structure* section of `~/.claude/templates/story.md`), consistent with the current repo layout (inspect it first — `codegraph_files` / `ls`). If the needed layout deviates from the current structure, ask the user to confirm before finalizing the story.
 3. Write each story to `docs/spec/stories/<epic-N>.<story-N>-<slug>.md` using `~/.claude/templates/story.md`.
 4. Update the epic's stories table with relative links and initial status `Todo`.
 
@@ -34,6 +35,7 @@ Scan `docs/spec/stories/` and `docs/spec/epics/`. For each epic, count stories b
 - NEVER make a story depend on an unfinished sibling story
 - Story titles are verb phrases: "Add user authentication", not "User authentication"
 - Number stories from the epic number: epic 5 produces stories 5.1, 5.2, ...
+- NEVER let a story add new files without a Proposed Repository Structure that matches the current repo layout -- if the layout must deviate, ask the user first
 
 ## Next Step
 

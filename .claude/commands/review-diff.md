@@ -5,35 +5,48 @@ description: Review code changes for correctness, quality, and adherence to stan
 
 High-recall, two-pass review. The failure mode this is tuned against is a **thin review** — walking past real issues and returning three findings on a fifty-line diff. The goal is to surface **every real issue**, then rank by severity. Confidence is managed by the severity tier a finding lands in, **never by silently dropping it**. Merge everything into one ranked list.
 
-## Scope
+**This is the single front door for reviewing a code diff** — working tree, a committed branch against a base, or a PR. You never need another review command or a hand-spawned `changes-review` agent: Step 1 resolves whatever diff you point it at. If the built-in `/code-review` skill returns nothing because the change is already committed, that is NOT a signal to reach for `changes-review` — it means Step 1 must materialize the committed diff (below).
 
-- Args specify files or a PR number → review those
-- No args → review the current working-tree diff (staged + unstaged + untracked)
+## Step 1 — Resolve the diff surface
 
-## Step 0 — Anchor to intent and enumerate the surface
+Establish **what to review** and **how to obtain it** before anything else. The built-in `/code-review` skill (Step 3, Pass A) only sees the **working-tree** diff, so for anything already committed you must materialize the diff explicitly here.
+
+| Args | Source | How to get the diff | Pass A engine |
+|------|--------|---------------------|---------------|
+| none | Working tree (staged + unstaged + untracked) | `git diff HEAD` plus untracked files | built-in `/code-review` skill (native) |
+| file paths | Working-tree subset | `git diff HEAD -- <paths>` | built-in `/code-review` skill (native) |
+| a branch / "this branch" / `<base>..<branch>` | Committed branch vs base | fetch if remote (`git fetch <remote> <branch>`), then `git diff <base>...<head>` | manual precision pass over the resolved diff |
+| a PR number | GitHub PR | `gh pr view <n>`, `gh pr diff <n>` | manual precision pass; `gh pr comment` / built-in `/review` to post |
+
+Rules for Step 1:
+
+- **Default base is `main`** (fall back to `master` or the repo's default branch if `main` is absent). Honor an explicit base when the user names one (`<base>..<branch>`).
+- **Three-dot diff for a branch:** `git diff <base>...<head>` shows the changes introduced on `<head>` since it diverged from `<base>` — the same set GitHub's "Files changed" shows. Use it, not two-dot, so changes landed on `<base>` don't pollute the review.
+- **Reviewing is read-only.** *Fetch*, don't checkout/pull, so you never mutate the user's working branch; read head-ref file contents with `git show <head>:<path>` when the branch isn't checked out. Never run a git write command as part of a review.
+- Record the exact range you resolved (e.g. `main...origin/feature-x`) — every later step reviews *that* range.
+
+## Step 2 — Anchor to intent and enumerate the surface
 
 Before looking for issues, establish what the change is *for* and what it *touches*:
 
 1. Read the PR description / commit messages / stated goal. Note the intended behavior so you can tell a deliberate design choice from a bug (and apply the lineage test: every changed line should trace to that goal).
-2. List **every changed file and every changed symbol**. This list is your coverage checklist for Step 2 and Step 3 — you are accountable for each entry.
-3. **Read the full changed files, not just the diff hunks.** Then use CodeGraph/Semble to map callers and callees of each changed symbol (`codegraph_callers` / `codegraph_impact`). Bugs frequently live in *unchanged* callers that the change just invalidated — those are in scope.
+2. List **every changed file and every changed symbol** in the resolved range. This list is your coverage checklist for Step 4 and Step 5 — you are accountable for each entry.
+3. **Read the full changed files, not just the diff hunks** (at the head ref — `git show <head>:<path>` for a committed range). Then use CodeGraph/Semble to map callers and callees of each changed symbol (`codegraph_callers` / `codegraph_impact`). Bugs frequently live in *unchanged* callers that the change just invalidated — those are in scope.
 
-## Pass 1 — Built-in core at max coverage
+## Step 3 — Pass A: precision core
 
-Run the built-in reviewer inline, at the broadest setting:
+The precision-biased first pass. Pick the engine Step 1 resolved:
 
-`Skill(skill='code-review', args='max')`
+- **Working-tree diff** → run the built-in reviewer inline at the broadest setting: `Skill(skill='code-review', args='max')`. This is the canonical Claude Code reviewer — it has an effort dial and adversarially verifies each finding before reporting, covering correctness bugs and reuse / simplification / efficiency cleanups. `max` (not `xhigh`) because thin reviews are the failure mode we are fixing and `max` gives the broadest coverage. Pass flags through when relevant: `args='max --comment'` posts findings as inline PR comments; `args='max --fix'` applies them.
+- **Committed branch / base-ref / PR** → the built-in skill sees an empty working tree and would report nothing, so run the precision pass **yourself** over the resolved `git diff <base>...<head>`: read the full changed files at the head ref and apply the same lens (correctness bugs + reuse / simplification / efficiency cleanups), adversarially verifying each finding before you keep it. For a GitHub PR, `gh pr diff <n>` is the diff and `gh pr comment` (or the built-in `/review` skill) posts findings back.
 
-This is the canonical Claude Code reviewer — it has an effort dial and adversarially verifies each finding before reporting, covering correctness bugs and reuse / simplification / efficiency cleanups. `max` (not `xhigh`) because thin reviews are the failure mode we are fixing and `max` gives the broadest coverage.
+Its findings are verified. **Carry every one of them forward into the merged list — do not re-cull them.**
 
-- Its findings are already verified and rendered. **Carry every one of them forward into the merged list — do not re-cull them.**
-- Pass through flags when relevant: `args='max --comment'` posts findings as inline PR comments; `args='max --fix'` applies them.
+## Step 4 — Pass B: dimension sweep (this is where recall is won or lost)
 
-## Pass 2 — Dimension sweep (this is where recall is won or lost)
+Pass A is deliberately precision-biased and will miss whole categories. Pass B is the recall pass. Work **one dimension at a time**, and for each dimension check it against **every changed file** from your Step 2 list — a coverage matrix, not a skim. Do not collapse dimensions into a single glance; that is what produces thin reviews.
 
-Pass 1 is deliberately precision-biased and will miss whole categories. Pass 2 is the recall pass. Work **one dimension at a time**, and for each dimension check it against **every changed file** from your Step 0 list — a coverage matrix, not a skim. Do not collapse dimensions into a single glance; that is what produces thin reviews.
-
-**Correctness & robustness (beyond Pass 1):**
+**Correctness & robustness (beyond Pass A):**
 1. **Edge cases**: empty/null/zero inputs, boundary and off-by-one, unicode/encoding, large inputs, first-run/empty-state.
 2. **Error paths**: unchecked return values, swallowed exceptions, `try/except` that hides root cause, partial failure leaving inconsistent state, missing rollback/cleanup on the error branch.
 3. **Concurrency & shared state**: races, ordering assumptions, mutable state shared across goroutines/async tasks, non-idempotent retries.
@@ -62,19 +75,19 @@ When you notice something that *might* be an issue, **report it** — do not sel
 
 The **only** things you silence: pure formatter-owned style, and anything you actively verified is correct. "I'm not 100% sure" is a reason to file it as a `suggestion`, not a reason to omit it.
 
-## Step 3 — Completeness critic (defeats the thin-review failure directly)
+## Step 5 — Completeness critic (defeats the thin-review failure directly)
 
-Before writing output, audit your own coverage against the Step 0 checklist:
+Before writing output, audit your own coverage against the Step 2 checklist:
 
 1. **Zero-finding files**: which changed files/functions produced *no* finding? For each, state in one line why it is genuinely clean. If you can't, you haven't reviewed it — go back and do the dimension sweep on it.
 2. **Weakest dimension**: which of the 15 dimensions did you spend the least on? Run it once more, deliberately.
-3. **Unchecked callers**: did you inspect the callers/impact of every changed symbol (Step 0.3)? Name any you skipped and check them now.
+3. **Unchecked callers**: did you inspect the callers/impact of every changed symbol (Step 2.3)? Name any you skipped and check them now.
 
 Only after this audit do you produce the merged output.
 
 ## Output — merged, ranked findings
 
-One list, **ranked most-severe first**. Fold Pass 1's findings in with Pass 2's (drop exact duplicates; keep the more specific wording). Every finding carries `file:line`, and `must_fix`/`should_fix` carry a concrete failure scenario.
+One list, **ranked most-severe first**. Fold Pass A's findings in with Pass B's (drop exact duplicates; keep the more specific wording). Every finding carries `file:line`, and `must_fix`/`should_fix` carry a concrete failure scenario.
 
 ```
 ## Findings
@@ -89,7 +102,7 @@ One list, **ranked most-severe first**. Fold Pass 1's findings in with Pass 2's 
 - [file:line] Optional or lower-confidence improvement
 ```
 
-If a tier is empty, say so explicitly (e.g. "no `must_fix`"). A genuinely clean diff yields few findings — but you must have *earned* that via the Step 3 audit, not skipped the sweep.
+If a tier is empty, say so explicitly (e.g. "no `must_fix`"). A genuinely clean diff yields few findings — but you must have *earned* that via the Step 5 audit, not skipped the sweep.
 
 ## Severity Definitions
 
@@ -104,7 +117,8 @@ If a tier is empty, say so explicitly (e.g. "no `must_fix`"). A genuinely clean 
 - NEVER suggest adding features that are not called anywhere (YAGNI).
 - Consistency and DRY findings MUST cite the established pattern or existing implementation (`file:line`) the change diverges from or duplicates.
 - Prefer reusing existing test fixtures/mocks; flag a new fake when a fixture/mock already covers that dependency.
-- Do not re-cull Pass 1's verified findings — carry them forward.
+- Do not re-cull Pass A's verified findings — carry them forward.
+- NEVER run a git write command (checkout/pull/commit/reset) as part of a review — fetch and diff are read-only; reviewing must not mutate the working tree.
 
 ## Next Step
 

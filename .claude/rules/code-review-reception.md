@@ -19,7 +19,7 @@ If any item is unclear: **STOP** — do not implement anything yet. Ask for clar
 |--------|----------|
 | **User feedback** | Trusted — implement after understanding. Still ask if scope unclear. Skip to action or technical acknowledgment. |
 | **External reviewers** | Verify first: (1) technically correct for THIS codebase? (2) breaks existing functionality? (3) reason for current implementation? (4) conflicts with user's prior decisions? If conflicts → stop and discuss with user first. |
-| **Workflow reviews** (spec-review, /code-review findings on Claude Code, changes-review on Codex, Codex companion) | `must_fix` and `should_fix` → fix immediately. `suggestion` → implement if quick. No discussion needed. Apply the invoking workflow's finding→action table when one exists (spec-verify Step 3 / fix Step 6.1.c) — out-of-lineage and scope-expanding findings follow those lane rules, not blanket auto-fix. |
+| **Workflow reviews** (spec-review, /code-review findings on Claude Code, changes-review on Codex, Codex companion) | `must_fix` and `should_fix` → fix immediately. `suggestion` → implement if quick. No discussion needed. Apply the invoking workflow's finding→action rule when one exists (spec-verify categorizes in Phase 1 and resolves in the Phase 4 decision loop; `/fix` runs no code-review step — findings there come from `/preflight` and the reproducing test) — out-of-lineage and scope-expanding findings follow those lane rules, not blanket auto-fix. |
 
 ### YAGNI Check
 

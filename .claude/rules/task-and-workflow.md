@@ -71,7 +71,7 @@ Hook blocks `subagent_type` of `Explore`/`Plan`, AND any description starting wi
 
 Use direct tools instead — see `development-practices.md` and `mcp-servers.md` for CodeGraph + Semble workflow.
 
-**Whitelisted (pass through silently):** `changes-review`, `spec-review`. (The `changes-review` entry is hook back-compat for older installed skills — do NOT launch it yourself; on Claude Code the changes review is the built-in `/code-review` skill, per the Sub-agents section below.)
+**Whitelisted (pass through silently):** `changes-review`, `spec-review`. `changes-review` is the **Codex-native `/spec` reviewer** — on Claude Code you never launch it by hand. **To review a code diff of any kind — the working tree, a committed branch against a base, or a PR — run `/review-diff`** (it resolves the diff source itself; see the Sub-agents section). The specific trap to avoid: `/code-review` returning nothing on a committed diff is NOT a reason to spawn `changes-review` — that empty result means the diff is committed and `/review-diff` is the tool that materializes and reviews it.
 
 ### Web Search/Fetch
 
@@ -87,7 +87,7 @@ Built-in `WebFetch` / `WebSearch` are hook-blocked. Use ToolSearch:
 
 - Launch with `run_in_background=true`
 - ⛔ NEVER use `TaskOutput` to retrieve results.
-- **The `spec-review` reviewer agent** writes findings JSON files — poll with bash file-existence loop, then Read once. Other agent types do NOT write files; their only output is the final message of a foreground call. Never plan on `SendMessage` to follow up — it may not exist in the running Claude Code version. (Code review in `/spec`/`/fix` is NOT a sub-agent on Claude Code — it is the built-in `/code-review` skill, invoked inline via `Skill(skill='code-review', args='xhigh')`.)
+- **The `spec-review` reviewer agent** writes findings JSON files — poll with bash file-existence loop, then Read once. Other agent types do NOT write files; their only output is the final message of a foreground call. Never plan on `SendMessage` to follow up — it may not exist in the running Claude Code version. (Code review in `/spec`/`/fix` is NOT a sub-agent on Claude Code — it is the built-in `/code-review` skill, invoked inline via `Skill(skill='code-review', args='xhigh')`, which reviews the just-implemented **working-tree** diff. To review an already-committed branch or PR diff against a base, run `/review-diff` — it fetches and diffs against the base — never a hand-spawned `changes-review`.)
 - Sub-agents do NOT inherit rules; they can read `~/.claude/rules/*.md` and `.claude/rules/*.md`.
 
 ### Codex Companion (Reviews & Tasks)

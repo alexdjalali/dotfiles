@@ -11,6 +11,8 @@ permissionMode: plan
 
 Verify implemented code against the plan: compliance, quality, and goal achievement in one pass.
 
+**When this runs:** this is the **Codex-native `/spec` verification reviewer**. On Claude Code, `/spec`/`/fix` code review is the built-in `/code-review` skill invoked inline, and any ad-hoc diff review (working tree, a committed branch vs a base, or a PR) goes through `/review-diff` — **do not launch this agent by hand there.** "Changes review" as a phrase in the rules refers to whichever of these is active for the runtime, not exclusively to this file.
+
 ## Performance Budget
 
 **Budget: ≤ 12 tool calls total** (excluding the final Write). Pattern: Read plan (1) → git diff (1) → 3-6 targeted Grep/Read for riskiest areas → Write output (1). Do NOT read every changed file in full. Do NOT read project rules.

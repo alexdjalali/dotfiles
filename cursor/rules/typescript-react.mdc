@@ -40,7 +40,7 @@ alwaysApply: false
 - `describe`/`it` blocks with descriptive names (reads as a specification)
 - Every test has a comment: **Why important** + **What it tests**
 - React Testing Library for component tests (test behavior, not implementation)
-- MSW (Mock Service Worker) for API mocking in integration tests
+- **Test doubles (two tiers):** unit mocks the boundary (`vi.mock` / `vi.fn`). A Node/service integration test that needs a backing service runs it in a Docker container via `@testcontainers/postgresql` (or core `testcontainers` `GenericContainer`) — never a hand-rolled fake or in-memory substitute (`must_fix`). A frontend integration test may mock the HTTP boundary with **MSW** (Mock Service Worker); browser E2E is Playwright.
 - Test file pattern: `<file>.test.ts` or `<file>.spec.ts` colocated with source
 - Shared test utilities in `tests/helpers/` or `__tests__/helpers/`
 

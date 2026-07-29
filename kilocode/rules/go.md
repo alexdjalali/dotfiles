@@ -24,6 +24,7 @@
 - `testify` assertions where appropriate (`assert`, `require`)
 - Test file pattern: `<file>_test.go` in same package
 - `rapid` for property-based testing (pure functions, roundtrips, invariants)
+- **Test doubles (two tiers):** unit mocks the boundary — a generated mock (`mockgen` → `go.uber.org/mock/gomock`) or a mock of a small consumer-side interface; integration runs the real dependency in a Docker container via `testcontainers-go` (`//go:build integration`, external `_test` package, `testcontainers.CleanupContainer(t, ctr)`). Hand-rolled fakes / in-memory substitutes are a `must_fix`.
 
 ## Documentation Requirements
 
@@ -40,3 +41,4 @@
 4. `go vet ./...` — static analysis
 5. `go test ./... -count=1` — all tests pass (no caching)
 6. `go test -race ./...` — race condition detection
+7. `go test -tags=integration ./...` — integration tests pass (real deps via testcontainers)

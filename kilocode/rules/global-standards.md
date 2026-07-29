@@ -66,6 +66,12 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 3. Type check (`basedpyright` / `go vet` / `tsc --noEmit`)
 4. Unit tests for changed modules
 
+## Test Doubles (two tiers)
+
+- **Unit → mock the boundary.** Real code under test; external collaborators (HTTP, DB, cache, queue, object store, subprocess, clock, 3rd-party API) replaced by a **mock** (generated, or a mock of a small consumer-side interface). Reuse existing fixtures.
+- **Integration → real dependency in a Docker container via testcontainers**, driven by fixtures, cleaned up in teardown — Go `testcontainers-go` (`//go:build integration`), Python `testcontainers` (`@pytest.mark.integration`), Node `@testcontainers/postgresql`.
+- **`must_fix`:** a hand-rolled fake / stub / in-memory client, an in-memory substitute where a real service belongs (SQLite-for-Postgres, `fakeredis`, in-process queue), or a mock of the very dependency an integration test exists to exercise. Folder ≠ tier: a mock inside `integration/` is a mislabeled unit test.
+
 ## Git Conventions
 
 - Conventional commits: `<type>: <description>` (feat, fix, refactor, docs, test, chore, perf, ci)
@@ -79,6 +85,9 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 - Repository pattern for data access
 - Early returns over nested conditionals
 - Separate persistence models, domain entities, and DTOs
+- Implementation behind an interface, selected by configuration (`Kind` + `Config` + a factory that fails loudly on unknown kinds), injected at the composition root, wrapped by decorators — swapping impls (stub → real) is a config change, not a logic edit
+- Layers import downward only; app code may import shared libs, shared libs never import app code
+- A deviation from an established pattern is an ADR, not a silent exception
 
 ## Cross-Agent Sync
 
@@ -95,3 +104,5 @@ sync equivalents to other agent configs:
 - `any`/`interface{}` without type narrowing
 - Import cycles
 - Testing implementation details instead of behavior
+- Fakes / in-memory substitutes where a mock (unit) or a real container (integration) belongs
+- Silently deleting an existing doc comment while editing its symbol (revise it, never drop it)

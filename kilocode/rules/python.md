@@ -24,6 +24,7 @@
 - `conftest.py` fixtures: global at `tests/unit/conftest.py`, per-service in subdirectories
 - `hypothesis` for property-based testing (pure functions, roundtrips, invariants)
 - `pytest` markers per layer: `@pytest.mark.unit`, `@pytest.mark.integration`, `@pytest.mark.e2e`
+- **Test doubles (two tiers):** unit mocks the boundary (`unittest.mock` `@patch` at the import site, or a mock of a small `Protocol`); integration runs the real dependency in a Docker container via `testcontainers` (`@pytest.mark.integration`, `uv add --dev "testcontainers[postgres]"`). Hand-rolled fakes / in-memory substitutes (SQLite-for-Postgres, `fakeredis`) are a `must_fix`.
 - Test file pattern: `test_<module>.py` in `tests/` directory
 
 ## Documentation Requirements

@@ -7,7 +7,7 @@ alwaysApply: true
 
 ## Process
 
-All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement → Verify).
+All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement → Verify) → Ship.
 
 - **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
 - **Architecture**: Diagram affected components in `docs/spec/arch/`.
@@ -15,6 +15,8 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 - **Plan before code**: Use `/spec` for non-trivial work → `docs/spec/plans/`.
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
+
+**Supporting artifacts** (each writes to a `docs/spec/` folder): **Roadmap** (`docs/spec/roadmap/` — sequence epics, dependency map, critical path) · **Design** (`docs/spec/design/` — the "how it works" between ADR and plan) · **Audit** (`docs/spec/audits/` — durable standard-scoped codebase audit) · **RCA** (`docs/spec/rca/` — evidence-cited bug diagnosis) · **Demo** (`docs/spec/demos/` — E2E walkthrough proving a shipped epic).
 
 ## Language Standards
 
@@ -24,6 +26,10 @@ Consult the language-specific rule file for your current language:
 - **TypeScript/React/Tailwind**: `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)
 
 Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`goimports`+`golangci-lint`, TS=`pnpm`/detect+`eslint`+`tsc`+`vitest`.
+
+**Precedence:** a project's own `.claude/rules/*` (or equivalent project rules) override these global standards. Repo-specific architecture (layered stacks, DI frameworks, employer conventions) belongs in that repo's config, not here.
+
+**Companion rules (this directory):** `testing`, `verification`, `development-practices`, `code-review-reception`, `documentation-sync` — the behavioral standards that back the process above.
 
 ## Project Constitution
 
@@ -55,6 +61,11 @@ Use the templates at `~/.claude/templates/` for document generation:
 - **Monorepo Scaffold**: `~/.claude/templates/repo.md`
 - **Constitution**: `~/.claude/templates/constitution.md`
 - **Checklist**: `~/.claude/templates/checklist.md`
+- **Roadmap**: `~/.claude/templates/roadmap.md`
+- **Design Doc**: `~/.claude/templates/design.md`
+- **Audit**: `~/.claude/templates/audit.md`
+- **RCA**: `~/.claude/templates/rca.md`
+- **Demo Walkthrough**: `~/.claude/templates/demo.md`
 
 ## Monorepo Standard
 

@@ -29,6 +29,12 @@
 - Class ordering: follow Tailwind Prettier plugin ordering
 - No inline `style={}` when Tailwind utilities exist
 
+## Accessibility & Performance
+
+- **A11y:** semantic HTML; label every control; keyboard-navigable; visible focus states; sufficient color contrast; `alt` text on images; ARIA only when native semantics can't express it.
+- **Performance:** hot paths (lists, effects, request handlers) avoid redundant recompute; lazy-load heavy routes/components; virtualize long lists; memoize only where profiling shows the React Compiler can't; keep bundles lean.
+- **Design direction:** consistent spacing / type scale / design tokens; responsive mobile-first; dark mode via `dark:`; prefer components over ad-hoc CSS.
+
 ## Testing Requirements
 
 - `describe`/`it` blocks with descriptive names (reads as a specification)

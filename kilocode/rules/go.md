@@ -8,12 +8,13 @@
 
 ## Code Style
 
-- Errors: always check; wrap with `fmt.Errorf("context: %w", err)`
+- Errors: always check; wrap with `fmt.Errorf("context: %w", err)`; sentinel errors as package vars (`var ErrNotFound = errors.New("not found")`)
 - Interfaces: small (1-3 methods), consumer-defined; accept interfaces, return structs
 - No `fmt.Println` in production; use structured logger. Line length: 140.
 - Naming: MixedCaps (exported), mixedCaps (unexported); acronyms all-caps (HTTPClient, ID)
 - Concurrency: prefer channels over shared memory; always `defer` cleanup
 - Context: pass `ctx context.Context` as first parameter
+- Layout: `cmd/` (mains), `internal/` (private packages), `pkg/` (public packages)
 
 ## Testing Requirements
 

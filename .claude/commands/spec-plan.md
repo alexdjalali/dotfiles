@@ -18,14 +18,14 @@ Design 3-12 implementation tasks. Each task must be:
 - Independently testable (a failing test can be written for it in isolation)
 - Small enough to complete in one focused TDD cycle
 - Sequenced so later tasks build on earlier ones without circular dependencies
-- Aligned with the repo's existing patterns — reuse established helpers, naming, and conventions rather than introducing parallel ones (consistency, DRY); tests use mocks and fixtures, not fakes
+- Aligned with the repo's existing patterns — reuse established helpers, naming, and conventions rather than introducing parallel ones (consistency, DRY); tests follow the two-tier double policy — mocks for unit, testcontainers for integration, never fakes (`testing.md`)
 
 **Code-addition checklist.** For work that adds or changes code, make the plan answer these eight before you finalize the tasks — a "yes" to infra/CLI/config is its own task, not an afterthought:
 
 1. **Infra/deploy?** does it need a dev environment change and a staging/prod (IaC) change?
 2. **CLI/tooling?** does it need a change to the project's CLI or task runner?
 3. **Philosophy / gold-standard?** is it consistent with the project's design philosophy, and does it mirror an existing reference/gold-standard implementation? (a deviation is an ADR, not a silent exception)
-4. **Right test *types*?** unit / integration / e2e — plus property/fuzz and chaos/resiliency when the code warrants it.
+4. **Right test *types*, with the right double?** unit (mock the boundary) / integration (real dependency in a Docker container via testcontainers, driven by fixtures) / e2e — plus property/fuzz and chaos/resiliency when warranted. A task that adds an integration test **names the Docker image + testcontainers module** (e.g. `postgres:16` via `testcontainers-go` / `testcontainers[postgres]` / `@testcontainers/postgresql`). No fakes / in-memory substitutes (`testing.md` *Test Double Policy*).
 5. **Config?** does it need a config change (ideally selecting an impl by configuration, not a hard-coded import)?
 6. **As simple as possible?** DRY, YAGNI — no duplicated logic, no speculative knobs.
 7. **As general as possible?** behind an interface, selected by config, injected explicitly — balanced against YAGNI (Q6 is the ceiling).
@@ -85,3 +85,4 @@ On approval: set `Approved: Yes` in the plan file, then invoke `/spec-implement`
 - NEVER include tasks that don't trace directly to the user's request
 - NEVER add new files without a Proposed Repository Structure that matches the current repo layout -- if the layout must deviate, ask the user before finalizing
 - NEVER skip the spec-review pass -- it catches the gaps and bad assumptions you missed
+- NEVER plan an integration test that mocks its dependency or uses an in-memory substitute -- integration means the real dependency in a Docker container (testcontainers); name the image + module in the task

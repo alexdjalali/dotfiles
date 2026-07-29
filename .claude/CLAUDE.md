@@ -94,6 +94,10 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 - Repository pattern for data access
 - Early returns over nested conditionals
 - Separate persistence models, domain entities, and DTOs
+- **Implementation behind an interface, selected by configuration.** A swappable component's contract lives in a dependency-free core layer; the concrete impl is chosen by a config value through a factory (`Kind` + `Config` + a `*_from_config` constructor that fails loudly on an unknown kind), injected at the composition root, and wrapped by decorators for cross-cutting concerns (resilience, observability). Swapping one impl for another (stub → real) is then a config change, not a logic edit.
+- **Layers import downward only.** Higher layers depend on lower ones, never the reverse; no lateral imports between same-layer packages; app code may import shared libraries, but shared libraries never import app code.
+- **Read configuration in one place.** Bind env/config in a config layer or the composition root — not via env reads scattered through business logic.
+- **A deviation from an established architectural pattern is an ADR, not a silent exception** — write it up in `docs/adr/` (the ADR-first process above, applied to code).
 
 ## Cross-Agent Sync
 

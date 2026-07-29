@@ -13,7 +13,7 @@ Implement the described behavior one test at a time.
    - Python: `test_<function>_<scenario>_<expected>`
    - TypeScript: `it("should <behavior> when <condition>")`
    - Go: `TestFunctionName_Scenario`
-4. Mock all external dependencies: HTTP, DB, filesystem, subprocess, time.
+4. Mock all external dependencies at the **unit** tier: HTTP, DB, filesystem, subprocess, time. (When the behavior *is* the interaction with a real backing service, that's an **integration** test — run the dependency in a Docker container via testcontainers, driven by fixtures, not a mock; see `testing.md`.)
 5. Run the test. Confirm it **fails for the right reason** -- the feature does not exist yet, not a syntax error.
 
 If the test passes immediately, the test is wrong. Rewrite it before continuing.

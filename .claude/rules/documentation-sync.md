@@ -41,5 +41,6 @@ Skip doc updates for:
 - Bloat docs to "explain" trivial changes
 - Leave a TODO instead of updating ("docs to follow")
 - Update only the README when the same fact appears in three places
+- **Silently delete an existing doc comment while editing the symbol it describes.** Docs are always fresh — when you touch a documented symbol, *revise* its comment to match the new behavior; never drop it. The only time a doc is deleted is when its symbol is deleted; removing one mid-edit is a regression, not a cleanup.
 
 If the change is genuinely doc-irrelevant, say so explicitly in the summary ("no doc impact") so the user knows it was considered, not forgotten.

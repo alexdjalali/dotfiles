@@ -32,8 +32,48 @@ golangci-lint run                         # Comprehensive linting (golangci-lint
 
 **Table-driven tests** preferred for multiple cases. Use `t.Run()` for subtests; `t.Parallel()` where there's no shared mutable state.
 
-- **Test doubles:** mocks and fixtures, not fakes — mock the external boundary (or a generated mock) and reuse shared fixtures; don't hand-roll an in-memory reimplementation.
+- **Test doubles (two tiers — see `testing.md` *Test Double Policy*):** **unit** mocks the external boundary — a generated mock (`mockgen` → `go.uber.org/mock/gomock`) or a mock of a small consumer-side interface (accept interfaces); **integration** runs the real dependency in a Docker container via `testcontainers-go`, driven by fixtures. Hand-rolled fakes / in-memory reimplementations are a `must_fix`.
 - **Property-based:** `rapid` for pure functions, roundtrips, and invariants. `testify` (`assert`/`require`) where it aids clarity.
+
+### Integration tests (testcontainers)
+
+Integration tests exercise a single unit against its **real** collaborator (Postgres, Redis, SQS/Kafka, S3/MinIO) — never a mock, never an in-memory substitute. Stand the dependency up in a throwaway container with `testcontainers-go`, drive it through reusable fixtures/builders, and clean up in teardown so each test passes alone. Gate with the `integration` build tag in an external `_test` package, so `go test ./...` stays fast and `go test -tags=integration ./...` runs them.
+
+```go
+//go:build integration
+
+package integration_test
+
+import (
+	"context"
+	"testing"
+
+	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/modules/postgres"
+)
+
+// TestStore_CRUD tests the store against real Postgres.
+//
+// Why this test is important:
+//   - real SQL, FK persistence, and transaction semantics are invisible to sqlmock.
+// What it tests:
+//   - Create → Get → List → Delete round-trips against a live database.
+func TestStore_CRUD(t *testing.T) {
+	testcontainers.SkipIfProviderIsNotHealthy(t) // skip when Docker is unavailable
+	ctx := context.Background()
+
+	pg, err := postgres.Run(ctx, "postgres:16-alpine",
+		postgres.WithDatabase("app"), postgres.WithUsername("test"), postgres.WithPassword("test"))
+	testcontainers.CleanupContainer(t, pg) // nil-safe; terminates on test end; call before the error check
+	if err != nil {
+		t.Fatal(err)
+	}
+	dsn, err := pg.ConnectionString(ctx, "sslmode=disable")
+	// … open the DB with dsn, apply migrations via a fixture, assert observable behavior.
+}
+```
+
+Prefer a module package (`modules/postgres`, `modules/redis`, …) over a raw `GenericContainer` where one exists — it encodes the wait strategy and connection helpers.
 
 ### Code Style
 
@@ -67,7 +107,8 @@ pkg/         # Public packages
 ### Verification Checklist
 
 - [ ] `gofumpt -w .` + `goimports -w .` — formatted, imports organized
-- [ ] `go test ./...` — tests pass
+- [ ] `go test ./...` — unit tests pass (boundaries mocked)
+- [ ] `go test -tags=integration ./...` — integration tests pass (real deps via testcontainers, no fakes)
 - [ ] `go vet ./...` — clean
 - [ ] `golangci-lint run` — clean (v2 config format)
 - [ ] `go mod tidy` — deps tidy

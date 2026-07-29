@@ -49,6 +49,7 @@ paths:
 - **Performance:** Select only required columns, filter in DB not app, avoid leading wildcards
 - **Timeouts:** Simple 1-2s, reports 10-30s, background 60s+
 - **Transactions:** For multiple related writes and read-then-write (`FOR UPDATE`)
+- **Integration-test against a real DB container** (testcontainers), never SQLite-for-Postgres or an in-memory substitute — SQL dialect, constraints, migrations, and transaction semantics do not survive the swap. See `testing.md` *Test Double Policy*.
 
 ## Migrations
 
@@ -69,4 +70,4 @@ paths:
 - [ ] No N+1 queries, only required columns
 - [ ] Migrations: reversible, one change each, backwards compatible
 - [ ] Performance: hot-path results cached, no redundant I/O per request, heavy computations async
-- [ ] Tested: success and error cases
+- [ ] Tested: success and error cases; repository/query/migration behavior covered by integration tests against a real DB container (testcontainers), not an in-memory substitute

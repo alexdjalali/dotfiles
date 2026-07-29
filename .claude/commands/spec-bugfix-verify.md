@@ -9,6 +9,8 @@ Read the plan from `docs/spec/plans/`. Status must be `COMPLETE`, `Type: Bugfix`
 
 Run the built-in code review inline: `Skill(skill='code-review', args='xhigh')`. This is the code review on Claude Code — not a sub-agent. Categorize findings `must_fix` / `should_fix` / `suggestion`.
 
+**Test-double audit (inline):** the reproducing test and any tests touched use the right double — unit mocks the boundary; integration runs the real dependency in a Docker container via testcontainers, never a mock or in-memory substitute (SQLite-for-Postgres, fakeredis). A fake / mislabeled integration test is `must_fix`. (See `testing.md` *Test Double Policy*.)
+
 ## Phase 2 -- Behavior Contract Audit
 
 Confirm the implementation satisfies the **Behavior Contract** in the plan: the exact trigger now produces the correct behavior, and no contract clause is unmet. Confirm every parallel implementation named in the plan was fixed.

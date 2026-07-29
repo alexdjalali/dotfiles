@@ -59,7 +59,7 @@ Pass A is deliberately precision-biased and will miss whole categories. Pass B i
 8. **YAGNI**: unused abstractions, speculative params/config/hooks, code not reachable from the stated request. Confirm "unused" with a caller search before flagging.
 9. **Codebase consistency**: reinvented helpers, divergent idioms, one-off styles that ignore an existing convention. Cite the established pattern (`file:line`).
 10. **DRY**: duplicated logic, reimplementing a utility the repo already has. Cite the existing implementation (`file:line`).
-11. **Tests**: critical paths covered; assertions test behavior, not internals; a one-character bug in the implementation would still fail the test (not just truthiness); reuse existing fixtures; prefer mocks/fixtures over hand-rolled fakes; a new dependency (subprocess/I/O) mocked in *all* existing tests for that function.
+11. **Tests**: critical paths covered; assertions test behavior, not internals; a one-character bug in the implementation would still fail the test (not just truthiness); reuse existing fixtures. **Two-tier double policy (`must_fix`):** unit tests mock the boundary; integration tests run the real dependency in a Docker container via testcontainers — a hand-rolled fake, an in-memory substitute (SQLite-for-Postgres / fakeredis / in-process queue), or a mock of the very dependency an integration test exists to exercise is a `must_fix` (see `testing.md`). A new dependency (subprocess/I/O) mocked in *all* existing tests for that function.
 12. **Standards**: file > 800 lines, function > 50 lines, nesting > 4 levels, `any`/`interface{}` without narrowing, bare `except:`, hardcoded secrets/URLs/config.
 13. **Design**: SOLID violations, premature or missing abstraction, inappropriate coupling, leaked persistence models across layers.
 14. **Observability**: errors swallowed without logging, missing context in error messages, log level misuse, no signal on the failure branch.
@@ -116,7 +116,7 @@ If a tier is empty, say so explicitly (e.g. "no `must_fix`"). A genuinely clean 
 - NEVER flag `must_fix` without naming the failure scenario.
 - NEVER suggest adding features that are not called anywhere (YAGNI).
 - Consistency and DRY findings MUST cite the established pattern or existing implementation (`file:line`) the change diverges from or duplicates.
-- Prefer reusing existing test fixtures/mocks; flag a new fake when a fixture/mock already covers that dependency.
+- Enforce the two-tier test-double policy: unit mocks the boundary, integration uses testcontainers; flag any hand-rolled fake or in-memory substitute — and any integration test that mocks its dependency — as `must_fix` (see `testing.md`).
 - Do not re-cull Pass A's verified findings — carry them forward.
 - NEVER run a git write command (checkout/pull/commit/reset) as part of a review — fetch and diff are read-only; reviewing must not mutate the working tree.
 

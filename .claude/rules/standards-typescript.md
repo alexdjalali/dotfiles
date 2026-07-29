@@ -49,6 +49,26 @@ npm test -- --reporters=dot  # Minimal reporter
 npm test -- --bail           # Stop on first failure
 ```
 
+### Integration tests (testcontainers)
+
+Node/TS integration tests that need a backing service run it in a **real Docker container** via `@testcontainers/postgresql` (or core `testcontainers` `GenericContainer` for services without a module) — never a mock or in-memory substitute. Keep them in a separate suite (e.g. `*.integration.test.ts` / a dedicated vitest project) so the unit run stays fast. Unit tests mock the boundary (`vi.mock` / `vi.fn`); a hand-rolled fake standing in for a real service is a `must_fix`.
+
+```bash
+pnpm add -D @testcontainers/postgresql   # or: testcontainers (GenericContainer)
+```
+
+```ts
+import { PostgreSqlContainer } from "@testcontainers/postgresql";
+
+// Why: real SQL/driver behavior is invisible to a mock. What: rows persist and read back.
+const pg = await new PostgreSqlContainer("postgres:16").start();
+const uri = pg.getConnectionUri();
+// … connect with `uri`, run assertions against the live DB …
+await pg.stop();
+```
+
+A *frontend's* "integration" is usually Playwright browser E2E (`standards-frontend.md`) — that containerizes nothing, which is expected.
+
 ### Verification Checklist
 
 Check `package.json` scripts first — projects often have custom configurations.

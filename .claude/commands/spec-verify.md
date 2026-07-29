@@ -9,6 +9,7 @@ Read the plan from `docs/spec/plans/`. Status must be `COMPLETE`.
 
 1. **Built-in code review** (correctness + quality): run inline via `Skill(skill='code-review', args='xhigh')`. On Claude Code the changes review is this built-in skill, not a sub-agent.
 2. **Plan-compliance & goal audit** (inline): did the implementation follow the plan exactly, are all tasks marked complete, are there undocumented deviations, and does the result achieve the plan's stated goal?
+3. **Test-double audit** (inline): every unit test mocks its boundary (no hand-rolled fake); every integration test runs its real dependency in a Docker container via testcontainers (no mock, no in-memory substitute — SQLite-for-Postgres, fakeredis); no test placed in `integration/` actually mocks the dependency it names. Each violation is `must_fix`. (See `testing.md` *Test Double Policy*.)
 
 Categorize findings: `must_fix`, `should_fix`, `suggestion`.
 

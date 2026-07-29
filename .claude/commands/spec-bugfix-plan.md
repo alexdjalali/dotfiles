@@ -65,6 +65,7 @@ On approval: set `Approved: Yes` in the plan file, then invoke `/spec-implement`
 ## Rules
 
 - NEVER skip the reproducing test -- a bugfix without one cannot prove the bug is gone (bugfixes never qualify for the `Trivial:` escape)
+- NEVER let the reproducing test mock the dependency it must exercise -- if the bug lives in the DB/queue/cache interaction, the reproducing test is an integration test against the real dependency in a Docker container (testcontainers), not a mock
 - NEVER fix a symptom when the root cause is reachable -- trace it first
 - NEVER leave a known parallel implementation of the same bug unfixed without noting why
 - NEVER begin implementation without explicit approval

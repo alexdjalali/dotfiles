@@ -16,10 +16,10 @@
 - <Concrete, testable criterion>
 - <Concrete, testable criterion>
 
-**Testing**: cover critical-path behavior (coverage is a diagnostic, not a quota — see testing.md). Tests:
+**Testing**: cover critical-path behavior (coverage is a diagnostic, not a quota — see testing.md). Declare the **tier + double** per behavior — unit mocks the boundary; integration runs the real dependency in a Docker container via testcontainers (name the image), never a fake / in-memory substitute. Tests:
 
-- `test_<scenario_1>`
-- `test_<scenario_2>`
+- `test_<scenario_1>` — unit (mock `<boundary>`)
+- `test_<scenario_2>` — integration (real `<service>` via testcontainers, e.g. `postgres:16`)
 - `test_<scenario_3>`
 
 ---
@@ -77,6 +77,7 @@ src/
 ### Testing Requirements
 
 - [ ] Critical-path behavior covered (no numeric quota — see testing.md)
+- [ ] Right double per tier: unit mocks the boundary; integration uses testcontainers (real dep in Docker) — no fakes / in-memory substitutes
 - [ ] Organized test structure with descriptive names
 - [ ] Every test documents: **Why important** + **What it tests**
 - [ ] Shared test fixtures and helpers (see language standards)

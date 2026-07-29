@@ -166,9 +166,11 @@ src/
 
 ## Testing Strategy
 
-- Unit tests: [What to test in isolation]
-- Integration tests: [What to test together]
-- Manual verification: [Steps to verify manually]
+> Declare the **tier** and the **double** for each area (see `~/.claude/rules/testing.md` *Test Double Policy — Two Tiers*). No fakes / in-memory substitutes.
+
+- **Unit** (mock the boundary): [what to test in isolation; which external collaborators are mocked]
+- **Integration** (real dependency in a Docker container via testcontainers, driven by fixtures): [what interaction to test; **name the image + module** — e.g. `postgres:16` via `testcontainers-go` / `testcontainers[postgres]` / `@testcontainers/postgresql`]
+- **E2E / manual**: [steps to verify the running program]
 
 ## Risks and Mitigations
 

@@ -35,6 +35,35 @@ basedpyright src                                    # Type check (adapt to your 
 
 `hypothesis` for property-based testing (pure functions, roundtrips, invariants). `pytest-asyncio` for `async def` tests. Use `@pytest.mark.unit` / `@pytest.mark.integration` / `@pytest.mark.e2e` markers.
 
+**Test doubles (two tiers — see `testing.md` *Test Double Policy*):** **unit** mocks the boundary with `unittest.mock` (`@patch` at the import site) or a mock of a small `Protocol`; **integration** runs the real dependency in a Docker container via `testcontainers`, driven by pytest fixtures. Hand-rolled fakes / in-memory substitutes (SQLite-for-Postgres, `fakeredis`) are a `must_fix`.
+
+### Integration tests (testcontainers)
+
+Add the service extra as a dev dependency, stand the real dependency up in a session-scoped fixture, and mark the tests `@pytest.mark.integration` — never a mock or in-memory substitute.
+
+```bash
+uv add --dev "testcontainers[postgres]"   # per service: [redis], [minio], [kafka], …
+```
+
+```python
+import pytest
+from testcontainers.postgres import PostgresContainer
+
+
+@pytest.fixture(scope="session")
+def pg_url() -> str:
+    """Real Postgres in a throwaway container; torn down after the session."""
+    with PostgresContainer("postgres:16") as pg:
+        yield pg.get_connection_url()
+
+
+@pytest.mark.integration
+def test_store_crud_persists_against_real_postgres(pg_url: str) -> None:
+    # Why: real SQL + constraints are invisible to a mock.
+    # What: create → read round-trips through a live database.
+    ...
+```
+
 ### Libraries
 
 - **Boundary models & config:** `pydantic` v2 (`BaseModel`, `pydantic-settings` `BaseSettings`); frozen dataclasses or `attrs` for internal value objects that don't need validation.

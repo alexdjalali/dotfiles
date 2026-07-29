@@ -40,12 +40,57 @@ The structure of tests should be **contra-variant** with the structure of code (
 | Type | When | Requirements |
 |------|------|--------------|
 | **Unit** | Pure functions, business logic, validation | <1 ms each, mock ALL external deps, `@pytest.mark.unit` |
-| **Integration** | DB, external APIs, file I/O, auth flows | Real test deps, fixtures, cleanup, `@pytest.mark.integration` |
+| **Integration** | DB, cache, queue, object store, external APIs, auth flows | **Real dependency in a Docker container (testcontainers), driven by fixtures**; clean up in teardown; `@pytest.mark.integration` / `//go:build integration` |
 | **E2E** | Complete user workflows, API chains | Test entire flow |
 
 External deps? No → unit. Yes → integration. Complete user workflow? Yes → E2E.
 
 **Coverage rule:** Coverage is a diagnostic, not a quota. Critical paths (business logic, security, data integrity, error handling) must have explicit behaviour coverage and no obvious coverage regressions. For glue code, configuration plumbing, simple CRUD, and trivial UI bindings, no numeric coverage gate — the parsimony audit (verify Step 5) and the changes review replace the gate. Padding tests purely to push a coverage number above a threshold is a parsimony anti-pattern.
+
+### ⛔ Test Double Policy — Two Tiers (mocks for unit, Docker for integration)
+
+The **enforced** double policy for every language (Go, Python, TS, …). A hard gate, not a
+preference: a violation is a `must_fix` that blocks a green review / `VERIFIED`. The **only** way a
+repo loosens it is `.claude/rules/testing-project.md` (see *Local override* above).
+
+| Tier | What is real | What is replaced | The ONE legal double |
+|------|--------------|------------------|----------------------|
+| **Unit** | the code under test | its external collaborators (HTTP, DB, cache, queue, object store, subprocess, clock, 3rd-party API) | a **mock** of the consumer-side interface — generated (`mockgen` / `unittest.mock` / `vi.fn`) or a hand-written mock of a *small* interface. Reuse existing fixtures. |
+| **Integration** | the code under test **+ its real collaborator** | nothing — the dependency runs for real | the **real dependency in a Docker container via testcontainers**, reached through a **fixture**, cleaned up in teardown. |
+
+**Unit — mock the boundary.** The unit is real; only its *external* collaborators are doubled, with a
+**mock** (prefer a generated mock, or a mock of a small consumer-side interface — "accept interfaces").
+Never mock an internal collaborator; never hand-roll a fake that reimplements the dependency.
+
+**Integration — real dependency, in Docker, via testcontainers.** When the behavior *is* the
+interaction with a backing service (Postgres, Redis, Kafka/SQS, S3/MinIO, Elasticsearch, or any
+third-party service with an official image), boot that service in a throwaway container with
+**testcontainers**, connect through a **fixture**, and truncate/close in teardown so every test passes
+alone. This is what catches real SQL, driver behavior, migrations, transaction semantics, and message
+roundtrips — the things mocks structurally cannot.
+
+Per-language testcontainers binding (full how-to in each `standards-*.md`):
+
+| Lang | Package | Entry point | Tier gate |
+|------|---------|-------------|-----------|
+| **Go** | `github.com/testcontainers/testcontainers-go` (+ `/modules/{postgres,redis,…}`) | `postgres.Run(ctx, "postgres:16-alpine", …)`; `testcontainers.CleanupContainer(t, ctr)`; skip via `testcontainers.SkipIfProviderIsNotHealthy(t)` | `//go:build integration` (or a `testing.Short()` skip) |
+| **Python** | `testcontainers[postgres]` (extras per service) | `with PostgresContainer("postgres:16") as pg: pg.get_connection_url()` | `@pytest.mark.integration` |
+| **TS/Node** | `@testcontainers/postgresql` (+ core `testcontainers` `GenericContainer`) | `await new PostgreSqlContainer("postgres:16").start()` → `.getConnectionUri()` → `.stop()` | a separate integration project/suite (a *frontend's* "integration" is usually Playwright browser E2E, which containerizes nothing — expected) |
+
+**⛔ FORBIDDEN — each is a `must_fix`:**
+
+- A **hand-rolled fake / stub / in-memory client** replacing a dependency in *any* test. Mock a small
+  interface (unit) or run the real image in a container (integration).
+- An **in-memory / lookalike substitute** where an integration test must run the real service —
+  SQLite-for-Postgres, `fakeredis` / `miniredis`, an in-process queue for SQS/Kafka, a map-backed
+  "repository." If it isn't the real image in a container, it is **not** an integration test.
+- **Mocking the very dependency an integration test exists to exercise** (mocking Postgres in a store
+  integration test) — that is a mislabeled unit test.
+- **Mixing a unit test with a hand-rolled client** to fake real-ish behavior. Pick a tier: mock (unit)
+  or container (integration).
+
+**Folder ≠ tier.** A test under `integration/` that mocks its dependency is a unit test wearing the
+wrong label — and a `must_fix`. Match the double to the tier, not to where the file sits.
 
 ### Property-Based Testing (PBT)
 
@@ -80,7 +125,7 @@ npm test -- --silent               # Jest/Vitest
 
 Mock at module level (where imported, not where defined). Test > 1 s = likely unmocked I/O.
 
-**Test doubles: prefer mocks and fixtures over fakes.** Reuse the project's existing fixtures and mock the external boundary directly; do NOT hand-roll a fake / in-memory reimplementation of a dependency when a mock or fixture will serve. A new fake where a fixture or mock already exists is a `should_fix`.
+**Test doubles: mocks for unit, testcontainers for integration — never fakes.** This is the hard split from *Test Double Policy — Two Tiers* above. Unit: mock the external boundary (a generated mock or a mock of a small consumer-side interface), reusing existing fixtures. Integration: run the real dependency in a Docker container via testcontainers, driven by fixtures. A hand-rolled fake / in-memory reimplementation, or an in-memory substitute standing in for a service an integration test must exercise for real, is a **`must_fix`** (not merely a `should_fix`).
 
 ### ⛔ E2E: Frontend/UI (MANDATORY for web apps)
 
@@ -92,6 +137,36 @@ When a function gains a new dependency (subprocess, helper, I/O), update ALL exi
 
 **Checklist:** (1) `Grep` the function name in `tests/`; (2) verify subprocess/I/O calls are mocked in each test; (3) run with `--tb=short` to surface unmocked calls fast.
 
+### Black-Box by Default (white-box is a last resort)
+
+Behavioral tests live in an **external test package** and exercise the code through its **public
+surface** — assert observable behavior, not internals, so a behavior-preserving refactor keeps the
+suite green (tests are contra-variant with code structure). White-box tests that reach unexported
+internals (Go `*_internal_test.go` in the same package) are a **last resort**, taken only when the
+behavior genuinely cannot be reached through the exported surface — and the test's doc comment says
+why. **⛔ Never export a symbol (or add a test-only method/flag) solely to make it testable** —
+restructure so the behavior is observable through the public API instead (accept a small
+consumer-side interface).
+
+### Test Documentation — the "why / what" doc comment
+
+Every test carries a short doc comment stating **why the test matters** and **what behavior it
+asserts** — the explicit template or a clear prose equivalent:
+
+```go
+// TestX tests <one-line summary>.
+//
+// Why this test is important:
+//   - <reason the covered behavior matters>
+//
+// What it tests:
+//   - <the observable behavior asserted>
+func TestX(t *testing.T) { … }
+```
+
+A test whose purpose isn't obvious from its name needs this — it lets the next reader (and reviewer)
+tell a deliberate assertion from an accident, and is what makes a failure legible.
+
 ### Anti-Patterns
 
 - **Dependent tests** — each must work independently.
@@ -101,6 +176,7 @@ When a function gains a new dependency (subprocess, helper, I/O), update ALL exi
 - **Unnecessary mocks** — only for external deps.
 - **Test-only methods in production** — never add methods/properties/flags purely for test access. Refactor so behavior is observable through public interfaces.
 - **Mocking without understanding** — a mock that doesn't reflect real behavior is a lie. Tests pass against the lie, fail against reality.
+- **Fakes / in-memory substitutes for real dependencies** — a hand-rolled fake, or an in-memory lookalike (SQLite-for-Postgres, `fakeredis`, an in-process queue) standing in for a service an integration test must exercise for real. `must_fix` — mock a small interface (unit) or run the real image in a container (integration). See *Test Double Policy — Two Tiers*.
 
 ### Test Parsimony — what NOT to do
 
@@ -121,7 +197,8 @@ Every test failure MUST be fixed before work is done. Run the FULL suite, not ju
 - [ ] No redundant tests on the same observable path
 - [ ] Critical-path coverage adequate (no blanket %; reviewer judges)
 - [ ] Tests follow naming convention
-- [ ] Unit tests mock external dependencies
+- [ ] Unit tests mock the external boundary (no hand-rolled fakes); integration tests run the real dependency in a Docker container (testcontainers) via fixtures — no in-memory substitutes
+- [ ] Behavioral tests are black-box (external test package, public surface); every test carries a why/what doc comment
 - [ ] Full test suite passes (0 failures) — not just your files
 - [ ] Actual program executed and verified
 

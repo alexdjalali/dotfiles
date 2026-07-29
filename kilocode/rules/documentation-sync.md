@@ -1,0 +1,29 @@
+# Documentation Sync
+
+**Update affected docs in the same change as the code, not as a follow-up.** Stale docs are a bug. The user should never have to ask "now update the README."
+
+## When to sync
+
+After a change, ask: "Did this change something a docs reader is told?" If yes, update the docs this turn.
+
+- Public API / CLI flag added, renamed, removed → README, `--help`, API reference, examples
+- Behavior of a documented feature changed → feature docs, examples
+- Config field added / renamed / default changed → settings docs, sample config, env tables
+- New command / route / endpoint → reference list, getting-started, OpenAPI
+- Breaking change → CHANGELOG / migration guide
+- Architecture or layout shifted → top-level README, project rules
+
+## When NOT to
+
+Internal refactor with no user-visible effect; a bugfix restoring documented behavior; test-only changes; typos/formatting in code; WIP the user explicitly flagged.
+
+## How
+
+1. Grep the docs tree + inline comments for the symbol (direct refs), then trace one hop out (callers / impact) for indirect refs. 2. Update minimally. 3. Verify counts and lists — an off-by-one ("11 phases", "supports X, Y, Z") is the most common stale-doc bug. 4. Match terminology across code, docs, and help. 5. Report the doc files touched.
+
+## Do not
+
+- Add docs for features that don't exist yet; bloat docs to explain trivial changes; leave a TODO instead of updating; update only one of several copies of the same fact.
+- **Silently delete an existing doc comment while editing its symbol** — revise it to match the new behavior; only delete a doc when its symbol is deleted. Removing one mid-edit is a regression, not a cleanup.
+
+If a change is genuinely doc-irrelevant, say "no doc impact" so it's clear it was considered, not forgotten.

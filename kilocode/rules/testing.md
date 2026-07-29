@@ -1,0 +1,51 @@
+# Testing Standards
+
+## Posture — parsimonious
+
+- Reuse existing behavioral tests first. Ceiling per new public class: **1 unit test class + 1 functional test class** (functional only when behavior can't be exercised by unit). Multiply only for genuinely independent behavioral axes.
+- Tests are **contra-variant** with code structure and **structure-insensitive** — a behavior-preserving refactor keeps them green. No one-class-per-method, no redundant assertions on the same path, no coverage-padding.
+- Coverage is a **diagnostic, not a quota**. Critical paths (business logic, security, data integrity, error handling) need explicit behavior coverage; glue / CRUD / trivial UI don't.
+- A project may override this posture via `.claude/rules/testing-project.md` (e.g. a strict numeric coverage gate).
+
+## TDD — red / green / refactor (default)
+
+1. **RED** — one minimal test for the desired behavior (behavior, not implementation). Mock external deps only.
+2. **VERIFY RED** — run it; it must fail because the feature is missing, not a syntax error. Passes immediately → rewrite.
+3. **GREEN** — simplest code that passes. No extras.
+4. **VERIFY GREEN** — full suite green; check diagnostics.
+5. **REFACTOR** — improve; tests stay green; no new behavior.
+
+Applies to new functions, endpoints, business logic, **bug fixes (reproduce first)**, behavior changes. **Skip RED** only for docs / config / dep bumps / formatting, or a trivial ≤5-line change that names its covering test. **Bugfixes never skip** the reproducing test.
+
+## Strategy & doubles
+
+- **Unit** — pure logic/validation; <1 ms; mock ALL external deps. **Integration** — real dependency in a Docker container via testcontainers + fixtures. **E2E** — full user workflow.
+- **Two-tier doubles (see `global-standards` → Test Doubles):** unit mocks the boundary; integration uses testcontainers. A hand-rolled fake / in-memory substitute (SQLite-for-Postgres, `fakeredis`) is a `must_fix`.
+- **Property-based** (`hypothesis` / `fast-check` / `go test -fuzz`) for parsers, serializers, invariants, encode/decode roundtrips — not simple CRUD/UI.
+
+## Black-box + test docs
+
+- Behavioral tests use an **external test package** through the **public surface**; white-box (internal) tests are a last resort — **never export a symbol solely to test it**.
+- Every test carries a **why / what** doc comment: why the behavior matters + what it asserts.
+
+## Mandatory mocking (unit)
+
+- Mock at the module level (where imported): HTTP/network, subprocess, file I/O, DB, third-party APIs, time. A unit test >1 s usually has unmocked I/O.
+- **Mock audit on dependency change:** when a function gains a new dep (subprocess/helper/I/O), update **every** existing test for it — grep the name in tests, confirm the new call is mocked. #1 cause of CI-only failures.
+
+## Assertion correctness (>62% of LLM assertions are wrong)
+
+Before committing an assertion: (1) would a one-char bug still pass? Use `== 42`, not truthiness. (2) right field? (`status` vs `body.error`). (3) hand-computed expected values verified a second way. (4) assert the spec-named behavior, not internal mechanics. Ambiguous spec → **stop and ask**.
+
+## Anti-patterns
+
+Dependent tests; testing implementation not behavior (`assert result == expected`, not `mock.assert_called_with`); incomplete mocks that hide the real API; unmocked env deps (pass locally, fail CI); test-only methods in production; a fake where a mock (unit) or a container (integration) belongs.
+
+## Completion checklist
+
+- [ ] ≤1 unit + ≤1 functional test class per new public class
+- [ ] Asserts observable behavior; no redundant same-path tests
+- [ ] Critical-path coverage adequate; naming convention followed
+- [ ] Unit mocks the boundary; integration uses testcontainers (no fakes)
+- [ ] Full suite passes (0 failures) — not just touched files
+- [ ] Program actually executed and verified

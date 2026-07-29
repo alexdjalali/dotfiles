@@ -1,0 +1,39 @@
+# Development Practices
+
+## Change discipline
+
+- **Think before coding.** Ambiguous request → state assumptions, present alternatives, ask — before writing code.
+- **Lineage test.** Every changed line traces to the request. If it doesn't, revert it.
+- **Orphan cleanup.** Remove imports / vars / functions *your* change made unused. Don't delete pre-existing dead code — mention it.
+- **Self-check.** "Would a senior engineer call this overcomplicated?" 200 lines that could be 50 → rewrite. Complexity is earned by actual requirements.
+- **⛔ Never invent values.** File paths, env var names, keys, IDs (UUIDs/FKs/third-party ids), URLs, ports, versions, service names, function/class names, library API signatures — confirm them (read the code, run the command, or ask). Pattern-matching a plausible value is the top cause of agent-introduced incidents. Unsure → **stop and ask**.
+
+## Project policies
+
+- File size aim <800 lines (>1000 = split signal, and only when it's the task's focus). Test files exempt.
+- Before modifying a shared / non-trivial function, trace its callers and callees — it catches callers you'd otherwise miss.
+- Fix obvious mistakes (syntax, typos, imports) in code you're actively writing; do **not** auto-fix code the *user* edited — report it.
+- Hot paths (render loops, request handlers, polling) cache/memoize; don't redo work when the input is unchanged.
+- Backward compatibility only when explicitly required.
+
+## Systematic debugging (no fix without root cause)
+
+1. **Root cause** — read the whole error, reproduce consistently, check the diff, instrument at boundaries.
+2. **Pattern analysis** — find working examples + parallel implementations; compare; identify every difference.
+3. **Hypothesis** — specific, falsifiable; test one variable at a time.
+4. **Fix** — failing test first, single fix, verify completely.
+
+- **Red flags → STOP:** "quick fix for now", multiple changes at once, proposing a fix before tracing data flow. **3+ failed fixes = architectural problem** — question the pattern, don't fix again.
+- **Revert-first** when something breaks: revert → consider deleting the broken thing → one-line targeted fix → else stop and reconsider.
+- **Defense in depth** after a fix: validate at each layer the data passes (entry point, business logic, environment guards) so the bug is structurally impossible, not just patched.
+
+## Constraint classification
+
+- **Hard** — non-negotiable (physics, external contracts, security, deadlines).
+- **Soft** — conventions/preferences, negotiable if the trade-off is stated.
+- **Ghost** — a past constraint baked in that no longer applies. Highest value to find: ask "why can't we do X?" — if nobody can name a current requirement, it's a ghost.
+
+## Git operations
+
+- **Read git state freely. NEVER run a write command without explicit user permission** — `add`, `commit`, `push`, `pull`, `merge`, `rebase`, `reset`, `stash`, `checkout`. "Fix this bug" ≠ "commit it." (Editing files is always fine — this is about git commands.)
+- **Never `git checkout --` on unstaged changes** (irreversible) — tell the user the consequence and let *them* run it. **Never `git add -f`.** **Respect the active branch — never auto-branch;** create a branch only when the user asks in this request. Push new branches with `-u`.

@@ -88,17 +88,32 @@ return {
         gopls = {
           settings = {
             gopls = {
-              -- Analysis settings
+              -- Analysis settings — keep gopls at `go vet` parity (what
+              -- `search typecheck --go` runs). golangci-lint (via none-ls, on save)
+              -- is the SINGLE authority for everything beyond vet, so the same
+              -- finding never surfaces from two sources with different exclusions.
+              -- Anything not in `go vet`'s default analyzer set is disabled here:
+              --   * shadow / useany / unusedwrite / unusedparams — not run by
+              --     `go vet`; golangci-lint (unparam, staticcheck) owns these and
+              --     applies the repo's exclusions.rules, which gopls cannot.
+              --   * nilness / fieldalignment — golangci-lint's govet enables these
+              --     with exclusions; leaving them on in gopls would double-report
+              --     (and flag excluded paths CI suppresses).
+              -- gopls still reports genuine compile errors (== `go build`), which
+              -- are not "lint the linter doesn't have" — the CLI fails on them too.
               analyses = {
-                unusedparams = true,
-                shadow = true,
-                nilness = true,
-                unusedwrite = true,
-                useany = true,
-                unusedvariable = true,
+                shadow = false,
+                fieldalignment = false,
+                nilness = false,
+                unusedparams = false,
+                unusedwrite = false,
+                useany = false,
+                unusedvariable = false,
               },
-              -- Enable all staticcheck analyzers
-              staticcheck = true,
+              -- staticcheck belongs to golangci-lint (enabled in .golangci.yml with
+              -- the repo's exclusions). Running it here too would report staticcheck
+              -- findings on test/generated/excluded files that `search lint` filters.
+              staticcheck = false,
               -- Inlay hints
               hints = {
                 assignVariableTypes = true,

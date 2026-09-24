@@ -10,9 +10,10 @@ return {
     },
   },
 
-  -- drop.nvim - screensaver
+  -- drop.nvim - screensaver (disabled: no snowflakes)
   {
     "folke/drop.nvim",
+    enabled = false,
     event = "VimEnter",
     opts = {
       theme = "snow", -- or "stars", "xmas", "spring", "summer"
@@ -23,7 +24,8 @@ return {
     },
   },
 
-  -- neoscroll removed — mini.animate (below) handles scroll animation
+  -- neoscroll removed; mini.animate scroll animation also disabled below
+  -- (WinScrolled/WinResized loop with snacks dashboard on nvim 0.12+)
 
   -- beacon.nvim - cursor flash on jump
   {
@@ -90,38 +92,18 @@ return {
     },
   },
 
-  -- mini.animate - smooth cursor and window animations
+  -- mini.animate - smooth cursor animation only
   {
     "echasnovski/mini.animate",
     event = "VeryLazy",
     opts = function()
-      -- Disable animation in certain situations
-      local mouse_scrolled = false
-      for _, scroll in ipairs({ "Up", "Down" }) do
-        local key = "<ScrollWheel" .. scroll .. ">"
-        vim.keymap.set({ "", "i" }, key, function()
-          mouse_scrolled = true
-          return key
-        end, { expr = true })
-      end
-
       local animate = require("mini.animate")
       return {
-        resize = {
-          timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
-        },
-        scroll = {
-          timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
-          subscroll = animate.gen_subscroll.equal({
-            predicate = function(total_scroll)
-              if mouse_scrolled then
-                mouse_scrolled = false
-                return false
-              end
-              return total_scroll > 1
-            end,
-          }),
-        },
+        -- scroll/resize animations disabled: they hook WinScrolled/WinResized and,
+        -- on neovim 0.12+, can form a runaway event loop with the snacks dashboard's
+        -- resize re-render (dashboard.lua), aborting nvim seconds after startup.
+        scroll = { enable = false },
+        resize = { enable = false },
         cursor = {
           timing = animate.gen_timing.linear({ duration = 80, unit = "total" }),
         },

@@ -6,6 +6,16 @@ return {
     event = "VeryLazy",
     version = false,
     build = "make",
+    -- Work around avante.nvim's log.lua bug: it builds its numeric->string log
+    -- level map by mutating a table during its own pairs() traversal (undefined
+    -- behaviour in LuaJIT), which can leave log_levels[3] nil and crash on load
+    -- with "Invalid log level: 3". Setting log_level as a STRING before the
+    -- plugin loads routes set_level() through the always-present forward map,
+    -- sidestepping the corruptible reverse lookup. init runs before VeryLazy, so
+    -- it also covers the module-load read (log.lua:109) that opts can't reach.
+    init = function()
+      vim.g.avante = vim.tbl_deep_extend("keep", vim.g.avante or {}, { log_level = "warn" })
+    end,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",

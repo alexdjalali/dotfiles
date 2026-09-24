@@ -12,7 +12,7 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 - **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
 - **Architecture**: Diagram affected components in `docs/spec/arch/`.
 - **Decompose**: Break epics into stories via `/rfp` → `docs/spec/epics/` + `docs/spec/stories/`.
-- **Plan before code**: Use `/spec` for non-trivial work → `docs/spec/plans/`.
+- **Plan before code**: Use `/spec` for non-trivial work → `docs/local/plans/` (gitignored local working docs, never committed; format: `~/.claude/templates/plan.md`).
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
 
@@ -72,7 +72,7 @@ Use the templates at `~/.claude/templates/` for document generation:
 New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):
 - Layered architecture: Foundation → Client → Service/Domain → Controller/API → Entrypoint
 - Infrastructure in `zarf/` (Docker, K8s, Terraform, observability)
-- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,plans,audits,rca,demos}`
+- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,audits,rca,demos}` (tracked); plans + spec-review JSON live in **gitignored** `docs/local/plans/` (never committed)
 - Language conventions: Go=`pkg/`+`apps/`, Python=`src/`+`entrypoints/`, TS=`packages/`+`apps/`
 
 ## Quality Gates (before every commit)
@@ -90,7 +90,7 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 
 ## Git Conventions
 
-- Conventional commits: `<type>: <description>` (feat, fix, refactor, docs, test, chore, perf, ci)
+- Conventional commits: `<type>(<scope>): <description>`, scope optional (feat, fix, refactor, docs, test, chore, perf, ci, style)
 - Branch naming: `<type>/<short-description>`
 - Never force-push to main/master
 
@@ -107,10 +107,8 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 
 ## Cross-Agent Sync
 
-Commands in `~/.claude/commands/` are the source of truth. When updating commands,
-sync equivalents to other agent configs:
-- **Cursor**: `cursor/` rules directory
-- **Kilocode**: `kilocode/` config directory
+`~/.claude/` (CLAUDE.md + rules) is the source of truth. `cursor/rules/` and `kilocode/rules/` mirror
+CLAUDE.md and the rules (there are no command equivalents here) — update the mirrors when those change.
 
 ## Anti-Patterns to Avoid
 

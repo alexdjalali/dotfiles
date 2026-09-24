@@ -101,7 +101,7 @@ Gmail labels appear as folders in the sidebar. You can:
    - When composing, press `a` to attach files
    - When reading, use `v` to view attachments list, Enter to save
 
-6. **URL Handling**: Press `Ctrl+b` in message view to extract URLs (requires urlview)
+6. **URL Handling**: Press `Ctrl+b` in message view to pick and open a link (urlscan, installed by the Brewfile)
 
 7. **Speed**: First load takes a moment as it downloads headers. After that, it's cached and super fast!
 
@@ -109,7 +109,8 @@ Gmail labels appear as folders in the sidebar. You can:
 
 - `~/.neomuttrc` - Main configuration
 - `~/.neomutt/aliases` - Email aliases/contacts
-- `~/.neomutt/gmail.pass` - Your app password (keep secure!)
+- macOS Keychain item `neomutt-gmail` - Your Gmail app password (see `account.gmail.example`)
+- `~/.cache/neomutt/` - Header and message cache (outside the repo)
 
 ## Adding Contacts
 
@@ -124,7 +125,7 @@ Then when composing, type `bob` and it expands to the full address!
 ## Troubleshooting
 
 ### Can't Connect
-- Check your app password is correct: `cat ~/.neomutt/gmail.pass`
+- Check the Keychain item exists: `security find-generic-password -s neomutt-gmail` (add `-w` to print the password)
 - Verify 2FA is enabled on Gmail
 - Regenerate app password at: https://myaccount.google.com/apppasswords
 
@@ -133,8 +134,8 @@ Then when composing, type `bob` and it expands to the full address!
 - Consider using `mbsync` or `offlineimap` for offline mail.
 
 ### Colors Look Wrong
-- Config uses Nord theme (sourced from `~/.neomutt/nord.neomuttrc`)
-- Edit colors in `~/.neomutt/nord.neomuttrc`
+- Config uses Catppuccin Mocha (sourced from `~/.neomutt/catppuccin-mocha.neomuttrc`)
+- Edit colors in `~/.neomutt/catppuccin-mocha.neomuttrc`
 
 ## Advanced: Offline Mail (Optional)
 

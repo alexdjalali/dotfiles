@@ -30,6 +30,7 @@ No lock file? Check `packageManager` in `package.json`, or default to **pnpm** (
 
 - Self-documenting code, minimize comments
 - One-line JSDoc for exports: `/** Calculate discounted price. */`
+- **No tracker IDs or dead links in comments:** don't cite issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or JSDoc — they rot and couple the code to an external tracker; that context belongs in the commit/PR/tracker. If a comment references a doc, link only a committed in-repo doc (under `docs/`), never a gitignored or scratch path.
 - **Import order:** Node built-ins (`node:`) → External → Internal → Relative
 - **File names:** kebab-case (`user-service.ts`)
 

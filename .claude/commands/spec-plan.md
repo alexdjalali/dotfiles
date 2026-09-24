@@ -35,7 +35,7 @@ If the repo defines `.claude/rules/code-addition-checklist.md`, follow its concr
 
 ## Phase 3 -- Write the Plan
 
-Write to `docs/spec/plans/YYYY-MM-DD-<slug>.md`:
+Write to `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored — local working docs, never committed):
 
 ```
 # Plan: <Title>
@@ -65,7 +65,7 @@ Iteration: 1
 
 ## Phase 4 -- Verify the Plan
 
-Launch the `spec-review` agent (background; it writes a findings JSON file — poll for the file, then read it once). It runs a single combined alignment + adversarial-assumption review: does the plan fully cover the stated requirements, and what assumptions or unhandled edge cases could break it? Incorporate `must_fix` / `should_fix` before presenting the plan to the user.
+Launch the `spec-review` agent (background; set its `output_path` to `docs/local/plans/.spec-review-<slug>.json` — co-located with the plan, gitignored. It writes that findings JSON file — poll for the file, then read it once). It runs a single combined alignment + adversarial-assumption review: does the plan fully cover the stated requirements, and what assumptions or unhandled edge cases could break it? Incorporate `must_fix` / `should_fix` before presenting the plan to the user.
 
 ## Phase 5 -- Approval
 
@@ -76,7 +76,7 @@ Present the complete plan. Ask:
 > - Revise -- [specify changes]
 > - Cancel -- Stop here
 
-On approval: set `Approved: Yes` in the plan file, then invoke `/spec-implement`.
+On approval: set `Approved: Yes` in the plan file, then immediately continue the chain — call `Skill(skill='spec-implement')` in the same turn. Do NOT stop and wait for the user to re-type it; plan approval was the manual gate.
 
 ## Rules
 

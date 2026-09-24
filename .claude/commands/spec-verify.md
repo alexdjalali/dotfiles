@@ -3,11 +3,11 @@ description: Verify a completed plan -- code review, automated gates, execution 
 model: opus
 ---
 
-Read the plan from `docs/spec/plans/`. Status must be `COMPLETE`.
+Read the plan from `docs/local/plans/`. Status must be `COMPLETE`.
 
 ## Phase 1 -- Code Review
 
-1. **Built-in code review** (correctness + quality): run inline via `Skill(skill='code-review', args='xhigh')`. On Claude Code the changes review is this built-in skill, not a sub-agent.
+1. **Code review** (correctness + quality): run `/review-diff` inline via `Skill(skill='review-diff')` (no args → the working-tree diff). `/review-diff` is the single front door for reviewing a diff — it resolves the diff surface itself and runs its two-pass review + completeness critic, so it executes even though the built-in `/code-review` skill is blocked from model invocation on Claude Code (that skill can only be user-triggered).
 2. **Plan-compliance & goal audit** (inline): did the implementation follow the plan exactly, are all tasks marked complete, are there undocumented deviations, and does the result achieve the plan's stated goal?
 3. **Test-double audit** (inline): every unit test mocks its boundary (no hand-rolled fake); every integration test runs its real dependency in a Docker container via testcontainers (no mock, no in-memory substitute — SQLite-for-Postgres, fakeredis); no test placed in `integration/` actually mocks the dependency it names. Each violation is `must_fix`. (See `testing.md` *Test Double Policy*.)
 
@@ -41,7 +41,7 @@ Tests passing is not the same as the program working. Both must be true.
 **If issues remain:**
 - Add fix tasks to the plan's task list
 - Set `Status: PENDING`, `Approved: Yes`, increment `Iteration`
-- Invoke `/spec-implement` to fix them -- do NOT ask the user whether to fix
+- Continue the chain — call `Skill(skill='spec-implement')` to fix them, in the same turn. Do NOT ask the user whether to fix
 
 ## Rules
 

@@ -6,10 +6,12 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 
 **Model policy:** every command is pinned to Opus via `model:` frontmatter, except `/github`, which runs on Sonnet — judgment, planning, and verification stay on the strongest model; git/PR plumbing runs on the cheaper one. The `verify → implement` loop re-runs automatically until the plan is `VERIFIED`, then `/github` ships it (`git` writes always require explicit user confirmation). Run each phase as its own prompt to get its pinned model reliably — the `model:` switch is scoped to that command's turn, and chained auto-invocation honoring it is undocumented.
 
+**Chaining is automatic — one prompt drives the whole pipeline.** Once you kick it off (type `/spec`, or a phase directly), each phase hands off to the next by calling `Skill(skill='<next-phase>')` in the same turn; you do NOT re-type each sub-skill. The chain is `spec-plan` → **[plan approval]** → `spec-implement` → `spec-verify`, with `verify → implement` re-looping automatically until `Status: VERIFIED`. A `Skill()` hand-off loads the next phase into the *current* turn, so the loop stays on the model you started on — keep the session on Opus and every Opus-pinned phase runs on Opus (the frontmatter model only re-applies when you type the slash command yourself, so on a mid-chain interruption or compaction, resume by re-typing the phase to guarantee the pin). Only **two** boundaries are manual: **plan approval** (before implementation) and **`/github`** (the ship step — Sonnet-pinned, every `git` write needs explicit confirmation), which `spec-verify` only *suggests*, never auto-runs. The `/spec` dispatcher itself is `disable-model-invocation` (always user-typed); the sub-skills it routes to are not, so they chain freely.
+
 - **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
 - **Architecture**: Diagram affected components in `docs/spec/arch/`.
 - **Decompose**: Break epics into stories via `/rfp` → `docs/spec/epics/` + `docs/spec/stories/`.
-- **Plan before code**: Use `/spec` for non-trivial work → `docs/spec/plans/`.
+- **Plan before code**: Use `/spec` for non-trivial work → `docs/local/plans/` (gitignored local working docs, never committed).
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
 
@@ -83,7 +85,7 @@ Use the templates at `~/.claude/templates/` for document generation:
 New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):
 - Layered architecture: Foundation → Client → Service/Domain → Controller/API → Entrypoint
 - Infrastructure in `zarf/` (Docker, K8s, Terraform, observability)
-- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,plans,audits,rca,demos}`
+- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,audits,rca,demos}` (tracked); `/spec` plans + spec-review JSON live in **gitignored** `docs/local/plans/` (local working docs, never committed)
 - Language conventions: Go=`pkg/`+`apps/`, Python=`src/`+`entrypoints/`, TS=`packages/`+`apps/`
 - Use `/repo <name>` to scaffold, `/repo audit` to check compliance
 

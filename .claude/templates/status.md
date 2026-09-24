@@ -73,5 +73,5 @@ Plan `Status` is unreliable — classified here by **actual** completion.
 ## References
 
 - Epics/stories: `docs/spec/epics/`, `docs/spec/stories/`
-- Plans: `docs/spec/plans/` · Audits: `docs/spec/audits/` · RCA: `docs/spec/rca/`
+- Plans: `docs/local/plans/` (gitignored) · Audits: `docs/spec/audits/` · RCA: `docs/spec/rca/`
 - Governing ADRs: <…>

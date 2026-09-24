@@ -31,11 +31,12 @@
 │
 ├── docs/                         # Documentation
 │   ├── adr/                      # Architecture Decision Records
-│   └── spec/                     # Spec pipeline artifacts
-│       ├── arch/                 # Architecture diagrams
-│       ├── epics/                # Epic specifications
-│       ├── stories/              # Implementation stories
-│       └── plans/                # Implementation plans
+│   ├── spec/                     # Spec pipeline artifacts (tracked)
+│   │   ├── arch/                 # Architecture diagrams
+│   │   ├── epics/                # Epic specifications
+│   │   └── stories/              # Implementation stories
+│   └── local/                    # Gitignored local working docs (never committed)
+│       └── plans/                # /spec implementation plans + spec-review JSON
 │
 ├── frontends/                    # Frontend applications
 │   └── <app>/                    # Each frontend app

@@ -3,7 +3,7 @@ description: Implement an approved plan task-by-task using TDD
 model: opus
 ---
 
-Read the plan from `docs/spec/plans/`. Status must be `PENDING` with `Approved: Yes`.
+Read the plan from `docs/local/plans/`. Status must be `PENDING` with `Approved: Yes`.
 
 ## Execution Loop
 
@@ -29,7 +29,7 @@ If the repo defines `.claude/rules/code-addition-checklist.md`, follow its concr
 
 1. Run `/preflight` -- all gates must pass.
 2. Set plan `Status: COMPLETE` in the header.
-3. Invoke `/spec-verify`.
+3. Continue the chain — call `Skill(skill='spec-verify')` in the same turn. Do NOT stop and hand back to the user.
 
 ## Deviations
 

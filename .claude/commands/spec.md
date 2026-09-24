@@ -24,11 +24,11 @@ For a **new** request (no plan yet), infer Type from the description — a defec
 ## Finding the Plan
 
 - If args is a file path -- use it directly
-- If args is a description -- search `docs/spec/plans/` for a matching file by name or title
+- If args is a description -- search `docs/local/plans/` for a matching file by name or title
 - If no match -- start fresh: invoke `/spec-plan` (or `/spec-bugfix-plan` for a defect) with the description
 
 ## Plan File Convention
 
-`docs/spec/plans/YYYY-MM-DD-<slug>.md`
+`docs/local/plans/YYYY-MM-DD-<slug>.md`
 
 Invoke the correct skill immediately. Do not ask the user what to do -- the status header determines the action.

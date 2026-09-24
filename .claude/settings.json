@@ -4,29 +4,22 @@
   "skillListingMaxDescChars": 2048,
   "skillListingBudgetFraction": 0.05,
   "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "false",
-    "DISABLE_INSTALLATION_CHECKS": "false",
-    "CLAUDE_CODE_EFFORT_LEVEL": "xhigh",
     "CLAUDE_CODE_NO_FLICKER": "true",
     "DISABLE_ERROR_REPORTING": "true",
     "DISABLE_MICROCOMPACT": "false",
     "CLAUDE_CODE_WORKFLOWS": "true",
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "true",
-    "DISABLE_AUTOUPDATER": "false",
     "ENABLE_LSP_TOOL": "true",
     "CLAUDE_CODE_AUTO_CONNECT_IDE": "true",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "true",
     "CLAUDE_CODE_HIDE_ACCOUNT_INFO": "true",
     "DISABLE_TELEMETRY": "true",
-    "DISABLE_COMPACT": "false",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-5",
     "FORCE_AUTOUPDATE_PLUGINS": "true",
     "CLAUDE_CODE_ENABLE_TASKS": "true",
     "CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS": "true",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "true",
-    "DISABLE_AUTO_COMPACT": "false",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "true",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "false",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-5-5",
     "ENABLE_TOOL_SEARCH": "true"
   },
@@ -113,7 +106,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'CMD=$(jq -r \".tool_input.command // empty\"); if echo \"$CMD\" | grep -qE \"git[[:space:]]+push[[:space:]]+--force[[:space:]]+origin[[:space:]]+(main|master)\"; then echo \"BLOCKED: Never force-push to main/master\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"rm[[:space:]]+-rf[[:space:]]+/[^a-zA-Z]\"; then echo \"BLOCKED: Refusing rm -rf /\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git[[:space:]]+reset[[:space:]]+--hard\"; then echo \"BLOCKED: git reset --hard is destructive. Use with explicit confirmation.\" >&2; exit 2; fi; if echo \"$CMD\" | grep -qE \"git[[:space:]]+checkout[[:space:]]+\\.\"; then echo \"BLOCKED: git checkout . discards all changes. Use with explicit confirmation.\" >&2; exit 2; fi; exit 0'"
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-bash.sh\" || exit 2"
           }
         ]
       },
@@ -142,8 +135,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=$(jq -r \".tool_input.file_path // empty\"); if [ -z \"$FILE\" ]; then exit 0; fi; WARNINGS=\"\"; case \"$FILE\" in *.py) if grep -n \"print(\" \"$FILE\" 2>/dev/null | grep -v \"#.*print\" | grep -v \"logging\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: print() found - use structured logging instead\"; fi; if grep -n \"except:\" \"$FILE\" 2>/dev/null | grep -v \"#\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: bare except: found - catch specific exceptions\"; fi ;; *.ts|*.tsx|*.js|*.jsx) if grep -n \"console\\.log\" \"$FILE\" 2>/dev/null | grep -v \"//.*console\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: console.log found - remove before committing\"; fi; if grep -n \": any\" \"$FILE\" 2>/dev/null | grep -v \"//\" | head -3 | grep -q .; then WARNINGS=\"$WARNINGS\\nWARNING: any type found - use unknown + type guards\"; fi ;; esac; if [ -n \"$WARNINGS\" ]; then echo -e \"$WARNINGS\"; fi; exit 0'",
-            "timeout": 10000
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/edit-lint.sh\"",
+            "timeout": 10
           }
         ]
       }

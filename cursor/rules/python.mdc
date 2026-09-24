@@ -1,13 +1,14 @@
 ---
-description: "Python coding standards (3.14+)"
+description: "Python coding standards"
 globs: ["*.py"]
 alwaysApply: false
 ---
 
-# Python Standards (3.14+)
+# Python Standards
 
 ## Tooling
 
+- Python version: match the project's `requires-python` — don't assume one (modern targets are 3.12–3.14)
 - Package manager: `uv` (never pip/poetry); `uv add` for deps (updates pyproject + lockfile)
 - Lint + format: `ruff check` + `ruff format`
 - Type check: `basedpyright` (strict) or `mypy --strict`
@@ -19,7 +20,7 @@ alwaysApply: false
 - Logging: `structlog` (structured); HTTP: `httpx` (async-capable)
 - Async: `async def` + `await`; `asyncio.run()` only at boundaries
 - Imports: absolute only; no cross-package relative imports
-- Docstrings: Google style. Line length: 100.
+- Docstrings: one line for most functions; multi-line (Google style) only for complex logic; skip when the name is self-explanatory. Line length: follow the project's `pyproject.toml` (commonly 88–110).
 - No `print()` in production; use structured logging
 - No bare `except:`
 
@@ -36,7 +37,7 @@ alwaysApply: false
 ## Documentation Requirements
 
 - Module-level docstrings on all files (summary, coverage, structure)
-- Google-style docstrings on all public classes, methods, and functions
+- Docstrings on public classes and non-obvious public functions (see Code Style for length)
 - Inline comments for non-obvious logic only
 - No issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or docstrings — they rot and couple code to an external tracker; keep that context in the commit/PR/tracker. Link only committed in-repo docs (under `docs/`), never gitignored or scratch paths
 - Type hints on all public APIs (`basedpyright` strict compliance)

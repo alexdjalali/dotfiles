@@ -18,6 +18,8 @@ After a change, ask: "Did this change something a docs reader is told?" If yes, 
 - Breaking change → CHANGELOG / migration guide
 - Architecture or layout shifted → top-level README, project rules
 
+Always check: README, in-repo docs (`docs/`, Docusaurus, mkdocs), `CLAUDE.md` / `AGENTS.md` if present, project rules if structure changed, and code comments that reference renamed symbols.
+
 ## When NOT to
 
 Internal refactor with no user-visible effect; a bugfix restoring documented behavior; test-only changes; typos/formatting in code; WIP the user explicitly flagged.

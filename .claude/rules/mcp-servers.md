@@ -1,16 +1,6 @@
 ## MCP Servers
 
-MCP tools are lazy-loaded via `ToolSearch`. Discover by keyword, then call directly. Full param schemas are returned by `ToolSearch` itself — these summaries cover purpose and minimum usage.
-
-```
-ToolSearch(query="keyword")               # Discover and load tools by keyword
-ToolSearch(query="+server keyword")       # Require a specific server prefix
-ToolSearch(query="select:full_tool_name") # Load a specific tool by exact name
-```
-
-All servers use the `mcp__<server>__` prefix (e.g. `mcp__codegraph__`, `mcp__semble__`). Tools are callable immediately after ToolSearch returns them.
-
----
+MCP tools are lazy-loaded: `ToolSearch` by keyword (`"keyword"`, `"+server keyword"` to require a server prefix, or `"select:full_tool_name"`) returns their full schemas, and they're callable immediately after. Names are `mcp__<server>__<tool>` (e.g. `mcp__codegraph__`, `mcp__semble__`); the summaries below cover purpose and minimum usage.
 
 ### Code Search — CodeGraph (structure) + Semble (intent)
 
@@ -29,36 +19,14 @@ Co-primary for every code-search task; Grep/Glob only verify their completeness 
 
 Semble can't enumerate callers or match AST patterns (e.g. every `async function $X`) — use CodeGraph (or Grep as a last resort); for the block at `file:line`, `Read` with `offset`/`limit` or `codegraph_node`. The `semble` CLI (`uv tool install semble`; `semble --help`) mirrors the MCP tools: `semble search "<query>" ./ --top-k <n>`, `semble find-related <file> <line> ./`, `semble savings` (saving = `(file_chars − snippet_chars) / 4` per call; stats in `~/.semble/savings.jsonl`).
 
----
-
 ### context7 — Library Documentation
 
-Up-to-date docs and code examples for any library/framework. Two steps:
+Up-to-date docs and code examples for any library/framework: `resolve-library-id(libraryName, query)` → a `libraryId` like `/pypi/pytest`, then `query-docs(libraryId, query)`. Use descriptive queries. Max 3 calls per question per tool.
 
-1. `resolve-library-id(libraryName, query)` → returns `libraryId` like `/pypi/pytest`
-2. `query-docs(libraryId, query)` → answers using indexed docs
+### Web — web-search / web-fetch (prefer over built-in `WebSearch` / `WebFetch`)
 
-Use descriptive queries. Max 3 calls per question per tool.
-
----
-
-### web-search — Web Search
-
-`search(query, limit?, engines?)` — DuckDuckGo / Bing / Exa, no API keys. GitHub README: `fetchGithubReadme(url)`.
-
----
-
-### web-fetch — Web Page Fetching
-
-Playwright-backed; no truncation; handles JS-rendered pages — use for full web page content.
-
-- `fetch_url(url, ...)` — single page
-- `fetch_urls(urls=[...], ...)` — multiple pages
-- `browser_install(withDeps?, force?)` — install Chromium
-
-Useful options: `waitUntil` (`load`/`domcontentloaded`/`networkidle`), `returnHtml`, `waitForNavigation` (anti-bot).
-
----
+- **web-search** (ToolSearch `+web-search search`): `search(query, limit?, engines?)` — DuckDuckGo / Bing / Exa, no API keys. GitHub README: `fetchGithubReadme(url)` (`+web-search fetch`).
+- **web-fetch** (`+web-fetch fetch`): Playwright-backed, no truncation, handles JS-rendered pages — use for full page content. `fetch_url(url, ...)` / `fetch_urls(urls=[...], ...)`; `browser_install(withDeps?, force?)` installs Chromium. Options: `waitUntil` (`load`/`domcontentloaded`/`networkidle`), `returnHtml`, `waitForNavigation` (anti-bot).
 
 ### grep-mcp — GitHub Code Search
 

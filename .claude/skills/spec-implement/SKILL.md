@@ -1,51 +1,32 @@
 ---
-description: Implement an approved plan task-by-task using TDD
+description: /spec implementation — execute an approved plan task by task with TDD, ticking progress, then hand off to verify. Runs after plan approval or a verify loop-back.
 model: opus
 ---
 
-Read the plan from `docs/local/plans/`. Status must be `PENDING` with `Approved: Yes`.
+**Input:** a plan in `docs/local/plans/` with `Status: PENDING`, `Approved: Yes` (Feature or Bugfix — the plan is the interface). **Output:** every task done and ticked, `Status: COMPLETE`, and the hand-off to the verify phase.
 
-## Execution Loop
+## Per task — each unchecked task in order, including fix tasks a verify loop added
 
-For each unchecked task, in order:
+1. **Read the task** — know exactly what its Definition of Done requires.
+2. **RED** — one failing test for the behavior the task introduces, at the right tier with the right double (`testing.md` *Test Double Policy*; reuse existing fixtures; NEVER a hand-rolled fake, and NEVER a mock or in-memory substitute such as SQLite-for-Postgres or fakeredis for an integration dependency). For a bugfix, Task 1 is the plan's specified reproducing test. Run it: it must fail for the right reason — the feature is missing / the bug is present, not a syntax or import error. A test that passes immediately is testing the wrong thing; rewrite it. Only a task whose `Trivial:` claim holds (`testing.md` limits) skips RED — run its named covering test/command instead; bugfix tasks never do.
+3. **GREEN** — the simplest code that passes; NEVER more than the task requires (YAGNI). Match the surrounding code's patterns and naming; NEVER reinvent a helper the repo already provides.
+4. **Full suite** — run it; NEVER proceed past a failure.
+5. **Refactor** — clarity only; tests stay green.
+6. **Code-addition checklist** against the diff (below). A "yes" the plan didn't cover is a Deviation, not a silent add.
+7. **Docs** — update every comment, docstring, README, or architecture doc that references the changed code, directly or indirectly (`documentation-sync.md`; `codegraph_callers` / `codegraph_impact` find the indirect ones). NEVER leave one stale.
+8. **Tick it now** — `- [ ]` → `- [x]`, Progress Tracking Done +1, Left −1. NEVER batch-mark.
 
-1. **Read the task** -- understand exactly what "done" means.
-2. **Write a failing test** -- one test for the behavior this task introduces, at the right tier with the right double (per `testing.md` *Test Double Policy*: unit mocks the external boundary and reuses existing fixtures; integration runs the real dependency via testcontainers). For a bugfix, Task 1 is the reproducing test the plan specifies. Run it; confirm it fails for the right reason (not a syntax error, not a wrong import -- the feature doesn't exist yet / the bug is present).
-3. **Implement** -- simplest code that makes the test pass. Nothing more. Follow the existing patterns and naming in the files you touch; reuse existing helpers instead of reinventing them (DRY). Before ticking the box, run the **code-addition checklist** (below) against the diff.
-4. **Verify green** -- run the full test suite. Fix all failures before moving on.
-5. **Refactor** -- improve clarity without changing behavior. Tests stay green.
-6. **Sync docs** -- per `documentation-sync.md`: every comment, docstring, README, or architecture doc that references the changed code, directly or indirectly (`codegraph_callers` / `codegraph_impact`).
-7. **Mark done immediately** -- `- [ ]` → `- [x]` in the plan, and in Progress Tracking Done +1, Left −1.
-
-Repeat for each task.
-
-## Code-addition checklist
-
-Re-check each per task before ticking its box (a "yes" that the plan didn't cover is a Deviation, not a silent add): (1) **infra/deploy** change needed? (2) **CLI/tooling** change needed? (3) consistent with the project's **philosophy** and mirrors **gold-standard/reference** code? (4) right **test *types*** with the right **double** (unit / integration / e2e, plus fuzz/chaos when warranted)? (5) **config** change needed? (6) as **simple** as possible (DRY/YAGNI)? (7) as **general** as possible — interface + config-selected, balanced against YAGNI? (8) **reuses** the shared-library patterns/abstractions rather than reinventing them?
-
-If the repo defines `.claude/rules/code-addition-checklist.md`, follow its concrete answers.
-
-## After All Tasks Complete
-
-1. Run `/preflight` -- all gates must pass.
-2. Set plan `Status: COMPLETE` in the header.
-3. Continue the chain in the same turn, routed by the plan's `Type:` — `Skill(skill='spec-verify')` (Feature) or `Skill(skill='spec-bugfix-verify')` (Bugfix). Do NOT stop and hand back to the user.
+**Code-addition checklist:** (1) infra/deploy change? (2) CLI/tooling change? (3) consistent with the project's philosophy, mirroring gold-standard/reference code? (4) right test *types* (unit / integration / e2e; fuzz/chaos when warranted) with the right double? (5) config change? (6) as simple as possible (DRY/YAGNI)? (7) as general as possible — interface + config-selected, capped by (6)? (8) reuses the shared-library abstractions? A repo's `.claude/rules/code-addition-checklist.md` supplies the concrete answers.
 
 ## Deviations
 
-Record every deviation in the plan's `## Deviations` section.
+Record every one in the plan's `## Deviations` section.
 
-- **Bug / missing critical / blocking** (errors, missing validation, broken imports): auto-fix inline (+ tests if applicable), document it, and do NOT expand scope.
-- **Architectural surprise** (new table, library swap, breaking API change): **STOP** — document it and ask the user (`AskUserQuestion`) before continuing.
+- **Bug / missing critical / blocking** (errors, missing validation, broken imports) → fix inline (+ tests if applicable) and document; don't expand scope.
+- **Architectural surprise** (new table, library swap, breaking API change) → **STOP**, document it, and ask via `AskUserQuestion` before continuing.
 
-Outside `/spec`, respect the user's mode.
+## After the last task
 
-## Rules
-
-- NEVER skip the failing test -- a test that passes immediately is testing the wrong thing
-- NEVER hand-roll a fake or satisfy an integration test with a mock / in-memory substitute (SQLite-for-Postgres, fakeredis) -- a must_fix per `testing.md`
-- NEVER implement more than the current task requires (YAGNI)
-- NEVER reinvent a helper the repo already provides -- reuse it, and match the surrounding code's conventions
-- NEVER leave docs that reference the changed code (directly or indirectly) stale
-- NEVER batch-mark tasks -- update the checkbox and counters the moment each task is complete
-- NEVER proceed past a failing test suite -- fix first, then continue
+1. Run the quality gates (CLAUDE.md *Quality Gates*) — all green.
+2. Set `Status: COMPLETE`.
+3. In the same turn, hand off by `Type:` — `Skill(skill='spec-verify')` (Feature) or `Skill(skill='spec-bugfix-verify')` (Bugfix). Don't stop for the user.

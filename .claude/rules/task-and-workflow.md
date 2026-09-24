@@ -37,17 +37,12 @@ Tasks are working memory (otherwise lost in compaction). Use them in quick mode;
 
 ### ⛔ Agent Tool — don't spawn Explore / Plan / Research agents
 
-Policy: don't delegate code search to a `subagent_type` `Explore`/`Plan` agent, or to any agent whose description starts "Research" or contains "Explore" — use CodeGraph + Semble directly (`mcp-servers.md`). `spec-review` is launched by the plan phases; `changes-review` is the Codex-native `/spec` reviewer — never launch it by hand on Claude Code. **Review any diff — working tree, committed branch vs base, or PR — with `/review-diff`**; an empty `/code-review` on a committed diff means `/review-diff`, not `changes-review`.
-
-### Web Search/Fetch
-
-Prefer the web-search / web-fetch MCP servers over built-in `WebFetch`/`WebSearch`: ToolSearch `+web-search search` (search) · `+web-search fetch` (GitHub README) · `+web-fetch fetch` (page).
+Policy: don't delegate code search to a `subagent_type` `Explore`/`Plan` agent, or to any agent whose description starts "Research" or contains "Explore" — use CodeGraph + Semble directly (`mcp-servers.md`). `spec-review` is launched by the plan phases; `changes-review` is the Codex-native `/spec` reviewer — never launch it by hand on Claude Code. **Review any diff — working tree, committed branch vs base, or PR — with `/review-diff`**; an empty `/code-review` on a committed diff means `/review-diff`, not `changes-review`. In `/spec`, the verify phases run `/review-diff` inline on the working-tree diff; `/fix` has no review step.
 
 ### Sub-agents
 
 - Subagents run in the background by default (the Agent tool has no `run_in_background` param); you're notified on completion — never predict a pending result. **⛔ NEVER use `TaskOutput`.** Continue a finished agent with `SendMessage` (its ID/name); a new Agent call starts fresh.
 - `spec-review` writes its findings JSON to `output_path`: poll with a bash file-existence loop, then Read once. Other agents' output is their final message.
-- `/spec` code review isn't a sub-agent on Claude Code: `spec-verify`/`spec-bugfix-verify` run `/review-diff` inline (`Skill(skill='review-diff')`) on the **working-tree** diff. `/review-diff` is the one front door for any diff — never hand-spawn `changes-review`. `/fix` runs no code-review step.
 - Sub-agents don't inherit rules; they can read `~/.claude/rules/*.md` and `.claude/rules/*.md`.
 - **Codex companion:** ⛔ never delegate a companion run whose output you need to a subagent (`codex:codex-rescue` is only for user-typed `/codex:rescue`) — run `codex-companion.mjs` directly via Bash (recipe: `~/.claude/templates/codex-changes-review.md`).
 

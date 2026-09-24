@@ -1,36 +1,33 @@
 ---
 model: opus
-description: Consolidated program status -- scan epics/stories/plans/audits/rca, cross-check against code, emit the real backlog
+description: Report what is actually left to build — scan every epic, story, plan, audit, and RCA, verify done-ness against the code, emit the real backlog (optionally to docs/spec/roadmap/status.md). Use for status / what's-left questions.
 argument-hint: "[write]"
 ---
 
-Produce the one view that answers **"what is actually left to build?"** -- a deduplicated, confidence-checked backlog synthesized from every epic, story, plan, audit, and RCA, cross-checked against the code (declared status fields drift). This is `/rfp status` and `/roadmap status` unified and one level up: it spans the whole `docs/spec/` pipeline, not a single folder.
-
-By default it reports to chat. Persist it when asked (`/program-status write`) or when a consolidated backlog doc already exists.
+The one view that answers **"what is actually left to build?"** — a deduplicated, confidence-checked backlog across the whole `docs/spec/` pipeline (`/rfp status` and `/roadmap status` unified, one level up). **Input:** optional `write`. **Output:** the backlog in chat; persisted when `write` is passed or a consolidated backlog doc already exists. Report only — it plans nothing (that's `/roadmap` / `/rfp` / `/spec`).
 
 ## Steps
 
-1. Inventory every artifact under `docs/spec/{epics,stories,audits,rca}/` **and the plans in gitignored `docs/local/plans/`** (local to this checkout — say so if absent); note each item's declared Status.
-2. **Cross-check against the code** -- the declared Status is unreliable. For each epic/story/plan, verify done-ness against what actually builds and runs (CodeGraph + Semble + read the implementing files). Classify plans by *actual* completion, not the header.
-3. Split the backlog into tracks: **product build-out** (unfinished epics/stories) vs **refactor & conformance** (open audits + their remediation epics).
-4. Map each open code audit to its implementing plan/epic; flag audits with no plan as unplanned.
-5. Build the plan registers: **genuinely open**, **stale-`PENDING`-but-done** (flip to VERIFIED, do NOT re-open), **superseded/moot**, and **non-plans** (working notes).
-6. Add a suggested sequencing (critical path first) and the governing-decision blockers (un-accepted ADRs -- e.g. a `Proposed` ADR gating a track).
-7. **Persist** when asked: refresh an existing `remaining-work.md` / `status.md` **in place** (look before overwriting); else write `docs/spec/roadmap/status.md` from `~/.claude/templates/status.md`.
+1. **Inventory** every artifact in `docs/spec/{epics,stories,audits,rca}/` and the plans in gitignored `docs/local/plans/` (local to this checkout — say so if absent); note each declared Status.
+2. **Cross-check against the code** — NEVER trust a Status field over it. Verify each epic/story/plan's done-ness against what actually builds and runs (CodeGraph + Semble + the implementing files); classify plans by *actual* completion, not the header.
+3. **Split into tracks** — **product build-out** (unfinished epics/stories) vs **refactor & conformance** (open audits + their remediation epics).
+4. **Map each open audit** to its implementing plan/epic; flag audits with none as unplanned.
+5. **Plan registers** — genuinely open · stale-`PENDING`-but-done (list for flipping to VERIFIED — NEVER re-open) · superseded/moot · non-plans (working notes).
+6. **Sequencing** — critical path first, plus governing-decision blockers (un-accepted ADRs, e.g. a `Proposed` ADR gating a track).
+7. **Persist** (when asked): find an existing consolidated backlog under `docs/spec/` (e.g. `remaining-work.md`, `status.md`) and refresh it **in place**; otherwise write `docs/spec/roadmap/status.md` from `~/.claude/templates/status.md`.
 
 ## Rules
 
-- NEVER trust a Status field over the code -- every "done" claim is verified against what runs
-- NEVER re-open a stale-`PENDING`-but-done plan -- list it for flipping to VERIFIED instead
-- NEVER pad -- a short backlog is a good sign; report what's real, cite the artifact path for every line
-- Report only; this command plans nothing (that's `/roadmap` / `/rfp` / `/spec`)
+- NEVER pad — a short backlog is a good sign; cite the artifact path on every line.
 
 ## Next Step
 
 Ask:
 
 > Backlog assembled. Act on it?
-> - `/roadmap` -- re-sequence the epics around it
-> - `/rfp <epic>` -- decompose the next epic
-> - `/spec` -- plan the top item
-> - Done -- status only
+> - `/roadmap` — re-sequence the epics around it
+> - `/rfp <epic>` — decompose the next epic
+> - `/spec` — plan the top item
+> - Done — status only
+
+Run the chosen skill via `Skill()`; `/spec` is suggested for the user to type — never invoked.

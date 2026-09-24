@@ -19,6 +19,7 @@ alwaysApply: true
 - Before modifying a shared / non-trivial function, trace its callers and callees — it catches callers you'd otherwise miss.
 - Fix obvious mistakes (syntax, typos, imports) in code you're actively writing; do **not** auto-fix code the *user* edited — report it.
 - Hot paths (render loops, request handlers, polling) cache/memoize; don't redo work when the input is unchanged.
+- Check diagnostics before starting and after changes; fix all errors before marking complete. Automated formatters own style.
 - Backward compatibility only when explicitly required.
 
 ## Systematic debugging (no fix without root cause)
@@ -30,7 +31,9 @@ alwaysApply: true
 
 - **Red flags → STOP:** "quick fix for now", multiple changes at once, proposing a fix before tracing data flow. **3+ failed fixes = architectural problem** — question the pattern, don't fix again.
 - **Revert-first** when something breaks: revert → consider deleting the broken thing → one-line targeted fix → else stop and reconsider.
-- **Defense in depth** after a fix: validate at each layer the data passes (entry point, business logic, environment guards) so the bug is structurally impossible, not just patched.
+- **Meta-debugging:** treat your own code as foreign — your mental model is a guess; the code's behavior is truth.
+- **Defense in depth** after a fix: trace back to the original trigger, fix at the source, then validate at each layer the data passes (entry point, business logic, environment guards, debug instrumentation) so the bug is structurally impossible, not just patched.
+- **Condition-based waiting** for flaky/async tests: poll for the actual condition (every ~10 ms, with a timeout and a clear error) instead of an arbitrary `sleep` — except when testing real timing (debounce, throttle), and document why there.
 
 ## Constraint classification
 
@@ -41,4 +44,6 @@ alwaysApply: true
 ## Git operations
 
 - **Read git state freely. NEVER run a write command without explicit user permission** — `add`, `commit`, `push`, `pull`, `merge`, `rebase`, `reset`, `stash`, `checkout`. "Fix this bug" ≠ "commit it." (Editing files is always fine — this is about git commands.)
-- **Never `git checkout --` on unstaged changes** (irreversible) — tell the user the consequence and let *them* run it. **Never `git add -f`.** **Respect the active branch — never auto-branch;** create a branch only when the user asks in this request. Push new branches with `-u`.
+- **Never `git checkout --` on unstaged changes** (irreversible) — tell the user the consequence and let *them* run it. **Never `git add -f`** — if a file is gitignored, tell the user. **Never selectively unstage** — commit all staged changes as-is. Push new branches with `-u`.
+- **Respect the active branch — never auto-branch;** create or switch branches only when the user asks in this request. A project convention that mandates a branch-name pattern is not such a request — surface it and ask.
+- Read commands (`status`, `diff`, `log`, `show`, `branch`) are always allowed.

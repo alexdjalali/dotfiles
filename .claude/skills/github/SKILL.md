@@ -1,48 +1,49 @@
 ---
 model: sonnet
-description: Handle branching, committing, pull requests, and merges
+description: Ship the current work — commit, create a branch, push and open or update a PR, or merge — running the quality gates first and confirming every git write. User-typed only.
 argument-hint: "[commit | branch <type>/<desc> | pr | merge]"
 disable-model-invocation: true
 ---
 
-Git operations for the current work — the manual ship step (user-typed only; `/spec` and other commands suggest it, never run it). Always runs `/preflight` before committing.
+The manual ship step: user-typed only (other skills suggest it, never run it). **Input:** the subcommand in args (ask if absent). **Output:** the confirmed git/GitHub operation, done. Every git write below happens only after the user confirms that step, and `development-practices.md` *Git Operations* applies throughout.
 
 ## Commit
 
-1. Run `/preflight`. If any gate fails, fix and re-run before proceeding.
-2. Stage changed files. Never force-add gitignored files.
-3. Write a conventional commit message from `~/.claude/templates/commit.md`:
-   `<type>(<scope>): <description>` (scope optional)
-4. Show the message to the user and confirm before committing.
+1. Run the quality gates (CLAUDE.md *Quality Gates*) — fix and re-run until every gate passes.
+2. Draft a conventional commit message from `~/.claude/templates/commit.md` — `<type>(<scope>): <description>`, scope optional.
+3. Show the files to stage (`git status --short`) and the message; confirm.
+4. Stage them (never `git add -f` a gitignored file) and commit everything staged as-is.
 
 ## Branch
 
-Create a branch named `<type>/<short-description>` where type matches conventional commit types (feat, fix, refactor, chore, etc.).
-Ask the user for type and description if not provided in args.
+Create `<type>/<short-description>`, the type a conventional-commit type (feat, fix, refactor, chore, …). Take type and description from args, or ask — never invent them.
 
 ## PR
 
-1. Confirm `/preflight` has passed.
-2. Push the current branch: `git push -u origin <branch>`.
-3. Draft a PR description using `~/.claude/templates/pr.md` -- summary, changes by area, test plan, linked ADR/story/plan.
-4. Show the draft and get approval before creating.
-5. Write the approved description to a temp file, then create the PR with the body sourced from that file. The description ALWAYS goes in the PR body -- NEVER pass a multi-line markdown body inline (backticks/`$`/`!` break inline `--body "..."`), and NEVER post the description as a `gh pr comment`:
+1. Confirm the quality gates passed for the commits being shipped.
+2. Draft the description from `~/.claude/templates/pr.md` — summary, changes by area, test plan, linked ADR / story / plan (plans are local-only: name them, don't link).
+3. Show the title, description, and push target; get approval.
+4. Push (`git push -u origin <branch>`), write the approved description to a temp file, and create the PR from it:
    ```
    gh pr create --title "<type>(<scope>): <desc>" --body-file /tmp/pr-body.md
    ```
-6. Updating an existing PR's description: `gh pr edit <number> --body-file /tmp/pr-body.md`. Never convey the description via `gh pr comment`.
+   Update an existing PR's description with `gh pr edit <number> --body-file /tmp/pr-body.md`.
 
 ## Merge
 
-1. Confirm the PR is approved and CI is green: `gh pr view --json statusCheckRollup`.
-2. **Ask the user to confirm the merge** (PR number, strategy). Only then merge: `gh pr merge --squash` (default) or `--merge` if the user requests.
-3. **Ask again before deleting the remote branch** — never delete it without an explicit yes.
+1. Check approval and CI: `gh pr view <number> --json reviewDecision,statusCheckRollup`.
+2. Ask the user to confirm the merge (PR number, strategy); only then `gh pr merge --squash` (default) or `--merge` on request.
+3. Ask again before deleting the remote branch.
 
 ## Rules
 
-- NEVER commit without `/preflight` passing first
-- NEVER force-push to main or master
-- NEVER auto-create a branch -- ask the user for name and type
-- NEVER push without showing and confirming the commit message
-- NEVER merge a PR or delete a remote branch without the user's explicit confirmation for that step
-- The PR description belongs in the PR **body** (`gh pr create --body-file` / `gh pr edit --body-file`). NEVER put the description or summary in a top-level PR comment (`gh pr comment`) -- comments are for review replies, not the description.
+- NEVER commit without the quality gates passing first.
+- NEVER force-push to main or master.
+- NEVER auto-create a branch — ask the user for its type and name.
+- NEVER push without showing and confirming the commit message.
+- NEVER merge a PR or delete a remote branch without the user's explicit confirmation for that step.
+- The PR description goes in the PR **body** (`--body-file`) — NEVER inline as a multi-line `--body "…"` (backticks, `$`, `!` break it), and NEVER as a top-level `gh pr comment` (comments are for review replies).
+
+## Next Step
+
+After a merge that ships a user-visible epic or story → suggest `/demo` to record the end-to-end walkthrough. More work open → `/program-status`.

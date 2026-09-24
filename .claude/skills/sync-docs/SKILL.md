@@ -1,33 +1,21 @@
 ---
 model: opus
-description: Sync documentation and rules to match the current state of the codebase
+description: Repo-wide sweep of a project's docs and rules (.claude/rules/, docs/, CLAUDE.md, READMEs, docstrings) against the current code, fixing what is stale. Per-change doc updates happen inline instead.
 ---
 
-Read the codebase. Compare against existing rules and docs. Update what is stale; document what is undocumented.
+A repo-wide sweep; the always-on per-change rule is `documentation-sync.md`. **Input:** the current codebase. **Output:** minimal edits to stale project docs, plus a report of every file changed and any global drift.
+
+**Write scope:** only the project's own `.claude/rules/`, `docs/`, `CLAUDE.md`, READMEs, and in-code docs. NEVER edit `~/.claude/` (global rules included) — list global drift in the report for the user.
 
 ## Steps
 
-**Write scope:** edit only the project's own `.claude/rules/`, `docs/`, `CLAUDE.md`, READMEs, and in-code docs. Global rules (`~/.claude/rules/`) are **report-only** — list any global drift in the report for the user to fix; never edit them from here.
-
-1. **Inventory**: list all files in `.claude/rules/`, `docs/`, and `CLAUDE.md` (plus `~/.claude/rules/`, read-only).
-2. **Scan for drift**: for each documented pattern, constraint, or file path, verify it still matches the code.
-   - Wrong paths? Update.
-   - Removed tools or commands? Remove the reference.
-   - New patterns with no documentation? Flag them.
-   - A symbol or behavior changed? Update its **direct** doc references AND the **indirect** ones — docs, READMEs, and docstrings describing callers or higher-level behavior that depend on it (`codegraph_callers` / `codegraph_impact`).
-3. **Update stale entries**: change only what is now wrong. Do not rewrite accurate prose.
-4. **Document new patterns**: for each undocumented pattern found, update or create the relevant rule file in the project's `.claude/rules/`.
-5. **Verify counts and lists**: if docs say "supports X, Y, Z" and Z was removed, fix it.
-6. **Report**: list every file changed and what specifically was updated.
-
-## Rules
-
-- NEVER edit `~/.claude/rules/` (or anything under `~/.claude/`) -- report global drift instead
-- NEVER invent constraints that do not exist in the code
-- NEVER rewrite prose that is still accurate -- minimal diffs only
-- NEVER add documentation for future plans -- document what exists now
-- Update `CLAUDE.md` when directory structure or key commands change
+1. **Inventory** `.claude/rules/`, `docs/`, `CLAUDE.md`, and READMEs (plus `~/.claude/rules/`, read-only).
+2. **Scan for drift** — for each documented pattern, constraint, path, tool, or command, verify it against the code: wrong path → update; removed tool or command → remove the reference; a changed symbol or behavior → update its **direct** references AND the **indirect** ones (docs describing callers or higher-level behavior that depend on it — `codegraph_callers` / `codegraph_impact`).
+3. **Fix stale entries** — minimal diffs: change only what is now wrong; NEVER rewrite accurate prose.
+4. **Document undocumented patterns** that exist in the code, in the relevant project `.claude/rules/` file — NEVER invent a constraint the code doesn't have, and NEVER document future plans.
+5. **Counts and lists** — "supports X, Y, Z" with Z removed → fix it; update `CLAUDE.md` when directory structure or key commands changed.
+6. **Report** every file changed and what was updated, plus global drift found.
 
 ## Next Step
 
-Report every doc changed, then `/preflight` and `/github` to commit the doc updates (alongside the code change that prompted them, if any).
+Run the quality gates (CLAUDE.md *Quality Gates*), then suggest `/github` to commit the doc updates (with the code change that prompted them, if any).

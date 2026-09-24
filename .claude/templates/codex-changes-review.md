@@ -1,6 +1,6 @@
 # Codex Changes Review (Adversarial)
 
-> **Optional — for a manual Codex second opinion.** No `/spec` or `/fix` step runs this. Prompt template for Codex `task --prompt-file` code reviews; counterpart to the Claude `changes-review` agent — this file is what Codex sees, not Claude. To use it, substitute `{{PLAN_PATH}}`, `{{PLAN_GOAL}}`, `{{BASE_REF}}`, and `{{CHANGED_FILES}}`, write the result to a `/tmp/` file, and run the companion **directly via Bash** (never inside a subagent — its output would be unrecoverable):
+> **Optional — for a manual Codex second opinion.** No `/spec` or `/fix` step runs this. Prompt template for Codex `task --prompt-file` code reviews (for plan reviews use `codex-spec-review.md` in this folder); counterpart to the Claude `changes-review` agent — this file is what Codex sees, not Claude. To use it, substitute `{{PLAN_PATH}}`, `{{PLAN_GOAL}}`, `{{BASE_REF}}`, and `{{CHANGED_FILES}}`, write the result to a `/tmp/` file, and run the companion **directly via Bash** (never inside a subagent — its output would be unrecoverable):
 >
 > ```bash
 > CODEX_COMPANION=$(ls ~/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs 2>/dev/null | sort -V | tail -1)

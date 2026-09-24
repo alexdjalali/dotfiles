@@ -1,36 +1,31 @@
 ---
 model: opus
-description: Build or refresh the program roadmap (dependency map, phasing, critical path) in docs/spec/roadmap/
+description: Build or refresh the program roadmap (epic dependency map, phasing, critical path, milestones) in docs/spec/roadmap/. Use to sequence epics before /rfp, or with `status` to refresh against what shipped.
 argument-hint: "[status | <program or phase>]"
 ---
 
-Create or refresh program-level planning artifacts in `docs/spec/roadmap/` using `~/.claude/templates/roadmap.md`.
-
-The roadmap sits **above epics**: it sequences them, maps dependencies, and defines the critical path that `/rfp` then decomposes into stories. Where `/rfp status` reports story-level progress, `/roadmap` owns the epic-level plan (models: `roadmap/epic-dependency-map.md`, `roadmap/program-roadmap.md`).
-
-If args = "status", refresh the roadmap against reality. Otherwise build/update the roadmap for the named program or phase.
+The roadmap sits **above epics**: it sequences them, maps their dependencies, and fixes the critical path that `/rfp` then decomposes into stories (`/rfp status` owns story-level progress). **Input:** `status` (refresh against reality) or a program/phase to plan. **Output:** `docs/spec/roadmap/<slug>.md` from `~/.claude/templates/roadmap.md`, created or updated.
 
 ## Steps
 
-1. Inventory epics and their real status from `docs/spec/epics/` **cross-checked against the code** -- story/epic `Status` fields drift, so verify done-ness against what actually builds and runs.
-2. Derive the **dependency graph** -- which epic's output another genuinely needs. Render it as a status-colored Mermaid `graph TD`.
-3. **Phase** the work: group epics by dependency; identify tracks that can run in parallel.
-4. Compute the **critical path** (longest sequential chain) and note what parallelizes against it.
-5. Capture milestones (each with a done-gate: a demo, an audit, an E2E), open risks, and pending decisions (link the un-accepted ADRs).
-6. Write/update `docs/spec/roadmap/<slug>.md`; keep any executive-summary variant short.
+1. **Inventory** epics in `docs/spec/epics/` and their real status, **cross-checked against the code** — NEVER call an epic done from its `Status` field alone; verify against what actually builds and runs.
+2. **Dependency graph** — only real dependencies (an epic genuinely needs another's output), not aspirational ordering; render as a status-colored Mermaid `graph TD`.
+3. **Phase** the work — group epics by dependency; identify tracks that run in parallel.
+4. **Critical path** — the longest sequential chain, stated explicitly, plus what parallelizes against it.
+5. **Milestones** (each with a done-gate: a demo, an audit, an E2E), open risks, and pending decisions (link the un-accepted ADRs).
+6. **Write** the file; keep any executive-summary variant short.
 
 ## Rules
 
-- NEVER assert an epic is done from its `Status` field alone -- cross-check the code
-- Dependencies must be real (an epic genuinely needs another's output), not aspirational ordering
-- Mermaid for the graph; keep the critical path explicit
-- The roadmap plans SEQUENCE, not implementation -- no task-level detail (that's `/spec`)
+- The roadmap plans SEQUENCE, not implementation — no task-level detail (that's `/spec`).
 
 ## Next Step
 
 Ask:
 
 > Roadmap set. Decompose the next epic?
-> - `/rfp <epic>` -- break an epic into stories
-> - `/rfp status` -- story-level progress across epics
-> - Done -- roadmap only
+> - `/rfp <epic>` — break an epic into stories
+> - `/rfp status` — story-level progress across epics
+> - Done — roadmap only
+
+Run the chosen skill via `Skill()`.

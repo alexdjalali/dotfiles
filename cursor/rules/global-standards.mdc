@@ -43,10 +43,10 @@ Template: `~/.claude/templates/constitution.md`
 
 ## Project Memory
 
-Significant decisions, domain context, and learnings persist in `docs/spec/memory/`
-(or `.claude/memory/`) per project. Review before starting work on unfamiliar areas.
+Significant decisions, domain context, and learnings persist per project — review them before starting work on unfamiliar areas. They survive session clears and provide cross-session continuity.
 
-- Memory files survive session clears and provide cross-session continuity
+- Decisions and context live in the tracked `docs/` pipeline (ADRs, design docs, RCAs)
+- Reusable lessons live as project skills (`.claude/skills/<slug>/SKILL.md`); snippets and one-off solutions in `.claude/vault/`
 - Store: domain concepts, past architectural decisions, team conventions, gotchas
 
 ## Templates
@@ -66,6 +66,8 @@ Use the templates at `~/.claude/templates/` for document generation:
 - **Audit**: `~/.claude/templates/audit.md`
 - **RCA**: `~/.claude/templates/rca.md`
 - **Demo Walkthrough**: `~/.claude/templates/demo.md`
+- **Program Status / Backlog**: `~/.claude/templates/status.md`
+- **Linear tickets** (epic / story / bug / task + diagram guide): `~/.claude/templates/linear/`
 
 ## Monorepo Standard
 
@@ -77,10 +79,15 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 
 ## Quality Gates (before every commit)
 
-1. Format (auto-applied by hooks on save)
-2. Lint (`ruff check` / `golangci-lint` / `eslint`)
-3. Type check (`basedpyright` / `go vet` / `tsc --noEmit`)
-4. Unit tests for changed modules
+Skills say "run the quality gates" for this. Use the project's own full gate when it documents one (a CLI such as `search preflight`, or `justfile` / `Makefile` / `package.json` targets such as `just lint` + `just test`); otherwise run, for the languages in the diff and in order:
+
+1. Format — `ruff format` / `gofumpt` + `goimports` / `prettier` (hooks also format on save)
+2. Lint — `ruff check` / `golangci-lint run` / `eslint`
+3. Type check — `basedpyright` / `go vet` / `tsc --noEmit`
+4. Tests — the full suite, 0 failures (`testing.md` *Zero Tolerance* and its completion checklist)
+5. Docs & consistency — every doc referencing the change updated (`documentation-sync.md`); the touched files' patterns and helpers reused
+
+Never skip a gate because a change "looks small"; never commit with one red.
 
 ## Test Doubles (two tiers)
 
@@ -101,14 +108,26 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 - Repository pattern for data access
 - Early returns over nested conditionals
 - Separate persistence models, domain entities, and DTOs
-- Implementation behind an interface, selected by configuration (`Kind` + `Config` + a factory that fails loudly on unknown kinds), injected at the composition root, wrapped by decorators — swapping impls (stub → real) is a config change, not a logic edit
-- Layers import downward only; app code may import shared libs, shared libs never import app code
+- Implementation behind an interface, selected by configuration: the contract lives in a dependency-free core layer; the impl is chosen through a factory (`Kind` + `Config` + a `*_from_config` constructor that fails loudly on an unknown kind), injected at the composition root, wrapped by decorators (resilience, observability) — swapping impls (stub → real) is a config change, not a logic edit
+- Layers import downward only; no lateral imports between same-layer packages; app code may import shared libs, shared libs never import app code
+- Read configuration in one place — a config layer or the composition root, not env reads scattered through business logic
 - A deviation from an established pattern is an ADR, not a silent exception
 
 ## Cross-Agent Sync
 
-`~/.claude/` (CLAUDE.md + rules) is the source of truth. `cursor/rules/` and `kilocode/rules/` mirror
-CLAUDE.md and the rules (there are no skill equivalents here) — update the mirrors when those change.
+`~/.claude/` (CLAUDE.md + rules) is the source of truth; `cursor/rules/` and `kilocode/rules/` carry identical condensed copies (Kilocode = the same body without frontmatter). When a source changes, edit the Cursor copy, then run `.claude/scripts/sync-mirrors.sh` to regenerate the Kilocode copy. There are no skill equivalents here — the Claude Code skills (`/spec`, `/rfp`, …) are named above for their artifact conventions only.
+
+| Mirror | Source (`dotfiles/.claude/`) |
+|---|---|
+| `global-standards` | `CLAUDE.md` (+ the Test Doubles summary from `rules/testing.md`) |
+| `testing` | `rules/testing.md` |
+| `verification` | `rules/verification.md` (+ the live-target probe from `rules/browser-automation.md`) |
+| `development-practices` | `rules/development-practices.md` (+ the debugging method from `skills/investigate/SKILL.md`) |
+| `code-review-reception` | `rules/code-review-reception.md` |
+| `documentation-sync` | `rules/documentation-sync.md` |
+| `go` / `python` / `typescript(-react)` | `rules/standards-golang.md` / `standards-python.md` / `standards-typescript.md` + `standards-frontend.md` |
+
+Not mirrored: `rules/task-and-workflow.md`, `rules/mcp-servers.md`, `rules/cli-tools.md`, `rules/browser-automation.md` (tool tiers), `rules/linear.md`, `rules/standards-backend.md`.
 
 ## Anti-Patterns to Avoid
 

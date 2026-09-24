@@ -15,12 +15,7 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
 
-**Supporting artifact skills** (each writes to a `docs/spec/` folder, models the same skill shape, and chains into the pipeline above):
-- **`/roadmap`** → `docs/spec/roadmap/` — sequences epics *above* `/rfp` (dependency map, phasing, critical path).
-- **`/design-doc`** → `docs/spec/design/` — the detailed "how it works" narrative *between* `/adr` (decision) and `/spec` (tasks).
-- **`/audit`** → `docs/spec/audits/` — a durable, standard-scoped codebase audit (the persistent sibling of `/patterns`); feeds `/rfp` or `/spec`.
-- **`/rca`** → `docs/spec/rca/` — an evidence-cited, diagnosis-only bug root-cause (the persistent sibling of `/investigate`); feeds `/fix` or `/spec`.
-- **`/demo`** → `docs/spec/demos/` — an E2E walkthrough (+ companion `.sh`) proving a shipped epic works (the persistent sibling of `/verify`).
+**Supporting artifact skills** (each writes a `docs/spec/<folder>/` and chains into the pipeline above): `/roadmap` → `roadmap/` (sequences epics *above* `/rfp`: dependencies, phasing, critical path) · `/design-doc` → `design/` (the "how it works" *between* `/adr` and `/spec`) · `/audit` → `audits/` (durable, standard-scoped sibling of `/patterns`; feeds `/rfp`/`/spec`) · `/rca` → `rca/` (diagnosis-only, `file:line`-cited sibling of `/investigate`; feeds `/fix`/`/spec`) · `/demo` → `demos/` (E2E walkthrough + `.sh` proving a shipped epic works; persistent sibling of `/verify`).
 
 ## Language Standards
 
@@ -32,10 +27,15 @@ Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`goimports`+`golangci
 
 ## Quality Gates (before every commit)
 
-1. Format (auto-applied by hooks on save)
-2. Lint (`ruff check` / `golangci-lint` / `eslint`)
-3. Type check (`basedpyright` / `go vet` / `tsc --noEmit`)
-4. Unit tests for changed modules
+Skills say "run the quality gates" for this. Use the project's own full gate when it documents one (a CLI such as `search preflight`, or `justfile` / `Makefile` / `package.json` targets such as `just lint` + `just test`); otherwise run, for the languages in the diff and in order:
+
+1. Format — `ruff format` / `gofumpt` + `goimports` / `prettier` (hooks also format on save)
+2. Lint — `ruff check` / `golangci-lint run` / `eslint`
+3. Type check — `basedpyright` / `go vet` / `tsc --noEmit`
+4. Tests — the full suite, 0 failures (`testing.md` *Zero Tolerance* and its completion checklist)
+5. Docs & consistency — every doc referencing the change updated (`documentation-sync.md`); the touched files' patterns and helpers reused
+
+Never skip a gate because a change "looks small"; never commit with one red.
 
 ## Git Conventions
 
@@ -83,7 +83,7 @@ New repositories follow the standard monorepo layout: `/repo <name>` scaffolds i
 
 ## Cross-Agent Sync
 
-`~/.claude/` is the source of truth. `cursor/rules/` and `kilocode/rules/` mirror this file and the rules (they have no skill equivalents) — when either changes, update the mirrors manually. (Not to be confused with `/sync-docs`, which reconciles a project's docs against its codebase — a different task.)
+`~/.claude/` is the source of truth. `cursor/rules/` and `kilocode/rules/` hold condensed mirrors of this file and the agent-agnostic rules (no skill equivalents; the source→mirror map is in `cursor/rules/global-standards.mdc`) — when either changes, edit `cursor/rules/` by hand, then run `.claude/scripts/sync-mirrors.sh` to regenerate `kilocode/rules/` (`--check` reports drift). (Not `/sync-docs`, which reconciles a project's docs against its code.)
 
 ## Anti-Patterns to Avoid
 

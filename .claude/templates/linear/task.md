@@ -16,7 +16,7 @@
 
 <A task shows a *transformation* — a **before → after** flowchart/class for a refactor, an
 **architecture** diagram for an infra target, or **flowchart steps / timeline** for a migration. A
-spike carries none: its output diagram lands in a `/design` or `/rca` doc — link it. Diagram guide:
+spike carries none: its output diagram lands in a `/design-doc` or `/rca` doc — link it. Diagram guide:
 `~/.claude/templates/linear/README.md`. Delete if unused.>
 
 ```mermaid

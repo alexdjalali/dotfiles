@@ -6,7 +6,7 @@ argument-hint: "[write]"
 
 Produce the one view that answers **"what is actually left to build?"** -- a deduplicated, confidence-checked backlog synthesized from every epic, story, plan, audit, and RCA, cross-checked against the code (declared status fields drift). This is `/rfp status` and `/roadmap status` unified and one level up: it spans the whole `docs/spec/` pipeline, not a single folder.
 
-By default it reports to chat. Persist it when asked (`/status write`) or when a consolidated backlog doc already exists.
+By default it reports to chat. Persist it when asked (`/program-status write`) or when a consolidated backlog doc already exists.
 
 ## Steps
 

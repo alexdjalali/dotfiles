@@ -186,7 +186,9 @@ if [ ! -f "$HOME/.claude/settings.local.json" ]; then
 else
     ok "~/.claude/settings.local.json already exists"
 fi
-backup_and_link "$DOTFILES/.claude/commands"             "$HOME/.claude/commands"
+backup_and_link "$DOTFILES/.claude/skills"               "$HOME/.claude/skills"
+# Legacy: custom skills used to live in commands/ — drop a stale link from older installs.
+[ -L "$HOME/.claude/commands" ] && rm "$HOME/.claude/commands"
 backup_and_link "$DOTFILES/.claude/templates"            "$HOME/.claude/templates"
 backup_and_link "$DOTFILES/.claude/rules"                "$HOME/.claude/rules"
 backup_and_link "$DOTFILES/.claude/agents"               "$HOME/.claude/agents"

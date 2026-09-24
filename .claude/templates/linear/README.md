@@ -32,7 +32,7 @@ doc, not a ticket.
 - **Task — "*what changes*?"** (transformation)
   - Primary: **flowchart/class before→after** (refactor) · **architecture** (infra target) · **flowchart steps / timeline** (migration)
   - Situational: **gitgraph** (release/CI) · **XY chart** (perf before/after)
-  - Spike: no diagram — its *output* lands in a `/design` or `/rca` doc; link it
+  - Spike: no diagram — its *output* lands in a `/design-doc` or `/rca` doc; link it
 
 **Beta types** (`architecture`, `packet`, `xychart`, `sankey`, `block`, `radar`) depend on Linear's
 Mermaid version — verify once, or fall back to `flowchart`/`C4`. No `docs/spec/` pipeline? Inline the

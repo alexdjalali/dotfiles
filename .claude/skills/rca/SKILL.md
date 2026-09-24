@@ -5,7 +5,7 @@ description: Diagnose the root cause of one or more bugs and record it in docs/s
 
 Investigate a defect (or a cluster of related defects) to root cause and record a **diagnosis-only** report in `docs/spec/rca/` using `~/.claude/templates/rca.md`.
 
-This is the persistent, evidence-cited sibling of `/debug`: `/debug` finds the cause live and fixes it; `/rca` captures the causal chain with `file:line` proof so a bugfix plan can be built from it. Use `/rca` when several related bugs need a written diagnosis before anyone fixes them, or when the fix will be someone else's plan.
+This is the persistent, evidence-cited sibling of `/investigate`: `/investigate` finds the cause live and fixes it; `/rca` captures the causal chain with `file:line` proof so a bugfix plan can be built from it. Use `/rca` when several related bugs need a written diagnosis before anyone fixes them, or when the fix will be someone else's plan.
 
 ## Steps
 

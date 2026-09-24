@@ -103,7 +103,7 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 ## Cross-Agent Sync
 
 `~/.claude/` (CLAUDE.md + rules) is the source of truth. `cursor/rules/` and `kilocode/rules/` mirror
-CLAUDE.md and the rules (there are no command equivalents here) — update the mirrors when those change.
+CLAUDE.md and the rules (there are no skill equivalents here) — update the mirrors when those change.
 
 ## Anti-Patterns to Avoid
 

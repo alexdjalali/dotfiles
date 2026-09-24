@@ -4,7 +4,7 @@
 
 `/spec` is the structured alternative to CC plan mode (adds TDD, verification, code review) — guide users to it; they should NOT press Shift+Tab into plan mode first (the spec skills run plan → approve → implement → verify). Plans: `docs/local/plans/YYYY-MM-DD-<slug>.md` — **gitignored** local working docs (never committed, so a merged PR can't delete them; spec-review findings JSON co-locates as `.spec-review-<slug>.json`). Write the plan (and user-authorized edits) normally — `bypassPermissions` keeps writes flowing.
 
-**⛔ NEVER auto-invoke `/spec` or `Skill('spec')`** — the user MUST type it. Suggest, don't invoke. Routing, the dispatcher's tool allowlist, the single plan-approval checkpoint, and deviation handling live in the `/spec` and `spec-*` commands.
+**⛔ NEVER auto-invoke `/spec` or `Skill('spec')`** — the user MUST type it. Suggest, don't invoke. Routing, the dispatcher's tool allowlist, the single plan-approval checkpoint, and deviation handling live in the `/spec` and `spec-*` skills.
 
 **Resuming after interruptions:** after an interruption ("Continue", a new mid-task message) or pause during `/spec`, never say goodbye or stop mid-plan: your **very next action** is a tool call (TaskList, Read plan, code change) — re-read the plan, resume until VERIFIED.
 
@@ -16,12 +16,12 @@ Default: quick mode. Trivial (single file, no active tasks) → execute directly
 
 ## Bug Lane — which skill
 
-- Cause unknown → `/debug` (live root-cause + fix, scientific method).
+- Cause unknown → `/investigate` (live root-cause + fix, scientific method).
 - Cause known, fix small & contained → `/fix` (reproducing test + revert-proof).
 - Cause found but not fixing now, or several related bugs → `/rca` (persisted `file:line`-cited diagnosis, no fix).
 - Large / cross-layer / schema-API change → `/spec` bugfix lane (plan → implement → verify).
 
-Chain: `/debug`|`/rca` → `/fix` (small) | `/spec` (large) → `/github`. A reproducing test is mandatory in every lane but `/rca`. Never silently upgrade an outgrown `/fix` — stop and escalate to `/spec`.
+Chain: `/investigate`|`/rca` → `/fix` (small) | `/spec` (large) → `/github`. A reproducing test is mandatory in every lane but `/rca`. Never silently upgrade an outgrown `/fix` — stop and escalate to `/spec`.
 
 ## Task Management
 

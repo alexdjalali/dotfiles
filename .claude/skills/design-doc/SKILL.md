@@ -6,7 +6,7 @@ argument-hint: <subsystem or feature>
 
 Write an implementable technical design in `docs/spec/design/` using `~/.claude/templates/design.md`.
 
-A design doc is the detailed "how it works / how we'll build it" narrative that sits **between an ADR (the decision) and a plan (the tasks)** -- richer than a diagram, more concrete than a decision record. Reach for `/design` when a change is too large or subtle to jump straight from `/adr` to `/spec`: it needs a written walkthrough, diagrams, and a state model the team reviews first (e.g. `design/ingestion.md`, `design/ownership-and-byoc-architecture.md`).
+A design doc is the detailed "how it works / how we'll build it" narrative that sits **between an ADR (the decision) and a plan (the tasks)** -- richer than a diagram, more concrete than a decision record. Reach for `/design-doc` when a change is too large or subtle to jump straight from `/adr` to `/spec`: it needs a written walkthrough, diagrams, and a state model the team reviews first (e.g. `design/ingestion.md`, `design/ownership-and-byoc-architecture.md`).
 
 ## Steps
 

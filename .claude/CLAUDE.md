@@ -4,7 +4,7 @@
 
 All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement → Verify) → Ship (`/github`).
 
-**Model policy:** every command is pinned to Opus via `model:` frontmatter, except `/github`, which runs on Sonnet — judgment, planning, and verification stay on Opus (deliberately not Fable, for cost and latency); git/PR plumbing runs on the cheaper one.
+**Model policy:** every skill is pinned to Opus via `model:` frontmatter, except `/github`, which runs on Sonnet — judgment, planning, and verification stay on Opus (deliberately not Fable, for cost and latency); git/PR plumbing runs on the cheaper one.
 
 **Chaining is automatic.** Type `/spec` (or a phase) once; each phase hands off via `Skill(skill='<next-phase>')` in the same turn: `spec-plan` → **[plan approval]** → `spec-implement` → `spec-verify`, re-looping verify → implement until `Status: VERIFIED`. **Plan approval is the only manual gate** (plus a Feature-vs-Bugfix question in `/spec` only when ambiguous); `spec-verify` then *suggests* `/github` (Sonnet-pinned, every git write confirmed) — never auto-runs it. Hand-offs stay on the session's model, so keep the session on Opus; after an interruption or compaction, re-type the phase to re-apply its pin. `/spec` itself is `disable-model-invocation` (user-typed); its sub-skills chain freely.
 
@@ -15,11 +15,11 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
 
-**Supporting artifact skills** (each writes to a `docs/spec/` folder, models the same command shape, and chains into the pipeline above):
+**Supporting artifact skills** (each writes to a `docs/spec/` folder, models the same skill shape, and chains into the pipeline above):
 - **`/roadmap`** → `docs/spec/roadmap/` — sequences epics *above* `/rfp` (dependency map, phasing, critical path).
-- **`/design`** → `docs/spec/design/` — the detailed "how it works" narrative *between* `/adr` (decision) and `/spec` (tasks).
+- **`/design-doc`** → `docs/spec/design/` — the detailed "how it works" narrative *between* `/adr` (decision) and `/spec` (tasks).
 - **`/audit`** → `docs/spec/audits/` — a durable, standard-scoped codebase audit (the persistent sibling of `/patterns`); feeds `/rfp` or `/spec`.
-- **`/rca`** → `docs/spec/rca/` — an evidence-cited, diagnosis-only bug root-cause (the persistent sibling of `/debug`); feeds `/fix` or `/spec`.
+- **`/rca`** → `docs/spec/rca/` — an evidence-cited, diagnosis-only bug root-cause (the persistent sibling of `/investigate`); feeds `/fix` or `/spec`.
 - **`/demo`** → `docs/spec/demos/` — an E2E walkthrough (+ companion `.sh`) proving a shipped epic works (the persistent sibling of `/verify`).
 
 ## Language Standards
@@ -63,7 +63,7 @@ Significant decisions, domain context, and learnings persist per project — rev
 
 ## Templates
 
-Templates live in `~/.claude/templates/<name>.md` (Linear tickets under `linear/` — see `~/.claude/rules/linear.md`; standalone: `constitution.md`, `checklist.md`); each command names the template it uses.
+Templates live in `~/.claude/templates/<name>.md` (Linear tickets under `linear/` — see `~/.claude/rules/linear.md`; standalone: `constitution.md`, `checklist.md`); each skill names the template it uses.
 
 ## Monorepo Standard
 
@@ -83,7 +83,7 @@ New repositories follow the standard monorepo layout: `/repo <name>` scaffolds i
 
 ## Cross-Agent Sync
 
-`~/.claude/` is the source of truth. `cursor/rules/` and `kilocode/rules/` mirror this file and the rules (they have no command equivalents) — when either changes, update the mirrors manually. (Not to be confused with `/sync-docs`, which reconciles a project's docs against its codebase — a different task.)
+`~/.claude/` is the source of truth. `cursor/rules/` and `kilocode/rules/` mirror this file and the rules (they have no skill equivalents) — when either changes, update the mirrors manually. (Not to be confused with `/sync-docs`, which reconciles a project's docs against its codebase — a different task.)
 
 ## Anti-Patterns to Avoid
 

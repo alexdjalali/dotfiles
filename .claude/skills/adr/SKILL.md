@@ -22,7 +22,7 @@ Uses `~/.claude/templates/adr.md`.
 
 An ADR is a living record: `Proposed → Accepted | Rejected | Superseded`. A `Proposed` ADR left un-transitioned silently blocks the work that depends on it — resolving it is a real step, not bookkeeping.
 
-- **`/adr accept <NNNN>`** — set `Status: Accepted`, stamp the date. The decision is now binding; downstream `/arch` / `/design` / `/spec` may rely on it. Note which of them just unblocked.
+- **`/adr accept <NNNN>`** — set `Status: Accepted`, stamp the date. The decision is now binding; downstream `/arch` / `/design-doc` / `/spec` may rely on it. Note which of them just unblocked.
 - **`/adr reject <NNNN>`** — set `Status: Rejected`, stamp the date, add a one-line reason. Keep the record — do not delete it.
 - **`/adr supersede <NNNN> by <MMMM>`** — set NNNN `Status: Superseded by ADR-MMMM` and add a back-link from MMMM's header to NNNN. Create MMMM first (via create mode) if it doesn't exist.
 
@@ -41,7 +41,7 @@ Every transition: preserve the original decision text, extend the `Status histor
 On **create**, ask:
 
 > What's the next step for this decision?
-> - `/design` -- Write the detailed technical design
+> - `/design-doc` -- Write the detailed technical design
 > - `/arch` -- Diagram affected components
 > - `/rfp` -- Decompose into stories
 > - `/spec` -- Implement directly

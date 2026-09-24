@@ -90,4 +90,4 @@ Ghost constraints are the highest-value to find -- they lock out options nobody 
 
 - **Fixed and verified** → ship: `/preflight`, then `/github`.
 - **Investigated but not fixing now** (or several related bugs surfaced) → record the diagnosis with `/rca`, then `/fix` (small) or `/spec` (large).
-- **Fix needs a design change** → `/adr` first, then `/design` / `/spec`.
+- **Fix needs a design change** → `/adr` first, then `/design-doc` / `/spec`.

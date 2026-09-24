@@ -24,7 +24,7 @@ CodeGraph (structure) and Semble (intent) are co-primary for code search; Grep/G
 
 ### Systematic Debugging
 
-**No fixes without root cause investigation.** **3+ failed fixes = the approach is wrong** — stop and question the pattern, don't fix again. Full method (phases, red flags, revert-first, defense-in-depth, condition-based waiting, constraint classification): `/debug`.
+**No fixes without root cause investigation.** **3+ failed fixes = the approach is wrong** — stop and question the pattern, don't fix again. Full method (phases, red flags, revert-first, defense-in-depth, condition-based waiting, constraint classification): `/investigate`.
 
 ### Git Operations
 

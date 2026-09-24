@@ -26,7 +26,7 @@
 | **Integration** — interactions | DB, cache, queue, object store, external APIs, auth flows | Real dep via testcontainers + fixtures, teardown cleanup; `@pytest.mark.integration` / `//go:build integration` |
 | **E2E** — workflows | Complete user workflows, API chains | Test the entire flow |
 
-**Coverage is a diagnostic, not a quota.** Critical paths (business logic, security, data integrity, error handling) need explicit behaviour coverage and no obvious regressions; glue code, config plumbing, simple CRUD, and trivial UI bindings have no numeric gate (the parsimony audit — verify Step 5 — and the changes review replace it).
+**Coverage is a diagnostic, not a quota.** Critical paths (business logic, security, data integrity, error handling) need explicit behaviour coverage and no obvious regressions; glue code, config plumbing, simple CRUD, and trivial UI bindings have no numeric gate (the parsimony audit — `spec-verify` Phase 1 — and the changes review replace it).
 
 ### ⛔ Test Double Policy — Two Tiers (mocks for unit, Docker for integration)
 
@@ -37,13 +37,7 @@ Enforced for every language; a violation is a **`must_fix`** blocking a green re
 | **Unit** | code under test | *external* collaborators (HTTP, DB, cache, queue, object store, subprocess, clock, 3rd-party API) | a **mock** of the consumer-side interface — generated (`mockgen`/`unittest.mock`/`vi.fn`) or hand-written for a *small* interface; reuse existing fixtures. Never mock an internal collaborator. |
 | **Integration** | code **+ real collaborator** | nothing | the **real service in a throwaway testcontainers container** (Postgres, Redis, Kafka/SQS, S3/MinIO, Elasticsearch, any official image) via a **fixture**, truncated/closed in teardown so each test passes alone |
 
-Per-language binding (full how-to in each `standards-*.md`):
-
-| Lang | Package | Entry point | Tier gate |
-|---|---|---|---|
-| Go | `github.com/testcontainers/testcontainers-go` (+ `/modules/{postgres,redis,…}`) | `postgres.Run(ctx, "postgres:16-alpine", …)`; `testcontainers.CleanupContainer(t, ctr)`; skip via `testcontainers.SkipIfProviderIsNotHealthy(t)` | `//go:build integration` (or `testing.Short()` skip) |
-| Python | `testcontainers[postgres]` (extras per service) | `with PostgresContainer("postgres:16") as pg: pg.get_connection_url()` | `@pytest.mark.integration` |
-| TS/Node | `@testcontainers/postgresql` (+ core `testcontainers` `GenericContainer`) | `await new PostgreSqlContainer("postgres:16").start()` → `.getConnectionUri()` → `.stop()` | separate integration suite (a frontend's "integration" is usually Playwright E2E — no containers, expected) |
+Per-language binding (package, entry point, tier gate — Go `//go:build integration`, Python `@pytest.mark.integration`, TS a separate integration suite): `standards-golang.md` / `standards-python.md` / `standards-typescript.md`.
 
 **⛔ FORBIDDEN (each a `must_fix`):**
 
@@ -58,13 +52,7 @@ When behaviour depends on data shape, ranges, or combinations: Python `hypothesi
 
 ### Running Tests & Mandatory Mocking
 
-`uv run pytest -q` · `uv run pytest --cov=src` (report; gate is per-critical-path) · `bun test` · `npm test -- --silent` (Jest/Vitest).
-
-Unit tests MUST mock: HTTP/network (`httpx`, `requests` → `@patch("module.httpx.Client")`) · subprocess (`@patch("module.subprocess.run")`) · file I/O (`open`, `Path.read_text` → `@patch("builtins.open")` or `tmp_path`) · database (SQLite, PostgreSQL → test fixtures) · third-party APIs (mock the client). Mock where imported, not where defined. A test > 1 s is likely unmocked I/O.
-
-### ⛔ E2E: Frontend/UI (MANDATORY for web apps)
-
-Any user-visible change MUST be verified with browser automation, in `/spec` and quick mode — unit tests miss layout bugs, stale bundles, wiring. See `browser-automation.md`, `verification.md`.
+Unit tests MUST mock HTTP/network, subprocess, file I/O, database, and third-party APIs (mock the client) — where imported, not where defined. A test > 1 s is likely unmocked I/O. Run commands and the Python `@patch` table: `standards-python.md` / `standards-typescript.md` / `standards-golang.md`. UI changes also need browser E2E (`browser-automation.md`).
 
 ### ⛔ Mock Audit on Dependency Changes
 

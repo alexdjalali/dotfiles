@@ -12,63 +12,22 @@ All servers use the `mcp__<server>__` prefix (e.g. `mcp__codegraph__`, `mcp__sem
 
 ---
 
-### CodeGraph — Code Knowledge Graph (PRIMARY)
+### Code Search — CodeGraph (structure) + Semble (intent)
 
-**Structural code search.** The fastest way to orient on a code task — replaces Grep/Glob for symbol/call/impact queries. Complements Semble (intent search — see `cli-tools.md`).
+Co-primary for every code-search task; Grep/Glob only verify their completeness or find exact text in a known file. **⛔ NEVER pass `projectPath` to CodeGraph for the current project** — it takes a code path that fails with "not initialized" unless `.codegraph/` is at that exact path; the server defaults correctly (use it only for a genuinely different codebase).
 
+| Scenario | Tool |
+|---|---|
+| **Start here** — orient on a task, "how does X work", trace a flow | `codegraph_explore` — accepts a natural-language question OR symbol/file names (`codegraph_explore(query="SymA SymB file.ts")`); returns the relevant source grouped by file in one call |
+| Find a symbol by name | `codegraph_search` |
+| Callers / callees before modifying | `codegraph_callers` / `codegraph_callees`, then Grep for dynamic callers |
+| Blast radius | `codegraph_impact` |
+| One symbol's full source | `codegraph_node` |
+| File tree / index health | `codegraph_files` / `codegraph_status` |
+| Concept, cross-cutting feature, "where is X modified/configured", debugging | `mcp__semble__search(query, repo?, top_k?, mode?)` — `mode` `hybrid` (default) / `semantic` / `bm25`; `repo` = local path or `https://` git URL |
+| Similar code / parallel implementations | `mcp__semble__find_related(file_path, line, repo?, top_k?)` — no CodeGraph equivalent |
 
-| Tool | Purpose |
-|------|---------|
-| `codegraph_context(task=...)` | **START HERE** — entry points + related symbols |
-| `codegraph_explore(query="SymA SymB file.ts")` | Full source from all relevant files in ONE call (replaces dozens of Read/Grep calls). Use specific symbol/file names — NOT natural language. Run `codegraph_search` first to discover names. |
-| `codegraph_search` | Find symbols by name |
-| `codegraph_callers` / `codegraph_callees` | Trace call flow before modifying. Supplement with Grep as a *completeness check* for indirect/dynamic callers. |
-| `codegraph_impact` | Blast radius before committing to a change |
-| `codegraph_node` | Details + source for one symbol |
-| `codegraph_files` | Project file tree (NOT Glob/ls) |
-
-**⛔ NEVER pass `projectPath` for the current project.** The server defaults correctly. Passing it triggers a different code path that fails if `.codegraph/` isn't at that exact path. Only use it for genuinely different codebases.
-
-```
-codegraph_context(task="refactor authentication flow")
-codegraph_callers(symbol="processOrder")
-codegraph_impact(symbol="processOrder", depth=2)
-```
-
----
-
-### Semble — Hybrid Code Search (CO-PRIMARY)
-
-**Intent-based code search — co-primary with CodeGraph.** Excels at concept/feature discovery, cross-language search, finding mutation sites, and debugging queries where CodeGraph's name-based matching falls short. Hybrid BM25 + Model2Vec embeddings, code-aware chunking, ~1.5ms queries, ~263ms cold-index per repo (cached after). Auto-reindex on file change for local paths. Two tools:
-
-| Tool | Purpose |
-|------|---------|
-| `mcp__semble__search(query, repo?, top_k?, mode?)` | Natural-language or symbol search. `mode` defaults to `hybrid` (best for most queries); also `semantic` / `bm25`. `repo` is a local path or `https://` git URL; omit when a default index was configured at startup. |
-| `mcp__semble__find_related(file_path, line, repo?, top_k?)` | Find code semantically similar to a specific location. Use `file_path` + `line` from a prior `search` result. |
-
-```
-mcp__semble__search(query="authentication flow", repo="/abs/path")
-mcp__semble__search(query="save_pretrained", top_k=10)          # symbol-style
-mcp__semble__find_related(file_path="src/auth.ts", line=42, repo="/abs/path")
-```
-
-**When NOT to use Semble:** structural questions (callers, callees, impact) — use CodeGraph instead. Semble can find code that *looks* like a caller but cannot enumerate them.
-
-Also available as a CLI (`semble search`, `semble find-related`, `semble savings`) — see `cli-tools.md`.
-
----
-
-### mem-search — Persistent Memory
-
-Past work, decisions, context across sessions. **3-step workflow — never skip to step 3:**
-
-1. `search(query, limit, type, project, dateStart, dateEnd)` → returns index with IDs
-2. `timeline(anchor=ID or query, depth_before, depth_after)` → context around an anchor
-3. `get_observations(ids=[...])` → full details for filtered IDs only
-
-`save_memory(text, title?, project?)` to record findings.
-
-**Types:** `bugfix`, `feature`, `refactor`, `discovery`, `decision`, `change`.
+Semble can't enumerate callers or match AST patterns (e.g. every `async function $X`) — use CodeGraph (or Grep as a last resort); for the block at `file:line`, `Read` with `offset`/`limit` or `codegraph_node`. The `semble` CLI (`uv tool install semble`; `semble --help`) mirrors the MCP tools: `semble search "<query>" ./ --top-k <n>`, `semble find-related <file> <line> ./`, `semble savings` (saving = `(file_chars − snippet_chars) / 4` per call; stats in `~/.semble/savings.jsonl`).
 
 ---
 
@@ -85,15 +44,13 @@ Use descriptive queries. Max 3 calls per question per tool.
 
 ### web-search — Web Search
 
-`search(query, limit?, engines?)` — DuckDuckGo / Bing / Exa, no API keys.
-
-Article fetchers: `fetchGithubReadme(url)`, `fetchLinuxDoArticle(url)`, `fetchCsdnArticle(url)`, `fetchJuejinArticle(url)`.
+`search(query, limit?, engines?)` — DuckDuckGo / Bing / Exa, no API keys. GitHub README: `fetchGithubReadme(url)`.
 
 ---
 
 ### web-fetch — Web Page Fetching
 
-Playwright-backed; no truncation; handles JS-rendered pages.
+Playwright-backed; no truncation; handles JS-rendered pages — use for full web page content.
 
 - `fetch_url(url, ...)` — single page
 - `fetch_urls(urls=[...], ...)` — multiple pages
@@ -105,25 +62,4 @@ Useful options: `waitUntil` (`load`/`domcontentloaded`/`networkidle`), `returnHt
 
 ### grep-mcp — GitHub Code Search
 
-`searchGitHub(query, language?, repo?, path?, useRegexp?, matchCase?)` — finds real-world code in 1M+ public repos. Query is a literal pattern (or regex with `useRegexp=true`; prefix `(?s)` for multiline). Filter `language=["Python"]`, `repo="vercel/next-auth"`, `path="src/components/"`.
-
----
-
-### Tool Selection Quick Reference
-
-| Need | Tool |
-|------|------|
-| Task orientation (entry points + related symbols) | `codegraph_context` |
-| Symbol search by name | `codegraph_search` |
-| Call tracing / impact analysis | CodeGraph (`callers` / `callees` / `impact`) |
-| Deep code understanding (known symbols) | `codegraph_explore` |
-| Concept / feature area search | Semble (`mcp__semble__search` or `semble search`) |
-| "Where is X modified / configured" | Semble — finds mutation sites across languages |
-| Cross-cutting concern discovery | Semble — surfaces full feature stack (UI, routes, logic) |
-| Find similar code / parallel patterns | Semble `find_related` (unique — no CodeGraph equivalent) |
-| Past work / decisions | mem-search 3-step |
-| Library/framework docs | context7 |
-| Web search | web-search |
-| GitHub README | web-search `fetchGithubReadme` |
-| Production code examples | grep-mcp |
-| Full web page content | web-fetch |
+`searchGitHub(query, language?, repo?, path?, useRegexp?, matchCase?)` — finds real-world production code in 1M+ public repos. Query is a literal pattern (or regex with `useRegexp=true`; prefix `(?s)` for multiline). Filter `language=["Python"]`, `repo="vercel/next-auth"`, `path="src/components/"`.

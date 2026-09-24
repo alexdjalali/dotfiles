@@ -10,39 +10,7 @@ Unit tests with mocks prove nothing about real-world behavior. After tests pass:
 
 **When:** after tests pass, after refactoring, after changing imports/deps/config, before marking any task complete. **Skip only for:** docs-only, test-only, pure internal refactoring with no entry points, config-only.
 
-### ⛔ Frontend Changes Require Browser Verification
-
-Unit tests and typechecks are NOT sufficient for UI changes. After tests pass, verify with browser automation that the change works in the running app — in BOTH `/spec` and quick mode.
-
-**Procedure (quick mode):**
-
-1. **Resolve a live target FIRST — no skipping to "unit-verified"** (see "Live-target probe" below). Tests passing is not a substitute for never opening a browser against a deployed instance.
-2. Pick a browser tool (see `browser-automation.md` for tier priority and detection).
-3. Navigate to the affected page, interact with the changed UI, verify correct behavior.
-4. Report what you saw — "UI works" requires browser evidence, not "tests pass."
-
-**Don't skip.** "Small CSS change" or "tests cover it" is not an excuse. Common pitfalls: stale cached bundles, bundle not deployed, CSS layout invisible to tests, elements in DOM but not visible/interactive.
-
-### ⛔ Live-Target Probe — required before any "I can't run live E2E" claim
-
-**Failure mode this rule prevents:** unit tests pass, no local server is running, the model concludes "unit-verified is sufficient" and marks the work done WITHOUT ever opening a browser against a deployed instance. The user's local setup was perfectly capable of a preview deploy — the model just didn't ask.
-
-Before declaring live E2E impossible, you MUST run a 4-tier probe and record the outcome of each tier:
-
-| Tier | What | Skip reason allowed |
-|---|---|---|
-| 1 | Reuse an already-running local server (curl/health check the port named in the plan or repo defaults) | No process listening AND no health endpoint |
-| 2 | Start the dev server yourself in background, poll its health endpoint up to 60s | No documented start command in plan / `package.json` / `pyproject.toml` / `Makefile` |
-| 3 | Detect deploy backends (Vercel, Fly, Netlify, Cloudflare Wrangler, Render, AWS, Heroku, GitHub-Actions deploy workflow), run the backend's auth-check command, attempt a preview deploy with the eligible one | Every detected backend's auth-check returns "not logged in" — quote the exact command + output |
-| 4 | Unit-only fallback (`UNIT_VERIFIED` instead of `LIVE_PASS`) | Only after Tiers 1–3 above ALL failed with documented reasons |
-
-**Acceptance criteria for the probe:**
-
-- Every tier you attempted must have its outcome in the verification report (command run, exit status, error captured if any). "I assumed it wasn't available" is not a documented outcome.
-- "No marker files for any deploy backend" is the ONLY no-attempt skip allowed for Tier 3. If `vercel.json` / `fly.toml` / etc. exists, you MUST run the auth-check for that backend before claiming Tier 3 is unavailable.
-- Tier 3 success obligates you to clean up: e.g. `vercel rm <deployment-id>` for ad-hoc preview deploys created solely for verification, OR leave them with an explicit note in the verification report.
-
-**The probe is generic across backends.** Do not hard-code Vercel — detect the backend from repo markers and use the right command. Adding a new backend is a one-row table edit in `spec-verify/steps/07-e2e-and-final-regression.md`.
+**⛔ Frontend changes require browser verification, and the live-target probe must run before any "I can't run live E2E" claim** — in `/spec` and quick mode. Procedure, 4-tier probe, and hard rules: `~/.claude/rules/browser-automation.md` (read it for any UI change).
 
 ### Output Correctness
 
@@ -69,11 +37,7 @@ Before proceeding, ask: "Do these tests verify what matters, or only what was ea
 
 ### ⛔ Fix ALL Errors — No Exceptions, No Asking
 
-In `/spec`, fix all verification errors without asking. Outside `/spec`, respect the user's mode — in plan mode, present issues and proposed fixes instead of applying them.
-
-### ⛔ Auto-Fix in /spec
-
-`must_fix` and `should_fix` → fix immediately. `suggestions` → implement if quick. Only user interaction in `/spec` is plan approval. These rules apply only within `/spec`.
+In `/spec`, fix all verification errors without asking (finding tiers → action: `code-review-reception.md` *Workflow reviews*; plan approval is the only `/spec` checkpoint). Outside `/spec`, respect the user's mode — in plan mode, present issues and proposed fixes instead of applying them.
 
 ### Stop Signals — Verify NOW
 

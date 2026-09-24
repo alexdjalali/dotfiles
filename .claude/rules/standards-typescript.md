@@ -48,6 +48,7 @@ No lock file? Check `packageManager` in `package.json`, or default to **pnpm** (
 npm test -- --silent         # Suppress console.log
 npm test -- --reporters=dot  # Minimal reporter
 npm test -- --bail           # Stop on first failure
+bun test                     # Bun projects (bun.lockb)
 ```
 
 ### Integration tests (testcontainers)
@@ -68,7 +69,7 @@ const uri = pg.getConnectionUri();
 await pg.stop();
 ```
 
-A *frontend's* "integration" is usually Playwright browser E2E (`standards-frontend.md`) — that containerizes nothing, which is expected.
+A *frontend's* "integration" is usually Playwright browser E2E (`browser-automation.md`) — that containerizes nothing, which is expected.
 
 ### Verification Checklist
 

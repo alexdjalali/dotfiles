@@ -37,6 +37,16 @@ basedpyright src                                    # Type check (adapt to your 
 
 **Test doubles (two tiers — see `testing.md` *Test Double Policy*):** **unit** mocks the boundary with `unittest.mock` (`@patch` at the import site) or a mock of a small `Protocol`; **integration** runs the real dependency in a Docker container via `testcontainers`, driven by pytest fixtures. Hand-rolled fakes / in-memory substitutes (SQLite-for-Postgres, `fakeredis`) are a `must_fix`.
 
+**Mandatory mocking in unit tests** (mock at module level — where imported, not where defined; a test > 1 s is likely unmocked I/O):
+
+| Call | MUST mock | Example |
+|------|-----------|---------|
+| HTTP/network | `httpx`, `requests` | `@patch("module.httpx.Client")` |
+| Subprocess | `subprocess.run` | `@patch("module.subprocess.run")` |
+| File I/O | `open`, `Path.read_text` | `@patch("builtins.open")` or `tmp_path` |
+| Database | SQLite, PostgreSQL | test fixtures (integration: testcontainers) |
+| External APIs | any third-party | mock the client |
+
 ### Integration tests (testcontainers)
 
 Add the service extra as a dev dependency, stand the real dependency up in a session-scoped fixture, and mark the tests `@pytest.mark.integration` — never a mock or in-memory substitute.

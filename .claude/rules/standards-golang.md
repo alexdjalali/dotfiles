@@ -37,7 +37,7 @@ golangci-lint run                         # Comprehensive linting (golangci-lint
 
 ### Integration tests (testcontainers)
 
-Integration tests exercise a single unit against its **real** collaborator (Postgres, Redis, SQS/Kafka, S3/MinIO) — never a mock, never an in-memory substitute. Stand the dependency up in a throwaway container with `testcontainers-go`, drive it through reusable fixtures/builders, and clean up in teardown so each test passes alone. Gate with the `integration` build tag in an external `_test` package, so `go test ./...` stays fast and `go test -tags=integration ./...` runs them.
+Integration tests exercise a single unit against its **real** collaborator (Postgres, Redis, SQS/Kafka, S3/MinIO) — never a mock, never an in-memory substitute. Stand the dependency up in a throwaway container with `testcontainers-go`, drive it through reusable fixtures/builders, and clean up in teardown so each test passes alone. Gate with the `integration` build tag (or a `testing.Short()` skip) in an external `_test` package, so `go test ./...` stays fast and `go test -tags=integration ./...` runs them.
 
 ```go
 //go:build integration

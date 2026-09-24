@@ -19,7 +19,7 @@ not a task list — and why it matters now.>
 
 <An epic's diagram shows *structure* — a **C4 Container** view of the topology, or an `erDiagram`
 for the data model it adds (a dependency graph of the child stories also fits). Diagram guide:
-`~/.claude/rules/linear.md`. Example — replace or remove:>
+`~/.claude/templates/linear/README.md`. Example — replace or remove:>
 
 ```mermaid
 erDiagram

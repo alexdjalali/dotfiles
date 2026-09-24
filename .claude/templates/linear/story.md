@@ -22,7 +22,7 @@ before the requirements.>
 
 <How it behaves — when a diagram earns it: a **sequence** for a cross-service or async flow, or a
 **class** diagram for a new `core` interface + implementations + decorator. Diagram guide:
-`~/.claude/rules/linear.md`. Delete this section for a simple CRUD/config story.>
+`~/.claude/templates/linear/README.md`. Delete this section for a simple CRUD/config story.>
 
 ```mermaid
 sequenceDiagram

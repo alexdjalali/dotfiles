@@ -6,12 +6,12 @@ All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement
 
 **Model policy:** every command is pinned to Opus via `model:` frontmatter, except `/github`, which runs on Sonnet — judgment, planning, and verification stay on Opus (deliberately not Fable, for cost and latency); git/PR plumbing runs on the cheaper one.
 
-**Chaining is automatic — one prompt drives the whole pipeline.** Once you kick it off (type `/spec`, or a phase directly), each phase hands off to the next by calling `Skill(skill='<next-phase>')` in the same turn; you do NOT re-type each sub-skill. The chain is `spec-plan` → **[plan approval]** → `spec-implement` → `spec-verify`, with `verify → implement` re-looping automatically until `Status: VERIFIED`. A `Skill()` hand-off loads the next phase into the *current* turn, so the loop stays on the model you started on — keep the session on Opus and every Opus-pinned phase runs on Opus (the frontmatter model only re-applies when you type the slash command yourself, so on a mid-chain interruption or compaction, resume by re-typing the phase to guarantee the pin). Only **two** boundaries are manual: **plan approval** (before implementation) and **`/github`** (the ship step — Sonnet-pinned, every `git` write needs explicit confirmation), which `spec-verify` only *suggests*, never auto-runs. The `/spec` dispatcher itself is `disable-model-invocation` (always user-typed); the sub-skills it routes to are not, so they chain freely.
+**Chaining is automatic.** Type `/spec` (or a phase) once; each phase hands off via `Skill(skill='<next-phase>')` in the same turn: `spec-plan` → **[plan approval]** → `spec-implement` → `spec-verify`, re-looping verify → implement until `Status: VERIFIED`. **Plan approval is the only manual gate** (plus a Feature-vs-Bugfix question in `/spec` only when ambiguous); `spec-verify` then *suggests* `/github` (Sonnet-pinned, every git write confirmed) — never auto-runs it. Hand-offs stay on the session's model, so keep the session on Opus; after an interruption or compaction, re-type the phase to re-apply its pin. `/spec` itself is `disable-model-invocation` (user-typed); its sub-skills chain freely.
 
 - **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
 - **Architecture**: Diagram affected components in `docs/spec/arch/`.
 - **Decompose**: Break epics into stories via `/rfp` → `docs/spec/epics/` + `docs/spec/stories/`.
-- **Plan before code**: Use `/spec` for non-trivial work → `docs/local/plans/` (gitignored local working docs, never committed).
+- **Plan before code**: Use `/spec` for non-trivial work → `docs/local/plans/` (gitignored local working docs, never committed; format: `~/.claude/templates/plan.md`).
 - **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
 - **Verify before done**: Run linters, type checkers, and tests before marking work complete.
 
@@ -39,7 +39,7 @@ Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`goimports`+`golangci
 
 ## Git Conventions
 
-- Conventional commits: `<type>: <description>` (feat, fix, refactor, docs, test, chore, perf, ci)
+- Conventional commits: `<type>(<scope>): <description>`, scope optional (feat, fix, refactor, docs, test, chore, perf, ci, style)
 - Branch naming: `<type>/<short-description>`
 - Never force-push to main/master
 
@@ -55,45 +55,19 @@ Template: `~/.claude/templates/constitution.md`
 
 ## Project Memory
 
-Significant decisions, domain context, and learnings persist in `docs/spec/memory/`
-(or `.claude/memory/`) per project. Review before starting work on unfamiliar areas.
+Significant decisions, domain context, and learnings persist per project — review them before starting work on unfamiliar areas. They survive session clears and provide cross-session continuity.
 
-- Use `/learn` to capture reusable knowledge into skills or memory
-- Memory files survive session clears and provide cross-session continuity
+- `/learn` captures a reusable insight as a skill (`.claude/skills/<slug>/SKILL.md`); `/vault` stores snippets and one-off solutions (`.claude/vault/`)
+- Decisions and context live in the tracked `docs/` pipeline (ADRs, design docs, RCAs)
 - Store: domain concepts, past architectural decisions, team conventions, gotchas
 
 ## Templates
 
-Use the templates at `~/.claude/templates/` for document generation:
-- **ADR**: `~/.claude/templates/adr.md`
-- **Epic Spec**: `~/.claude/templates/epic.md`
-- **Story/RFP**: `~/.claude/templates/story.md`
-- **Plan**: `~/.claude/templates/plan.md`
-- **Commit Message**: `~/.claude/templates/commit.md`
-- **Pull Request**: `~/.claude/templates/pr.md`
-- **Monorepo Scaffold**: `~/.claude/templates/repo.md`
-- **Constitution**: `~/.claude/templates/constitution.md`
-- **Checklist**: `~/.claude/templates/checklist.md`
-- **Roadmap**: `~/.claude/templates/roadmap.md`
-- **Design Doc**: `~/.claude/templates/design.md`
-- **Audit**: `~/.claude/templates/audit.md`
-- **RCA**: `~/.claude/templates/rca.md`
-- **Demo Walkthrough**: `~/.claude/templates/demo.md`
-
-**Linear ticket templates** (`~/.claude/templates/linear/`) — human-first (Background → Requirements → Acceptance Criteria); engineering discipline stays in the repo's rules/`docs/spec`, not the ticket body. See `~/.claude/rules/linear.md`:
-- **Linear Epic**: `~/.claude/templates/linear/epic.md`
-- **Linear Story**: `~/.claude/templates/linear/story.md`
-- **Linear Bug**: `~/.claude/templates/linear/bug.md`
-- **Linear Task**: `~/.claude/templates/linear/task.md`
+Templates live in `~/.claude/templates/<name>.md` (Linear tickets under `linear/` — see `~/.claude/rules/linear.md`; standalone: `constitution.md`, `checklist.md`); each command names the template it uses.
 
 ## Monorepo Standard
 
-New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):
-- Layered architecture: Foundation → Client → Service/Domain → Controller/API → Entrypoint
-- Infrastructure in `zarf/` (Docker, K8s, Terraform, observability)
-- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,audits,rca,demos}` (tracked); `/spec` plans + spec-review JSON live in **gitignored** `docs/local/plans/` (local working docs, never committed)
-- Language conventions: Go=`pkg/`+`apps/`, Python=`src/`+`entrypoints/`, TS=`packages/`+`apps/`
-- Use `/repo <name>` to scaffold, `/repo audit` to check compliance
+New repositories follow the standard monorepo layout: `/repo <name>` scaffolds it and `/repo audit` checks compliance (canonical layout: `~/.claude/templates/repo.md`).
 
 ## Architecture Patterns
 
@@ -109,12 +83,7 @@ New repositories follow the standard monorepo template (`~/.claude/templates/rep
 
 ## Cross-Agent Sync
 
-Commands in `~/.claude/commands/` are the source of truth. When updating commands,
-sync equivalents to other agent configs:
-- **Cursor**: `cursor/` rules directory
-- **Kilocode**: `kilocode/` config directory
-
-Keep the other agent configs in sync manually when commands change. (Not to be confused with `/sync-docs`, which reconciles docs against the codebase — a different task.)
+`~/.claude/` is the source of truth. `cursor/rules/` and `kilocode/rules/` mirror this file and the rules (they have no command equivalents) — when either changes, update the mirrors manually. (Not to be confused with `/sync-docs`, which reconciles a project's docs against its codebase — a different task.)
 
 ## Anti-Patterns to Avoid
 

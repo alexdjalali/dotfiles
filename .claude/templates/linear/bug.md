@@ -2,7 +2,7 @@
 
 > Linear **bug** template. Lead with what a user sees. For a UI bug attach a **screenshot**; for a
 > cross-service bug a **sequence** marking where the flow breaks; for a lifecycle bug a **state**
-> diagram of the stuck/illegal transition (diagram guide: `~/.claude/rules/linear.md`). Priority
+> diagram of the stuck/illegal transition (diagram guide: `~/.claude/templates/linear/README.md`). Priority
 > reflects severity (Linear field). A fix isn't done without a test that fails before it and passes after.
 
 ## Background

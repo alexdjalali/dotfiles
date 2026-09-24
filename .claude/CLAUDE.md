@@ -80,6 +80,12 @@ Use the templates at `~/.claude/templates/` for document generation:
 - **RCA**: `~/.claude/templates/rca.md`
 - **Demo Walkthrough**: `~/.claude/templates/demo.md`
 
+**Linear ticket templates** (`~/.claude/templates/linear/`) — human-first (Background → Requirements → Acceptance Criteria); engineering discipline stays in the repo's rules/`docs/spec`, not the ticket body. See `~/.claude/rules/linear.md`:
+- **Linear Epic**: `~/.claude/templates/linear/epic.md`
+- **Linear Story**: `~/.claude/templates/linear/story.md`
+- **Linear Bug**: `~/.claude/templates/linear/bug.md`
+- **Linear Task**: `~/.claude/templates/linear/task.md`
+
 ## Monorepo Standard
 
 New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):

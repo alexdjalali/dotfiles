@@ -15,6 +15,7 @@ brew "zsh"
 brew "tmux"
 brew "neovim"
 brew "neomutt"
+brew "urlscan"             # Open links from email (neomutt Ctrl-b)
 brew "git"
 brew "git-lfs"
 brew "gnupg"

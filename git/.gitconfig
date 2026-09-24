@@ -46,7 +46,7 @@
 	algorithm = histogram
 	colorMoved = default
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 	tool = nvimdiff
 [mergetool]
 	keepBackup = false
@@ -81,7 +81,10 @@
 	auto = 256
 [credential "https://github.com"]
 	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+	helper = !gh auth git-credential
+# Per-machine identity, signing key and overrides (untracked); last, so it wins.
+[include]
+	path = ~/.gitconfig.local

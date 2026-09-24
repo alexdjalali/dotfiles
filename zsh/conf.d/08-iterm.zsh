@@ -37,36 +37,19 @@ function iterm-tab-color() {
   echo -ne "\033]6;1;bg;blue;brightness;$3\a"
 }
 
-# Auto-set tab colors based on directory
+# Auto-set tab colors based on directory. The globs match whole path segments
+# ("$PWD/" ends in a slash), so products/, latest/ or Developer/ stay default.
 function set_tab_color_by_dir() {
-  case "$PWD" in
-    *production*|*prod*) iterm-tab-color 220 50 50 ;;  # Red for production
-    *staging*|*stg*) iterm-tab-color 220 165 0 ;;      # Orange for staging
-    *development*|*dev*) iterm-tab-color 50 220 50 ;;  # Green for dev
-    *test*) iterm-tab-color 50 50 220 ;;               # Blue for test
-    *) iterm-tab-color 0 0 0 ;;                        # Black (default)
+  case "$PWD/" in
+    */production/*|*/prod/*) iterm-tab-color 220 50 50 ;;  # Red for production
+    */staging/*|*/stg/*) iterm-tab-color 220 165 0 ;;      # Orange for staging
+    */development/*|*/dev/*) iterm-tab-color 50 220 50 ;;  # Green for dev
+    */test/*|*/tests/*) iterm-tab-color 50 50 220 ;;       # Blue for test
+    *) iterm-tab-color 0 0 0 ;;                            # Black (default)
   esac
 }
 
-# Auto-switch iTerm2 profile based on directory
-function iterm_profile_switch() {
-  case "$PWD" in
-    */production*|*/prod*)
-      echo -e "\033]50;SetProfile=Production\a" 2>/dev/null
-      ;;
-    */staging*|*/stage*|*/stg*)
-      echo -e "\033]50;SetProfile=Staging\a" 2>/dev/null
-      ;;
-    */development*|*/dev*)
-      echo -e "\033]50;SetProfile=Development\a" 2>/dev/null
-      ;;
-    *)
-      echo -e "\033]50;SetProfile=Default\a" 2>/dev/null
-      ;;
-  esac
-}
-
-chpwd_functions+=(set_tab_color_by_dir iterm_profile_switch)
+chpwd_functions+=(set_tab_color_by_dir)
 
 # iTerm2 marks for quick navigation
 alias mark="iterm2_set_user_var mark"
@@ -74,10 +57,7 @@ alias mark="iterm2_set_user_var mark"
 # Clear scrollback buffer
 alias clear-all="clear && printf '\e[3J'"
 
-# iTerm2 profile shortcuts
-alias iterm-dev="iterm-profile 'DevOps Optimized'"
-alias iterm-light="iterm-profile 'Light'"
-alias iterm-dark="iterm-profile 'Dark'"
+# Open a new iTerm window here
 alias iterm-here="open -a iTerm \$PWD"
 
 # Set iTerm2 title dynamically
@@ -96,17 +76,6 @@ function _iterm_title_precmd() {
 
 preexec_functions+=(_iterm_title_preexec)
 precmd_functions+=(_iterm_title_precmd)
-
-# Override dark/light (defined in 05-functions.zsh) to also switch iTerm profile
-dark() {
-  iterm-profile 'Dark'
-  osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
-}
-
-light() {
-  iterm-profile 'Light'
-  osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
-}
 
 # Send notification when long nvim sessions end
 alias nvim-notify='nvim; echo -e "\a"; osascript -e "display notification \"Nvim session ended\" with title \"iTerm2\""'

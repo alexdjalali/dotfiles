@@ -14,7 +14,8 @@
 # @raycast.description Open Claude Code CLI in iTerm
 # @raycast.author Alex Djalali
 
-DIR="${1:-$(pwd)}"
+# Raycast runs scripts from their own folder, so default to $HOME, not $(pwd)
+DIR="${1:-$HOME}"
 DIR="${DIR/#\~/$HOME}"
 
 osascript <<EOF

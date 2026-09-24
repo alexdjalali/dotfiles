@@ -43,15 +43,6 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
   zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza --icons --color=always --group-directories-first $realpath 2>/dev/null || ls -la $realpath'
 fi
 
-# Makefile target completion
-_make_targets() {
-  if [[ -f Makefile ]]; then
-    local targets=$(command grep -E '^[a-zA-Z_-]+:' Makefile | cut -d: -f1)
-    _arguments "1: :($targets)"
-  fi
-}
-compdef _make_targets make
-
 # Global alias expansion (expand aliases on space)
 globalias() {
    if [[ $LBUFFER =~ '[a-zA-Z0-9]+$' ]]; then

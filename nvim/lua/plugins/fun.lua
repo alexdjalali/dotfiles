@@ -1,26 +1,12 @@
 ---@type LazySpec
 return {
-  -- cellular-automaton.nvim - 2k+ stars - code animations
+  -- cellular-automaton.nvim - code animations
   {
     "eandrju/cellular-automaton.nvim",
     cmd = "CellularAutomaton",
     keys = {
       { "<leader>fml", "<cmd>CellularAutomaton make_it_rain<cr>", desc = "Make it rain" },
       { "<leader>fmg", "<cmd>CellularAutomaton game_of_life<cr>", desc = "Game of life" },
-    },
-  },
-
-  -- drop.nvim - screensaver (disabled: no snowflakes)
-  {
-    "folke/drop.nvim",
-    enabled = false,
-    event = "VimEnter",
-    opts = {
-      theme = "snow", -- or "stars", "xmas", "spring", "summer"
-      max = 40,
-      interval = 150,
-      screensaver = 1000 * 60 * 5, -- 5 minutes
-      winblend = 100, -- fully transparent background behind each flake
     },
   },
 
@@ -83,8 +69,7 @@ return {
         },
         exclude_groups = {},
       })
-      -- Start with transparency disabled - toggle with :TransparentToggle
-      require("transparent").clear_prefix("BufferLine")
+      -- Keep the statusline opaque when transparency is toggled on (:TransparentToggle)
       require("transparent").clear_prefix("lualine")
     end,
     keys = {
@@ -113,18 +98,19 @@ return {
     end,
   },
 
-  -- duck.nvim - virtual pet duck that walks around your code
+  -- duck.nvim - virtual pet duck that walks around your code (<leader>fd*;
+  -- <leader>D is the database UI)
   {
     "tamton-aquib/duck.nvim",
     keys = {
-      { "<leader>Dd", function() require("duck").hatch("🦆", 10) end, desc = "Hatch a duck" },
-      { "<leader>Dk", function() require("duck").cook() end, desc = "Cook a duck" },
-      { "<leader>Da", function() require("duck").cook_all() end, desc = "Cook all ducks" },
+      { "<leader>fdd", function() require("duck").hatch("🦆", 10) end, desc = "Hatch a duck" },
+      { "<leader>fdk", function() require("duck").cook() end, desc = "Cook a duck" },
+      { "<leader>fda", function() require("duck").cook_all() end, desc = "Cook all ducks" },
       -- More animals!
-      { "<leader>Dc", function() require("duck").hatch("🐱", 8) end, desc = "Hatch a cat" },
-      { "<leader>Dg", function() require("duck").hatch("🐶", 6) end, desc = "Hatch a dog" },
-      { "<leader>Dr", function() require("duck").hatch("🦀", 12) end, desc = "Hatch a crab" },
-      { "<leader>Ds", function() require("duck").hatch("🐍", 4) end, desc = "Hatch a snake" },
+      { "<leader>fdc", function() require("duck").hatch("🐱", 8) end, desc = "Hatch a cat" },
+      { "<leader>fdg", function() require("duck").hatch("🐶", 6) end, desc = "Hatch a dog" },
+      { "<leader>fdr", function() require("duck").hatch("🦀", 12) end, desc = "Hatch a crab" },
+      { "<leader>fds", function() require("duck").hatch("🐍", 4) end, desc = "Hatch a snake" },
     },
   },
 

@@ -10,21 +10,15 @@ return {
       vim.g.vimtex_view_skim_sync = 1
       vim.g.vimtex_view_skim_activate = 1
 
-      -- Compiler: latexmk with optimized continuous compilation
+      -- Compiler: continuous latexmk. Its flags live in ~/.latexmkrc
+      -- (latex/.latexmkrc), including the per-project shell-escape opt-in.
       vim.g.vimtex_compiler_method = "latexmk"
       vim.g.vimtex_compiler_latexmk = {
         build_dir = "",
         callback = 1,
         continuous = 1,
         executable = "latexmk",
-        options = {
-          "-pdf",
-          "-verbose",
-          "-file-line-error",
-          "-synctex=1",
-          "-interaction=nonstopmode",
-          "-shell-escape", -- required for minted, TikZ externalization
-        },
+        options = { "-verbose" },
       }
 
       -- Conceal settings for rendered math symbols in editor

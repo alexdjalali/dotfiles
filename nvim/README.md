@@ -11,7 +11,7 @@
 - 🎨 **Nord Theme** - Beautiful arctic-inspired colors across all UI elements
 - ⚡ **Lightning Fast** - Lazy loading, optimized performance
 - 🧰 **LSP Powered** - Full IDE features with Mason-managed language servers
-- 🔍 **Telescope** - Fuzzy finding for files, text, and more
+- 🔍 **Snacks picker** - Fuzzy finding for files, text, and more
 - 🌳 **Treesitter** - Advanced syntax highlighting and code understanding
 - 🧪 **Testing** - Neotest integration for Python, Go, JS/TS
 - 🐛 **Debugging** - DAP integration for multiple languages
@@ -53,8 +53,7 @@
 
 ### UI Enhancements
 - **Rainbow delimiters** - Colorful bracket pairs
-- **Indent blankline** - Visual indent guides
-- **Mini.indentscope** - Current scope highlighting
+- **Snacks indent** - Indent guides and current-scope highlighting
 - **Scrollbar** - Visual scrollbar with diagnostics
 - **Todo comments** - Highlight TODO, FIXME, etc.
 - **Trouble** - Better diagnostics UI
@@ -63,10 +62,9 @@
 - **Incline** - Floating filenames
 
 ### Productivity
-- **Telescope** - Fuzzy finder for everything
 - **Flash** - Quick navigation
 - **Neo-tree** - File explorer
-- **Which-key** - Keybinding hints
+- **Which-key** - The keymap reference (`<leader>?`)
 - **Twilight** - Dim inactive code
 - **Nvim-UFO** - Better folding
 
@@ -99,7 +97,7 @@
 # Neovim 0.10.0+
 brew install neovim
 
-# Ripgrep (for Telescope)
+# Ripgrep (for the picker's grep)
 brew install ripgrep
 
 # fd (for file finding)
@@ -157,68 +155,16 @@ Install the servers you need:
 
 ## ⌨️ Key Mappings
 
-### General
-| Key | Description |
-|-----|-------------|
-| `<leader>` | Space |
-| `<leader>ff` | Find files |
-| `<leader>fg` | Live grep |
-| `<leader>fb` | Find buffers |
-| `<leader>fh` | Find help |
-| `<leader>e` | Toggle Neo-tree |
+which-key is the keymap reference, generated from the mappings themselves:
+press `<leader>?` for everything under `<leader>` (each mapping has a
+description), or pause after any prefix. Workflow guides that a keymap list
+can't cover:
 
-### LSP
-| Key | Description |
-|-----|-------------|
-| `gd` | Go to definition |
-| `gr` | Find references |
-| `K` | Hover documentation |
-| `<leader>ca` | Code actions |
-| `<leader>cr` | Rename symbol |
-| `<leader>cf` | Format code |
-
-### Testing (Neotest)
-| Key | Description |
-|-----|-------------|
-| `<leader>tr` | Run nearest test |
-| `<leader>tf` | Run test file |
-| `<leader>td` | Debug test |
-| `<leader>ts` | Toggle test summary |
-| `<leader>to` | Show test output |
-
-### Debugging (DAP)
-| Key | Description |
-|-----|-------------|
-| `<leader>db` | Toggle breakpoint |
-| `<leader>dc` | Continue |
-| `<leader>di` | Step into |
-| `<leader>do` | Step over |
-| `<leader>dO` | Step out |
-| `<leader>dr` | Open REPL |
-
-### Git
-| Key | Description |
-|-----|-------------|
-| `<leader>gd` | Git diff view |
-| `<leader>gc` | Git commits |
-| `<leader>gs` | Git status |
-| `]h` | Next hunk |
-| `[h` | Previous hunk |
-
-### AI (Copilot)
-| Key | Description |
-|-----|-------------|
-| `<leader>aa` | Toggle Copilot |
-| `<leader>ac` | Copilot chat |
-| `<leader>ae` | Copilot explain |
-| `<leader>af` | Copilot fix |
-
-### HTTP Testing (Kulala)
-| Key | Description |
-|-----|-------------|
-| `<leader>rr` | Run HTTP request |
-| `<leader>ra` | Run all requests |
-| `<leader>ri` | Inspect request |
+| Key | Guide |
+|-----|-------|
+| `<leader>Ws` | Spec pipeline (the Claude Code skills) |
+| `<leader>Wd` | Data and infrastructure tools (dadbod, the `<leader>L` TUIs) |
+| `<leader>Wt` | LaTeX (VimTeX, texlab, snippets, latexmk) |
 
 ## 🎨 Customization
 
@@ -290,7 +236,7 @@ opts = {
 │       ├── productivity.lua    # Productivity plugins
 │       ├── file-management.lua # File operations
 │       ├── code-info.lua       # Code understanding
-│       ├── cheatsheet.lua      # Cheatsheets
+│       ├── cheatsheet.lua      # Workflow guides (<leader>W)
 │       ├── devops-lsp.lua      # DevOps LSPs
 │       ├── fun.lua             # Fun plugins
 │       └── user.lua            # User customizations
@@ -394,7 +340,7 @@ npm install -g vscode-js-debug
 - [Lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ### Plugins
-- [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+- [Snacks](https://github.com/folke/snacks.nvim)
 - [Treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - [LSP](https://github.com/neovim/nvim-lspconfig)
 - [Neotest](https://github.com/nvim-neotest/neotest)
@@ -454,7 +400,7 @@ nvim-update
 
 ### Recommended Workflow
 
-1. **File Navigation:** Use `<leader>ff` (Telescope) or `<leader>e` (Neo-tree)
+1. **File Navigation:** Use `<leader>ff` (snacks picker) or `<leader>e` (Neo-tree)
 2. **Code Search:** Use `<leader>fg` (live grep)
 3. **Git Changes:** Use `<leader>gd` (diffview)
 4. **Testing:** Use `<leader>tr` (run nearest test)
@@ -476,7 +422,7 @@ _Add your screenshots here!_
 # 1. Nord theme
 # 2. File tree
 # 3. Code with LSP
-# 4. Telescope
+# 4. Picker
 # 5. Test results
 ```
 

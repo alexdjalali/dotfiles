@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  -- vim-terraform - 1k+ stars - Terraform syntax and support
+  -- vim-terraform - Terraform syntax and support
   {
     "hashivim/vim-terraform",
     ft = { "terraform", "tf", "hcl" },
@@ -10,7 +10,7 @@ return {
     end,
   },
 
-  -- ansible-vim - 800+ stars - Ansible syntax
+  -- ansible-vim - Ansible syntax
   {
     "pearofducks/ansible-vim",
     ft = { "yaml.ansible", "ansible" },
@@ -22,7 +22,7 @@ return {
     end,
   },
 
-  -- vim-helm - 100+ stars - Helm chart support
+  -- vim-helm - Helm chart support
   {
     "towolf/vim-helm",
     ft = "helm",

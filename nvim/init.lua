@@ -1,5 +1,4 @@
--- This file simply bootstraps the installation of Lazy.nvim and then calls other files for execution
--- This file doesn't necessarily need to be touched, BE CAUTIOUS editing this file and proceed at your own risk.
+-- Bootstraps lazy.nvim, then loads the plugin spec (lazy_setup) and polish.
 
 -- Ensure Homebrew binaries are in PATH (fixes git spawn issues when launched from GUI)
 vim.env.PATH = "/opt/homebrew/bin:/usr/local/bin:" .. vim.env.PATH

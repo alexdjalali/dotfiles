@@ -9,9 +9,8 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
-    build = function()
-      vim.cmd([[silent! GoInstallDeps]])
-    end,
+    -- Mason installs the tools gopher runs (the go pack lists them); the pack's
+    -- build hook runs :GoInstallDeps only when Mason is absent.
     opts = {},
     keys = {
       -- Struct tags
@@ -31,55 +30,6 @@ return {
     },
   },
 
-  -- go.nvim - Additional Go tooling (complementary to gopher)
-  {
-    "ray-x/go.nvim",
-    ft = { "go", "gomod" },
-    dependencies = {
-      "ray-x/guihua.lua",
-      "neovim/nvim-lspconfig",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    build = ':lua require("go.install").update_all_sync()',
-    opts = {
-      -- Disable features that overlap with other plugins
-      lsp_cfg = false, -- We use gopls via astrolsp
-      lsp_gofumpt = false, -- We use gofumpt via mason
-      lsp_keymaps = false, -- We use our own keymaps
-      lsp_inlay_hints = { enable = false }, -- Use astrolsp inlay hints
-      -- Enable useful features
-      trouble = true, -- Use trouble.nvim for diagnostics
-      luasnip = true, -- Use luasnip for snippets
-      dap_debug = false, -- We use nvim-dap-go
-      -- Test settings
-      test_runner = "go",
-      run_in_floaterm = true,
-      floaterm = {
-        position = "bottom",
-        width = 0.8,
-        height = 0.4,
-      },
-    },
-    keys = {
-      -- Fill struct
-      { "<leader>Gf", "<cmd>GoFillStruct<cr>", desc = "Fill struct", ft = "go" },
-      { "<leader>Gp", "<cmd>GoFillSwitch<cr>", desc = "Fill switch", ft = "go" },
-      -- Alternate files
-      { "<leader>Gv", "<cmd>GoAlt<cr>", desc = "Go to alt file (test/impl)", ft = "go" },
-      { "<leader>GV", "<cmd>GoAltV<cr>", desc = "Alt file in vsplit", ft = "go" },
-      -- Code lens / Run
-      { "<leader>Gr", "<cmd>GoRun<cr>", desc = "Go run", ft = "go" },
-      { "<leader>Gs", "<cmd>GoStop<cr>", desc = "Go stop", ft = "go" },
-      -- Documentation
-      { "<leader>Gd", "<cmd>GoDoc<cr>", desc = "Go doc", ft = "go" },
-      -- Linting
-      { "<leader>Gl", "<cmd>GoLint<cr>", desc = "Go lint", ft = "go" },
-      -- Code generation
-      { "<leader>Gj", "<cmd>GoAddTag json<cr>", desc = "Add json tag (go.nvim)", ft = "go" },
-      { "<leader>Gx", "<cmd>GoClearTag<cr>", desc = "Clear all tags", ft = "go" },
-    },
-  },
-
   -- Configure gopls with enhanced settings
   {
     "AstroNvim/astrolsp",
@@ -88,19 +38,8 @@ return {
         gopls = {
           settings = {
             gopls = {
-              -- Analysis settings — keep gopls at `go vet` parity (what
-              -- `search typecheck --go` runs). golangci-lint (via none-ls, on save)
-              -- is the SINGLE authority for everything beyond vet, so the same
-              -- finding never surfaces from two sources with different exclusions.
-              -- Anything not in `go vet`'s default analyzer set is disabled here:
-              --   * shadow / useany / unusedwrite / unusedparams — not run by
-              --     `go vet`; golangci-lint (unparam, staticcheck) owns these and
-              --     applies the repo's exclusions.rules, which gopls cannot.
-              --   * nilness / fieldalignment — golangci-lint's govet enables these
-              --     with exclusions; leaving them on in gopls would double-report
-              --     (and flag excluded paths CI suppresses).
-              -- gopls still reports genuine compile errors (== `go build`), which
-              -- are not "lint the linter doesn't have" — the CLI fails on them too.
+              -- gopls keeps to `go vet`'s analyzers; golangci-lint (none-ls) owns the
+              -- rest with the repo's exclusions, so no finding shows up twice.
               analyses = {
                 shadow = false,
                 fieldalignment = false,
@@ -110,9 +49,7 @@ return {
                 useany = false,
                 unusedvariable = false,
               },
-              -- staticcheck belongs to golangci-lint (enabled in .golangci.yml with
-              -- the repo's exclusions). Running it here too would report staticcheck
-              -- findings on test/generated/excluded files that `search lint` filters.
+              -- staticcheck runs in golangci-lint, with the repo's exclusions.
               staticcheck = false,
               -- Inlay hints
               hints = {
@@ -145,8 +82,7 @@ return {
               -- Diagnostics
               diagnosticsDelay = "500ms",
               diagnosticsTrigger = "Edit",
-              -- Build
-              buildFlags = { "-tags=integration,e2e" },
+              -- Build tags are per project: set them in that repo's .nvim.lua.
             },
           },
         },

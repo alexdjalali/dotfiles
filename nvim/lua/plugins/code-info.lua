@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  -- glance.nvim - 700+ stars - better peek definitions
+  -- glance.nvim - better peek definitions
   {
     "dnlhc/glance.nvim",
     cmd = "Glance",
@@ -28,24 +28,25 @@ return {
     },
   },
 
-  -- package-info.nvim - 400+ stars - show package versions
+  -- package-info.nvim - show package versions (package.json, under <leader>P
+  -- since <leader>n belongs to Neorg)
   {
     "vuki656/package-info.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
     ft = "json",
     keys = {
-      { "<leader>ns", function() require("package-info").show() end, desc = "Show package info", ft = "json" },
-      { "<leader>nc", function() require("package-info").hide() end, desc = "Hide package info", ft = "json" },
-      { "<leader>nt", function() require("package-info").toggle() end, desc = "Toggle package info", ft = "json" },
-      { "<leader>nu", function() require("package-info").update() end, desc = "Update package", ft = "json" },
-      { "<leader>nd", function() require("package-info").delete() end, desc = "Delete package", ft = "json" },
-      { "<leader>ni", function() require("package-info").install() end, desc = "Install package", ft = "json" },
-      { "<leader>nv", function() require("package-info").change_version() end, desc = "Change version", ft = "json" },
+      { "<leader>Ps", function() require("package-info").show() end, desc = "Show package info", ft = "json" },
+      { "<leader>Pc", function() require("package-info").hide() end, desc = "Hide package info", ft = "json" },
+      { "<leader>Pt", function() require("package-info").toggle() end, desc = "Toggle package info", ft = "json" },
+      { "<leader>Pu", function() require("package-info").update() end, desc = "Update package", ft = "json" },
+      { "<leader>Pd", function() require("package-info").delete() end, desc = "Delete package", ft = "json" },
+      { "<leader>Pi", function() require("package-info").install() end, desc = "Install package", ft = "json" },
+      { "<leader>Pv", function() require("package-info").change_version() end, desc = "Change version", ft = "json" },
     },
     opts = {},
   },
 
-  -- neogen - 1k+ stars - generate documentation
+  -- neogen - generate documentation
   {
     "danymat/neogen",
     dependencies = { "nvim-treesitter/nvim-treesitter" },

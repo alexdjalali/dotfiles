@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  -- gitsigns.nvim - 5k+ stars (lewis6991)
+  -- gitsigns.nvim
   -- Note: inline blame handled by git-blame.nvim below (better toggle/format)
   {
     "lewis6991/gitsigns.nvim",
@@ -10,7 +10,7 @@ return {
     },
   },
 
-  -- octo.nvim - 2k+ stars - GitHub issues/PRs in Neovim
+  -- octo.nvim - GitHub issues/PRs in Neovim
   {
     "pwntester/octo.nvim",
     cmd = "Octo",
@@ -33,7 +33,7 @@ return {
     },
   },
 
-  -- git-blame.nvim - 500+ stars - inline git blame
+  -- git-blame.nvim - inline git blame
   {
     "f-person/git-blame.nvim",
     event = "BufReadPre",
@@ -47,7 +47,7 @@ return {
     },
   },
 
-  -- git-conflict.nvim - 1k+ stars - merge conflict resolution
+  -- git-conflict.nvim - merge conflict resolution
   {
     "akinsho/git-conflict.nvim",
     version = "*",

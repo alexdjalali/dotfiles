@@ -14,7 +14,6 @@ require("lazy").setup({
   { import = "community" },
   { import = "plugins" },
 } --[[@as LazySpec]], {
-  -- Configure any other `lazy.nvim` configuration options here
   install = { colorscheme = { "astrotheme", "habamax" } },
   git = {
     cmd = "/opt/homebrew/bin/git", -- explicit path to git
@@ -24,7 +23,6 @@ require("lazy").setup({
   ui = { backdrop = 100 },
   performance = {
     rtp = {
-      -- disable some rtp plugins, add more to your liking
       disabled_plugins = {
         "gzip",
         "netrwPlugin",

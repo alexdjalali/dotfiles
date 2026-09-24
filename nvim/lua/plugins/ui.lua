@@ -1,8 +1,5 @@
 ---@type LazySpec
 return {
-  -- aerial.nvim: unpin to get nvim 0.12.0 iter_matches fix (need ≥3.1.0, v6 pins 2.7.0)
-  { "stevearc/aerial.nvim", version = false },
-
   -- Disable Snacks.notifier (conflicts with noice.nvim/nvim-notify)
   -- Disable Snacks.image (iTerm doesn't support kitty graphics protocol)
   {
@@ -14,7 +11,7 @@ return {
     },
   },
 
-  -- nvim-bqf - 2k+ stars - better quickfix
+  -- nvim-bqf - better quickfix
   {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
@@ -26,7 +23,7 @@ return {
     },
   },
 
-  -- nvim-window-picker - 800+ stars - visual window selection
+  -- nvim-window-picker - visual window selection
   {
     "s1n7ax/nvim-window-picker",
     version = "*",
@@ -54,7 +51,7 @@ return {
     },
   },
 
-  -- nvim-colorizer.lua - 700+ stars
+  -- nvim-colorizer.lua
   {
     "NvChad/nvim-colorizer.lua",
     event = "BufReadPost",
@@ -67,7 +64,7 @@ return {
     },
   },
 
-  -- noice.nvim - 4k+ stars (folke) - better UI
+  -- noice.nvim - better UI
   {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -112,7 +109,7 @@ return {
     },
   },
 
-  -- nvim-notify - 3k+ stars
+  -- nvim-notify
   {
     "rcarriga/nvim-notify",
     opts = {

@@ -1,8 +1,8 @@
 ---@type LazySpec
 return {
-  -- Session management via auto-session (below) — persistence.nvim removed to avoid conflicts
+  -- Sessions: AstroNvim's resession (<leader>S*).
 
-  -- zen-mode.nvim - 2k+ stars (folke)
+  -- zen-mode.nvim
   {
     "folke/zen-mode.nvim",
     cmd = "ZenMode",
@@ -12,7 +12,7 @@ return {
     opts = {},
   },
 
-  -- vim-dadbod - 4k+ stars - database client
+  -- vim-dadbod - database client
   {
     "kristijanhusak/vim-dadbod-ui",
     dependencies = {
@@ -25,16 +25,12 @@ return {
     },
     init = function()
       vim.g.db_ui_use_nerd_fonts = 1
-      local pg_pass = vim.env.HPC_PG_PASSWORD or "changeme"
-      vim.g.dbs = {
-        { name = "HPC Auth (PostgreSQL)", url = "postgresql://hpc:" .. pg_pass .. "@localhost:5432/hpc_auth" },
-        { name = "HPC cspan (MongoDB)", url = "mongodb://localhost:27017/cspan?directConnection=true" },
-        { name = "HPC Redis", url = "redis://localhost:6379" },
-      }
+      -- Connections are per project: a repo's .nvim.lua (trusted exrc) sets
+      -- vim.g.dbs, or add one with :DBUIAddConnection.
     end,
   },
 
-  -- neorg - 6k+ stars - task management and organization
+  -- neorg - task management and organization
   {
     "nvim-neorg/neorg",
     version = "*",
@@ -64,11 +60,6 @@ return {
             default_workspace = "tasks",
           },
         },
-        ["core.completion"] = {
-          config = {
-            engine = "nvim-cmp",
-          },
-        },
         ["core.journal"] = {
           config = {
             workspace = "tasks",
@@ -80,7 +71,7 @@ return {
     },
   },
 
-  -- codesnap.nvim - 500+ stars - beautiful code screenshots
+  -- codesnap.nvim - beautiful code screenshots
   {
     "mistricky/codesnap.nvim",
     build = "make",
@@ -97,7 +88,7 @@ return {
     },
   },
 
-  -- refactoring.nvim - 3k+ stars - code refactoring
+  -- refactoring.nvim - code refactoring
   {
     "ThePrimeagen/refactoring.nvim",
     dependencies = {
@@ -113,27 +104,9 @@ return {
     opts = {},
   },
 
-  -- auto-session - 1k+ stars - better session management
-  {
-    "rmagatti/auto-session",
-    lazy = false,
-    opts = {
-      log_level = "error",
-      auto_session_suppress_dirs = { "~/", "~/Downloads", "/" },
-      auto_session_use_git_branch = true,
-      auto_restore_enabled = true,
-      auto_save_enabled = true,
-    },
-    keys = {
-      { "<leader>qr", "<cmd>SessionRestore<cr>", desc = "Restore session" },
-      { "<leader>qS", "<cmd>SessionSave<cr>", desc = "Save session" },
-      { "<leader>qd", "<cmd>SessionDelete<cr>", desc = "Delete session" },
-    },
-  },
-
   -- nvim-surround and undotree configured in editing.lua
 
-  -- yanky.nvim - 400+ stars - improved yank/paste
+  -- yanky.nvim - improved yank/paste
   {
     "gbprod/yanky.nvim",
     event = "VeryLazy",
@@ -145,17 +118,11 @@ return {
       { "y", "<Plug>(YankyYank)", mode = { "n", "x" }, desc = "Yank text" },
       { "p", "<Plug>(YankyPutAfter)", mode = { "n", "x" }, desc = "Put after" },
       { "P", "<Plug>(YankyPutBefore)", mode = { "n", "x" }, desc = "Put before" },
-      { "<leader>yh", "<cmd>Telescope yank_history<cr>", desc = "Yank history" },
+      { "<leader>yh", "<cmd>YankyRingHistory<cr>", desc = "Yank history" },
       { "<c-n>", "<Plug>(YankyCycleForward)", desc = "Cycle forward" },
       { "<c-p>", "<Plug>(YankyCycleBackward)", desc = "Cycle backward" },
     },
   },
 
   -- nvim-spectre configured in editing.lua
-
-  -- wakatime - time tracking (DISABLED)
-  -- {
-  --   "wakatime/vim-wakatime",
-  --   event = "VeryLazy",
-  -- },
 }

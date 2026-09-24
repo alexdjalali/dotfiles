@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  -- nvim-dap - 5k+ stars - Debug Adapter Protocol
+  -- nvim-dap - Debug Adapter Protocol
   {
     "mfussenegger/nvim-dap",
     dependencies = {

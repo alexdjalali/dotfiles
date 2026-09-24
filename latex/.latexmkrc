@@ -1,9 +1,13 @@
-# ~/.latexmkrc - Global latexmk configuration
-# Optimized for speed with VimTeX continuous compilation
+# ~/.latexmkrc - Global latexmk configuration, and the one place latexmk flags
+# live: VimTeX and texlab run plain `latexmk`.
 
 # Use pdflatex by default
 $pdf_mode = 1;
-$pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 -shell-escape %O %S';
+$pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 -file-line-error %O %S';
+
+# Shell escape (needed by minted and TikZ externalization) is off: it lets a
+# document run commands. Opt in per project with a latexmkrc beside the .tex:
+#   $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 -file-line-error -shell-escape %O %S';
 
 # Preview with Skim on macOS
 $pdf_previewer = 'open -a Skim';
@@ -11,7 +15,6 @@ $pdf_update_method = 4;  # run update command
 $pdf_update_command = '/Applications/Skim.app/Contents/SharedSupport/displayline -g %R.pdf';
 
 # Optimizations: reduce unnecessary passes
-$max_repeat = 5;                    # max compilation passes (default 5)
 $bibtex_use = 1.5;                  # run bibtex/biber only when .bib changes
 $recorder = 1;                      # use -recorder for dependency tracking
 
@@ -21,7 +24,6 @@ add_cus_dep('acn', 'acr', 0, 'makeglossaries');
 sub makeglossaries {
   my ($base_name, $path) = fileparse( $_[0] );
   my @args = ( "-q", "-d", $path, $base_name );
-  if ($silent) { unshift @args, "-q"; }
   return system "makeglossaries", @args;
 }
 push @generated_exts, 'glo', 'gls', 'glg';

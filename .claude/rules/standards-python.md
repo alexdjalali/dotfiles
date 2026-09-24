@@ -76,6 +76,7 @@ def test_store_crud_persists_against_real_postgres(pg_url: str) -> None:
 - **Type hints:** Required on public functions. Use modern syntax: `list[int]`, `Item | None` (not `List`, `Optional`).
 - **Imports:** Standard → Third-party → Local. Ruff auto-sorts. Absolute imports; no cross-package relative imports.
 - **Comments:** Only for complex algorithms, non-obvious logic, or workarounds.
+- **No tracker IDs or dead links in comments:** don't cite issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or docstrings — they rot and couple the code to an external tracker; that context belongs in the commit/PR/tracker. If a comment references a doc, link only a committed in-repo doc (under `docs/`), never a gitignored or scratch path.
 
 ### Common Patterns
 

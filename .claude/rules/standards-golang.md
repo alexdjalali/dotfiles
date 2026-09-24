@@ -83,6 +83,7 @@ Prefer a module package (`modules/postgres`, `modules/redis`, …) over a raw `G
 - **Acronyms:** ALL CAPS (`HTTPServer`, `XMLParser`, `userID`)
 - **Interfaces:** Often -er suffix (`Reader`, `Writer`, `Handler`); small (1-3 methods), consumer-defined — accept interfaces, return structs
 - **Comments:** Exported functions start with function name: `// ProcessOrder handles...`
+- **No tracker IDs or dead links in comments:** don't cite issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or doc comments — they rot and couple the code to an external tracker; that context belongs in the commit/PR/tracker. If a comment references a doc, link only a committed in-repo doc (under `docs/`), never a gitignored or scratch path.
 
 ### Error Handling
 

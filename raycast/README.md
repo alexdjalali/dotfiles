@@ -43,20 +43,29 @@ After installation, press `⌘ + Space` and type any command name.
 Some scripts accept arguments:
 
 ```
-Open in Neovim → ~/projects/myfile.py
-Open Project → my-project-name
+Open in Neovim → ~/projects/myfile.py   (no argument: $HOME)
+Open Project → my-project-name          (searched under $PROJECT_ROOTS)
 TablePlus Connect → connection-name
 ```
 
+### Focus and Meeting Mode
+
+`focus-mode.sh`, `meeting-mode.sh` and `end-focus-mode.sh` toggle Do Not Disturb
+through Shortcuts.app shortcuts named **Turn On Focus** and **Turn Off Focus**.
+Create them once; without them the scripts still run and tell you what's missing.
+
 ## Symlink Setup
 
-To keep scripts in sync:
+`install.sh` links this folder to `~/.local/scripts/raycast`:
 
 ```bash
-# Remove existing and symlink
-rm -rf ~/.local/scripts/raycast
-ln -s ~/projects/raycast-scripts ~/.local/scripts/raycast
+ln -s ~/dotfiles/raycast ~/.local/scripts/raycast
 ```
+
+Keep the scripts inside the dotfiles checkout: `open-project.sh` and
+`git-status-all.sh` read `PROJECT_ROOTS` from `../zsh/conf.d/01-env.zsh`
+(which also applies any override in `~/.zshrc.local`) and report an error if it
+isn't there.
 
 ## License
 

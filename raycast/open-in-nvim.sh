@@ -14,7 +14,8 @@
 # @raycast.description Open file or directory in Neovim (iTerm)
 # @raycast.author Alex Djalali
 
-TARGET="${1:-.}"
+# Raycast runs scripts from their own folder, so default to $HOME, not "."
+TARGET="${1:-$HOME}"
 
 # Expand ~ to home directory
 TARGET="${TARGET/#\~/$HOME}"

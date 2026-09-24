@@ -14,7 +14,8 @@
 # @raycast.description Search Stack Overflow
 # @raycast.author Alex Djalali
 
-QUERY=$(python3 -c "import urllib.parse; print(urllib.parse.quote_plus('$1'))")
+# Encode via stdin: never paste the query into code
+QUERY=$(printf '%s' "$1" | python3 -c 'import sys, urllib.parse; print(urllib.parse.quote_plus(sys.stdin.read()))')
 open "https://stackoverflow.com/search?q=$QUERY"
 
 echo "Searching Stack Overflow for: $1"

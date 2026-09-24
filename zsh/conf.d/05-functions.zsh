@@ -1,7 +1,7 @@
 # Shell functions (docker, git, k8s, nvim, workflow, utilities)
 
 # Unalias any conflicting aliases before defining functions
-unalias dstop drm dprune dexec dlogs gcb gac gbdel kexec kpf v ve vrg vr vs vl vw proj tn ta vf vg 2>/dev/null
+unalias dstop drm dprune dexec dlogs gcb gac gbdel kexec kpf v ve vrg vr proj tn ta vf vg 2>/dev/null
 
 # Create directory and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -25,8 +25,8 @@ dprune() {
   [[ $reply =~ ^[Yy]$ ]] && docker system prune -af
 }
 
-# Docker: Exec into running container
-dexec() { docker exec -it "$1" /bin/bash || docker exec -it "$1" /bin/sh; }
+# Docker: Exec into running container (bash if the image has it, else sh)
+dexec() { docker exec -it "$1" sh -c 'command -v bash >/dev/null 2>&1 && exec bash || exec sh'; }
 
 # Docker: Follow logs
 dlogs() { docker logs -f "$1"; }
@@ -34,14 +34,14 @@ dlogs() { docker logs -f "$1"; }
 # Git: Create and checkout branch
 gcb() { git checkout -b "$1"; }
 
-# Git: Add all and commit
-gac() { git add . && git commit -m "$1"; }
+# Git: Stage tracked changes and commit (use `git add` explicitly for new files)
+gac() { git add -u && git commit -m "$1"; }
 
 # Git: Delete branch
 gbdel() { git branch -d "$1"; }
 
-# Kubernetes: Exec into pod
-kexec() { kubectl exec -it "$1" -- /bin/bash || kubectl exec -it "$1" -- /bin/sh; }
+# Kubernetes: Exec into pod (bash if the image has it, else sh)
+kexec() { kubectl exec -it "$1" -- sh -c 'command -v bash >/dev/null 2>&1 && exec bash || exec sh'; }
 
 # Kubernetes: Port forward helper
 kpf() { kubectl port-forward "$1" "$2:$2"; }
@@ -120,56 +120,16 @@ vr() {
   [[ -n "$file" ]] && nvim "$file"
 }
 
-# Save nvim session for current directory
-vs() {
-  local session_name="${1:-$(basename $PWD)}"
-  mkdir -p ~/.config/nvim/sessions
-  nvim -c "mksession! ~/.config/nvim/sessions/${session_name}.vim" -c "qa"
-  echo "Session saved: ${session_name}"
-}
-
-# Load nvim session
-vl() {
-  local session=$(find ~/.config/nvim/sessions -name "*.vim" 2>/dev/null | fzf --preview 'cat {}')
-  [[ -n "$session" ]] && nvim -S "$session"
-}
-
-# Auto-restore session if exists
-vw() {
-  local session="$HOME/.config/nvim/sessions/$(basename $PWD).vim"
-  if [[ -f "$session" ]]; then
-    nvim -S "$session"
-  else
-    nvim
-  fi
-}
-
-# Backup nvim config
-nvim-backup() {
-  local backup_dir="$HOME/.config/nvim-backups/$(date +%Y%m%d-%H%M%S)"
-  mkdir -p "$backup_dir"
-  cp -r ~/.config/nvim/* "$backup_dir/"
-  echo "Nvim config backed up to: $backup_dir"
-}
-
-# Restore nvim config from backup
-nvim-restore() {
-  local backup=$(fd -t d . ~/.config/nvim-backups 2>/dev/null | fzf)
-  if [[ -n "$backup" ]]; then
-    echo "This will replace ~/.config/nvim/ with: $backup"
-    read "reply?Continue? (y/N) "
-    [[ $reply =~ ^[Yy]$ ]] || return 0
-    rm -rf ~/.config/nvim/*
-    cp -r "$backup"/* ~/.config/nvim/
-    echo "Restored from: $backup"
-  fi
-}
-
 # --- Workflow Functions ---
 
 # Quick project switcher with fzf + nvim
 proj() {
-  local project=$(fd -t d -d 3 . ~/projects ~/work ~/dev ~/TechAI ~/Personal 2>/dev/null | fzf --preview 'eza --tree --level=2 {}')
+  local roots=(${^${(s.:.)PROJECT_ROOTS}}(N/))
+  if (( ! $#roots )); then
+    echo "proj: no PROJECT_ROOTS directory exists ($PROJECT_ROOTS)" >&2
+    return 1
+  fi
+  local project=$(fd -t d -d 3 . $roots 2>/dev/null | fzf --preview 'eza --tree --level=2 {}')
   if [[ -n "$project" ]]; then
     cd "$project"
     nvim
@@ -215,11 +175,12 @@ light() {
   osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
 }
 
-# Unified search commands
-search-github() { open "https://github.com/search?q=$(echo "$*" | sed 's/ /+/g')&type=repositories"; }
-search-so() { open "https://stackoverflow.com/search?q=$(echo "$*" | sed 's/ /+/g')"; }
-search-go() { open "https://pkg.go.dev/search?q=$(echo "$*" | sed 's/ /+/g')"; }
-search-pypi() { open "https://pypi.org/search/?q=$(echo "$*" | sed 's/ /+/g')"; }
+# Unified search commands (the query is form-encoded: spaces -> +, the rest %XX)
+_urlencode() { printf '%s' "$*" | python3 -c 'import sys, urllib.parse; print(urllib.parse.quote_plus(sys.stdin.read()))'; }
+search-github() { open "https://github.com/search?q=$(_urlencode "$@")&type=repositories"; }
+search-so() { open "https://stackoverflow.com/search?q=$(_urlencode "$@")"; }
+search-go() { open "https://pkg.go.dev/search?q=$(_urlencode "$@")"; }
+search-pypi() { open "https://pypi.org/search/?q=$(_urlencode "$@")"; }
 
 # Open current repo (or subpage) in browser
 ghub() {
@@ -261,19 +222,18 @@ qn() {
   echo "Note added to $today.md"
 }
 
-# Check all projects for uncommitted changes
+# Check every repo directly under $PROJECT_ROOTS for uncommitted changes
 git-check-all() {
   echo "Checking projects for uncommitted changes..."
-  for dir in ~/projects/*/; do
-    if [ -d "$dir/.git" ]; then
-      local status=$(git -C "$dir" status --porcelain 2>/dev/null)
-      local branch=$(git -C "$dir" branch --show-current 2>/dev/null)
-      if [ -n "$status" ]; then
-        local name=$(basename "$dir")
-        local changes=$(echo "$status" | wc -l | tr -d ' ')
-        echo "  $name ($branch) - $changes uncommitted changes"
-      fi
-    fi
+  local root dir changes branch
+  for root in ${^${(s.:.)PROJECT_ROOTS}}(N/); do
+    for dir in "$root"/*/(N); do
+      [[ -d "$dir/.git" ]] || continue
+      changes=$(git -C "$dir" status --porcelain 2>/dev/null)
+      [[ -n "$changes" ]] || continue
+      branch=$(git -C "$dir" branch --show-current 2>/dev/null)
+      echo "  $(basename "$dir") ($branch) - $(echo "$changes" | wc -l | tr -d ' ') uncommitted changes"
+    done
   done
   echo "Done"
 }

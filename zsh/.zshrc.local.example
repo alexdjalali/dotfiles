@@ -3,12 +3,38 @@
 # ==============================================================
 # Copy this file to ~/.zshrc.local and add your secrets
 # This file should NOT be committed to version control
+#
+# It loads first (from conf.d/01-env.zsh). Aliases or settings that must beat
+# the tracked conf.d modules go in ~/.zshrc.local.post, which loads last.
 
 # Supermemory API Key (Claude Code plugin)
-export SUPERMEMORY_CC_API_KEY="your-api-key-here"
+# export SUPERMEMORY_CC_API_KEY="your-api-key-here"
+
+# Project roots for proj, gca and the Raycast project scripts (colon-separated)
+# export PROJECT_ROOTS="$HOME/projects:$HOME/work"
 
 # Add other sensitive environment variables here
 # export GITHUB_TOKEN="your-token"
 # export OPENAI_API_KEY="your-key"
 # export AWS_ACCESS_KEY_ID="your-key"
 # export AWS_SECRET_ACCESS_KEY="your-secret"
+
+# Machine-only aliases live here, not in the tracked conf.d modules, when they
+# depend on files the dotfiles repo does not track. Examples (this machine):
+# alias gbs='git-branch-stack.sh'       # Branch stack management (~/.local/scripts)
+# alias dreset='docker-reset.sh'        # Docker cluster reset
+# alias e2e='pipeline-e2e.sh'           # ML pipeline E2E testing
+# alias prr='pr-review.sh'              # PR review workflow
+# alias docs='glow ~/.local/docs/README.md'
+# alias docs-git='glow ~/.local/docs/git-workflow.md'
+# alias docs-api='glow ~/.local/docs/api-development.md'
+# alias docs-docker='glow ~/.local/docs/docker-containers.md'
+# alias docs-quality='glow ~/.local/docs/code-quality.md'
+# alias docs-productivity='glow ~/.local/docs/productivity.md'
+# alias docs-scripts='glow ~/.local/docs/custom-scripts.md'
+# alias dev-docs='glow ~/.local/docs/dev-environment.md'
+# alias dashboard='~/dashboard/dashboard'
+# alias macclean="$HOME/cleanmymac/cleanmymac run"
+# alias brewmaintain="$HOME/cleanmymac/cleanmymac run brewmaint"
+# alias aireview="$HOME/.local/scripts/git-ai-review.sh"
+# aws-export-tf() { source "$HOME/.aws/terraform-creds.sh" "$@" || return 1; }

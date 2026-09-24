@@ -13,9 +13,7 @@
 # @raycast.description Decode Base64 content from clipboard
 # @raycast.author Alex Djalali
 
-decoded=$(pbpaste | base64 -d 2>/dev/null)
-
-if [ $? -eq 0 ]; then
+if decoded=$(pbpaste | base64 -d 2>/dev/null); then
     echo -n "$decoded" | pbcopy
     echo "Base64 decoded and copied to clipboard"
 else

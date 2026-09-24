@@ -64,55 +64,31 @@ fgd() {
   [[ -n "$file" ]] && nvim "$file"
 }
 
-# Alias & function cheatsheet — searchable with fzf
-# Scans all conf.d files plus .zshrc for aliases and functions
+# Alias & function cheatsheet: searchable with fzf, Enter copies the name.
+# Scans .zshrc, every conf.d module and ~/.zshrc.local; entries are tagged
+# with their file.
 helpme() {
   local conf_dir="${DOTFILES:-$HOME/dotfiles}/zsh/conf.d"
-  local section=""
-  local section_next=""
-  local entries=()
+  local files=("${ZDOTDIR:-$HOME}/.zshrc" "$conf_dir"/*.zsh(N) "$HOME/.zshrc.local")
+  local entries=() file line tag entry
 
-  # Scan all zsh config files
-  local files=("${ZDOTDIR:-$HOME}/.zshrc")
-  [[ -d "$conf_dir" ]] && files+=("$conf_dir"/*.zsh(N))
-
-  for zshrc in "${files[@]}"; do
+  for file in $files; do
+    [[ -r $file ]] || continue
+    tag="[${${file:t}%.zsh}]"
     while IFS= read -r line; do
-      # Detect section headers: "# ------" followed by "# Title" followed by "# ------"
-      if [[ "$line" =~ '^# [-]+$' ]]; then
-        section_next=1
-        continue
-      elif [[ -n "$section_next" && "$line" =~ '^# [^-]' ]]; then
-        section="${line#\# }"
-        section="${section#* }"  # strip leading emoji
-        unset section_next
-        continue
-      elif [[ -n "$section_next" ]]; then
-        unset section_next
+      if [[ $line =~ '^[[:space:]]*alias ([^=]+)=(.*)$' ]]; then
+        printf -v entry '%-14s  %-40s  %s' "$match[1]" "$match[2]" "$tag"
+        entries+=("$entry")
+      elif [[ $line =~ '^[[:space:]]*(function[[:space:]]+)?([a-zA-Z_][a-zA-Z0-9_-]*)[[:space:]]*\(\)' ]]; then
+        printf -v entry '%-14s  %-40s  %s' "$match[2]" "(function)" "$tag"
+        entries+=("$entry")
       fi
-
-      # Capture alias definitions
-      if [[ "$line" =~ "^alias " ]]; then
-        local name="${line#alias }"
-        name="${name%%=*}"
-        local value="${line#*=}"
-        entries+=("$(printf '%-14s  %-40s  %s' "$name" "$value" "[$section]")")
-      fi
-
-      # Capture function definitions (oneliner and block)
-      if [[ "$line" =~ '^[a-zA-Z_][a-zA-Z0-9_-]*\(\)' ]]; then
-        local fname="${line%%\(*}"
-        entries+=("$(printf '%-14s  %-40s  %s' "$fname" "(function)" "[$section]")")
-      fi
-    done < "$zshrc"
+    done < "$file"
   done
 
   printf '%s\n' "${entries[@]}" | fzf \
-    --header="Aliases & Functions  (Enter=copy, Ctrl-X=run)" \
-    --preview='echo {}' \
-    --preview-window=hidden \
-    --bind "enter:execute-silent(echo {} | awk '{print \$1}' | tr -d '\n' | pbcopy)+abort" \
-    --bind "ctrl-x:become(eval \$(echo {} | awk '{print \$1}'))"
+    --header="Aliases & Functions  (Enter=copy name)" \
+    --bind "enter:execute-silent(echo {} | awk '{print \$1}' | tr -d '\n' | pbcopy)+abort"
 }
 
 # Bind Alt+H to helpme widget

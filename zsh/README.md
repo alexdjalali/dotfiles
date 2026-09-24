@@ -93,7 +93,7 @@ ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
 ### 4. Set up local config (for secrets)
 
 ```bash
-cp ~/dotfiles/.zshrc.local.example ~/.zshrc.local
+cp ~/dotfiles/zsh/.zshrc.local.example ~/.zshrc.local   # install.sh does this if it is missing
 # Edit ~/.zshrc.local and add your API keys
 ```
 
@@ -138,7 +138,7 @@ Pairs perfectly with:
 ### Visual Enhancements
 
 - **System info on startup** - Fastfetch shows system specs with ASCII art
-- **Command execution time** - Shows duration for commands >1s
+- **Command execution time** - The Powerlevel10k prompt shows the duration of commands >3s
 - **Directory info** - Auto-displays file/folder count and git branch when you cd
 - **Background jobs indicator** - Visual alert for running background jobs
 - **Project banners** - Create `.project-name` file for ASCII art banners
@@ -149,7 +149,7 @@ Pairs perfectly with:
 **Git:**
 ```bash
 gs    # git status
-ga    # git add .
+ga    # git add -u (tracked files only)
 gc    # git commit -m
 gp    # git push
 gl    # git pull
@@ -185,7 +185,6 @@ cowsay-random   # Random fortune
 - `ve` - FZF file picker with preview
 - `vrg "search"` - Ripgrep search → edit in nvim
 - `vr` - Recent files picker
-- `vs` / `vl` - Save/load nvim sessions
 - `nvim-update` - Update all nvim plugins
 
 ### Tmux Integration
@@ -212,9 +211,24 @@ Several features are commented out by default:
 2. **K8s context indicator** - Uncomment around line 550
 3. **Auto iTerm2 profile switching** - Uncomment around line 580
 
+### Project Roots
+
+`proj`, `gca` (git-check-all) and the Raycast project scripts search the
+colon-separated `PROJECT_ROOTS` (default in `conf.d/01-env.zsh`). Override it in
+`~/.zshrc.local`:
+```bash
+export PROJECT_ROOTS="$HOME/projects:$HOME/work"
+```
+
 ### Add Custom Aliases
 
-Create `~/.zsh_aliases` and add your own:
+Put personal and machine-only aliases (anything that depends on files the repo
+doesn't track) in `~/.zshrc.local`. It is sourced first, from `conf.d/01-env.zsh`,
+so it can add new names and set variables like `PROJECT_ROOTS`, but a tracked
+alias with the same name loads later and wins. To override a tracked alias, put
+yours in `~/.zshrc.local.post`, which `.zshrc` sources last. Don't give an alias
+the name of a tracked function (`conf.d/05-functions.zsh`): zsh refuses to define
+the function and stops loading the rest of that file. For example:
 ```bash
 alias myproject='cd ~/projects/myproject && nvim'
 ```

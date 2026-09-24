@@ -34,6 +34,11 @@ path=(
 )
 typeset -U path  # deduplicate
 
+# Project roots searched by proj, git-check-all and the Raycast project scripts
+# (colon-separated; missing directories are skipped). Override in ~/.zshrc.local
+# (sourced above). The Raycast scripts source this file to get the same value.
+export PROJECT_ROOTS="${PROJECT_ROOTS:-$HOME/projects:$HOME/work:$HOME/dev:$HOME/TechAI:$HOME/Personal}"
+
 # Man pages (user-local)
 export MANPATH="$HOME/.local/share/man:$MANPATH"
 

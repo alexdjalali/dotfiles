@@ -57,5 +57,6 @@ done
 # init script so zoxide isn't forked on every shell start.
 _cache_init zoxide zoxide init zsh
 
-# NOTE: $HOME/.bun/bin is already in $path (conf.d/01-env.zsh, deduped by typeset -U);
-# no need to re-prepend it here.
+# Local overrides that must win over conf.d (~/.zshrc.local loads first, from
+# conf.d/01-env.zsh, so a tracked alias of the same name beats it).
+[[ -f ~/.zshrc.local.post ]] && source ~/.zshrc.local.post

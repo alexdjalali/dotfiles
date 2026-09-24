@@ -1,1317 +1,2740 @@
-{
-    AIFeatureFunctionCalling = 1;
-    AIFeatureHostedCodeInterpeter = 1;
-    AIFeatureHostedFileSearch = 1;
-    AIFeatureHostedWebSearch = 1;
-    AIFeatureStreamingResponses = 1;
-    AITermAPI = 2;
-    AIVectorStore = 0;
-    AiMaxTokens = 400000;
-    AiModel = "gpt-5.1";
-    AiResponseMaxTokens = 128000;
-    AitermURL = "https://api.openai.com/v1/responses";
-    AppleAntiAliasingThreshold = 1;
-    ApplePressAndHoldEnabled = 0;
-    AppleScrollAnimationEnabled = 0;
-    AppleSmoothFixedFontsSizeThreshold = 1;
-    AppleWindowTabbingMode = manual;
-    "Custom Color Presets" =     {
-        Nord =         {
-            "Ansi 0 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Ansi 1 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3416893780231476";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2943579256534576";
-                "Red Component" = "0.688555896282196";
-            };
-            "Ansi 10 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4759744107723236";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7002110481262207";
-                "Red Component" = "0.5760542154312134";
-            };
-            "Ansi 11 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4728026986122131";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7557785511016846";
-                "Red Component" = "0.8990201950073242";
-            };
-            "Ansi 12 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7045942544937134";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.5608044862747192";
-                "Red Component" = "0.4340144395828247";
-            };
-            "Ansi 13 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6157113313674927";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.4748716652393341";
-                "Red Component" = "0.6428365707397461";
-            };
-            "Ansi 14 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6777905225753784";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.6861472129821777";
-                "Red Component" = "0.4934451580047607";
-            };
-            "Ansi 15 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.945746898651123";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.9209208488464355";
-                "Red Component" = "0.9072774648666382";
-            };
-            "Ansi 2 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4759744107723236";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7002110481262207";
-                "Red Component" = "0.5760542154312134";
-            };
-            "Ansi 3 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4728026986122131";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7557785511016846";
-                "Red Component" = "0.8990201950073242";
-            };
-            "Ansi 4 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7045942544937134";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.5608044862747192";
-                "Red Component" = "0.4340144395828247";
-            };
-            "Ansi 5 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6157113313674927";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.4748716652393341";
-                "Red Component" = "0.6428365707397461";
-            };
-            "Ansi 6 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7735686302185059";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7021664381027222";
-                "Red Component" = "0.4660642147064209";
-            };
-            "Ansi 7 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9262098073959351";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8916594386100769";
-                "Red Component" = "0.8736777901649475";
-            };
-            "Ansi 8 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3406426012516022";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2652154266834259";
-                "Red Component" = "0.2330617606639862";
-            };
-            "Ansi 9 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3416893780231476";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2943579256534576";
-                "Red Component" = "0.688555896282196";
-            };
-            "Background Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1918390095233917";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1525594741106033";
-                "Red Component" = "0.1357133686542511";
-            };
-            "Badge Color" =             {
-                "Alpha Component" = "0.7057952880859375";
-                "Blue Component" = "0.2960072755813599";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2304649949073792";
-                "Red Component" = "0.2025250792503357";
-            };
-            "Bold Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.945746898651123";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.9209208488464355";
-                "Red Component" = "0.9072774648666382";
-            };
-            "Cursor Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922592401504517";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121471405029297";
-            };
-            "Cursor Guide Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Cursor Text Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Foreground Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922591209411621";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121472597122192";
-            };
-            "Link Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9262098073959351";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8916594386100769";
-                "Red Component" = "0.8736777901649475";
-            };
-            "Selected Text Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922592401504517";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121471405029297";
-            };
-            "Selection Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3406426012516022";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2652154266834259";
-                "Red Component" = "0.2330617606639862";
-            };
-            "Tab Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-        };
-        "iTerm2 Solarized Dark" =         {
-            "Ansi 0 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2588235437870026";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2117647081613541";
-                "Red Component" = "0.02745098061859608";
-            };
-            "Ansi 1 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1843137294054031";
-                "Color Space" = sRGB;
-                "Green Component" = "0.196078434586525";
-                "Red Component" = "0.8627451062202454";
-            };
-            "Ansi 10 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4588235318660736";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4313725531101227";
-                "Red Component" = "0.3450980484485626";
-            };
-            "Ansi 11 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5137255191802979";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4823529422283173";
-                "Red Component" = "0.3960784375667572";
-            };
-            "Ansi 12 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5882353186607361";
-                "Color Space" = sRGB;
-                "Green Component" = "0.5803921818733215";
-                "Red Component" = "0.5137255191802979";
-            };
-            "Ansi 13 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7686274647712708";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4431372582912445";
-                "Red Component" = "0.4235294163227081";
-            };
-            "Ansi 14 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6313725709915161";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6313725709915161";
-                "Red Component" = "0.5764706134796143";
-            };
-            "Ansi 15 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8901960849761963";
-                "Color Space" = sRGB;
-                "Green Component" = "0.9647058844566345";
-                "Red Component" = "0.9921568632125854";
-            };
-            "Ansi 2 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.6000000238418579";
-                "Red Component" = "0.5215686559677124";
-            };
-            "Ansi 3 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.5372549295425415";
-                "Red Component" = "0.7098039388656616";
-            };
-            "Ansi 4 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8235294222831726";
-                "Color Space" = sRGB;
-                "Green Component" = "0.5450980663299561";
-                "Red Component" = "0.1490196138620377";
-            };
-            "Ansi 5 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5098039507865906";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2117647081613541";
-                "Red Component" = "0.8274509906768799";
-            };
-            "Ansi 6 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5960784554481506";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6313725709915161";
-                "Red Component" = "0.1647058874368668";
-            };
-            "Ansi 7 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8352941274642944";
-                "Color Space" = sRGB;
-                "Green Component" = "0.9098039269447327";
-                "Red Component" = "0.9333333373069763";
-            };
-            "Ansi 8 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2117647081613541";
-                "Color Space" = sRGB;
-                "Green Component" = "0.168627455830574";
-                "Red Component" = 0;
-            };
-            "Ansi 9 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.08627451211214066";
-                "Color Space" = sRGB;
-                "Green Component" = "0.294117659330368";
-                "Red Component" = "0.7960784435272217";
-            };
-            "Background Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2117647081613541";
-                "Color Space" = sRGB;
-                "Green Component" = "0.168627455830574";
-                "Red Component" = 0;
-            };
-            "Badge Color" =             {
-                "Alpha Component" = "0.5";
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.1491003036499023";
-                "Red Component" = 1;
-            };
-            "Bold Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6313725709915161";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6313725709915161";
-                "Red Component" = "0.5764706134796143";
-            };
-            "Cursor Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5882353186607361";
-                "Color Space" = sRGB;
-                "Green Component" = "0.5803921818733215";
-                "Red Component" = "0.5137255191802979";
-            };
-            "Cursor Guide Color" =             {
-                "Alpha Component" = "0.25";
-                "Blue Component" = 1;
-                "Color Space" = sRGB;
-                "Green Component" = "0.9268137812614441";
-                "Red Component" = "0.7021402716636658";
-            };
-            "Cursor Text Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2588235437870026";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2117647081613541";
-                "Red Component" = "0.02745098061859608";
-            };
-            "Foreground Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5882353186607361";
-                "Color Space" = sRGB;
-                "Green Component" = "0.5803921818733215";
-                "Red Component" = "0.5137255191802979";
-            };
-            "Link Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7342270612716675";
-                "Color Space" = sRGB;
-                "Green Component" = "0.3591529428958893";
-                "Red Component" = 0;
-            };
-            "Selected Text Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6313725709915161";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6313725709915161";
-                "Red Component" = "0.5764706134796143";
-            };
-            "Selection Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2588235437870026";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2117647081613541";
-                "Red Component" = "0.02745098061859608";
-            };
-        };
-    };
-    "Default Bookmark Guid" = "77CC0BB2-689F-47A6-B5B0-B93D64054E7C";
-    FocusFollowsMouse = 1;
-    HapticFeedbackForEsc = 0;
-    HotkeyMigratedFromSingleToMulti = 1;
-    NSAutoFillHeuristicControllerEnabled = 0;
-    NSNavPanelExpandedSizeForOpenMode = "{800, 448}";
-    NSOSPLastRootDirectory = {length = 752, bytes = 0x626f6f6b f0020000 00000410 30000000 ... 90010000 00000000 };
-    NSOverlayScrollersFallBackForAccessoryViews = 0;
-    NSQuotedKeystrokeBinding = "";
-    NSRepeatCountBinding = "";
-    NSScrollAnimationEnabled = 0;
-    NSScrollViewShouldScrollUnderTitlebar = 0;
-    "NSSplitView Subview Frames NSColorPanelSplitView" =     (
-        "0.000000, 0.000000, 230.000000, 262.000000, NO, NO",
-        "0.000000, 263.000000, 230.000000, 67.000000, NO, NO"
-    );
-    "NSToolbar Configuration com.apple.NSColorPanel" =     {
-        "TB Is Shown" = 1;
-    };
-    "NSWindow Frame NSColorPanel" = "0 83 250 297 0 0 1512 949 ";
-    "NSWindow Frame NSNavPanelAutosaveName" = "2232 447 800 448 0 0 5120 1409 ";
-    "NSWindow Frame SUStatusFrame" = "1480 936 400 139 0 0 3360 1387 ";
-    "NSWindow Frame SUUpdateAlert" = "1370 738 620 402 0 0 3360 1387 ";
-    "NSWindow Frame iTerm Window 0" = "0 0 1512 949 0 0 1512 949 ";
-    "NSWindow Frame iTerm Window 1" = "0 462 650 487 0 0 1512 949 ";
-    "NSWindow Frame iTerm Window 2" = "0 487 650 462 0 0 1512 949 ";
-    "NSWindow Frame iTerm Window 3" = "790 89 650 462 0 0 5120 1409 ";
-    "NSWindow Frame iTerm Window 4" = "2560 0 2560 1409 0 0 5120 1409 ";
-    "NeverWarnAboutShortLivedSessions_77CC0BB2-689F-47A6-B5B0-B93D64054E7C" = 1;
-    "NeverWarnAboutShortLivedSessions_77CC0BB2-689F-47A6-B5B0-B93D64054E7C_selection" = 0;
-    "New Bookmarks" =     (
-                {
-            "ASCII Anti Aliased" = 1;
-            "Ambiguous Double Width" = 0;
-            "Ansi 0 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1176470592617989";
-                "Color Space" = sRGB;
-                "Green Component" = "0.09803921729326248";
-                "Red Component" = "0.0784313753247261";
-            };
-            "Ansi 0 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Ansi 0 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Ansi 1 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1630003750324249";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2366006970405579";
-                "Red Component" = "0.7074432373046875";
-            };
-            "Ansi 1 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3416893780231476";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2943579256534576";
-                "Red Component" = "0.688555896282196";
-            };
-            "Ansi 1 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3416893780231476";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2943579256534576";
-                "Red Component" = "0.688555896282196";
-            };
-            "Ansi 10 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5654193758964539";
-                "Color Space" = sRGB;
-                "Green Component" = "0.9042816162109375";
-                "Red Component" = "0.3450070321559906";
-            };
-            "Ansi 10 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4759744107723236";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7002110481262207";
-                "Red Component" = "0.5760542154312134";
-            };
-            "Ansi 10 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4759744107723236";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7002110481262207";
-                "Red Component" = "0.5760542154312134";
-            };
-            "Ansi 11 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.8833775520324707";
-                "Red Component" = "0.9259033203125";
-            };
-            "Ansi 11 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4728026986122131";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7557785511016846";
-                "Red Component" = "0.8990201950073242";
-            };
-            "Ansi 11 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4728026986122131";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7557785511016846";
-                "Red Component" = "0.8990201950073242";
-            };
-            "Ansi 12 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9485321044921875";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6704471707344055";
-                "Red Component" = "0.6534907817840576";
-            };
-            "Ansi 12 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7045942544937134";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.5608044862747192";
-                "Red Component" = "0.4340144395828247";
-            };
-            "Ansi 12 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7045942544937134";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.5608044862747192";
-                "Red Component" = "0.4340144395828247";
-            };
-            "Ansi 13 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8821563720703125";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4927266538143158";
-                "Red Component" = "0.8821563720703125";
-            };
-            "Ansi 13 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6157113313674927";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.4748716652393341";
-                "Red Component" = "0.6428365707397461";
-            };
-            "Ansi 13 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6157113313674927";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.4748716652393341";
-                "Red Component" = "0.6428365707397461";
-            };
-            "Ansi 14 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 1;
-                "Color Space" = sRGB;
-                "Green Component" = "0.9926329255104065";
-                "Red Component" = "0.3759753108024597";
-            };
-            "Ansi 14 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6777905225753784";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.6861472129821777";
-                "Red Component" = "0.4934451580047607";
-            };
-            "Ansi 14 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6777905225753784";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.6861472129821777";
-                "Red Component" = "0.4934451580047607";
-            };
-            "Ansi 15 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 1;
-                "Color Space" = sRGB;
-                "Green Component" = 1;
-                "Red Component" = "0.9999960064888";
-            };
-            "Ansi 15 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.945746898651123";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.9209208488464355";
-                "Red Component" = "0.9072774648666382";
-            };
-            "Ansi 15 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.945746898651123";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.9209208488464355";
-                "Red Component" = "0.9072774648666382";
-            };
-            "Ansi 2 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.7607843279838562";
-                "Red Component" = 0;
-            };
-            "Ansi 2 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4759744107723236";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7002110481262207";
-                "Red Component" = "0.5760542154312134";
-            };
-            "Ansi 2 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4759744107723236";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7002110481262207";
-                "Red Component" = "0.5760542154312134";
-            };
-            "Ansi 3 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.7695948481559753";
-                "Red Component" = "0.7805864810943604";
-            };
-            "Ansi 3 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4728026986122131";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7557785511016846";
-                "Red Component" = "0.8990201950073242";
-            };
-            "Ansi 3 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4728026986122131";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7557785511016846";
-                "Red Component" = "0.8990201950073242";
-            };
-            "Ansi 4 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7821617722511292";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2647435665130615";
-                "Red Component" = "0.1540430039167404";
-            };
-            "Ansi 4 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7045942544937134";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.5608044862747192";
-                "Red Component" = "0.4340144395828247";
-            };
-            "Ansi 4 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7045942544937134";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.5608044862747192";
-                "Red Component" = "0.4340144395828247";
-            };
-            "Ansi 5 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7449436187744141";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2493168413639069";
-                "Red Component" = "0.752197265625";
-            };
-            "Ansi 5 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6157113313674927";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.4748716652393341";
-                "Red Component" = "0.6428365707397461";
-            };
-            "Ansi 5 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.6157113313674927";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.4748716652393341";
-                "Red Component" = "0.6428365707397461";
-            };
-            "Ansi 6 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7816620469093323";
-                "Color Space" = sRGB;
-                "Green Component" = "0.7742590308189392";
-                "Red Component" = 0;
-            };
-            "Ansi 6 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7735686302185059";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7021664381027222";
-                "Red Component" = "0.4660642147064209";
-            };
-            "Ansi 6 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7735686302185059";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.7021664381027222";
-                "Red Component" = "0.4660642147064209";
-            };
-            "Ansi 7 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7810482978820801";
-                "Color Space" = sRGB;
-                "Green Component" = "0.7810582518577576";
-                "Red Component" = "0.7810397744178772";
-            };
-            "Ansi 7 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9262098073959351";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8916594386100769";
-                "Red Component" = "0.8736777901649475";
-            };
-            "Ansi 7 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9262098073959351";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8916594386100769";
-                "Red Component" = "0.8736777901649475";
-            };
-            "Ansi 8 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4078223705291748";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4078278839588165";
-                "Red Component" = "0.4078176021575928";
-            };
-            "Ansi 8 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3406426012516022";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2652154266834259";
-                "Red Component" = "0.2330617606639862";
-            };
-            "Ansi 8 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3406426012516022";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2652154266834259";
-                "Red Component" = "0.2330617606639862";
-            };
-            "Ansi 9 Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.4583322405815125";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4752407670021057";
-                "Red Component" = "0.8659515380859375";
-            };
-            "Ansi 9 Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3416893780231476";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2943579256534576";
-                "Red Component" = "0.688555896282196";
-            };
-            "Ansi 9 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3416893780231476";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2943579256534576";
-                "Red Component" = "0.688555896282196";
-            };
-            "BM Growl" = 1;
-            "Background Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.98";
-                "Color Space" = sRGB;
-                "Green Component" = "0.98";
-                "Red Component" = "0.98";
-            };
-            "Background Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1918390095233917";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1525594741106033";
-                "Red Component" = "0.1357133686542511";
-            };
-            "Background Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1918390095233917";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1525594741106033";
-                "Red Component" = "0.1357133686542511";
-            };
-            "Background Image Location" = "";
-            "Badge Color" =             {
-                "Alpha Component" = "0.5";
-                "Blue Component" = "0.1161063313484192";
-                "Color Space" = sRGB;
-                "Green Component" = "0.1161063313484192";
-                "Red Component" = "0.7461385726928711";
-            };
-            "Badge Color (Dark)" =             {
-                "Alpha Component" = "0.7057952880859375";
-                "Blue Component" = "0.2960072755813599";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2304649949073792";
-                "Red Component" = "0.2025250792503357";
-            };
-            "Badge Color (Light)" =             {
-                "Alpha Component" = "0.7057952880859375";
-                "Blue Component" = "0.2960072755813599";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2304649949073792";
-                "Red Component" = "0.2025250792503357";
-            };
-            "Blinking Cursor" = 0;
-            Blur = 1;
-            "Blur Radius" = 15;
-            "Bold Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.062745101749897";
-                "Color Space" = sRGB;
-                "Green Component" = "0.062745101749897";
-                "Red Component" = "0.062745101749897";
-            };
-            "Bold Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.945746898651123";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.9209208488464355";
-                "Red Component" = "0.9072774648666382";
-            };
-            "Bold Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.945746898651123";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.9209208488464355";
-                "Red Component" = "0.9072774648666382";
-            };
-            "Brighten Bold Text (Dark)" = 1;
-            "Brighten Bold Text (Light)" = 1;
-            "Character Encoding" = 4;
-            "Close Sessions On End" = 1;
-            Columns = 80;
-            Command = "";
-            "Cursor Boost (Dark)" = 0;
-            "Cursor Boost (Light)" = 0;
-            "Cursor Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = 0;
-                "Red Component" = 0;
-            };
-            "Cursor Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922592401504517";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121471405029297";
-            };
-            "Cursor Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922592401504517";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121471405029297";
-            };
-            "Cursor Guide Color" =             {
-                "Alpha Component" = "0.25";
-                "Blue Component" = "0.8531928062438965";
-                "Color Space" = sRGB;
-                "Green Component" = "0.7721771597862244";
-                "Red Component" = "0.5233826041221619";
-            };
-            "Cursor Guide Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Cursor Guide Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Cursor Text Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 1;
-                "Color Space" = sRGB;
-                "Green Component" = 1;
-                "Red Component" = 1;
-            };
-            "Cursor Text Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Cursor Text Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Custom Command" = No;
-            "Custom Directory" = No;
-            "Default Bookmark" = No;
-            Description = Default;
-            "Disable Window Resizing" = 0;
-            "Draw Powerline Glyphs" = 1;
-            "Faint Text Alpha (Dark)" = "0.5";
-            "Faint Text Alpha (Light)" = "0.5";
-            "Flashing Bell" = 0;
-            "Foreground Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.062745101749897";
-                "Color Space" = sRGB;
-                "Green Component" = "0.062745101749897";
-                "Red Component" = "0.062745101749897";
-            };
-            "Foreground Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922591209411621";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121472597122192";
-            };
-            "Foreground Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922591209411621";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121472597122192";
-            };
-            Guid = "77CC0BB2-689F-47A6-B5B0-B93D64054E7C";
-            "Horizontal Spacing" = 1;
-            "Idle Code" = 0;
-            "Jobs to Ignore" =             (
-                rlogin,
-                ssh,
-                slogin,
-                telnet
-            );
-            "Keyboard Map" =             {
-            };
-            "Link Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9337158203125";
-                "Color Space" = sRGB;
-                "Green Component" = "0.5578983426094055";
-                "Red Component" = "0.1980242282152176";
-            };
-            "Link Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9262098073959351";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8916594386100769";
-                "Red Component" = "0.8736777901649475";
-            };
-            "Link Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9262098073959351";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8916594386100769";
-                "Red Component" = "0.8736777901649475";
-            };
-            "Match Background Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3211612701416016";
-                "Color Space" = P3;
-                "Green Component" = "0.9860088229179382";
-                "Red Component" = "0.9969714283943176";
-            };
-            "Match Background Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3211612701416016";
-                "Color Space" = P3;
-                "Green Component" = "0.9860088229179382";
-                "Red Component" = "0.9969714283943176";
-            };
-            "Minimum Contrast" = 0;
-            "Minimum Contrast (Dark)" = 0;
-            "Minimum Contrast (Light)" = 0;
-            "Mouse Reporting" = 1;
-            Name = Default;
-            "Non Ascii Font" = "Monaco 12";
-            "Non-ASCII Anti Aliased" = 1;
-            "Normal Font" = "JetBrainsMonoNFM-Regular 13";
-            "Only The Default BG Color Uses Transparency" = 1;
-            "Option Key Sends" = 0;
-            "Prompt Before Closing 2" = 0;
-            "Right Option Key Sends" = 0;
-            Rows = 25;
-            Screen = "-1";
-            "Scrollback Lines" = 0;
-            "Selected Text Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = 0;
-                "Red Component" = 0;
-            };
-            "Selected Text Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922592401504517";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121471405029297";
-            };
-            "Selected Text Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8922592401504517";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.8385788202285767";
-                "Red Component" = "0.8121471405029297";
-            };
-            "Selection Color" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 1;
-                "Color Space" = sRGB;
-                "Green Component" = "0.843137264251709";
-                "Red Component" = "0.7019608020782471";
-            };
-            "Selection Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3406426012516022";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2652154266834259";
-                "Red Component" = "0.2330617606639862";
-            };
-            "Selection Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.3406426012516022";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.2652154266834259";
-                "Red Component" = "0.2330617606639862";
-            };
-            "Send Code When Idle" = 0;
-            Shortcut = "";
-            "Silence Bell" = 0;
-            "Smart Cursor Color (Dark)" = 0;
-            "Smart Cursor Color (Light)" = 0;
-            "Sync Title" = 0;
-            "Tab Color (Dark)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            "Tab Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.2530012428760529";
-                "Color Space" = Calibrated;
-                "Green Component" = "0.1969218552112579";
-                "Red Component" = "0.1762142032384872";
-            };
-            Tags =             (
-            );
-            "Terminal Type" = "xterm-256color";
-            Transparency = "0.12";
-            "Unlimited Scrollback" = 1;
-            "Use Bold Font" = 1;
-            "Use Bright Bold" = 1;
-            "Use Bright Bold (Dark)" = 1;
-            "Use Bright Bold (Light)" = 1;
-            "Use Cursor Guide (Dark)" = 0;
-            "Use Cursor Guide (Light)" = 0;
-            "Use Italic Font" = 1;
-            "Use Non-ASCII Font" = 0;
-            "Use Selected Text Color (Dark)" = 1;
-            "Use Selected Text Color (Light)" = 1;
-            "Use Separate Colors for Light and Dark Mode" = 1;
-            "Use Tab Color (Dark)" = 0;
-            "Use Tab Color (Light)" = 0;
-            "Use Underline Color (Dark)" = 0;
-            "Use Underline Color (Light)" = 0;
-            "Vertical Spacing" = 1;
-            "Visual Bell" = 1;
-            "Window Type" = 0;
-            "Working Directory" = "/Users/adjalali3";
-        },
-                {
-            "ASCII Anti Aliased" = 1;
-            "ASCII Ligatures" = 1;
-            "Allow Title Reporting" = 1;
-            "Ambiguous Double Width" = 0;
-            "Ansi 0 Color" =             {
-                "Blue Component" = "0.259";
-                "Green Component" = "0.212";
-                "Red Component" = "0.027";
-            };
-            "Ansi 0 Color (Dark)" =             {
-                "Blue Component" = "0.2588235294117647";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2117647058823529";
-                "Red Component" = "0.02745098039215686";
-            };
-            "Ansi 0 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1176470592617989";
-                "Color Space" = sRGB;
-                "Green Component" = "0.09803921729326248";
-                "Red Component" = "0.0784313753247261";
-            };
-            "Ansi 1 Color" =             {
-                "Blue Component" = "0.184";
-                "Green Component" = "0.196";
-                "Red Component" = "0.863";
-            };
-            "Ansi 1 Color (Dark)" =             {
-                "Blue Component" = "0.1843137254901961";
-                "Color Space" = sRGB;
-                "Green Component" = "0.196078431372549";
-                "Red Component" = "0.8627450980392157";
-            };
-            "Ansi 1 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.1630003750324249";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2366006970405579";
-                "Red Component" = "0.7074432373046875";
-            };
-            "Ansi 10 Color" =             {
-                "Blue Component" = "0.459";
-                "Green Component" = "0.431";
-                "Red Component" = "0.345";
-            };
-            "Ansi 10 Color (Dark)" =             {
-                "Blue Component" = "0.4588235294117647";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4313725490196079";
-                "Red Component" = "0.3450980392156863";
-            };
-            "Ansi 10 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.5654193758964539";
-                "Color Space" = sRGB;
-                "Green Component" = "0.9042816162109375";
-                "Red Component" = "0.3450070321559906";
-            };
-            "Ansi 11 Color" =             {
-                "Blue Component" = "0.514";
-                "Green Component" = "0.482";
-                "Red Component" = "0.396";
-            };
-            "Ansi 11 Color (Dark)" =             {
-                "Blue Component" = "0.5137254901960784";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4823529411764706";
-                "Red Component" = "0.396078431372549";
-            };
-            "Ansi 11 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.8833775520324707";
-                "Red Component" = "0.9259033203125";
-            };
-            "Ansi 12 Color" =             {
-                "Blue Component" = "0.588";
-                "Green Component" = "0.58";
-                "Red Component" = "0.514";
-            };
-            "Ansi 12 Color (Dark)" =             {
-                "Blue Component" = "0.5882352941176471";
-                "Color Space" = sRGB;
-                "Green Component" = "0.5803921568627451";
-                "Red Component" = "0.5137254901960784";
-            };
-            "Ansi 12 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.9485321044921875";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6704471707344055";
-                "Red Component" = "0.6534907817840576";
-            };
-            "Ansi 13 Color" =             {
-                "Blue Component" = "0.769";
-                "Green Component" = "0.443";
-                "Red Component" = "0.424";
-            };
-            "Ansi 13 Color (Dark)" =             {
-                "Blue Component" = "0.7686274509803922";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4431372549019608";
-                "Red Component" = "0.4235294117647059";
-            };
-            "Ansi 13 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.8821563720703125";
-                "Color Space" = sRGB;
-                "Green Component" = "0.4927266538143158";
-                "Red Component" = "0.8821563720703125";
-            };
-            "Ansi 14 Color" =             {
-                "Blue Component" = "0.631";
-                "Green Component" = "0.631";
-                "Red Component" = "0.576";
-            };
-            "Ansi 14 Color (Dark)" =             {
-                "Blue Component" = "0.6313725490196078";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6313725490196078";
-                "Red Component" = "0.5764705882352941";
-            };
-            "Ansi 14 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 1;
-                "Color Space" = sRGB;
-                "Green Component" = "0.9926329255104065";
-                "Red Component" = "0.3759753108024597";
-            };
-            "Ansi 15 Color" =             {
-                "Blue Component" = "0.89";
-                "Green Component" = "0.965";
-                "Red Component" = "0.992";
-            };
-            "Ansi 15 Color (Dark)" =             {
-                "Blue Component" = "0.8901960784313725";
-                "Color Space" = sRGB;
-                "Green Component" = "0.9647058823529412";
-                "Red Component" = "0.9921568627450981";
-            };
-            "Ansi 15 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 1;
-                "Color Space" = sRGB;
-                "Green Component" = 1;
-                "Red Component" = "0.9999960064888";
-            };
-            "Ansi 2 Color" =             {
-                "Blue Component" = 0;
-                "Green Component" = "0.6";
-                "Red Component" = "0.522";
-            };
-            "Ansi 2 Color (Dark)" =             {
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.6";
-                "Red Component" = "0.5215686274509804";
-            };
-            "Ansi 2 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.7607843279838562";
-                "Red Component" = 0;
-            };
-            "Ansi 3 Color" =             {
-                "Blue Component" = 0;
-                "Green Component" = "0.537";
-                "Red Component" = "0.71";
-            };
-            "Ansi 3 Color (Dark)" =             {
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.5372549019607843";
-                "Red Component" = "0.7098039215686275";
-            };
-            "Ansi 3 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = 0;
-                "Color Space" = sRGB;
-                "Green Component" = "0.7695948481559753";
-                "Red Component" = "0.7805864810943604";
-            };
-            "Ansi 4 Color" =             {
-                "Blue Component" = "0.824";
-                "Green Component" = "0.545";
-                "Red Component" = "0.149";
-            };
-            "Ansi 4 Color (Dark)" =             {
-                "Blue Component" = "0.8235294117647058";
-                "Color Space" = sRGB;
-                "Green Component" = "0.5450980392156862";
-                "Red Component" = "0.1490196078431373";
-            };
-            "Ansi 4 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7821617722511292";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2647435665130615";
-                "Red Component" = "0.1540430039167404";
-            };
-            "Ansi 5 Color" =             {
-                "Blue Component" = "0.51";
-                "Green Component" = "0.212";
-                "Red Component" = "0.827";
-            };
-            "Ansi 5 Color (Dark)" =             {
-                "Blue Component" = "0.5098039215686274";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2117647058823529";
-                "Red Component" = "0.8274509803921568";
-            };
-            "Ansi 5 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7449436187744141";
-                "Color Space" = sRGB;
-                "Green Component" = "0.2493168413639069";
-                "Red Component" = "0.752197265625";
-            };
-            "Ansi 6 Color" =             {
-                "Blue Component" = "0.596";
-                "Green Component" = "0.631";
-                "Red Component" = "0.165";
-            };
-            "Ansi 6 Color (Dark)" =             {
-                "Blue Component" = "0.596078431372549";
-                "Color Space" = sRGB;
-                "Green Component" = "0.6313725490196078";
-                "Red Component" = "0.1647058823529412";
-            };
-            "Ansi 6 Color (Light)" =             {
-                "Alpha Component" = 1;
-                "Blue Component" = "0.7816620469093323";
-                "Color Spac
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AIFeatureFunctionCalling</key>
+	<true/>
+	<key>AIFeatureHostedCodeInterpeter</key>
+	<true/>
+	<key>AIFeatureHostedFileSearch</key>
+	<true/>
+	<key>AIFeatureHostedWebSearch</key>
+	<true/>
+	<key>AIFeatureStreamingResponses</key>
+	<true/>
+	<key>AITermAPI</key>
+	<integer>2</integer>
+	<key>AIVectorStore</key>
+	<integer>0</integer>
+	<key>AiMaxTokens</key>
+	<integer>400000</integer>
+	<key>AiModel</key>
+	<string>gpt-5.1</string>
+	<key>AiResponseMaxTokens</key>
+	<integer>128000</integer>
+	<key>AitermURL</key>
+	<string>https://api.openai.com/v1/responses</string>
+	<key>AppleAntiAliasingThreshold</key>
+	<integer>1</integer>
+	<key>ApplePressAndHoldEnabled</key>
+	<false/>
+	<key>AppleScrollAnimationEnabled</key>
+	<integer>0</integer>
+	<key>AppleSmoothFixedFontsSizeThreshold</key>
+	<integer>1</integer>
+	<key>AppleWindowTabbingMode</key>
+	<string>manual</string>
+	<key>Custom Color Presets</key>
+	<dict>
+		<key>Nord</key>
+		<dict>
+			<key>Ansi 0 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.25300124287605286</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.19692185521125793</real>
+				<key>Red Component</key>
+				<real>0.17621420323848724</real>
+			</dict>
+			<key>Ansi 1 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.3416893780231476</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.29435792565345764</real>
+				<key>Red Component</key>
+				<real>0.688555896282196</real>
+			</dict>
+			<key>Ansi 10 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.4759744107723236</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.7002110481262207</real>
+				<key>Red Component</key>
+				<real>0.5760542154312134</real>
+			</dict>
+			<key>Ansi 11 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.47280269861221313</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.7557785511016846</real>
+				<key>Red Component</key>
+				<real>0.8990201950073242</real>
+			</dict>
+			<key>Ansi 12 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7045942544937134</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.5608044862747192</real>
+				<key>Red Component</key>
+				<real>0.4340144395828247</real>
+			</dict>
+			<key>Ansi 13 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.6157113313674927</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.4748716652393341</real>
+				<key>Red Component</key>
+				<real>0.6428365707397461</real>
+			</dict>
+			<key>Ansi 14 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.6777905225753784</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.6861472129821777</real>
+				<key>Red Component</key>
+				<real>0.49344515800476074</real>
+			</dict>
+			<key>Ansi 15 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.945746898651123</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.9209208488464355</real>
+				<key>Red Component</key>
+				<real>0.9072774648666382</real>
+			</dict>
+			<key>Ansi 2 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.4759744107723236</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.7002110481262207</real>
+				<key>Red Component</key>
+				<real>0.5760542154312134</real>
+			</dict>
+			<key>Ansi 3 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.47280269861221313</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.7557785511016846</real>
+				<key>Red Component</key>
+				<real>0.8990201950073242</real>
+			</dict>
+			<key>Ansi 4 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7045942544937134</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.5608044862747192</real>
+				<key>Red Component</key>
+				<real>0.4340144395828247</real>
+			</dict>
+			<key>Ansi 5 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.6157113313674927</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.4748716652393341</real>
+				<key>Red Component</key>
+				<real>0.6428365707397461</real>
+			</dict>
+			<key>Ansi 6 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7735686302185059</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.7021664381027222</real>
+				<key>Red Component</key>
+				<real>0.4660642147064209</real>
+			</dict>
+			<key>Ansi 7 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.9262098073959351</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.8916594386100769</real>
+				<key>Red Component</key>
+				<real>0.8736777901649475</real>
+			</dict>
+			<key>Ansi 8 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.3406426012516022</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.2652154266834259</real>
+				<key>Red Component</key>
+				<real>0.2330617606639862</real>
+			</dict>
+			<key>Ansi 9 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.3416893780231476</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.29435792565345764</real>
+				<key>Red Component</key>
+				<real>0.688555896282196</real>
+			</dict>
+			<key>Background Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.19183900952339172</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.15255947411060333</real>
+				<key>Red Component</key>
+				<real>0.1357133686542511</real>
+			</dict>
+			<key>Badge Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.7057952880859375</real>
+				<key>Blue Component</key>
+				<real>0.29600727558135986</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.23046499490737915</real>
+				<key>Red Component</key>
+				<real>0.2025250792503357</real>
+			</dict>
+			<key>Bold Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.945746898651123</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.9209208488464355</real>
+				<key>Red Component</key>
+				<real>0.9072774648666382</real>
+			</dict>
+			<key>Cursor Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.8922592401504517</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.8385788202285767</real>
+				<key>Red Component</key>
+				<real>0.8121471405029297</real>
+			</dict>
+			<key>Cursor Guide Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.25300124287605286</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.19692185521125793</real>
+				<key>Red Component</key>
+				<real>0.17621420323848724</real>
+			</dict>
+			<key>Cursor Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.25300124287605286</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.19692185521125793</real>
+				<key>Red Component</key>
+				<real>0.17621420323848724</real>
+			</dict>
+			<key>Foreground Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.8922591209411621</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.8385788202285767</real>
+				<key>Red Component</key>
+				<real>0.8121472597122192</real>
+			</dict>
+			<key>Link Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.9262098073959351</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.8916594386100769</real>
+				<key>Red Component</key>
+				<real>0.8736777901649475</real>
+			</dict>
+			<key>Selected Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.8922592401504517</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.8385788202285767</real>
+				<key>Red Component</key>
+				<real>0.8121471405029297</real>
+			</dict>
+			<key>Selection Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.3406426012516022</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.2652154266834259</real>
+				<key>Red Component</key>
+				<real>0.2330617606639862</real>
+			</dict>
+			<key>Tab Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.25300124287605286</real>
+				<key>Color Space</key>
+				<string>Calibrated</string>
+				<key>Green Component</key>
+				<real>0.19692185521125793</real>
+				<key>Red Component</key>
+				<real>0.17621420323848724</real>
+			</dict>
+		</dict>
+		<key>catppuccin-macchiato</key>
+		<dict>
+			<key>Ansi 0 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.39215686274509803</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.30196078431372547</real>
+				<key>Red Component</key>
+				<real>0.28627450980392155</real>
+			</dict>
+			<key>Ansi 1 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5882352941176471</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5294117647058824</real>
+				<key>Red Component</key>
+				<real>0.9294117647058824</real>
+			</dict>
+			<key>Ansi 10 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.4980392156862745</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8117647058823529</real>
+				<key>Red Component</key>
+				<real>0.5490196078431373</real>
+			</dict>
+			<key>Ansi 11 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5098039215686274</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7764705882352941</real>
+				<key>Red Component</key>
+				<real>0.8823529411764706</real>
+			</dict>
+			<key>Ansi 12 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9647058823529412</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6313725490196078</real>
+				<key>Red Component</key>
+				<real>0.47058823529411764</real>
+			</dict>
+			<key>Ansi 13 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8666666666666667</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6627450980392157</real>
+				<key>Red Component</key>
+				<real>0.9490196078431372</real>
+			</dict>
+			<key>Ansi 14 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.7529411764705882</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.796078431372549</real>
+				<key>Red Component</key>
+				<real>0.38823529411764707</real>
+			</dict>
+			<key>Ansi 15 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8784313725490196</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7529411764705882</real>
+				<key>Red Component</key>
+				<real>0.7215686274509804</real>
+			</dict>
+			<key>Ansi 2 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5843137254901961</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8549019607843137</real>
+				<key>Red Component</key>
+				<real>0.6509803921568628</real>
+			</dict>
+			<key>Ansi 3 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.6235294117647059</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8313725490196079</real>
+				<key>Red Component</key>
+				<real>0.9333333333333333</real>
+			</dict>
+			<key>Ansi 4 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9568627450980393</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6784313725490196</real>
+				<key>Red Component</key>
+				<real>0.5411764705882353</real>
+			</dict>
+			<key>Ansi 5 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9019607843137255</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7411764705882353</real>
+				<key>Red Component</key>
+				<real>0.9607843137254902</real>
+			</dict>
+			<key>Ansi 6 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.792156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8352941176470589</real>
+				<key>Red Component</key>
+				<real>0.5450980392156862</real>
+			</dict>
+			<key>Ansi 7 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.796078431372549</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6784313725490196</real>
+				<key>Red Component</key>
+				<real>0.6470588235294118</real>
+			</dict>
+			<key>Ansi 8 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.47058823529411764</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3764705882352941</real>
+				<key>Red Component</key>
+				<real>0.3568627450980392</real>
+			</dict>
+			<key>Ansi 9 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5254901960784314</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4549019607843137</real>
+				<key>Red Component</key>
+				<real>0.9254901960784314</real>
+			</dict>
+			<key>Background Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.22745098039215686</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.15294117647058825</real>
+				<key>Red Component</key>
+				<real>0.1411764705882353</real>
+			</dict>
+			<key>Bold Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Cursor Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8392156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8588235294117647</real>
+				<key>Red Component</key>
+				<real>0.9568627450980393</real>
+			</dict>
+			<key>Cursor Guide Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.07</real>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Cursor Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.22745098039215686</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.15294117647058825</real>
+				<key>Red Component</key>
+				<real>0.1411764705882353</real>
+			</dict>
+			<key>Foreground Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Link Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8901960784313725</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8431372549019608</real>
+				<key>Red Component</key>
+				<real>0.5686274509803921</real>
+			</dict>
+			<key>Selected Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Selection Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.47058823529411764</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3764705882352941</real>
+				<key>Red Component</key>
+				<real>0.3568627450980392</real>
+			</dict>
+		</dict>
+		<key>catppuccin-mocha</key>
+		<dict>
+			<key>Ansi 0 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.35294117647058826</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.2784313725490196</real>
+				<key>Red Component</key>
+				<real>0.27058823529411763</real>
+			</dict>
+			<key>Ansi 1 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.6588235294117647</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5450980392156862</real>
+				<key>Red Component</key>
+				<real>0.9529411764705882</real>
+			</dict>
+			<key>Ansi 10 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5450980392156862</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8470588235294118</real>
+				<key>Red Component</key>
+				<real>0.5372549019607843</real>
+			</dict>
+			<key>Ansi 11 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5686274509803921</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.9215686274509803</real>
+			</dict>
+			<key>Ansi 12 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9882352941176471</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6588235294117647</real>
+				<key>Red Component</key>
+				<real>0.4549019607843137</real>
+			</dict>
+			<key>Ansi 13 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8705882352941177</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6823529411764706</real>
+				<key>Red Component</key>
+				<real>0.9490196078431372</real>
+			</dict>
+			<key>Ansi 14 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.792156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8431372549019608</real>
+				<key>Red Component</key>
+				<real>0.4196078431372549</real>
+			</dict>
+			<key>Ansi 15 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8705882352941177</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7607843137254902</real>
+				<key>Red Component</key>
+				<real>0.7294117647058823</real>
+			</dict>
+			<key>Ansi 2 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.6313725490196078</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8901960784313725</real>
+				<key>Red Component</key>
+				<real>0.6509803921568628</real>
+			</dict>
+			<key>Ansi 3 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.6862745098039216</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8862745098039215</real>
+				<key>Red Component</key>
+				<real>0.9764705882352941</real>
+			</dict>
+			<key>Ansi 4 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9803921568627451</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7058823529411765</real>
+				<key>Red Component</key>
+				<real>0.5372549019607843</real>
+			</dict>
+			<key>Ansi 5 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9058823529411765</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7607843137254902</real>
+				<key>Red Component</key>
+				<real>0.9607843137254902</real>
+			</dict>
+			<key>Ansi 6 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8352941176470589</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8862745098039215</real>
+				<key>Red Component</key>
+				<real>0.5803921568627451</real>
+			</dict>
+			<key>Ansi 7 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.7843137254901961</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6784313725490196</real>
+				<key>Red Component</key>
+				<real>0.6509803921568628</real>
+			</dict>
+			<key>Ansi 8 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.4392156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3568627450980392</real>
+				<key>Red Component</key>
+				<real>0.34509803921568627</real>
+			</dict>
+			<key>Ansi 9 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.6</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4666666666666667</real>
+				<key>Red Component</key>
+				<real>0.9529411764705882</real>
+			</dict>
+			<key>Background Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.1803921568627451</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.11764705882352941</real>
+				<key>Red Component</key>
+				<real>0.11764705882352941</real>
+			</dict>
+			<key>Bold Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9568627450980393</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8392156862745098</real>
+				<key>Red Component</key>
+				<real>0.803921568627451</real>
+			</dict>
+			<key>Cursor Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8627450980392157</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8784313725490196</real>
+				<key>Red Component</key>
+				<real>0.9607843137254902</real>
+			</dict>
+			<key>Cursor Guide Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.07</real>
+				<key>Blue Component</key>
+				<real>0.9568627450980393</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8392156862745098</real>
+				<key>Red Component</key>
+				<real>0.803921568627451</real>
+			</dict>
+			<key>Cursor Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.1803921568627451</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.11764705882352941</real>
+				<key>Red Component</key>
+				<real>0.11764705882352941</real>
+			</dict>
+			<key>Foreground Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9568627450980393</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8392156862745098</real>
+				<key>Red Component</key>
+				<real>0.803921568627451</real>
+			</dict>
+			<key>Link Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9215686274509803</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8627450980392157</real>
+				<key>Red Component</key>
+				<real>0.5372549019607843</real>
+			</dict>
+			<key>Selected Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9568627450980393</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8392156862745098</real>
+				<key>Red Component</key>
+				<real>0.803921568627451</real>
+			</dict>
+			<key>Selection Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.4392156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3568627450980392</real>
+				<key>Red Component</key>
+				<real>0.34509803921568627</real>
+			</dict>
+		</dict>
+		<key>iTerm2 Solarized Dark</key>
+		<dict>
+			<key>Ansi 0 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.25882354378700256</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.21176470816135406</real>
+				<key>Red Component</key>
+				<real>0.027450980618596077</real>
+			</dict>
+			<key>Ansi 1 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.18431372940540314</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.19607843458652496</real>
+				<key>Red Component</key>
+				<real>0.8627451062202454</real>
+			</dict>
+			<key>Ansi 10 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.4588235318660736</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4313725531101227</real>
+				<key>Red Component</key>
+				<real>0.3450980484485626</real>
+			</dict>
+			<key>Ansi 11 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.5137255191802979</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.48235294222831726</real>
+				<key>Red Component</key>
+				<real>0.3960784375667572</real>
+			</dict>
+			<key>Ansi 12 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.5882353186607361</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5803921818733215</real>
+				<key>Red Component</key>
+				<real>0.5137255191802979</real>
+			</dict>
+			<key>Ansi 13 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7686274647712708</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4431372582912445</real>
+				<key>Red Component</key>
+				<real>0.42352941632270813</real>
+			</dict>
+			<key>Ansi 14 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.6313725709915161</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6313725709915161</real>
+				<key>Red Component</key>
+				<real>0.5764706134796143</real>
+			</dict>
+			<key>Ansi 15 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.8901960849761963</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.9647058844566345</real>
+				<key>Red Component</key>
+				<real>0.9921568632125854</real>
+			</dict>
+			<key>Ansi 2 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6000000238418579</real>
+				<key>Red Component</key>
+				<real>0.5215686559677124</real>
+			</dict>
+			<key>Ansi 3 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5372549295425415</real>
+				<key>Red Component</key>
+				<real>0.7098039388656616</real>
+			</dict>
+			<key>Ansi 4 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.8235294222831726</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.545098066329956</real>
+				<key>Red Component</key>
+				<real>0.14901961386203766</real>
+			</dict>
+			<key>Ansi 5 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.5098039507865906</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.21176470816135406</real>
+				<key>Red Component</key>
+				<real>0.8274509906768799</real>
+			</dict>
+			<key>Ansi 6 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.5960784554481506</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6313725709915161</real>
+				<key>Red Component</key>
+				<real>0.16470588743686676</real>
+			</dict>
+			<key>Ansi 7 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.8352941274642944</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.9098039269447327</real>
+				<key>Red Component</key>
+				<real>0.9333333373069763</real>
+			</dict>
+			<key>Ansi 8 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.21176470816135406</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.16862745583057404</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
+			<key>Ansi 9 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.08627451211214066</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.29411765933036804</real>
+				<key>Red Component</key>
+				<real>0.7960784435272217</real>
+			</dict>
+			<key>Background Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.21176470816135406</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.16862745583057404</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
+			<key>Badge Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.5</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.14910030364990234</real>
+				<key>Red Component</key>
+				<real>1.0</real>
+			</dict>
+			<key>Bold Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.6313725709915161</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6313725709915161</real>
+				<key>Red Component</key>
+				<real>0.5764706134796143</real>
+			</dict>
+			<key>Cursor Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.5882353186607361</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5803921818733215</real>
+				<key>Red Component</key>
+				<real>0.5137255191802979</real>
+			</dict>
+			<key>Cursor Guide Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.25</real>
+				<key>Blue Component</key>
+				<real>1.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.9268137812614441</real>
+				<key>Red Component</key>
+				<real>0.7021402716636658</real>
+			</dict>
+			<key>Cursor Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.25882354378700256</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.21176470816135406</real>
+				<key>Red Component</key>
+				<real>0.027450980618596077</real>
+			</dict>
+			<key>Foreground Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.5882353186607361</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5803921818733215</real>
+				<key>Red Component</key>
+				<real>0.5137255191802979</real>
+			</dict>
+			<key>Link Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7342270612716675</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3591529428958893</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
+			<key>Selected Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.6313725709915161</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6313725709915161</real>
+				<key>Red Component</key>
+				<real>0.5764706134796143</real>
+			</dict>
+			<key>Selection Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.25882354378700256</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.21176470816135406</real>
+				<key>Red Component</key>
+				<real>0.027450980618596077</real>
+			</dict>
+		</dict>
+	</dict>
+	<key>Default Bookmark Guid</key>
+	<string>77CC0BB2-689F-47A6-B5B0-B93D64054E7C</string>
+	<key>Default Browser Profile Guid</key>
+	<string>devops-nord-profile</string>
+	<key>EnableAPIServer</key>
+	<true/>
+	<key>FocusFollowsMouse</key>
+	<true/>
+	<key>HapticFeedbackForEsc</key>
+	<false/>
+	<key>HideScrollbar</key>
+	<true/>
+	<key>HideTab</key>
+	<false/>
+	<key>HotkeyMigratedFromSingleToMulti</key>
+	<true/>
+	<key>NSAutoFillHeuristicControllerEnabled</key>
+	<false/>
+	<key>NSNavPanelExpandedSizeForOpenMode</key>
+	<string>{880, 448}</string>
+	<key>NSOSPLastRootDirectory</key>
+	<data>
+	Ym9vazADAAAAAAUQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+	AAAAAAAAAAAAAAAAAPgBAAAEAAAAAwMAAAAEAAAFAAAAAQEAAFVzZXJzAAAACQAAAAEB
+	AABhZGphbGFsaTMAAAAJAAAAAQEAAERvd25sb2FkcwAAAA8AAAABAQAAZGphbGFsaV8g
+	QUk0T1BUABAAAAABBgAAEAAAACAAAAA0AAAASAAAAAgAAAAEAwAAHUIAAAAAAAAIAAAA
+	BAMAAEfrIgAAAAAACAAAAAQDAAB86yIAAAAAAAgAAAAEAwAAIJE0AAAAAAAQAAAAAQYA
+	AHgAAACIAAAAmAAAAKgAAAAIAAAAAAQAAEHHR3ACjbefGAAAAAECAAACAAAAAAAAAB8C
+	AAAAAAAAHwIAAAAAAAAAAAAAAQUAAAgAAAAEAwAAAgAAAAAAAAAEAAAAAwMAAPgBAAAI
+	AAAAAQkAAGZpbGU6Ly8vDAAAAAEBAABNYWNpbnRvc2ggSEQIAAAABAMAAACQgpbnAAAA
+	CAAAAAAEAABBx2j7dAAAACQAAAABAQAAQzRDMDYwMjUtMEMwOC00N0ZBLUE3REEtN0Q0
+	MkJCQzRCRjM4GAAAAAECAACBAAAAAQAAAO8TAAABAAAA7xMAAAEAAAABAAAAAQEAAC8A
+	AAAwAAAAAQIAAGRuaWIAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHJkbGYC
+	AAAAAAAAAPAAAAD+////AQAAAAAAAAATAAAABBAAAGAAAAAAAAAABRAAALgAAAAAAAAA
+	EBAAAOAAAAAAAAAAQBAAANAAAAAAAAAAAiAAALQBAAAAAAAABSAAACQBAAAAAAAAECAA
+	ADQBAAAAAAAAESAAAGgBAAAAAAAAEiAAAEgBAAAAAAAAEyAAAFgBAAAAAAAAICAAAJQB
+	AAAAAAAAMCAAAAABAAAAAAAAAcAAAAgBAAAAAAAAEcAAACAAAAAAAAAAEsAAABgBAAAA
+	AAAAAdAAAAABAAAAAAAAENAAAAQAAAAAAAAAF/AAAEgAAAAAAAAAIvAAAMABAAAAAAAA
+	</data>
+	<key>NSOverlayScrollersFallBackForAccessoryViews</key>
+	<false/>
+	<key>NSQuotedKeystrokeBinding</key>
+	<string></string>
+	<key>NSRepeatCountBinding</key>
+	<string></string>
+	<key>NSScrollAnimationEnabled</key>
+	<false/>
+	<key>NSScrollViewShouldScrollUnderTitlebar</key>
+	<false/>
+	<key>NSSplitView Subview Frames NSColorPanelSplitView</key>
+	<array>
+		<string>0.000000, 0.000000, 230.000000, 262.000000, NO, NO</string>
+		<string>0.000000, 263.000000, 230.000000, 67.000000, NO, NO</string>
+	</array>
+	<key>NSToolbar Configuration com.apple.NSColorPanel</key>
+	<dict>
+		<key>TB Is Shown</key>
+		<integer>1</integer>
+	</dict>
+	<key>NSWindow Frame NSColorPanel</key>
+	<string>0 83 250 297 0 0 1512 949 </string>
+	<key>NSWindow Frame NSNavPanelAutosaveName</key>
+	<string>2232 447 800 448 0 0 5120 1409 </string>
+	<key>NSWindow Frame SUStatusFrame</key>
+	<string>2360 635 400 139 0 0 5120 1410 </string>
+	<key>NSWindow Frame SUUpdateAlert</key>
+	<string>2250 756 620 402 0 0 5120 1410 </string>
+	<key>NSWindow Frame iTerm Window 0</key>
+	<string>0 7 1506 942 0 0 1512 949 </string>
+	<key>NSWindow Frame iTerm Window 1</key>
+	<string>1804 231 1506 949 0 0 5120 1410 </string>
+	<key>NSWindow Frame iTerm Window 2</key>
+	<string>2235 459 650 492 0 0 5120 1410 </string>
+	<key>NSWindow Frame iTerm Window 3</key>
+	<string>2250 450 650 487 0 0 5120 1410 </string>
+	<key>NSWindow Frame iTerm Window 4</key>
+	<string>2560 0 2560 1409 0 0 5120 1409 </string>
+	<key>NeverWarnAboutShortLivedSessions_77CC0BB2-689F-47A6-B5B0-B93D64054E7C</key>
+	<true/>
+	<key>NeverWarnAboutShortLivedSessions_77CC0BB2-689F-47A6-B5B0-B93D64054E7C_selection</key>
+	<integer>0</integer>
+	<key>New Bookmarks</key>
+	<array>
+		<dict>
+			<key>ASCII Anti Aliased</key>
+			<true/>
+			<key>Ambiguous Double Width</key>
+			<false/>
+			<key>Ansi 0 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.11764705926179886</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.09803921729326248</real>
+				<key>Red Component</key>
+				<real>0.0784313753247261</real>
+			</dict>
+			<key>Ansi 0 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.39215686274509803</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.30196078431372547</real>
+				<key>Red Component</key>
+				<real>0.28627450980392155</real>
+			</dict>
+			<key>Ansi 0 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.39215686274509803</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.30196078431372547</real>
+				<key>Red Component</key>
+				<real>0.28627450980392155</real>
+			</dict>
+			<key>Ansi 1 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.16300037503242493</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.23660069704055786</real>
+				<key>Red Component</key>
+				<real>0.7074432373046875</real>
+			</dict>
+			<key>Ansi 1 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5882352941176471</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5294117647058824</real>
+				<key>Red Component</key>
+				<real>0.9294117647058824</real>
+			</dict>
+			<key>Ansi 1 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5882352941176471</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5294117647058824</real>
+				<key>Red Component</key>
+				<real>0.9294117647058824</real>
+			</dict>
+			<key>Ansi 10 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.5654193758964539</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.9042816162109375</real>
+				<key>Red Component</key>
+				<real>0.3450070321559906</real>
+			</dict>
+			<key>Ansi 10 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.4980392156862745</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8117647058823529</real>
+				<key>Red Component</key>
+				<real>0.5490196078431373</real>
+			</dict>
+			<key>Ansi 10 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.4980392156862745</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8117647058823529</real>
+				<key>Red Component</key>
+				<real>0.5490196078431373</real>
+			</dict>
+			<key>Ansi 11 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8833775520324707</real>
+				<key>Red Component</key>
+				<real>0.9259033203125</real>
+			</dict>
+			<key>Ansi 11 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5098039215686274</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7764705882352941</real>
+				<key>Red Component</key>
+				<real>0.8823529411764706</real>
+			</dict>
+			<key>Ansi 11 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5098039215686274</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7764705882352941</real>
+				<key>Red Component</key>
+				<real>0.8823529411764706</real>
+			</dict>
+			<key>Ansi 12 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.9485321044921875</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6704471707344055</real>
+				<key>Red Component</key>
+				<real>0.6534907817840576</real>
+			</dict>
+			<key>Ansi 12 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9647058823529412</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6313725490196078</real>
+				<key>Red Component</key>
+				<real>0.47058823529411764</real>
+			</dict>
+			<key>Ansi 12 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9647058823529412</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6313725490196078</real>
+				<key>Red Component</key>
+				<real>0.47058823529411764</real>
+			</dict>
+			<key>Ansi 13 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.8821563720703125</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4927266538143158</real>
+				<key>Red Component</key>
+				<real>0.8821563720703125</real>
+			</dict>
+			<key>Ansi 13 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8666666666666667</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6627450980392157</real>
+				<key>Red Component</key>
+				<real>0.9490196078431372</real>
+			</dict>
+			<key>Ansi 13 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8666666666666667</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6627450980392157</real>
+				<key>Red Component</key>
+				<real>0.9490196078431372</real>
+			</dict>
+			<key>Ansi 14 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>1.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.9926329255104065</real>
+				<key>Red Component</key>
+				<real>0.3759753108024597</real>
+			</dict>
+			<key>Ansi 14 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.7529411764705882</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.796078431372549</real>
+				<key>Red Component</key>
+				<real>0.38823529411764707</real>
+			</dict>
+			<key>Ansi 14 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.7529411764705882</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.796078431372549</real>
+				<key>Red Component</key>
+				<real>0.38823529411764707</real>
+			</dict>
+			<key>Ansi 15 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>1.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>1.0</real>
+				<key>Red Component</key>
+				<real>0.9999960064888</real>
+			</dict>
+			<key>Ansi 15 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8784313725490196</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7529411764705882</real>
+				<key>Red Component</key>
+				<real>0.7215686274509804</real>
+			</dict>
+			<key>Ansi 15 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8784313725490196</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7529411764705882</real>
+				<key>Red Component</key>
+				<real>0.7215686274509804</real>
+			</dict>
+			<key>Ansi 2 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7607843279838562</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
+			<key>Ansi 2 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5843137254901961</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8549019607843137</real>
+				<key>Red Component</key>
+				<real>0.6509803921568628</real>
+			</dict>
+			<key>Ansi 2 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5843137254901961</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8549019607843137</real>
+				<key>Red Component</key>
+				<real>0.6509803921568628</real>
+			</dict>
+			<key>Ansi 3 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7695948481559753</real>
+				<key>Red Component</key>
+				<real>0.7805864810943604</real>
+			</dict>
+			<key>Ansi 3 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.6235294117647059</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8313725490196079</real>
+				<key>Red Component</key>
+				<real>0.9333333333333333</real>
+			</dict>
+			<key>Ansi 3 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.6235294117647059</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8313725490196079</real>
+				<key>Red Component</key>
+				<real>0.9333333333333333</real>
+			</dict>
+			<key>Ansi 4 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7821617722511292</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.2647435665130615</real>
+				<key>Red Component</key>
+				<real>0.15404300391674042</real>
+			</dict>
+			<key>Ansi 4 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9568627450980393</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6784313725490196</real>
+				<key>Red Component</key>
+				<real>0.5411764705882353</real>
+			</dict>
+			<key>Ansi 4 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9568627450980393</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6784313725490196</real>
+				<key>Red Component</key>
+				<real>0.5411764705882353</real>
+			</dict>
+			<key>Ansi 5 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7449436187744141</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.24931684136390686</real>
+				<key>Red Component</key>
+				<real>0.752197265625</real>
+			</dict>
+			<key>Ansi 5 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9019607843137255</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7411764705882353</real>
+				<key>Red Component</key>
+				<real>0.9607843137254902</real>
+			</dict>
+			<key>Ansi 5 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9019607843137255</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7411764705882353</real>
+				<key>Red Component</key>
+				<real>0.9607843137254902</real>
+			</dict>
+			<key>Ansi 6 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7816620469093323</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7742590308189392</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
+			<key>Ansi 6 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.792156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8352941176470589</real>
+				<key>Red Component</key>
+				<real>0.5450980392156862</real>
+			</dict>
+			<key>Ansi 6 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.792156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8352941176470589</real>
+				<key>Red Component</key>
+				<real>0.5450980392156862</real>
+			</dict>
+			<key>Ansi 7 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.7810482978820801</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7810582518577576</real>
+				<key>Red Component</key>
+				<real>0.7810397744178772</real>
+			</dict>
+			<key>Ansi 7 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.796078431372549</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6784313725490196</real>
+				<key>Red Component</key>
+				<real>0.6470588235294118</real>
+			</dict>
+			<key>Ansi 7 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.796078431372549</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.6784313725490196</real>
+				<key>Red Component</key>
+				<real>0.6470588235294118</real>
+			</dict>
+			<key>Ansi 8 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.4078223705291748</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.40782788395881653</real>
+				<key>Red Component</key>
+				<real>0.4078176021575928</real>
+			</dict>
+			<key>Ansi 8 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.47058823529411764</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3764705882352941</real>
+				<key>Red Component</key>
+				<real>0.3568627450980392</real>
+			</dict>
+			<key>Ansi 8 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.47058823529411764</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3764705882352941</real>
+				<key>Red Component</key>
+				<real>0.3568627450980392</real>
+			</dict>
+			<key>Ansi 9 Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.45833224058151245</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4752407670021057</real>
+				<key>Red Component</key>
+				<real>0.8659515380859375</real>
+			</dict>
+			<key>Ansi 9 Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5254901960784314</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4549019607843137</real>
+				<key>Red Component</key>
+				<real>0.9254901960784314</real>
+			</dict>
+			<key>Ansi 9 Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.5254901960784314</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.4549019607843137</real>
+				<key>Red Component</key>
+				<real>0.9254901960784314</real>
+			</dict>
+			<key>BM Growl</key>
+			<true/>
+			<key>Background Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.98</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.98</real>
+				<key>Red Component</key>
+				<real>0.98</real>
+			</dict>
+			<key>Background Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.22745098039215686</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.15294117647058825</real>
+				<key>Red Component</key>
+				<real>0.1411764705882353</real>
+			</dict>
+			<key>Background Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.22745098039215686</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.15294117647058825</real>
+				<key>Red Component</key>
+				<real>0.1411764705882353</real>
+			</dict>
+			<key>Background Image Location</key>
+			<string></string>
+			<key>Badge Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.5</real>
+				<key>Blue Component</key>
+				<real>0.11610633134841919</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.11610633134841919</real>
+				<key>Red Component</key>
+				<real>0.7461385726928711</real>
+			</dict>
+			<key>Badge Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.5</real>
+				<key>Blue Component</key>
+				<real>0.13960540294647217</real>
+				<key>Color Space</key>
+				<string>P3</string>
+				<key>Green Component</key>
+				<real>0.25479039549827576</real>
+				<key>Red Component</key>
+				<real>0.9292940497398376</real>
+			</dict>
+			<key>Badge Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.5</real>
+				<key>Blue Component</key>
+				<real>0.13960540294647217</real>
+				<key>Color Space</key>
+				<string>P3</string>
+				<key>Green Component</key>
+				<real>0.25479039549827576</real>
+				<key>Red Component</key>
+				<real>0.9292940497398376</real>
+			</dict>
+			<key>Blinking Cursor</key>
+			<false/>
+			<key>Blur</key>
+			<true/>
+			<key>Blur Radius</key>
+			<real>15.0</real>
+			<key>Bold Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.062745101749897</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.062745101749897</real>
+				<key>Red Component</key>
+				<real>0.062745101749897</real>
+			</dict>
+			<key>Bold Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Bold Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Brighten Bold Text (Dark)</key>
+			<true/>
+			<key>Brighten Bold Text (Light)</key>
+			<true/>
+			<key>Character Encoding</key>
+			<integer>4</integer>
+			<key>Close Sessions On End</key>
+			<true/>
+			<key>Columns</key>
+			<integer>80</integer>
+			<key>Command</key>
+			<string></string>
+			<key>Cursor Boost (Dark)</key>
+			<real>0.0</real>
+			<key>Cursor Boost (Light)</key>
+			<real>0.0</real>
+			<key>Cursor Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.0</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
+			<key>Cursor Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8392156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8588235294117647</real>
+				<key>Red Component</key>
+				<real>0.9568627450980393</real>
+			</dict>
+			<key>Cursor Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8392156862745098</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8588235294117647</real>
+				<key>Red Component</key>
+				<real>0.9568627450980393</real>
+			</dict>
+			<key>Cursor Guide Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.25</real>
+				<key>Blue Component</key>
+				<real>0.8531928062438965</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.7721771597862244</real>
+				<key>Red Component</key>
+				<real>0.5233826041221619</real>
+			</dict>
+			<key>Cursor Guide Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.07</real>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Cursor Guide Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>0.07</real>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Cursor Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>1.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>1.0</real>
+				<key>Red Component</key>
+				<real>1.0</real>
+			</dict>
+			<key>Cursor Text Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.22745098039215686</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.15294117647058825</real>
+				<key>Red Component</key>
+				<real>0.1411764705882353</real>
+			</dict>
+			<key>Cursor Text Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.22745098039215686</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.15294117647058825</real>
+				<key>Red Component</key>
+				<real>0.1411764705882353</real>
+			</dict>
+			<key>Custom Command</key>
+			<string>No</string>
+			<key>Custom Directory</key>
+			<string>No</string>
+			<key>Default Bookmark</key>
+			<string>No</string>
+			<key>Description</key>
+			<string>Default</string>
+			<key>Disable Window Resizing</key>
+			<false/>
+			<key>Draw Powerline Glyphs</key>
+			<true/>
+			<key>Faint Text Alpha (Dark)</key>
+			<real>0.5</real>
+			<key>Faint Text Alpha (Light)</key>
+			<real>0.5</real>
+			<key>Flashing Bell</key>
+			<false/>
+			<key>Foreground Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.062745101749897</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.062745101749897</real>
+				<key>Red Component</key>
+				<real>0.062745101749897</real>
+			</dict>
+			<key>Foreground Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Foreground Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Guid</key>
+			<string>77CC0BB2-689F-47A6-B5B0-B93D64054E7C</string>
+			<key>Horizontal Spacing</key>
+			<real>1.0</real>
+			<key>Icon</key>
+			<integer>1</integer>
+			<key>Idle Code</key>
+			<integer>0</integer>
+			<key>Jobs to Ignore</key>
+			<array>
+				<string>rlogin</string>
+				<string>ssh</string>
+				<string>slogin</string>
+				<string>telnet</string>
+			</array>
+			<key>Keyboard Map</key>
+			<dict/>
+			<key>Link Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.9337158203125</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.5578983426094055</real>
+				<key>Red Component</key>
+				<real>0.1980242282152176</real>
+			</dict>
+			<key>Link Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8901960784313725</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8431372549019608</real>
+				<key>Red Component</key>
+				<real>0.5686274509803921</real>
+			</dict>
+			<key>Link Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.8901960784313725</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8431372549019608</real>
+				<key>Red Component</key>
+				<real>0.5686274509803921</real>
+			</dict>
+			<key>Match Background Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.32116127014160156</real>
+				<key>Color Space</key>
+				<string>P3</string>
+				<key>Green Component</key>
+				<real>0.9860088229179382</real>
+				<key>Red Component</key>
+				<real>0.9969714283943176</real>
+			</dict>
+			<key>Match Background Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.32116127014160156</real>
+				<key>Color Space</key>
+				<string>P3</string>
+				<key>Green Component</key>
+				<real>0.9860088229179382</real>
+				<key>Red Component</key>
+				<real>0.9969714283943176</real>
+			</dict>
+			<key>Minimum Contrast</key>
+			<real>0.0</real>
+			<key>Minimum Contrast (Dark)</key>
+			<real>0.0</real>
+			<key>Minimum Contrast (Light)</key>
+			<real>0.0</real>
+			<key>Mouse Reporting</key>
+			<true/>
+			<key>Name</key>
+			<string>Default</string>
+			<key>Non Ascii Font</key>
+			<string>Monaco 12</string>
+			<key>Non-ASCII Anti Aliased</key>
+			<true/>
+			<key>Normal Font</key>
+			<string>JetBrainsMonoNFM-Regular 13</string>
+			<key>Only The Default BG Color Uses Transparency</key>
+			<true/>
+			<key>Option Key Sends</key>
+			<integer>0</integer>
+			<key>Prompt Before Closing 2</key>
+			<false/>
+			<key>Right Option Key Sends</key>
+			<integer>0</integer>
+			<key>Rows</key>
+			<integer>25</integer>
+			<key>Screen</key>
+			<integer>-1</integer>
+			<key>Scrollback Lines</key>
+			<integer>0</integer>
+			<key>Selected Text Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>0.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.0</real>
+				<key>Red Component</key>
+				<real>0.0</real>
+			</dict>
+			<key>Selected Text Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Selected Text Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.9607843137254902</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.8274509803921568</real>
+				<key>Red Component</key>
+				<real>0.792156862745098</real>
+			</dict>
+			<key>Selection Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1.0</real>
+				<key>Blue Component</key>
+				<real>1.0</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.843137264251709</real>
+				<key>Red Component</key>
+				<real>0.7019608020782471</real>
+			</dict>
+			<key>Selection Color (Dark)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.47058823529411764</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3764705882352941</real>
+				<key>Red Component</key>
+				<real>0.3568627450980392</real>
+			</dict>
+			<key>Selection Color (Light)</key>
+			<dict>
+				<key>Alpha Component</key>
+				<integer>1</integer>
+				<key>Blue Component</key>
+				<real>0.47058823529411764</real>
+				<key>Color Space</key>
+				<string>sRGB</string>
+				<key>Green Component</key>
+				<real>0.3764705882352941</real>
+				<key>Red Component</key>
+				<real>0.3568627450980392</real>
+			</dict>
+			<key>Send Code When Idle</key>
+			<false/>
+			<key>Shortcut</key>
+			<string></string>
+			<key>Silence Bell</key>
+			<false/>
+			<key>Smart Cursor Color (Dark)</key>
+			<false/>
+			<key>Smart Cursor Color (Light)</key>
+			<false/>
+			<key>Sync Title</key>
+			<false/>
+			<key>Tags</key>
+			<array/>
+			<key>Terminal Type</key>
+			<string>xterm-256color</string>
+			<key>Transparency</key>
+			<real>0.12</real>
+			<key>Unlimited Scrollback</key>
+			<true/>
+			<key>Use Bold Font</key>
+			<true/>
+			<key>Use Bright Bold</key>
+			<true/>
+			<key>Use Bright Bold (Dark)</key>
+			<true/>
+			<key>Use Bright Bold (Light)</key>
+			<true/>
+			<key>Use Cursor Guide (Dark)</key>
+			<false/>
+			<key>Use Cursor Guide (Light)</key>
+			<false/>
+			<key>Use Italic Font</key>
+			<true/>
+			<key>Use Non-ASCII Font</key>
+			<false/>
+			<key>Use Selected Text Color (Dark)</key>
+			<true/>
+			<key>Use Selected Text Color (Light)</key>
+			<true/>
+			<key>Use Separate Colors for Light and Dark Mode</key>
+			<true/>
+			<key>Use Tab Color (Dark)</key>
+			<false/>
+			<key>Use Tab Color (Light)</key>
+			<false/>
+			<key>Use Underline Color (Dark)</key>
+			<false/>
+			<key>Use Underline Color (Light)</key>
+			<false/>
+			<key>Vertical Spacing</key>
+			<real>1.0</real>
+			<key>Visual Bell</key>
+			<true/>
+			<key>Window Type</key>
+			<integer>0</integer>
+			<key>Working Directory</key>
+			<string>/Users/adjalali3</string>
+		</dict>
+	</array>
+	<key>Normal Font</key>
+	<string>JetBrainsMonoNF-Regular 14</string>
+	<key>PointerActions</key>
+	<dict>
+		<key>Button,1,1,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kContextMenuPointerAction</string>
+		</dict>
+		<key>Button,2,1,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPasteFromClipboardPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeDown,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPrevWindowPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeLeft,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPrevTabPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeRight,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kNextTabPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeUp,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kNextWindowPointerAction</string>
+		</dict>
+	</dict>
+	<key>PreventEscapeSequenceFromChangingProfile</key>
+	<false/>
+	<key>PreventEscapeSequenceFromClearingHistory</key>
+	<false/>
+	<key>Print In Black And White</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUFeedAlternateAppNameKey</key>
+	<string>iTerm</string>
+	<key>SUFeedURL</key>
+	<string>https://iterm2.com/appcasts/final_modern.xml?shard=39</string>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>SULastCheckTime</key>
+	<date>2026-09-21T05:01:17Z</date>
+	<key>SUSendProfileInfo</key>
+	<false/>
+	<key>SUUpdateGroupIdentifier</key>
+	<integer>624434906</integer>
+	<key>SUUpdateRelaunchingMarker</key>
+	<false/>
+	<key>SoundForEsc</key>
+	<false/>
+	<key>TabStyleWithAutomaticOption</key>
+	<integer>5</integer>
+	<key>UseBorder</key>
+	<false/>
+	<key>VisualIndicatorForEsc</key>
+	<false/>
+	<key>findMode_iTerm</key>
+	<integer>0</integer>
+	<key>iTerm Version</key>
+	<string>3.6.10</string>
+</dict>
+</plist>

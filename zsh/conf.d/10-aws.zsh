@@ -33,10 +33,6 @@ PYEOF
   echo "  TF_VAR_aws_region=$TF_VAR_aws_region"
 }
 
-aws-export-tf() {
-  source "$HOME/.aws/terraform-creds.sh" "$@" || return 1
-}
-
 aws-unexport() {
   unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
   unset AWS_ACCOUNT_ID TF_VAR_account_id TF_VAR_aws_region

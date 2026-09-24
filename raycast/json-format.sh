@@ -17,12 +17,12 @@ json=$(pbpaste)
 
 # Try to format with jq, fall back to python
 if command -v jq &> /dev/null; then
-    formatted=$(echo "$json" | jq '.' 2>/dev/null)
+    formatter=(jq '.')
 else
-    formatted=$(echo "$json" | python3 -m json.tool 2>/dev/null)
+    formatter=(python3 -m json.tool)
 fi
 
-if [ $? -eq 0 ] && [ -n "$formatted" ]; then
+if formatted=$(echo "$json" | "${formatter[@]}" 2>/dev/null) && [ -n "$formatted" ]; then
     echo "$formatted" | pbcopy
     echo "JSON formatted and copied to clipboard"
 else

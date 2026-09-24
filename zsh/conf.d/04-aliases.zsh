@@ -59,21 +59,6 @@ alias gra='git rebase --abort'
 alias gpr='gh pr create --fill'
 alias gpv='gh pr view --web'
 
-# Custom workflow scripts (~/.local/scripts)
-alias gbs='git-branch-stack.sh'       # Branch stack management
-alias dreset='docker-reset.sh'        # Docker cluster reset
-alias e2e='pipeline-e2e.sh'           # ML pipeline E2E testing
-alias prr='pr-review.sh'              # PR review workflow
-
-# Documentation (~/.local/docs)
-alias docs='glow ~/.local/docs/README.md'
-alias docs-git='glow ~/.local/docs/git-workflow.md'
-alias docs-api='glow ~/.local/docs/api-development.md'
-alias docs-docker='glow ~/.local/docs/docker-containers.md'
-alias docs-quality='glow ~/.local/docs/code-quality.md'
-alias docs-productivity='glow ~/.local/docs/productivity.md'
-alias docs-scripts='glow ~/.local/docs/custom-scripts.md'
-
 # Docker
 alias d='docker'
 alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
@@ -98,7 +83,6 @@ alias dcdown='docker compose down'
 alias dclogs='docker compose logs -f'
 
 # Go
-alias dashboard='~/dashboard/dashboard'
 alias gob='go build'
 alias got='go test ./...'
 alias gor='go run .'
@@ -146,11 +130,6 @@ alias paste='pbpaste'
 # Source .zsh
 alias reload="source ~/.zshrc && echo 'Zsh config reloaded'"
 
-# Scripts
-alias macclean="$HOME/cleanmymac/cleanmymac run"
-alias brewmaintain="$HOME/cleanmymac/cleanmymac run brewmaint"
-alias aireview="$HOME/.local/scripts/git-ai-review.sh"
-
 # Ports
 alias ports='lsof -i -P -n'
 
@@ -170,13 +149,14 @@ alias json='jq -C . | less -R'
 alias json-compact='jq -c .'
 alias jsonview='fx'
 
-# Enhanced tree views
-alias tree='eza --tree --icons --git-ignore --level=3'
-alias tree-all='eza --tree --icons --all --level=3'
-alias tree-git='eza --tree --icons --git --level=3'
-alias tree-type='eza --tree --icons --group-directories-first --color=always --level=3'
-alias tree2='eza --tree --level=2 --icons'
-alias tree4='eza --tree --level=4 --icons'
+# Enhanced tree views (lt above is the 2-level tree)
+if (( $+commands[eza] )); then
+  alias tree='eza --tree --icons --git-ignore --level=3'
+  alias tree-all='eza --tree --icons --all --level=3'
+  alias tree-git='eza --tree --icons --git --level=3'
+  alias tree-type='eza --tree --icons --group-directories-first --color=always --level=3'
+  alias tree4='eza --tree --level=4 --icons'
+fi
 
 # Fun stuff
 alias fortune='command fortune -s'
@@ -203,15 +183,12 @@ alias api='open -a "Insomnia"'           # Insomnia (default API client)
 alias lg='lazygit'                       # LazyGit (default git GUI)
 alias linear='open -a "Linear"'          # Linear (project management)
 
-# Notes (note defined in Neovim section above)
-alias dev-docs='glow ~/.local/docs/dev-environment.md'
+# Raycast script commands (linked by install.sh)
 alias raycast-scripts='open ~/.local/scripts/raycast'
 
 # Searches
 alias gh-search='search-github'
 alias so='search-so'
-alias godoc='search-go'
-alias pydoc='search-pypi'
 
 # Open repo in browser (ghub pulls, ghub issues, ghub actions)
 alias ghub-pr='ghub pulls'

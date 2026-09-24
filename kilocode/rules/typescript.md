@@ -50,6 +50,7 @@
 - TSDoc for library packages (`@param`, `@returns`, `@example`)
 - Inline comments for non-obvious logic only
 - No comments that restate the code
+- No issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or JSDoc — they rot and couple code to an external tracker; keep that context in the commit/PR/tracker. Link only committed in-repo docs (under `docs/`), never gitignored or scratch paths
 
 ## Quality Gates
 

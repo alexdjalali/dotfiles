@@ -32,6 +32,7 @@
 - Module-level docstrings on all files (summary, coverage, structure)
 - Google-style docstrings on all public classes, methods, and functions
 - Inline comments for non-obvious logic only
+- No issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or docstrings — they rot and couple code to an external tracker; keep that context in the commit/PR/tracker. Link only committed in-repo docs (under `docs/`), never gitignored or scratch paths
 - Type hints on all public APIs (`basedpyright` strict compliance)
 
 ## Quality Gates (pre-commit hooks)

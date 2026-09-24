@@ -57,7 +57,21 @@ test_check_detects_drift() {
   assert_contains "$err" "kilocode/rules/orphan.md" "--check report"
 }
 
+# Why this test is important:
+#   - kilocode/rules/ is generated; a rule renamed or removed in Cursor must not
+#     leave a stale Kilocode copy that --check then flags forever.
+# What it tests:
+#   - Generating deletes a Kilocode rule that has no Cursor source.
+test_generate_removes_orphans() {
+  copy_rules
+  : > "$T/repo/kilocode/rules/orphan.md"
+  bash "$SYNC" "$T/repo" || _fail "sync-mirrors.sh failed"
+  [[ -e "$T/repo/kilocode/rules/orphan.md" ]] && _fail "orphan.md survived"
+  bash "$SYNC" --check "$T/repo" || _fail "--check failed after generating"
+}
+
 run_test test_generate_matches_committed_kilocode
 run_test test_check_passes_when_in_sync
 run_test test_check_detects_drift
+run_test test_generate_removes_orphans
 finish

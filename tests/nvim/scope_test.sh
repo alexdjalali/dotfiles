@@ -19,17 +19,6 @@ test_no_project_specific_strings() {
 }
 
 # Why this test is important:
-#   - Global build tags make gopls compile integration/e2e files in every Go
-#     repo, including ones where those tags mean something else.
-# What it tests:
-#   - No gopls buildFlags / -tags are set in the global config.
-test_no_global_build_tags() {
-  local hits
-  hits=$(grep -rnE 'buildFlags|-tags=' "$REPO_ROOT/nvim/lua" | sed "s#$REPO_ROOT/##")
-  assert_eq "" "$hits" "global Go build tags"
-}
-
-# Why this test is important:
 #   - polish.lua had grown into a feature module (terminals, kubectl helpers)
 #     behind a polling loop; it should hold options, autocmds and workarounds.
 # What it tests:
@@ -41,6 +30,5 @@ test_polish_holds_no_features() {
 }
 
 run_test test_no_project_specific_strings
-run_test test_no_global_build_tags
 run_test test_polish_holds_no_features
 finish

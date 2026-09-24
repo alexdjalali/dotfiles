@@ -209,7 +209,6 @@ Several features are commented out by default:
 
 1. **Fortune on startup** - Uncomment around line 475
 2. **K8s context indicator** - Uncomment around line 550
-3. **Auto iTerm2 profile switching** - Uncomment around line 580
 
 ### Project Roots
 

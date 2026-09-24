@@ -94,12 +94,15 @@ test_lazy_lock_tracked_and_complete() {
   ln -s "$REPO_ROOT/nvim" "$T/config/nvim"
   local out
   out=$(XDG_CONFIG_HOME="$T/config" nvim --headless -c 'lua
-    local lock = vim.json.decode(table.concat(vim.fn.readfile(vim.fn.stdpath("config") .. "/lazy-lock.json"), "\n"))
-    local plugins, diff = require("lazy.core.config").plugins, {}
-    for name in pairs(plugins) do if not lock[name] then table.insert(diff, "unlocked:" .. name) end end
-    for name in pairs(lock) do if not plugins[name] then table.insert(diff, "stale:" .. name) end end
-    table.sort(diff)
-    io.stdout:write(table.concat(diff, " "))' -c 'qall!' 2>/dev/null)
+    local ok, err = pcall(function()
+      local lock = vim.json.decode(table.concat(vim.fn.readfile(vim.fn.stdpath("config") .. "/lazy-lock.json"), "\n"))
+      local plugins, diff = require("lazy.core.config").plugins, {}
+      for name in pairs(plugins) do if not lock[name] then table.insert(diff, "unlocked:" .. name) end end
+      for name in pairs(lock) do if not plugins[name] then table.insert(diff, "stale:" .. name) end end
+      table.sort(diff)
+      io.stdout:write(table.concat(diff, " "))
+    end)
+    if not ok then io.stdout:write("error: " .. tostring(err)) end' -c 'qall!' 2>/dev/null)
   assert_eq "" "$out" "lockfile vs lazy spec"
 }
 

@@ -11,8 +11,7 @@
 #
 #   DIR      the dotfiles checkout (default: the repo holding this script)
 #   --check  write nothing; exit 1 listing each Kilocode rule that differs from
-#            its Cursor source or has none (generating never deletes a rule, so
-#            remove an orphan by hand)
+#            its Cursor source or has none (generating deletes those orphans)
 set -euo pipefail
 
 # The Kilocode file name for a Cursor rule path.
@@ -52,11 +51,14 @@ for src in "$root"/cursor/rules/*.mdc; do
         render "$src" > "$dst"
     fi
 done
-if $check; then
-    for dst in "$root"/kilocode/rules/*.md; do
-        [[ " ${expected[*]} " == *" $dst "* ]] || drift+=("kilocode/rules/$(basename "$dst") (no Cursor source)")
-    done
-fi
+for dst in "$root"/kilocode/rules/*.md; do
+    [[ " ${expected[*]} " == *" $dst "* ]] && continue
+    if $check; then
+        drift+=("kilocode/rules/$(basename "$dst") (no Cursor source)")
+    else
+        rm "$dst"
+    fi
+done
 
 if ((${#drift[@]})); then
     printf 'out of sync with cursor/rules: %s\n' "${drift[@]}" >&2

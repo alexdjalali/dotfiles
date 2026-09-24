@@ -30,6 +30,16 @@ return {
     },
   },
 
+  -- No global build tags (the go pack sets `-tags integration`): tags belong to
+  -- the project that uses them, e.g. in its .nvim.lua.
+  {
+    "AstroNvim/astrolsp",
+    opts = function(_, opts)
+      local gopls = vim.tbl_get(opts, "config", "gopls", "settings", "gopls")
+      if gopls then gopls.buildFlags = nil end
+    end,
+  },
+
   -- Configure gopls with enhanced settings
   {
     "AstroNvim/astrolsp",
@@ -82,7 +92,6 @@ return {
               -- Diagnostics
               diagnosticsDelay = "500ms",
               diagnosticsTrigger = "Edit",
-              -- Build tags are per project: set them in that repo's .nvim.lua.
             },
           },
         },

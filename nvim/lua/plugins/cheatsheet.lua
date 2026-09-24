@@ -42,8 +42,8 @@ local pages = {
     sections = {
       { "Databases (vim-dadbod-ui)", {
         "<leader>D     toggle the database UI",
-        "a  d  R       add, delete, rename a connection",
-        "<CR>          expand, or run the query under the cursor;  W saves it",
+        "In the drawer: A add a connection, r rename, d delete, R redraw,",
+        "               o or <CR> open;  :w in a query buffer runs the query",
         "Connections: a project's .nvim.lua sets vim.g.dbs, or add one in the UI",
         "postgres://user@host:5432/db   mongodb://host:27017/db   redis://host:6379",
       } },

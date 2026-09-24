@@ -53,10 +53,12 @@ cd ~/dotfiles
 15. Installs Python CLI tools (basedpyright, ruff) with `uv tool`
 
 `./install.sh --update` skips steps 1-5. The script is idempotent: it's safe to
-run multiple times, and a failed step prints `[warn]` rather than `[ok]`. The
-repo can live anywhere (the script links from its own directory), but the hook
-paths in `.claude/settings.json` assume `~/dotfiles`, so the script warns
-elsewhere.
+run multiple times. Steps that can fail without breaking the rest (the Brewfile,
+a missing bat or git-lfs, the Neovim bootstrap, the uv tools) print `[warn]`
+instead of `[ok]`; any other failure (a download, a clone) stops the script. The
+repo can live anywhere (the script and `.zshrc` find it from their own
+location), but the hook paths in `.claude/settings.json` assume `~/dotfiles`,
+so the script warns elsewhere.
 
 ### Symlinks created
 
@@ -111,5 +113,5 @@ Neovim has 59 LuaSnip snippets for LaTeX across TikZ, Beamer, and packages
 2. **GPG key** -- import your existing key (`gpg --import key.asc`) or generate a new one (`gpg --full-generate-key`). If the ID differs, set `[user] signingkey` in `~/.gitconfig.local` (included last by `git/.gitconfig`), not in the tracked file.
 3. **Neomutt** -- copy the example account file and add credentials. See `neomutt/.neomutt/QUICKSTART.md`.
 4. **iTerm2** -- set custom preferences folder to `~/dotfiles/iterm` in iTerm > Settings > General > Preferences.
-5. **iTerm2 font** -- set font to `MesloLGS Nerd Font` in iTerm > Settings > Profiles > Text > Font.
+5. **iTerm2 font** -- the tracked profile uses JetBrainsMono Nerd Font Mono. For another profile, pick one of the Brewfile's Nerd Fonts (JetBrainsMono or MesloLGS) in iTerm > Settings > Profiles > Text > Font.
 6. **Raycast** -- add `~/.local/scripts/raycast` as a Script Command directory in Raycast preferences.

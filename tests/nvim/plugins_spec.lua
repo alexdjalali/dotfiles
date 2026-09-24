@@ -133,4 +133,14 @@ spec.it("no_keymap_collisions", function()
   spec.eq(nil, (core.mappings.t or {})["<C-`>"], "astrocore <C-`> terminal mapping")
 end)
 
+-- Why this test is important:
+--   - Build tags set globally (here or by the go pack) make gopls compile
+--     tagged files in every Go repo; tags belong to the project that uses them.
+-- What it tests:
+--   - The resolved gopls settings carry no buildFlags.
+spec.it("gopls_has_no_global_build_tags", function()
+  local opts = require("lazy.core.plugin").values(plugins["astrolsp"], "opts", false)
+  spec.eq(nil, vim.tbl_get(opts, "config", "gopls", "settings", "gopls", "buildFlags"), "gopls buildFlags")
+end)
+
 spec.finish()

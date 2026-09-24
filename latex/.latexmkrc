@@ -3,11 +3,12 @@
 
 # Use pdflatex by default
 $pdf_mode = 1;
-$pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 -file-line-error %O %S';
+# The same flags for every engine (pdflatex, xelatex, lualatex, latex)
+set_tex_cmds('-interaction=nonstopmode -synctex=1 -file-line-error %O %S');
 
 # Shell escape (needed by minted and TikZ externalization) is off: it lets a
 # document run commands. Opt in per project with a latexmkrc beside the .tex:
-#   $pdflatex = 'pdflatex -interaction=nonstopmode -synctex=1 -file-line-error -shell-escape %O %S';
+#   set_tex_cmds('-interaction=nonstopmode -synctex=1 -file-line-error -shell-escape %O %S');
 
 # Preview with Skim on macOS
 $pdf_previewer = 'open -a Skim';

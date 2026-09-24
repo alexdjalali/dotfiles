@@ -1,16 +1,14 @@
 ---
 model: opus
-description: Decompose an epic into independently testable stories, or show epic/story progress
+description: Decompose an epic into independently testable stories (docs/spec/epics/ + docs/spec/stories/), or report per-epic story progress with `status`. Use when an epic needs breaking into implementable stories.
 argument-hint: "[status | <epic name or file>]"
 ---
 
-If args = "status", run the status report. Otherwise decompose the named epic.
+`/roadmap` orders the epics; `/rfp` breaks one into stories. **Input:** `status`, or an epic name/file. **Output:** the story files plus the epic's updated stories table — or a progress table.
 
-The epic-level sequencing that feeds this -- dependencies, phasing, and the critical path -- is owned by `/roadmap` (one level up). `/roadmap` orders the epics; `/rfp` breaks one into stories.
+## `status`
 
-## Status Report (`/rfp status`)
-
-Scan `docs/spec/stories/` and `docs/spec/epics/`. For each epic, count stories by status (Todo / In Progress / Complete). Output:
+Scan `docs/spec/epics/` and `docs/spec/stories/`; per epic, count stories by `**Status**` (Todo / In Progress / Complete) and print:
 
 ```
 | #  | Epic                   | Total | Done | Left | Progress        |
@@ -18,29 +16,23 @@ Scan `docs/spec/stories/` and `docs/spec/epics/`. For each epic, count stories b
 | 1  | Auth Overhaul          |   7   |   5  |  2   | ########--  71% |
 ```
 
-## Decompose an Epic
+## Decompose an epic
 
-1. Read the epic from `docs/spec/epics/epic-NN-<slug>.md` (create it first with `~/.claude/templates/epic.md` if it doesn't exist).
-2. Break the epic into 3-10 independently testable stories. Each story must:
-   - Have a single, testable acceptance criterion
-   - Be implementable without depending on an unfinished sibling
-   - Answer the **code-addition checklist** so the *how* is scoped, not just the *what*: (1) infra/deploy change? (2) CLI/tooling change? (3) consistent with the project's philosophy & mirrors gold-standard/reference code? (4) right test *types* (unit / integration / e2e; fuzz/chaos when warranted) with the right double per `testing.md` *Test Double Policy* — integration names its Docker image? (5) config change? (6) as simple as possible (DRY/YAGNI)? (7) as general as possible — interface + config-selected, balanced against YAGNI? (8) reuses shared-library abstractions? If the repo defines `.claude/rules/code-addition-checklist.md`, fold in its concrete answers.
-   - **Propose a repository structure when the story creates new files** — a tree of the new/changed paths (see the *Proposed Repository Structure* section of `~/.claude/templates/story.md`), consistent with the current repo layout (inspect it first — `codegraph_files` / `ls`). If the needed layout deviates from the current structure, ask the user to confirm before finalizing the story.
-3. Write each story to `docs/spec/stories/<epic-N>.<story-N>-<slug>.md` using `~/.claude/templates/story.md`.
-4. Update the epic's stories table with relative links and initial status `Todo`.
-
-## Rules
-
-- NEVER create stories testable only end-to-end -- each must have a unit-level acceptance criterion
-- NEVER make a story depend on an unfinished sibling story
-- Story titles are verb phrases: "Add user authentication", not "User authentication"
-- Number stories from the epic number: epic 5 produces stories 5.1, 5.2, ...
-- NEVER let a story add new files without a Proposed Repository Structure that matches the current repo layout -- if the layout must deviate, ask the user first
+1. Read `docs/spec/epics/epic-NN-<slug>.md` — create it from `~/.claude/templates/epic.md` first if missing.
+2. Break it into **3–10 stories**. Each story:
+   - has concrete, testable acceptance criteria, at least one checkable at the unit level — NEVER a story testable only end-to-end;
+   - is implementable without an unfinished sibling — NEVER depend on one;
+   - answers the **code-addition checklist**, so the *how* is scoped, not just the *what*: (1) infra/deploy change? (2) CLI/tooling change? (3) consistent with the project's philosophy, mirroring gold-standard/reference code? (4) right test *types* (unit / integration / e2e; fuzz/chaos when warranted) with the right double (`testing.md` *Test Double Policy*) — an integration test names its Docker image? (5) config change? (6) as simple as possible (DRY/YAGNI)? (7) as general as possible — interface + config-selected, capped by (6)? (8) reuses shared-library abstractions? A repo's `.claude/rules/code-addition-checklist.md` supplies the concrete answers;
+   - **creates new files → includes a Proposed Repository Structure** (the story template's section): a tree of new/changed paths consistent with the current layout (inspect it first — `codegraph_files` / `ls`). NEVER finalize a story whose layout deviates from the current structure without the user's confirmation.
+3. Write each story to `docs/spec/stories/<N>.<M>-<slug>.md` from `~/.claude/templates/story.md` — numbered from the epic (epic 5 → 5.1, 5.2, …), titled with a verb phrase ("Add user authentication", not "User authentication").
+4. Update the epic's stories table with relative links and status `Todo`.
 
 ## Next Step
 
-After creating stories, ask:
+Ask:
 
-> Start implementing a story?
-> - `/spec <story-file>` -- Plan and implement
-> - Done -- Stories created only
+> Stories written. Start one?
+> - `/spec <story-file>` — plan and implement it
+> - Done — stories only
+
+`/spec` is suggested for the user to type — never invoked.

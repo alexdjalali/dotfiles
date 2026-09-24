@@ -23,7 +23,7 @@
 - Test naming: `TestFunctionName_Scenario` (e.g., `TestParseConfig_EmptyInput`)
 - Every test has a comment: **Why important** + **What it tests**
 - `testify` assertions where appropriate (`assert`, `require`)
-- Test file pattern: `<file>_test.go` in same package
+- Test file pattern: `<file>_test.go` in an external `<pkg>_test` package (black-box, public surface); a same-package `*_internal_test.go` only as a last resort, with a comment saying why
 - `rapid` for property-based testing (pure functions, roundtrips, invariants)
 - **Test doubles (two tiers):** unit mocks the boundary — a generated mock (`mockgen` → `go.uber.org/mock/gomock`) or a mock of a small consumer-side interface; integration runs the real dependency in a Docker container via `testcontainers-go` (`//go:build integration`, external `_test` package, `testcontainers.CleanupContainer(t, ctr)`). Hand-rolled fakes / in-memory substitutes are a `must_fix`.
 

@@ -1,43 +1,41 @@
 ---
 model: opus
-description: Save or retrieve reusable knowledge -- snippets, patterns, solutions -- from .claude/vault/
+description: Save, find, or list reusable snippets, commands, and one-off solutions in the project's .claude/vault/. Use for knowledge too small for a skill that shouldn't be lost between sessions.
 argument-hint: "save <topic> | find <query> | list"
 ---
 
-Persistent knowledge store for high-value items that don't fit a skill but shouldn't be lost between sessions.
+A persistent store for high-value items that don't warrant a skill (`/learn`). **Input:** `save <topic>`, `find <query>`, or `list`. **Output:** the path written, the matches, or the listing.
 
-## Save (`/vault save <topic>`)
+## `save <topic>`
 
-1. Capture the item: a command sequence, a configuration pattern, a solution to a recurring problem, a code snippet.
-2. Choose a category (tooling, debugging, infra, api, patterns, etc.).
-3. Write to `.claude/vault/<category>/<slug>.md`:
+1. Capture the item — a command sequence, config pattern, solution to a recurring problem, or code snippet — and choose a category (tooling, debugging, infra, api, patterns, …).
+2. Write `.claude/vault/<category>/<slug>.md`:
 
-```markdown
-# <Title>
+   ```markdown
+   # <Title>
 
-## Context
-When does this apply?
+   ## Context
+   When does this apply?
 
-## Content
-The snippet / pattern / solution.
+   ## Content
+   The snippet / pattern / solution.
 
-## Notes
-Caveats, version constraints, known limitations.
-```
+   ## Notes
+   Caveats, version constraints, known limitations.
+   ```
 
-4. Confirm the path written.
+3. Report the path written.
 
-## Find (`/vault find <query>`)
+## `find <query>`
 
-Search `.claude/vault/` for entries matching the query terms. Show each match with its path and first 5 lines of content.
+Grep `.claude/vault/` for the query terms; show each match's path and its first 5 lines.
 
-## List (`/vault list`)
+## `list`
 
-List all entries in `.claude/vault/` grouped by category.
+List every entry in `.claude/vault/`, grouped by category.
 
 ## Rules
 
-- NEVER save something already in a skill or rule file -- vault is for one-offs and snippets
-- NEVER save secrets or credentials -- vault is not a secrets manager
-- Test: "Would I search for this next time I hit this problem?" If no, skip it.
-- Keep entries short -- if it needs more than 40 lines, it belongs in a skill instead
+- NEVER save something already in a skill or rule file — the vault is for one-offs and snippets.
+- NEVER save secrets or credentials — the vault is not a secrets manager.
+- Save only what you'd search for next time; over 40 lines → it's a skill, not a vault entry.

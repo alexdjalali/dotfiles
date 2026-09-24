@@ -1,75 +1,61 @@
 ---
-description: Plan an implementation -- explore the codebase, design tasks, verify the plan, get approval
+description: /spec feature planning — explore the code, design 3–12 testable tasks, write the plan, run spec-review, get approval. Started by /spec, not unprompted.
 model: opus
 ---
 
-## Phase 1 -- Explore
+**Input:** a feature request, or a story / ADR / design-doc path. **Output:** an approved plan at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored), then the hand-off to `spec-implement`. No production or test code before approval.
 
-1. **Requirements source.** If given a story (`docs/spec/stories/...`), read it first: its **acceptance criteria are the requirements**, its code-addition answers and Proposed Repository Structure seed the design, and it is cited under the plan's References. Likewise cite any ADR / design doc passed in.
-2. If the request is ambiguous, ask one clarifying question before proceeding.
-3. Explore the codebase with CodeGraph and Semble:
-   - Find all files the change will touch
-   - Find similar existing features and the patterns they use
-   - Trace call chains upstream and downstream from the affected area
-4. Identify: entry points, data models, tests to extend, files to create or modify.
+## Phase 1 — Explore
 
-## Phase 2 -- Design
+1. **Requirements source.** Given a story (`docs/spec/stories/…`), read it first: its **acceptance criteria are the requirements**; its code-addition answers and Proposed Repository Structure seed the design. Cite it — and any ADR / design doc passed in — under References.
+2. Ambiguous request → ask one clarifying question before continuing.
+3. With CodeGraph + Semble: find every file the change touches, similar features and the patterns they use, and the call chains upstream and downstream of the affected area.
+4. Note entry points, data models, tests to extend, and files to create or modify.
 
-Design 3-12 implementation tasks. Each task must be:
-- Independently testable (a failing test can be written for it in isolation)
-- Small enough to complete in one focused TDD cycle
-- Sequenced so later tasks build on earlier ones without circular dependencies
-- Aligned with the repo's existing patterns — reuse established helpers, naming, and conventions rather than introducing parallel ones (consistency, DRY)
+## Phase 2 — Design
 
-**Code-addition checklist.** For work that adds or changes code, make the plan answer these eight before you finalize the tasks — a "yes" to infra/CLI/config is its own task, not an afterthought:
+Design **3–12 tasks** — NEVER more than 12; split into several plans instead. Each task is independently testable (a failing test can be written for it alone), one focused TDD cycle, sequenced without circular dependencies, and aligned with the repo's existing patterns (reuse its helpers, naming, conventions — no parallel ones). NEVER include a task that doesn't trace to the request or the story's acceptance criteria.
 
-1. **Infra/deploy?** does it need a dev environment change and a staging/prod (IaC) change?
-2. **CLI/tooling?** does it need a change to the project's CLI or task runner?
-3. **Philosophy / gold-standard?** is it consistent with the project's design philosophy, and does it mirror an existing reference/gold-standard implementation? (a deviation is an ADR, not a silent exception)
-4. **Right test *types*, with the right double** (per `testing.md` *Test Double Policy*)? unit / integration / e2e — plus property/fuzz and chaos/resiliency when warranted. A task that adds an integration test **names the Docker image + testcontainers module** (e.g. `postgres:16` via `testcontainers-go` / `testcontainers[postgres]` / `@testcontainers/postgresql`).
-5. **Config?** does it need a config change (ideally selecting an impl by configuration, not a hard-coded import)?
+**Code-addition checklist** — the plan answers all eight before tasks are final; a "yes" to infra/CLI/config is its own task, not an afterthought:
+
+1. **Infra/deploy?** a dev-environment change and a staging/prod (IaC) change?
+2. **CLI/tooling?** a change to the project's CLI or task runner?
+3. **Philosophy / gold standard?** consistent with the project's design philosophy, mirroring an existing reference implementation? (a deviation is an ADR, not a silent exception)
+4. **Right test *types*, right double** (`testing.md` *Test Double Policy*)? unit / integration / e2e, plus property/fuzz and chaos/resiliency when warranted. A task that adds an integration test **names the Docker image + testcontainers module** (e.g. `postgres:16` via `testcontainers-go` / `testcontainers[postgres]` / `@testcontainers/postgresql`) — NEVER plan one that mocks its dependency or uses an in-memory substitute.
+5. **Config?** a config change (ideally selecting an impl by configuration, not a hard-coded import)?
 6. **As simple as possible?** DRY, YAGNI — no duplicated logic, no speculative knobs.
-7. **As general as possible?** behind an interface, selected by config, injected explicitly — balanced against YAGNI (Q6 is the ceiling).
-8. **Reuse shared abstractions?** does it reuse the patterns/helpers in the shared library tier rather than reinventing them?
+7. **As general as possible?** behind an interface, config-selected, injected explicitly — Q6 is the ceiling.
+8. **Reuse shared abstractions?** the shared-library patterns/helpers rather than reinventions?
 
-If the repo defines `.claude/rules/code-addition-checklist.md`, follow its concrete answers (that file supplies the project's real infra tiers, CLI, test layers, and shared-library packages).
+A repo's `.claude/rules/code-addition-checklist.md` supplies the concrete answers (real infra tiers, CLI, test layers, shared-library packages) — follow it when present.
 
-## Phase 3 -- Write the Plan
+## Phase 3 — Write the plan
 
-Write the plan from **`~/.claude/templates/plan.md`** (the single plan format) to `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored — local working docs, never committed), with header `Type: Feature`, `Status: PENDING`, `Approved: No`, `Iteration: 1`.
+From `~/.claude/templates/plan.md` (the single plan format), header `Type: Feature`, `Status: PENDING`, `Approved: No`, `Iteration: 1`.
 
-- Always fill: Summary, **Goal Verification** (truths + artifacts), Scope, Progress Tracking (Done/Left counters), Implementation Tasks (each with Files, Definition of Done, Verify), Testing Strategy, Risks, **References** (the story / ADR `docs/adr/NNNN-<slug>.md` / design doc it came from).
-- **Proposed Repository Structure** — include ONLY if new files are created. Inspect the real tree first (`codegraph_files` / `ls`; the monorepo standard is `~/.claude/templates/repo.md`); if the needed layout DEVIATES from the current structure, STOP and ask the user to confirm before finalizing.
-- A task may carry a `Trivial:` justification only within the limits the template states (audited at verify).
-- Delete the Bugfix block and any other optional section that doesn't apply.
+- Always fill: Summary, **Goal Verification** (truths + artifacts), Scope, Progress Tracking (Done/Left), Implementation Tasks (each with Files, Definition of Done, Verify), Testing Strategy, Risks, **References** (the story / `docs/adr/NNNN-<slug>.md` / design doc).
+- **Proposed Repository Structure** — required whenever new files are created, omitted otherwise. Inspect the real tree first (`codegraph_files` / `ls`; standard: `~/.claude/templates/repo.md`); if the layout must DEVIATE from the current structure, STOP and ask the user before finalizing.
+- `Trivial:` only within the limits the template states (audited at verify).
+- Delete the Bugfix block and every optional section that doesn't apply.
 
-## Phase 4 -- Verify the Plan
+## Phase 4 — Review the plan
 
-Launch the `spec-review` agent with all four inputs:
+NEVER skip this pass — it catches the gaps and bad assumptions you missed. Launch `Agent(subagent_type='spec-review')` with:
 
 - `plan_file` — the plan path
-- `user_request` — the user's original request verbatim (plus the story's acceptance criteria when planning from a story)
-- `clarifications` — optional: answers gathered in Phase 1
-- `output_path` — `docs/local/plans/.spec-review-<slug>.json` (co-located with the plan, gitignored)
+- `user_request` — the original request verbatim (plus the story's acceptance criteria when planning from one)
+- `clarifications` — Phase 1 answers (optional)
+- `output_path` — `docs/local/plans/.spec-review-<slug>.json`
 
-It runs in the background, does a single combined alignment + adversarial-assumption review (does the plan fully cover the stated requirements, and what assumptions or unhandled edge cases could break it?), and writes the findings JSON — poll for the file, then Read it once. Incorporate `must_fix` / `should_fix` before presenting the plan to the user.
+It runs in the background, does one combined alignment + adversarial-assumption review (full coverage of the requirements; assumptions or edge cases that could break the plan), and writes JSON. Poll for the file with a bash existence loop, Read it once, and fold in every `must_fix` / `should_fix` before presenting.
 
-## Phase 5 -- Approval
+## Phase 5 — Approval
 
-Present the complete plan. Ask:
+Present the complete plan and ask:
 
 > Plan ready. Approve to begin implementation?
-> - Approve -- Start implementing
-> - Revise -- [specify changes]
-> - Cancel -- Stop here
+> - Approve — start implementing
+> - Revise — [specify changes]
+> - Cancel — stop here
 
-On approval: set `Approved: Yes` in the plan file, then immediately continue the chain — call `Skill(skill='spec-implement')` in the same turn. Do NOT stop and wait for the user to re-type it; plan approval was the manual gate.
-
-## Rules
-
-- NEVER begin implementation without explicit approval
-- NEVER design more than 12 tasks -- split into multiple plans if needed
-- NEVER include tasks that don't trace directly to the user's request (or the story's acceptance criteria)
-- NEVER add new files without a Proposed Repository Structure that matches the current repo layout -- if the layout must deviate, ask the user before finalizing
-- NEVER skip the spec-review pass -- it catches the gaps and bad assumptions you missed
-- NEVER plan an integration test that mocks its dependency or uses an in-memory substitute -- name the image + testcontainers module in the task
+NEVER begin implementation without an explicit Approve. On approval, set `Approved: Yes` and call `Skill(skill='spec-implement')` in the same turn — approval was the manual gate; don't wait for the user to re-type anything.

@@ -7,15 +7,19 @@ set -euo pipefail
 
 input=$(cat)
 
-field() { printf '%s' "$input" | jq -r "$1 // \"\"" 2>/dev/null; }
+# Prints "" for absent fields, and for every field when jq is missing.
+field() {
+  command -v jq >/dev/null 2>&1 || return 0
+  printf '%s' "$input" | jq -r "$1 // \"\"" 2>/dev/null || true
+}
 
 dir=$(field '.workspace.current_dir')
 [ -z "$dir" ] && dir=$(field '.cwd')
 [ -z "$dir" ] && dir="$PWD"
 model=$(field '.model.display_name')
 [ -z "$model" ] && model=$(field '.model.id')
-effort=$(field '.effort')
-[ -z "$effort" ] && effort=$(field '.output_style.name')
+# Claude Code sends {"level": "..."}; accept a plain string too.
+effort=$(field '.effort | if type == "object" then .level else . end')
 mode=$(field '.permission_mode')
 
 base=$(basename "$dir")

@@ -8,19 +8,19 @@ alwaysApply: true
 ## Posture — parsimonious
 
 - Reuse existing behavioral tests first. Ceiling per new public class: **1 unit test class + 1 functional test class** (functional only when behavior can't be exercised by unit). Multiply only for genuinely independent behavioral axes.
-- Tests are **contra-variant** with code structure and **structure-insensitive** — a behavior-preserving refactor keeps them green. No one-class-per-method, no redundant assertions on the same path, no coverage-padding.
+- Tests are **contra-variant** with code structure and **structure-insensitive** — a behavior-preserving refactor keeps them green. No one-class-per-method, no redundant assertions on the same path, no test-per-trivial-helper (no branches, I/O, or public API ⇒ the caller's test covers it), no coverage-padding.
 - Coverage is a **diagnostic, not a quota**. Critical paths (business logic, security, data integrity, error handling) need explicit behavior coverage; glue / CRUD / trivial UI don't.
-- A project may override this posture via `.claude/rules/testing-project.md` (e.g. a strict numeric coverage gate).
+- A project may override this posture via `.claude/rules/testing-project.md` (e.g. a strict numeric coverage gate) — the **only** way to loosen the test-double policy.
 
 ## TDD — red / green / refactor (default)
 
-1. **RED** — one minimal test for the desired behavior (behavior, not implementation). Mock external deps only.
+1. **RED** — one minimal test for the desired behavior (behavior, not implementation). Mock external deps only. Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")`.
 2. **VERIFY RED** — run it; it must fail because the feature is missing, not a syntax error. Passes immediately → rewrite.
 3. **GREEN** — simplest code that passes. No extras.
 4. **VERIFY GREEN** — full suite green; check diagnostics.
 5. **REFACTOR** — improve; tests stay green; no new behavior.
 
-Applies to new functions, endpoints, business logic, **bug fixes (reproduce first)**, behavior changes. **Skip RED** only for docs / config / dep bumps / formatting, or a trivial ≤5-line change that names its covering test. **Bugfixes never skip** the reproducing test.
+Applies to new functions, endpoints, business logic, **bug fixes (reproduce first)**, behavior changes. **Skip RED** only for docs / config / dep bumps / formatting, or a planned `Trivial:` change that names its covering test/command and adds ≤ 5 net production lines with no new branch/loop/try (non-trivial body), no new public symbol, and no new error path — audited against the actual diff, not taken on trust. **Bugfixes never skip** the reproducing test. Code written first? Don't revert — write the test now and verify it catches regressions.
 
 ## Strategy & doubles
 
@@ -45,6 +45,10 @@ Before committing an assertion: (1) would a one-char bug still pass? Use `== 42`
 ## Anti-patterns
 
 Dependent tests; testing implementation not behavior (`assert result == expected`, not `mock.assert_called_with`); incomplete mocks that hide the real API; unmocked env deps (pass locally, fail CI); test-only methods in production; a fake where a mock (unit) or a container (integration) belongs.
+
+## Zero tolerance for failing tests
+
+Fix every failure before work is done. Run the FULL suite, not just touched files. "Pre-existing" is no excuse — if you see it, you fix it.
 
 ## Completion checklist
 

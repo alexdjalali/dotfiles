@@ -2,7 +2,7 @@
 
 ### Codebase Exploration
 
-CodeGraph (structure) and Semble (intent) are co-primary for code search; Grep/Glob only verify their completeness or find exact text in a known file. Scenario table and the ⛔ `projectPath` rule: `mcp-servers.md`.
+CodeGraph + Semble first, Grep/Glob only to verify — scenario table and the ⛔ `projectPath` rule: `mcp-servers.md`.
 
 ### Change Discipline
 

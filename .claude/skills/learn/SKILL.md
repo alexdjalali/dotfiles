@@ -1,31 +1,33 @@
 ---
 model: opus
-description: Extract a reusable skill from a session discovery and save it to .claude/skills/
+description: Capture a non-obvious, reusable lesson from this session as a project skill (.claude/skills/<slug>/SKILL.md). Use after a hard-won debugging insight, workaround, or repeatable workflow.
 ---
 
-Capture what was learned this session as a reusable skill file.
+**Input:** the current session. **Output:** one new `.claude/skills/<slug>/SKILL.md` in the project, with its path reported. One insight per skill; snippets and one-offs go to `/vault` instead.
 
-## When to Extract a Skill
+## When to extract
 
 | Trigger | Example |
 |---------|---------|
-| Non-obvious debugging | 10+ min investigation; answer wasn't in the docs |
-| Misleading error | Error message pointed in the wrong direction |
-| Workaround discovered | Found a limitation and a creative solution |
+| Non-obvious debugging | 10+ min investigation; the answer wasn't in the docs |
+| Misleading error | The error message pointed in the wrong direction |
+| Workaround | Found a limitation and a creative way around it |
 | Undocumented tool usage | Figured out an API in an undocumented way |
-| Trial-and-error resolved | Tried multiple approaches before finding what worked |
-| Repeatable workflow | Multi-step task that will recur; worth standardizing |
+| Trial-and-error resolved | Tried several approaches before one worked |
+| Repeatable workflow | A multi-step task that will recur |
+
+Test: "Would this have saved 10+ minutes at session start?" If not, skip it. NEVER document what the model already knows (standard library, basic syntax), or a one-off unlikely to recur.
 
 ## Steps
 
-1. Identify the most reusable insight from the session. One insight per skill.
-2. Determine the category (debugging, tooling, testing, architecture, etc.).
-3. Write to `.claude/skills/<slug>/SKILL.md` (the folder name is the skill name and MUST match the frontmatter `name`; use a short kebab-case slug). Claude Code only discovers skills that are a `SKILL.md` with `name` + `description` frontmatter — a bare body or an `orchestrator.md` will never load:
+1. Pick the single most reusable insight and its category (debugging, tooling, testing, architecture, …).
+2. Choose a short kebab-case slug. The folder name is the command (`/<slug>`) — make sure it doesn't collide with an existing skill, a bundled skill, or a built-in command (`/debug`, `/design`, `/verify`, `/review`, `/status`, …); a same-named skill shadows or is shadowed.
+3. Write `.claude/skills/<slug>/SKILL.md` — it must be exactly that path (a loose `.md` elsewhere never loads). `description` is what Claude matches on: say what it does AND when to use it, key use case first. `name` is optional (a display label, defaulting to the folder name); if set, match the folder.
 
 ```markdown
 ---
 name: <slug>
-description: <what it does AND when to use it — this line is what Claude matches on, so make it specific and trigger-oriented>
+description: <what it does AND when to use it — specific and trigger-oriented>
 ---
 
 # <Title>
@@ -40,13 +42,7 @@ The steps or pattern that worked.
 - What to avoid (learned the hard way)
 
 ## Example
-Concrete command sequence or before/after snippet.
+A concrete command sequence or before/after snippet.
 ```
 
-4. Keep it under 60 lines. If it's longer, it's two separate skills.
-
-## Rules
-
-- NEVER document what the model already knows (standard library, basic syntax)
-- NEVER write a skill for a one-off situation unlikely to recur
-- Test: "Would this have saved 10+ minutes if I'd had it at session start?" If no, skip it.
+4. Keep it under 60 lines — longer means it's two skills.

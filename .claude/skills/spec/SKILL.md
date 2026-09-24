@@ -1,45 +1,34 @@
 ---
 model: opus
-description: Dispatch to the right phase of the implementation workflow based on plan status
+description: Run the plan → implement → verify workflow — routes a description, story, RCA, or existing plan file to the right phase by its Type and Status
 argument-hint: "[<plan file> | <story/RCA file> | <description>]"
 disable-model-invocation: true
 ---
 
-Read the plan file and dispatch to the correct phase automatically.
+Thin router: find (or start) the plan, read its `Type:` and `Status:` header, invoke the phase. It never plans, codes, or verifies itself.
 
-## Dispatch Logic
+## 1. Find the plan
 
-Read the plan's `Type:` (Feature or Bugfix) and `Status:` header, then route:
+- **A plan file** (under `docs/local/plans/`, or has a `Status:` header) → use it.
+- **A non-plan path** (a `docs/spec/stories/` story, a `docs/spec/rca/` RCA, a design doc) → it is the **request**: a story → Feature, an RCA → Bugfix. Pass the path to the plan phase, which reads it as its requirements source.
+- **A description** → `ls docs/local/plans/` for a match by name or title; no match → a new request.
+- **New request** → infer Type: a defect / regression / error report → Bugfix; a new capability → Feature. Ask once only if genuinely ambiguous.
+
+Plans live at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored), written from `~/.claude/templates/plan.md`.
+
+## 2. Route
 
 | Plan state | Feature | Bugfix |
 |------------|---------|--------|
-| No plan file yet | `/spec-plan` | `/spec-bugfix-plan` |
-| `PENDING`, `Approved: No` | `/spec-plan` (resume/start) | `/spec-bugfix-plan` (resume/start) |
-| `PENDING`, `Approved: Yes` | `/spec-implement` | `/spec-implement` |
-| `COMPLETE` | `/spec-verify` | `/spec-bugfix-verify` |
-| `VERIFIED` | Report done -- nothing to do | Report done -- nothing to do |
+| No plan yet | `spec-plan` | `spec-bugfix-plan` |
+| `PENDING`, `Approved: No` | `spec-plan` (start/resume) | `spec-bugfix-plan` (start/resume) |
+| `PENDING`, `Approved: Yes` | `spec-implement` | `spec-implement` |
+| `COMPLETE` | `spec-verify` | `spec-bugfix-verify` |
+| `VERIFIED` | report done | report done |
 
-Lifecycle: `PENDING` (awaiting implementation) → `COMPLETE` (ready to verify) → `VERIFIED`; verify loops back to `PENDING` (incrementing `Iteration:`) until everything passes. `spec-implement` serves both types -- the plan is the interface.
+Invoke the phase immediately — `Skill(skill='<phase>', args='<plan path | request>')`. The header decides; don't ask the user what to do. Lifecycle: `PENDING` → `COMPLETE` → `VERIFIED`; verify loops back to `PENDING` (incrementing `Iteration:`) until everything passes. `spec-implement` serves both types — the plan is the interface.
 
-For a **new** request (no plan yet), infer Type from the description — a defect/regression/error report → Bugfix; a new capability → Feature. If genuinely ambiguous, ask the user once.
+## Rules
 
-## Finding the Plan
-
-- If args is a plan file (under `docs/local/plans/`, or has a `Status:` header) -- use it directly
-- If args is a path that is NOT a plan (e.g. a `docs/spec/stories/` story, a `docs/spec/rca/` RCA, a design doc) -- it is the **request**: infer Type (a story → Feature; an RCA → Bugfix) and pass the path to `/spec-plan` or `/spec-bugfix-plan`, which read it as their requirements source
-- If args is a description -- search `docs/local/plans/` (`ls docs/local/plans/`) for a matching file by name or title
-- If no match -- start fresh: invoke `/spec-plan` (or `/spec-bugfix-plan` for a defect) with the description
-
-## Plan File Convention
-
-`docs/local/plans/YYYY-MM-DD-<slug>.md`, written from `~/.claude/templates/plan.md`.
-
-## ⛔ Dispatcher Integrity
-
-Thin router — **only** `Bash` (env-var reads and `ls docs/local/plans/` to find plans), `Read` (plan files, or the head of a passed story/RCA to infer its type), `AskUserQuestion`, `Skill()`. Any Grep/Glob/Task/Edit/Write is a violation.
-
-## User Checkpoints
-
-**Plan approval is the only checkpoint** (in `spec-plan` / `spec-bugfix-plan`), plus the Type question above only when Feature-vs-Bugfix is genuinely ambiguous. Everything else chains automatically; `/github` is *suggested* after `VERIFIED`, never auto-run. **NEVER ask "Should I fix these findings?"** — verification fixes are part of the approved plan.
-
-Invoke the correct skill immediately. Do not ask the user what to do -- the status header determines the action.
+- **⛔ Dispatcher integrity:** only `Bash` (env-var reads, `ls docs/local/plans/`), `Read` (plan files, or the head of a passed story/RCA to infer its type), `AskUserQuestion`, and `Skill()`. Any Grep/Glob/Task/Edit/Write is a violation.
+- **Plan approval is the only checkpoint** (in the plan phase), plus the Type question above when genuinely ambiguous; everything else chains. **NEVER ask "Should I fix these findings?"** — verification fixes are part of the approved plan. `/github` is suggested after `VERIFIED`, never auto-run.

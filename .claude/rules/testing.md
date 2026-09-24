@@ -3,7 +3,7 @@
 ### Default Posture: Parsimonious
 
 - **Reuse existing behavioural tests first.** A new public production class gets at most **1 unit + 1 functional test class** (functional only if unit tests can't exercise the behaviour); split further only for genuinely independent behavioural axes.
-- Tests are **contra-variant** with code (Uncle Bob, *Test Contravariance*) and **structure-insensitive** (Beck, *Test Desiderata*): they track behaviour, not method placement — don't mirror production classes.
+- Tests are **contra-variant** with code (Uncle Bob, *Test Contravariance*) and **structure-insensitive** (Beck, *Test Desiderata*): they track behaviour, not method placement — don't mirror production classes; a behaviour-preserving refactor must not break the suite.
 - **Local override:** a repo's `.claude/rules/testing-project.md` (e.g. strict TDD, blanket coverage) shadows this file — the **only** way to loosen the Test Double Policy.
 
 ### TDD — Default with Documented Escapes
@@ -85,12 +85,10 @@ func TestX(t *testing.T) { … }
 - **Unmocked environment deps** — local tools (semble, node) pass locally, fail CI; mock every subprocess, PATH lookup, FS check for external tools.
 - **Unnecessary mocks** — external deps only. **Mocking without understanding** — a mock that misrepresents reality is a lie.
 - **Test-only methods in production** — expose behaviour via public interfaces instead.
-- **Fakes / in-memory substitutes** — see *Test Double Policy — Two Tiers*.
 
 ### Test Parsimony — what NOT to do
 
 - **One test class per method** (e.g. `DoSomethingTests`, `DoNothingTests` for `Foo`) — one per production class is the ceiling, not the floor.
-- **Mirroring code structure** — a behaviour-preserving refactor must not break the suite.
 - **Redundant assertions** — three tests of one behaviour via three internal paths is one test.
 - **Test-per-trivial-helper** — no branches, I/O, or public-API exposure ⇒ the caller's test covers it.
 - **Coverage padding** — tests only to push a number over a threshold.

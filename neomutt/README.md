@@ -1,15 +1,12 @@
-# 📧 Neomutt Configuration - Nord Theme
+# 📧 Neomutt Configuration - Catppuccin Mocha
 
-Beautiful, powerful Neomutt configuration with Nord theme matching zshrc and nvim. Multi-account setup for Gmail and Office 365 with vim-like keybindings.
-
-![Nord Theme](https://www.nordtheme.com/assets/images/nord/repository-footer-separator.svg)
+Beautiful, powerful Neomutt configuration with the Catppuccin Mocha theme used across these dotfiles. A Gmail account with vim-like keybindings.
 
 ## ✨ Features
 
-- 🎨 **Nord Theme** - Arctic-inspired colors matching your terminal and editor
-- 📬 **Multi-Account** - Easy switching between Gmail and Office 365
+- 🎨 **Catppuccin Mocha** - Same palette as the terminal, tmux and editor
 - ⌨️ **Vim Keybindings** - hjkl navigation, ZZ to quit, visual mode-inspired
-- 🔐 **OAuth2 Support** - Secure authentication for Office 365
+- 🔐 **No secrets in the repo** - Gmail app password in the macOS Keychain
 - 🗂️ **Sidebar** - Quick mailbox navigation
 - 🧵 **Threading** - Conversation view with collapse/expand
 - 📎 **HTML Email** - View HTML emails with fallback to plain text
@@ -17,11 +14,9 @@ Beautiful, powerful Neomutt configuration with Nord theme matching zshrc and nvi
 ## 📦 What's Included
 
 - `.neomuttrc` - Main configuration file with keybindings and settings
-- `nord.neomuttrc` - Nord color scheme (matches zshrc and nvim)
-- `solarized-dark-256.neomuttrc` - Alternative Solarized Dark theme
-- `account.*.example` - Template files for account configuration
-- `mutt_oauth2.py` - OAuth2 authentication script for Office 365
-- Documentation files (QUICKSTART.md, MULTI-ACCOUNT.md, VIM-GUIDE.md)
+- `catppuccin-mocha.neomuttrc` - Catppuccin Mocha color scheme
+- `account.gmail.example` - Template for the Gmail account file
+- Documentation files (QUICKSTART.md, VIM-GUIDE.md)
 
 ## 🚀 Installation
 
@@ -35,64 +30,33 @@ brew install neomutt
 sudo apt install neomutt
 ```
 
-### 2. Clone this repository
+### 2. Link the configuration
+
+The dotfiles `install.sh` does this for you: it symlinks `~/.neomuttrc` and `~/.neomutt` to this directory and creates the cache directory, which lives outside the repo. By hand, from the dotfiles checkout:
 
 ```bash
-git clone https://github.com/alexdjalali/neomutt-config.git
-cd neomutt-config
+ln -s "$PWD/neomutt/.neomuttrc" ~/.neomuttrc
+ln -s "$PWD/neomutt/.neomutt" ~/.neomutt
+mkdir -p ~/.cache/neomutt/{bodies,tmp}
+chmod 700 ~/.cache/neomutt
+touch ~/.neomutt/certificates
 ```
 
-### 3. Copy configuration files
-
-```bash
-# Create neomutt directory
-mkdir -p ~/.neomutt
-
-# Copy main config
-cp .neomuttrc ~/
-
-# Copy theme files
-cp nord.neomuttrc ~/.neomutt/
-cp solarized-dark-256.neomuttrc ~/.neomutt/
-
-# Copy OAuth2 script
-cp mutt_oauth2.py ~/.neomutt/
-chmod +x ~/.neomutt/mutt_oauth2.py
-
-# Copy documentation
-cp *.md ~/.neomutt/
-```
-
-### 4. Set up accounts
-
-#### Gmail
+### 3. Set up Gmail
 
 ```bash
 # Create account file from template
-cp account.gmail.example ~/.neomutt/account.gmail
+cp neomutt/account.gmail.example ~/.neomutt/account.gmail
 
 # Edit with your details
 nvim ~/.neomutt/account.gmail
 
-# Store your Gmail app password (not your main password!)
-echo "your-app-password" > ~/.neomutt/gmail.pass
-chmod 600 ~/.neomutt/gmail.pass
+# Store your Gmail app password (not your main password!) in the Keychain;
+# security prompts for it, so it never lands in a file or your shell history
+security add-generic-password -s neomutt-gmail -a your-email@gmail.com -w
 ```
 
 **Note:** You need to create a Gmail App Password at: https://myaccount.google.com/apppasswords
-
-#### Office 365 (Optional)
-
-See `MULTI-ACCOUNT.md` for detailed Office 365 OAuth2 setup instructions.
-
-### 5. Create empty files for cache
-
-```bash
-mkdir -p ~/.neomutt/cache/{headers,bodies}
-mkdir -p ~/.neomutt/tmp
-touch ~/.neomutt/aliases
-touch ~/.neomutt/certificates
-```
 
 ## ⌨️ Key Bindings
 
@@ -109,6 +73,8 @@ touch ~/.neomutt/certificates
 
 ### Mailbox Management
 
+Defined in `~/.neomutt/account.gmail`, next to the folder names they open:
+
 - `gi` - Go to Inbox
 - `gs` - Go to Sent
 - `gd` - Go to Drafts
@@ -124,7 +90,8 @@ touch ~/.neomutt/certificates
 - `R` - Reply all
 - `f` - Forward
 - `c` - Compose new
-- `A` - Archive (Gmail)
+- `A` - Archive
+- `Ctrl-b` - Open a link from the message (urlscan)
 
 ### Vim-style Quit
 
@@ -139,57 +106,28 @@ touch ~/.neomutt/certificates
 - `Ctrl-k` - Previous mailbox
 - `Ctrl-o` - Open mailbox
 
-### Account Switching
-
-- `F2` or `,g` - Switch to Gmail
-- `F3` or `,t` - Switch to GT/Office 365
-
 ## 🎨 Color Theme
 
-The Nord theme provides beautiful, consistent colors:
-
-- **Background:** Polar Night (#2E3440, #3B4252)
-- **Foreground:** Snow Storm (#D8DEE9, #E5E9F0)
-- **Accents:** Frost colors (blues/cyans) and Aurora colors (green, yellow, red, purple)
-- **New/Unread:** Frost Cyan (#88C0D0)
-- **Flagged:** Aurora Yellow (#EBCB8B)
-- **Deleted:** Aurora Red (#BF616A)
+Colors come from `catppuccin-mocha.neomuttrc` (the palette used by zsh, tmux and Neovim).
 
 ## 📚 Documentation
 
 - `QUICKSTART.md` - Quick reference guide
-- `MULTI-ACCOUNT.md` - Multi-account setup guide
 - `VIM-GUIDE.md` - Complete vim keybindings reference
 
 ## 🔧 Customization
 
 ### Change Theme
 
-Edit `~/.neomuttrc` and change the source line:
-
-```bash
-# Use Nord theme (default)
-source ~/.neomutt/nord.neomuttrc
-
-# Or use Solarized Dark
-source ~/.neomutt/solarized-dark-256.neomuttrc
-```
+Edit the colors in `~/.neomutt/catppuccin-mocha.neomuttrc`, or point the `source` line in `~/.neomuttrc` at another color file.
 
 ### Modify Keybindings
 
 All keybindings are defined in `.neomuttrc` under the "Keybindings" section. Feel free to customize them to your preference.
 
-### Add More Accounts
-
-Copy the account template and modify the `.neomuttrc` to add more F-key shortcuts for switching accounts.
-
 ## 🔗 Related Configurations
 
-This configuration is part of a Nord-themed development environment:
-
-- [nvim-config](https://github.com/alexdjalali/nvim-config) - Neovim with Nord theme
-- [zshrc-config](https://github.com/alexdjalali/zshrc-config) - ZSH with Nord theme
-- [iterm-config](https://github.com/alexdjalali/iterm-config) - iTerm2 with Nord theme
+This configuration is part of the dotfiles repo, alongside the zsh, tmux, Neovim and iTerm2 configs.
 
 ## 📝 License
 
@@ -198,9 +136,9 @@ MIT License - Feel free to use and modify as you wish!
 ## 🙏 Credits
 
 - [Neomutt](https://neomutt.org/) - Feature-rich email client
-- [Nord Theme](https://www.nordtheme.com/) - Beautiful arctic color palette
+- [Catppuccin](https://catppuccin.com/) - Soothing pastel color palette
 - Based on various neomutt configurations from the community
 
 ---
 
-**Made with ❄️ by Alex Djalali**
+**Made by Alex Djalali**

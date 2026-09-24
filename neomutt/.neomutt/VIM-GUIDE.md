@@ -2,7 +2,7 @@
 
 ## Visual Improvements
 
-✨ **Nord color scheme** (arctic-inspired, matches terminal and editor)
+✨ **Catppuccin Mocha color scheme** (matches terminal, tmux and editor)
 📎 **Unicode symbols** for attachments and threads
 📊 **Mini-index above messages** (split view like vim)
 │  **Sidebar divider** with unicode character
@@ -85,11 +85,6 @@
 - `ga` - Go to All Mail
 - `c` - Change folder (then type or select)
 
-### Account Switching
-
-- `F2` or `,g` - Switch to Gmail
-- `F3` or `,t` - Switch to Georgia Tech
-
 ## Visual Elements Explained
 
 ### Index Format
@@ -161,14 +156,9 @@ bind index,pager \Cl redraw-screen  # Ctrl-l like vim
 
 ## Color Scheme
 
-Using **Nord** theme (arctic-inspired, consistent with zsh/nvim/iTerm):
-- Frost (cyan/teal) for new messages
-- Aurora yellow for important/flagged items
-- Aurora red for errors/deleted
-- Aurora green for replied messages
-- Polar Night for backgrounds, Snow Storm for foregrounds
+Using **Catppuccin Mocha** (consistent with zsh/tmux/nvim).
 
-To customize, edit `~/.neomutt/nord.neomuttrc`.
+To customize, edit `~/.neomutt/catppuccin-mocha.neomuttrc`.
 
 ## Quick Reference Card
 
@@ -181,7 +171,7 @@ To customize, edit `~/.neomutt/nord.neomuttrc`.
 │ h      back     │ dd     delete  │ c      change   │
 │ l      open     │ u      undelete│ /      search   │
 │ J/K    msg up/dn│ A      archive │ ^b     sidebar  │
-│ Space  toggle   │ F      flag    │ F2/F3  account  │
+│ Space  toggle   │ F      flag    │                 │
 └─────────────────┴────────────────┴─────────────────┘
 ```
 

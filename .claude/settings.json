@@ -27,7 +27,7 @@
     "DISABLE_AUTO_COMPACT": "false",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "true",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "false",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-8[1m]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-5-5",
     "ENABLE_TOOL_SEARCH": "true"
   },
   "attribution": {
@@ -149,6 +149,11 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/dotfiles/.claude/scripts/statusline.sh\"",
+    "padding": 0
+  },
   "enabledPlugins": {
     "chrome-devtools-mcp@chrome-devtools-plugins": true,
     "basedpyright@claude-code-lsps": true,
@@ -184,14 +189,10 @@
   "autoDreamEnabled": false,
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
+  "theme": "auto",
   "verbose": true,
   "preferredNotifChannel": "auto",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "showThinkingHint": true,
-  "statusLine": {
-    "type": "command",
-    "command": "bash \"$HOME/dotfiles/.claude/scripts/statusline.sh\"",
-    "padding": 0
-  }
+  "showThinkingHint": true
 }

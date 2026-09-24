@@ -61,17 +61,6 @@ graph TD
 - [ ] Implementation notes include a testing strategy
 - [ ] Architecture diagram accurately reflects the change
 
-### Coding Patterns (consider which apply to the decision)
-
-- [ ] **Fluent Interface** — method chaining for readable configuration/setup
-- [ ] **Builder Pattern** — complex object construction
-- [ ] **DRY** — no duplicated logic; extract shared utilities
-- [ ] **Decorator Pattern** — wrap behavior (retry, circuit breaker, logging)
-- [ ] **Strategy Pattern** — interchangeable algorithms (e.g., error classifiers)
-- [ ] **Observer Pattern** — event-driven notifications (e.g., metrics, logging hooks)
-- [ ] **Singleton Pattern** — single instance resources (e.g., DB connections, model instances)
-- [ ] **Facade Pattern** — simplified interface over complex subsystems
-
 ### Implementation Readiness
 
 - [ ] Decision is clear enough for an implementer unfamiliar with the codebase

@@ -13,7 +13,7 @@ Analyze the codebase and produce Mermaid diagrams in `docs/spec/arch/`.
    - **System context**: external actors and system boundaries
    - **Container**: services, databases, queues and their protocols
    - **Component**: internal structure of the changed subsystem
-4. Write to `docs/spec/arch/<slug>.md` with Mermaid blocks and a brief narrative.
+4. Write to `docs/spec/arch/ARCH-NNN-<slug>.md` (next 3-digit sequence in the folder — the name stories link to) with Mermaid blocks and a brief narrative.
 5. Reference the source ADR (if any) in the file header.
 
 ## Rules

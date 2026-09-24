@@ -1,16 +1,18 @@
 ---
 model: sonnet
 description: Handle branching, committing, pull requests, and merges
+argument-hint: "[commit | branch <type>/<desc> | pr | merge]"
+disable-model-invocation: true
 ---
 
-Git operations for the current work. Always runs `/preflight` before committing.
+Git operations for the current work — the manual ship step (user-typed only; `/spec` and other commands suggest it, never run it). Always runs `/preflight` before committing.
 
 ## Commit
 
 1. Run `/preflight`. If any gate fails, fix and re-run before proceeding.
 2. Stage changed files. Never force-add gitignored files.
 3. Write a conventional commit message from `~/.claude/templates/commit.md`:
-   `<type>(<scope>): <description>`
+   `<type>(<scope>): <description>` (scope optional)
 4. Show the message to the user and confirm before committing.
 
 ## Branch
@@ -33,8 +35,8 @@ Ask the user for type and description if not provided in args.
 ## Merge
 
 1. Confirm the PR is approved and CI is green: `gh pr view --json statusCheckRollup`.
-2. Merge: `gh pr merge --squash` (default) or `--merge` if the user requests.
-3. Delete the remote branch after merge.
+2. **Ask the user to confirm the merge** (PR number, strategy). Only then merge: `gh pr merge --squash` (default) or `--merge` if the user requests.
+3. **Ask again before deleting the remote branch** — never delete it without an explicit yes.
 
 ## Rules
 
@@ -42,4 +44,5 @@ Ask the user for type and description if not provided in args.
 - NEVER force-push to main or master
 - NEVER auto-create a branch -- ask the user for name and type
 - NEVER push without showing and confirming the commit message
+- NEVER merge a PR or delete a remote branch without the user's explicit confirmation for that step
 - The PR description belongs in the PR **body** (`gh pr create --body-file` / `gh pr edit --body-file`). NEVER put the description or summary in a top-level PR comment (`gh pr comment`) -- comments are for review replies, not the description.

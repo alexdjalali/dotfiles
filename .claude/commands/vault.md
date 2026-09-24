@@ -1,6 +1,7 @@
 ---
 model: opus
 description: Save or retrieve reusable knowledge -- snippets, patterns, solutions -- from .claude/vault/
+argument-hint: "save <topic> | find <query> | list"
 ---
 
 Persistent knowledge store for high-value items that don't fit a skill but shouldn't be lost between sessions.

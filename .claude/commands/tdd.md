@@ -13,7 +13,7 @@ Implement the described behavior one test at a time.
    - Python: `test_<function>_<scenario>_<expected>`
    - TypeScript: `it("should <behavior> when <condition>")`
    - Go: `TestFunctionName_Scenario`
-4. Mock all external dependencies at the **unit** tier: HTTP, DB, filesystem, subprocess, time. (When the behavior *is* the interaction with a real backing service, that's an **integration** test — run the dependency in a Docker container via testcontainers, driven by fixtures, not a mock; see `testing.md`.)
+4. Doubles per `testing.md` *Test Double Policy*: at the **unit** tier mock all external dependencies (HTTP, DB, filesystem, subprocess, time); when the behavior *is* the interaction with a backing service, write an **integration** test against the real dependency via testcontainers.
 5. Run the test. Confirm it **fails for the right reason** -- the feature does not exist yet, not a syntax error.
 
 If the test passes immediately, the test is wrong. Rewrite it before continuing.
@@ -39,6 +39,5 @@ All specified behaviors are implemented and tested. Run `/preflight` before comm
 - NEVER write implementation before a failing test
 - NEVER write more test than needed to make the current step fail
 - NEVER skip the refactor step -- "it looks fine" is not a reason
-- NEVER mock internal collaborators -- only external boundaries (network, disk, time, DB)
-- Use mocks and fixtures for those external boundaries -- NEVER hand-rolled fakes/stubs that reimplement the dependency
+- NEVER mock internal collaborators -- only external boundaries (network, disk, time, DB), with mocks and fixtures -- NEVER hand-rolled fakes/stubs that reimplement the dependency
 - A test passing on first run means the test is probably wrong -- investigate

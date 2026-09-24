@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  -- nvim-surround - 3k+ stars
+  -- nvim-surround
   {
     "kylechui/nvim-surround",
     version = "*",
@@ -8,7 +8,7 @@ return {
     opts = {},
   },
 
-  -- vim-visual-multi - 4k+ stars - multi-cursor
+  -- vim-visual-multi - multi-cursor
   {
     "mg979/vim-visual-multi",
     event = "VeryLazy",
@@ -20,7 +20,7 @@ return {
     end,
   },
 
-  -- undotree - 3k+ stars
+  -- undotree
   {
     "mbbill/undotree",
     cmd = "UndotreeToggle",
@@ -29,7 +29,7 @@ return {
     },
   },
 
-  -- nvim-spectre - 2k+ stars - search/replace
+  -- nvim-spectre - search/replace
   {
     "nvim-pack/nvim-spectre",
     cmd = "Spectre",

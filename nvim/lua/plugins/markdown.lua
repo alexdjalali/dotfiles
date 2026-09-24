@@ -1,4 +1,4 @@
--- markdown-preview.nvim - 6k+ stars
+-- markdown-preview.nvim
 ---@type LazySpec
 return {
   {
@@ -33,7 +33,7 @@ return {
     end,
   },
 
-  -- render-markdown.nvim - 2k+ stars - in-editor markdown rendering
+  -- render-markdown.nvim - in-editor markdown rendering
   {
     "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown", "Avante" },

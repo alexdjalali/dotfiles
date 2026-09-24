@@ -3,16 +3,37 @@
 return {
   {
     "yetone/avante.nvim",
-    event = "VeryLazy",
+    -- Loaded on first use (the keys below, or one of these commands), not at
+    -- startup: its native modules are the riskiest code in the config, so a
+    -- broken build can only break Avante, never every new nvim session.
+    cmd = {
+      "AvanteACPModels", "AvanteACPModes", "AvanteAsk", "AvanteBuild", "AvanteChat", "AvanteChatNew",
+      "AvanteClear", "AvanteEdit", "AvanteFocus", "AvanteHistory", "AvanteModels", "AvanteRefresh",
+      "AvanteShowRepoMap", "AvanteStop", "AvanteSwitchInputProvider", "AvanteSwitchProvider",
+      "AvanteSwitchSelectorProvider", "AvanteToggle",
+    },
     version = false,
-    build = "make",
+    -- avante's Makefile installs its native modules (lua/*.so) with a plain `cp`
+    -- over the previous build, i.e. in place. macOS keeps the code signature it
+    -- cached for that inode, so it SIGKILLs every new nvim that loads a rebuilt
+    -- module. Re-create each module as a new file (new inode) after `make`.
+    build = {
+      "make",
+      function(plugin)
+        for _, so in ipairs(vim.fn.glob(plugin.dir .. "/lua/*.so", false, true)) do
+          assert(vim.uv.fs_copyfile(so, so .. ".tmp"))
+          assert(vim.uv.fs_rename(so .. ".tmp", so))
+        end
+      end,
+    },
     -- Work around avante.nvim's log.lua bug: it builds its numeric->string log
     -- level map by mutating a table during its own pairs() traversal (undefined
     -- behaviour in LuaJIT), which can leave log_levels[3] nil and crash on load
     -- with "Invalid log level: 3". Setting log_level as a STRING before the
     -- plugin loads routes set_level() through the always-present forward map,
-    -- sidestepping the corruptible reverse lookup. init runs before VeryLazy, so
-    -- it also covers the module-load read (log.lua:109) that opts can't reach.
+    -- sidestepping the corruptible reverse lookup. init runs at startup, before
+    -- the plugin loads, so it also covers the module-load read (log.lua:109) that
+    -- opts can't reach.
     init = function()
       vim.g.avante = vim.tbl_deep_extend("keep", vim.g.avante or {}, { log_level = "warn" })
     end,
@@ -21,7 +42,6 @@ return {
       "MunifTanjim/nui.nvim",
       "nvim-telescope/telescope.nvim",
       "HakonHarnes/img-clip.nvim",
-      "hrsh7th/nvim-cmp",
     },
     opts = {
       provider = "claude",
@@ -60,8 +80,8 @@ return {
           repomap = "<leader>AR",
         },
         diff = {
-          next = "]x",
-          prev = "[x",
+          next = "]a", -- ]x/[x belong to git-conflict
+          prev = "[a",
         },
         files = {
           add_current = "<leader>A.",

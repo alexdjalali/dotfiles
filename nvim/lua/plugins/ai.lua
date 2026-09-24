@@ -1,6 +1,6 @@
 -- Claude Code native IDE integration (native bottom split)
 -- Primary toggle is <leader>ac -> :Pilot (Claude + shell dual-pane, defined in
--- lua/polish.lua). The claudecode.nvim commands below (focus/send/diff/model)
+-- lua/plugins/user.lua). The claudecode.nvim commands below (focus/send/diff/model)
 -- drive the plugin's own WebSocket-connected session and open as a native
 -- bottom split rather than a float.
 ---@type LazySpec

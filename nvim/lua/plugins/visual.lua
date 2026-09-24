@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  -- nvim-treesitter-context - 2k+ stars - sticky function headers
+  -- nvim-treesitter-context - sticky function headers
   {
     "nvim-treesitter/nvim-treesitter-context",
     event = "BufReadPost",
@@ -36,90 +36,46 @@ return {
     end,
   },
 
-  -- fidget.nvim - 2k+ stars - LSP progress notifications
-  {
-    "j-hui/fidget.nvim",
-    event = "LspAttach",
-    opts = {
-      notification = {
-        window = {
-          winblend = 0,
-          border = "rounded",
-        },
-      },
-    },
-  },
-
-  -- modes.nvim - visual mode indicators (Catppuccin Mocha)
+  -- modes.nvim - visual mode indicators, in Catppuccin Mocha colours
   {
     "mvllow/modes.nvim",
     event = "BufReadPost",
-    opts = {
-      colors = {
-        copy = "#f9e2af",   -- Catppuccin Yellow
-        delete = "#f38ba8", -- Catppuccin Red
-        insert = "#94e2d5", -- Catppuccin Teal
-        visual = "#cba6f7", -- Catppuccin Mauve
-      },
-      line_opacity = 0.15,
-      set_cursor = true,
-      set_cursorline = true,
-      set_number = true,
-    },
+    opts = function()
+      local c = require("catppuccin.palettes").get_palette("mocha")
+      return {
+        colors = { copy = c.yellow, delete = c.red, insert = c.teal, visual = c.mauve },
+        line_opacity = 0.15,
+        set_cursor = true,
+        set_cursorline = true,
+        set_number = true,
+      }
+    end,
   },
 
-  -- nvim-scrollbar - 800+ stars - scrollbar with diagnostics (Catppuccin Mocha)
+  -- nvim-scrollbar - scrollbar with diagnostics (Catppuccin Mocha)
   {
     "petertriho/nvim-scrollbar",
     event = "BufReadPost",
-    opts = {
-      handle = { color = "#585b70" },
-      marks = {
-        Search = { color = "#f9e2af" },
-        Error = { color = "#f38ba8" },
-        Warn = { color = "#fab387" },
-        Info = { color = "#89dceb" },
-        Hint = { color = "#94e2d5" },
-        GitAdd = { color = "#a6e3a1" },
-        GitChange = { color = "#f9e2af" },
-        GitDelete = { color = "#f38ba8" },
-      },
-      excluded_filetypes = { "neo-tree", "alpha", "noice" },
-    },
-  },
-
-  -- indent-blankline.nvim - 4k+ stars - indent guides
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "BufReadPost",
-    main = "ibl",
-    opts = {
-      indent = {
-        char = "│",
-        tab_char = "│",
-      },
-      scope = {
-        enabled = true,
-        show_start = true,
-        show_end = false,
-      },
-      exclude = {
-        filetypes = {
-          "help",
-          "alpha",
-          "dashboard",
-          "neo-tree",
-          "Trouble",
-          "lazy",
-          "mason",
-          "notify",
-          "toggleterm",
+    opts = function()
+      local c = require("catppuccin.palettes").get_palette("mocha")
+      return {
+        handle = { color = c.surface2 },
+        marks = {
+          Search = { color = c.yellow },
+          Error = { color = c.red },
+          Warn = { color = c.peach },
+          Info = { color = c.sky },
+          Hint = { color = c.teal },
+          GitAdd = { color = c.green },
+          GitChange = { color = c.yellow },
+          GitDelete = { color = c.red },
         },
-      },
-    },
+        excluded_filetypes = { "neo-tree", "alpha", "noice" },
+      }
+    end,
   },
 
-  -- todo-comments.nvim - 3k+ stars - highlight todos
+  -- todo-comments.nvim - highlight todos
   {
     "folke/todo-comments.nvim",
     event = "BufReadPost",
@@ -139,11 +95,11 @@ return {
     keys = {
       { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
       { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
-      { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find todos" },
+      { "<leader>ft", function() require("snacks").picker.todo_comments() end, desc = "Find todos" },
     },
   },
 
-  -- trouble.nvim - 6k+ stars - better diagnostics UI
+  -- trouble.nvim - better diagnostics UI
   {
     "folke/trouble.nvim",
     cmd = "Trouble",
@@ -158,39 +114,7 @@ return {
     },
   },
 
-  -- mini.indentscope - shows current scope
-  {
-    "echasnovski/mini.indentscope",
-    event = "BufReadPost",
-    opts = {
-      symbol = "│",
-      options = { try_as_border = true },
-      draw = {
-        delay = 100,
-        animation = function() return 0 end,
-      },
-    },
-    init = function()
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = {
-          "help",
-          "alpha",
-          "dashboard",
-          "neo-tree",
-          "Trouble",
-          "lazy",
-          "mason",
-          "notify",
-          "toggleterm",
-        },
-        callback = function()
-          vim.b.miniindentscope_disable = true
-        end,
-      })
-    end,
-  },
-
-  -- illuminate.nvim - 2k+ stars - highlight word under cursor
+  -- illuminate.nvim - highlight word under cursor
   {
     "RRethy/vim-illuminate",
     event = "BufReadPost",
@@ -206,7 +130,7 @@ return {
     end,
   },
 
-  -- nvim-ufo - 1k+ stars - better folding
+  -- nvim-ufo - better folding
   {
     "kevinhwang91/nvim-ufo",
     event = "BufReadPost",
@@ -231,7 +155,7 @@ return {
     },
   },
 
-  -- twilight.nvim - 1k+ stars - dim inactive code
+  -- twilight.nvim - dim inactive code
   {
     "folke/twilight.nvim",
     cmd = "Twilight",
@@ -248,7 +172,7 @@ return {
     },
   },
 
-  -- barbecue.nvim - 700+ stars - VS Code-like breadcrumbs
+  -- barbecue.nvim - VS Code-like breadcrumbs
   {
     "utilyre/barbecue.nvim",
     event = "LspAttach",
@@ -295,7 +219,7 @@ return {
     },
   },
 
-  -- incline.nvim - 700+ stars - floating filenames
+  -- incline.nvim - floating filenames
   {
     "b0o/incline.nvim",
     event = "BufReadPost",

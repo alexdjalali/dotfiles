@@ -10,12 +10,8 @@ return {
     local null_ls = require "null-ls"
     local b = null_ls.builtins
 
-    -- A project-config-driven linter should only fire when the project ROOT
-    -- actually ships its config — otherwise the editor invents a policy the
-    -- repo (and its CI) never asked for, which is exactly the "nvim flags
-    -- things the CLI doesn't" complaint. `root_has` returns true only when one
-    -- of `markers` exists in the buffer's nearest ancestor directory (the repo
-    -- root), so a source gated on it stays silent in repos that don't opt in.
+    -- Honour the repo's own config, never impose one: a config-driven linter
+    -- runs only where the repo root ships that config (`root_has`).
     local function root_has(bufnr, markers)
       return vim.fs.root(bufnr or 0, markers) ~= nil
     end
@@ -33,17 +29,8 @@ return {
       -- ╭─────────────────────────────────────────────────────────╮
       -- │                         Go                              │
       -- ╰─────────────────────────────────────────────────────────╯
-      -- golangci-lint - run the repo's .golangci.yml EXACTLY as `search lint --go`
-      -- (golangci-lint run ./...) does. No extra_args on purpose:
-      --   * --fast-only would DROP the slow linters CI runs (staticcheck, gosec,
-      --     unused, unparam, …) — nvim would then miss real CI findings.
-      --   * --enable=revive,prealloc,exhaustive,… would FORCE-ADD linters the repo's
-      --     `exclusions.rules` deliberately suppress on existing first-party code
-      --     (the ADR-0058 burndown) — nvim would then show errors CI never reports.
-      -- With no flags the builtin runs `golangci-lint run` in the file's module, so it
-      -- auto-discovers .golangci.yml: identical enabled set, settings, and exclusions.
-      -- It runs on save (the builtin's default method) since a full-config run is
-      -- heavier than the old --fast pass — that's the cost of matching CI exactly.
+      -- golangci-lint with no extra flags, on save: it reads the repo's own
+      -- .golangci.yml, so the editor reports what the repo's lint run reports.
       b.diagnostics.golangci_lint,
       -- goimports - Organize imports
       b.formatting.goimports,
@@ -55,28 +42,17 @@ return {
       -- ╭─────────────────────────────────────────────────────────╮
       -- │                        Python                           │
       -- ╰─────────────────────────────────────────────────────────╯
-      -- NOTE: no mypy source. This repo's Python type-checking is basedpyright ONLY
-      -- — `search typecheck --python` runs `uv run basedpyright`, and there is no
-      -- [tool.mypy] config anywhere in the tree. A mypy source here reports errors
-      -- the CLI/CI never produce (the complaint that started this). basedpyright is
-      -- the type authority (configured as an LSP in python.lua). mason-null-ls is
-      -- also told to skip mypy (python.lua handlers) so it can't re-register it.
-      -- ruff - Fast linter and formatter (from none-ls-extras)
-      -- prefer_local pins these to the repo's pinned ruff (<root>/.venv/bin/ruff)
-      -- instead of the auto-updated Mason copy, so format-on-save matches CI.
+      -- No mypy source: basedpyright (the LSP in python.lua) is the type checker.
+      -- ruff (from none-ls-extras), preferring the repo's pinned copy in .venv/bin
+      -- over Mason's.
       require("none-ls.formatting.ruff").with { prefer_local = ".venv/bin" },
       require("none-ls.formatting.ruff_format").with { prefer_local = ".venv/bin" },
 
       -- ╭─────────────────────────────────────────────────────────╮
       -- │                  TypeScript / JavaScript                │
       -- ╰─────────────────────────────────────────────────────────╯
-      -- eslint - matches `search lint --ts` (`pnpm lint` == `eslint .`). prefer_local
-      -- pins it to the frontend's OWN eslint (node_modules/.bin) so the rule set is
-      -- the project's ESLint v10 flat config (eslint.config.js) — identical to CI —
-      -- not a Mason copy with a different eslint/plugin version. On-save (like
-      -- golangci-lint) because a full eslint run is heavier than LSP type hints.
-      -- (Using the plain `eslint` source, not `eslint_d`, so it's the exact project
-      -- binary; mason-null-ls is told to skip eslint_d in python.lua handlers.)
+      -- eslint from the project's node_modules (its own version and config), on
+      -- save. The plain source, not eslint_d, which mason-null-ls skips.
       require("none-ls.diagnostics.eslint").with {
         prefer_local = "node_modules/.bin",
         method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
@@ -107,20 +83,9 @@ return {
       -- ╭─────────────────────────────────────────────────────────╮
       -- │                        General                          │
       -- ╰─────────────────────────────────────────────────────────╯
-      -- Markdown — run markdownlint-cli2 (the tool the repos here actually use),
-      -- NOT the plain `markdownlint` v1 that Mason ships. The bloodhound repo (and
-      -- others) configure markdown via `.markdownlint-cli2.jsonc`, whose schema
-      -- (rules under a "config" key) the v1 CLI cannot read — so the old
-      -- `b.diagnostics.markdownlint` ignored the repo's carefully tuned rules and
-      -- applied v1 DEFAULTS, flooding docs-heavy trees (CLAUDE.md, docs/, ADRs)
-      -- with warnings the repo deliberately disabled. markdownlint-cli2 (Homebrew/
-      -- npm; registered in the repo's tools.yaml) auto-discovers the root config
-      -- from the file upward, and is a superset of v1 (it also reads
-      -- `.markdownlint.{json,yaml}` / `.markdownlintrc`), so it covers every repo.
-      -- Gated on a root config so config-less repos stay silent instead of
-      -- inheriting the tool's built-in defaults — honour the root, never impose one.
-      -- mason-null-ls is told (python.lua handlers) to skip the v1 markdownlint so
-      -- it can't re-register the noisy source alongside this one.
+      -- Markdown: markdownlint-cli2 (reads .markdownlint-cli2.* and the v1 config
+      -- files), only where the repo ships a config. mason-null-ls skips the v1
+      -- markdownlint, which can't read cli2 configs.
       b.diagnostics.markdownlint_cli2.with {
         runtime_condition = function(params)
           return root_has(params.bufnr, {

@@ -49,7 +49,7 @@ return {
     },
   },
 
-  -- project.nvim - 1k+ stars - project management
+  -- project.nvim - project management
   {
     "ahmedkhalf/project.nvim",
     event = "VeryLazy",
@@ -60,16 +60,14 @@ return {
       silent_chdir = true,
       scope_chdir = "global",
     },
-    config = function(_, opts)
-      require("project_nvim").setup(opts)
-      require("telescope").load_extension("projects")
-    end,
+    config = function(_, opts) require("project_nvim").setup(opts) end,
     keys = {
-      { "<leader>fp", "<cmd>Telescope projects<cr>", desc = "Find projects" },
+      { "<leader>fp", function() require("snacks").picker.projects() end, desc = "Find projects" },
+      { "<leader>fr", function() require("snacks").picker.recent() end, desc = "Recent files" },
     },
   },
 
-  -- oil.nvim - 2k+ stars - file manager as buffer
+  -- oil.nvim - file manager as buffer
   {
     "stevearc/oil.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -118,17 +116,5 @@ return {
         ["g."] = "actions.toggle_hidden",
       },
     },
-  },
-
-  -- telescope-frecency - 700+ stars - frecency sorting
-  {
-    "nvim-telescope/telescope-frecency.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    keys = {
-      { "<leader>fr", "<cmd>Telescope frecency<cr>", desc = "Recent files (frecency)" },
-    },
-    config = function()
-      require("telescope").load_extension("frecency")
-    end,
   },
 }

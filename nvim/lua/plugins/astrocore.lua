@@ -27,6 +27,8 @@ return {
         expandtab = true,
         clipboard = "unnamedplus", -- Use system clipboard
         sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions",
+        -- Load a project's .nvim.lua once trusted (:trust), for project-only helpers.
+        exrc = true,
       },
     },
     mappings = {
@@ -57,11 +59,6 @@ return {
         ["<leader>Le"] = { "<cmd>ElasticCli<cr>", desc = "Elasticsearch CLI" },
         -- Neo4j
         ["<leader>Ln"] = { "<cmd>Neo4jCli<cr>", desc = "Neo4j Client" },
-        -- K8s Operations
-        ["<leader>Ll"] = { "<cmd>HpcLogs<cr>", desc = "Pod logs" },
-        ["<leader>Lx"] = { "<cmd>HpcExec<cr>", desc = "Pod exec/shell" },
-        ["<leader>Lr"] = { "<cmd>HpcRestart<cr>", desc = "Restart workload" },
-        ["<leader>Lh"] = { "<cmd>HpcHealth<cr>", desc = "Cluster health" },
         -- System Monitor
         ["<leader>Lb"] = { "<cmd>Btop<cr>", desc = "Btop (toggle)" },
         -- Email
@@ -94,9 +91,6 @@ return {
       },
       i = {
         ["<C-s>"] = { "<esc><cmd>w<cr>", desc = "Save" },
-      },
-      t = {
-        ["<C-`>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
       },
     },
   },

@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  -- flash.nvim - 2k+ stars - lightning fast navigation
+  -- flash.nvim - lightning fast navigation
   {
     "folke/flash.nvim",
     event = "VeryLazy",
@@ -18,33 +18,7 @@ return {
     },
   },
 
-  -- outline.nvim - 600+ stars - code outline/symbols
-  {
-    "hedyhli/outline.nvim",
-    cmd = "Outline",
-    keys = {
-      { "<leader>o", "<cmd>Outline<cr>", desc = "Code outline" },
-    },
-    opts = {},
-  },
-
-  -- bufferline.nvim - 3k+ stars - buffer tabs
-  {
-    "akinsho/bufferline.nvim",
-    version = "*",
-    event = "VeryLazy",
-    opts = {
-      options = {
-        mode = "buffers",
-        diagnostics = "nvim_lsp",
-        offsets = {
-          { filetype = "neo-tree", text = "Explorer", highlight = "Directory" },
-        },
-      },
-    },
-  },
-
-  -- harpoon - 7k+ stars - quick file switching (via community, but add keys)
+  -- harpoon - quick file switching (via community, but add keys)
   {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
@@ -59,24 +33,6 @@ return {
     },
     config = function()
       require("harpoon"):setup()
-    end,
-  },
-
-  -- telescope-live-grep-args - 600+ stars - enhanced grep with args
-  {
-    "nvim-telescope/telescope-live-grep-args.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    keys = {
-      {
-        "<leader>fW",
-        function()
-          require("telescope").extensions.live_grep_args.live_grep_args()
-        end,
-        desc = "Find words (with args)",
-      },
-    },
-    config = function()
-      require("telescope").load_extension("live_grep_args")
     end,
   },
 }

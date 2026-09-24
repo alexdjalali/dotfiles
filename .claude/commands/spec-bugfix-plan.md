@@ -18,7 +18,7 @@ State the contract the fix must satisfy:
 
 ## Phase 3 -- Write the Plan
 
-Write to `docs/spec/plans/YYYY-MM-DD-<slug>.md`:
+Write to `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored — local working docs, never committed):
 
 ```
 # Plan: <Bug title>
@@ -49,7 +49,7 @@ Given <...>, did <...>, must <...>.
 
 ## Phase 4 -- Verify the Plan
 
-Launch the `spec-review` agent (background; it writes a findings JSON file — poll for the file, then read it once). It runs a combined alignment + adversarial-assumption review: does the fix address the *root cause* (not the symptom), and does the reproducing test actually pin the bug? Incorporate `must_fix` / `should_fix` before presenting.
+Launch the `spec-review` agent (background; set its `output_path` to `docs/local/plans/.spec-review-<slug>.json` — co-located with the plan, gitignored. It writes that findings JSON file — poll for the file, then read it once). It runs a combined alignment + adversarial-assumption review: does the fix address the *root cause* (not the symptom), and does the reproducing test actually pin the bug? Incorporate `must_fix` / `should_fix` before presenting.
 
 ## Phase 5 -- Approval
 
@@ -60,7 +60,7 @@ Present the plan. Ask:
 > - Revise -- [specify changes]
 > - Cancel -- Stop here
 
-On approval: set `Approved: Yes` in the plan file, then invoke `/spec-implement`.
+On approval: set `Approved: Yes` in the plan file, then immediately continue the chain — call `Skill(skill='spec-implement')` in the same turn. Do NOT stop and wait for the user to re-type it; plan approval was the manual gate.
 
 ## Rules
 

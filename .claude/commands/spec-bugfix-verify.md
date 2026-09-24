@@ -3,11 +3,11 @@ description: Verify a bugfix -- Behavior Contract audit, revert-test proof, regr
 model: opus
 ---
 
-Read the plan from `docs/spec/plans/`. Status must be `COMPLETE`, `Type: Bugfix`.
+Read the plan from `docs/local/plans/`. Status must be `COMPLETE`, `Type: Bugfix`.
 
 ## Phase 1 -- Code Review
 
-Run the built-in code review inline: `Skill(skill='code-review', args='xhigh')`. This is the code review on Claude Code — not a sub-agent. Categorize findings `must_fix` / `should_fix` / `suggestion`.
+Run `/review-diff` inline over the just-implemented changes: `Skill(skill='review-diff')` (no args → the working-tree diff). `/review-diff` is the single front door for reviewing a diff — it resolves the diff surface itself and runs its two-pass review + completeness critic, so it executes even though the built-in `/code-review` skill is blocked from model invocation on Claude Code (that skill can only be user-triggered; its empty result on a committed diff is not a fallback). Categorize findings `must_fix` / `should_fix` / `suggestion`.
 
 **Test-double audit (inline):** the reproducing test and any tests touched use the right double — unit mocks the boundary; integration runs the real dependency in a Docker container via testcontainers, never a mock or in-memory substitute (SQLite-for-Postgres, fakeredis). A fake / mislabeled integration test is `must_fix`. (See `testing.md` *Test Double Policy*.)
 
@@ -39,7 +39,7 @@ A reproducing test that still passes with the fix reverted is not pinning the bu
 - **Next Step (Ship)** — suggest, do NOT auto-run: `/github` to commit and open a PR (traceability: Decision -> Epic -> Story -> Plan -> PR). Git writes always require the user to run the command themselves.
 
 **Issues remain:**
-- Add fix tasks; set `Status: PENDING`, `Approved: Yes`, increment `Iteration`; invoke `/spec-implement`. Do NOT ask whether to fix.
+- Add fix tasks; set `Status: PENDING`, `Approved: Yes`, increment `Iteration`; continue the chain — call `Skill(skill='spec-implement')` in the same turn. Do NOT ask whether to fix.
 
 ## Rules
 

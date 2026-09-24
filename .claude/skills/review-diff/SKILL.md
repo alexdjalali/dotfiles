@@ -10,14 +10,15 @@ High-recall, two-pass review. The failure mode this is tuned against is a **thin
 
 ## Step 1 — Resolve the diff surface
 
-Establish **what to review** and **how to obtain it** before anything else. The built-in `/code-review` skill (Step 3, Pass A) only sees the **working-tree** diff, so for anything already committed you must materialize the diff explicitly here.
+Establish **what to review** and **how to obtain it** before anything else. The built-in `/code-review` skill (Step 3, Pass A) takes its target directly — no target reviews the working tree; a PR number, branch, or path reviews that — so resolve the target here and pass it through. You still materialize the diff yourself for Steps 2, 4 and 5.
 
 | Args | Source | How to get the diff | Pass A engine |
 |------|--------|---------------------|---------------|
-| none | Working tree (staged + unstaged + untracked) | `git diff HEAD` plus untracked files | built-in `/code-review` skill (native) |
-| file paths | Working-tree subset | `git diff HEAD -- <paths>` | built-in `/code-review` skill (native) |
-| a branch / "this branch" / `<base>..<branch>` | Committed branch vs base | fetch if remote (`git fetch <remote> <branch>`), then `git diff <base>...<head>` | manual precision pass over the resolved diff |
-| a PR number | GitHub PR | `gh pr view <n>`, `gh pr diff <n>` | manual precision pass; `gh pr comment` / built-in `/review` to post |
+| none | Working tree (staged + unstaged + untracked) | `git diff HEAD` plus untracked files | built-in `/code-review` (no target) |
+| file paths | Working-tree subset | `git diff HEAD -- <paths>` | built-in `/code-review <path>` |
+| a branch / "this branch" | Committed branch vs the default branch | fetch if remote (`git fetch <remote> <branch>`), then `git diff <base>...<head>` | built-in `/code-review <branch>` |
+| `<base>..<branch>` with a non-default base | Committed branch vs a named base | as above, with the named base | manual precision pass over the resolved diff (the built-in's target form has no base) |
+| a PR number | GitHub PR | `gh pr view <n>`, `gh pr diff <n>` | built-in `/code-review <n>` (`--comment` posts findings to the PR) |
 
 Rules for Step 1:
 
@@ -38,8 +39,8 @@ Before looking for issues, establish what the change is *for* and what it *touch
 
 The precision-biased first pass. Pick the engine Step 1 resolved:
 
-- **Working-tree diff** → run the built-in reviewer inline at the broadest setting: `Skill(skill='code-review', args='max')`. This is the canonical Claude Code reviewer — it has an effort dial and adversarially verifies each finding before reporting, covering correctness bugs and reuse / simplification / efficiency cleanups. `max` (not `xhigh`) because thin reviews are the failure mode we are fixing and `max` gives the broadest coverage. `args='max --comment'` posts findings as inline PR comments when asked. Never pass a flag that applies fixes — reviewing must not mutate the tree. **If the skill is refused or unavailable, run the manual precision pass below over the diff instead.**
-- **Committed branch / base-ref / PR** → the built-in skill sees an empty working tree and would report nothing, so run the precision pass **yourself** over the resolved `git diff <base>...<head>`: read the full changed files at the head ref and apply the same lens (correctness bugs + reuse / simplification / efficiency cleanups), adversarially verifying each finding before you keep it. For a GitHub PR, `gh pr diff <n>` is the diff and `gh pr comment` (or the built-in `/review` skill) posts findings back.
+- **Working tree, path, branch, or PR** → run the built-in reviewer inline at the broadest setting, passing the Step 1 target: `Skill(skill='code-review', args='max')` for the working tree, or `args='max <path|branch|pr#>'`. This is the canonical Claude Code reviewer — it has an effort dial and adversarially verifies each finding before reporting, covering correctness bugs and reuse / simplification / efficiency cleanups. `max` (not `xhigh`) because thin reviews are the failure mode we are fixing and `max` gives the broadest coverage. `args='max --comment'` posts findings as inline PR comments when asked. Never pass a flag that applies fixes — reviewing must not mutate the tree. **If the skill is refused or unavailable, run the manual precision pass below over the diff instead.**
+- **Non-default base (or the skill refused)** → run the precision pass **yourself** over the resolved `git diff <base>...<head>`: read the full changed files at the head ref and apply the same lens (correctness bugs + reuse / simplification / efficiency cleanups), adversarially verifying each finding before you keep it. For a GitHub PR, `gh pr diff <n>` is the diff and `gh pr comment` (or the built-in `/review` skill) posts findings back.
 
 Its findings are verified. **Carry every one of them forward into the merged list — do not re-cull them.**
 

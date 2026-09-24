@@ -4,7 +4,6 @@ description: Spec review agent that verifies alignment with user requirements an
 tools: Read, Grep, Glob, Write
 model: claude-sonnet-5
 background: true
-permissionMode: plan
 ---
 
 # Spec Review

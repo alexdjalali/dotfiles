@@ -3,12 +3,14 @@ model: opus
 description: Run all quality gates before committing -- format, lint, type check, tests
 ---
 
-Five gates in order. All must pass before committing. Run only gates relevant to languages in the diff.
+Five gates in order. All must pass before committing. Run only the gates — and within each gate only the commands — for languages present in the diff (`git diff --name-only HEAD` plus untracked files).
 
 ## Gate 1 -- Format (auto-fix in place)
 
+Only for languages in the diff:
+
 - Python: `ruff format .`
-- Go: `gofumpt -w ./...`
+- Go: `gofumpt -w .` then `goimports -w .` (or pass just the changed `.go` files)
 - TypeScript/JS: `prettier --write .`
 
 ## Gate 2 -- Lint (auto-fix where possible)
@@ -32,11 +34,11 @@ Fix manually or do not commit:
 - Go: `go test ./...`
 - TypeScript: `vitest run` or `pnpm test`
 
-Changed modules must have passing tests. New tests use **mocks and fixtures, not hand-rolled fakes** — reuse the project's existing fixtures.
+Changed modules must have passing tests. New tests follow `testing.md` *Test Double Policy* — unit mocks the boundary (reuse the project's fixtures), integration runs the real dependency via testcontainers; never a hand-rolled fake.
 
 ## Gate 5 -- Docs & Consistency (manual)
 
-- **Docs sync:** every inline comment, docstring, README, and architecture doc that references the changed code — **directly or indirectly** (a caller, or a documented behavior that depends on it) — is updated in this change. Use `codegraph_callers` / `codegraph_impact` to find indirect references.
+- **Docs sync** (per `documentation-sync.md`): every comment, docstring, README, and architecture doc that references the changed code — **directly or indirectly** — is updated in this change (`codegraph_callers` / `codegraph_impact` find indirect references).
 - **Consistency & DRY:** the change follows the established patterns, naming, and error-handling idioms of the files it touches; no helper is reinvented that the repo already provides.
 
 ## Rules

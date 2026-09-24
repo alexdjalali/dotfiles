@@ -1,7 +1,7 @@
 ---
 model: opus
 description: Consolidated program status -- scan epics/stories/plans/audits/rca, cross-check against code, emit the real backlog
-argument-hint: "[status | write]"
+argument-hint: "[write]"
 ---
 
 Produce the one view that answers **"what is actually left to build?"** -- a deduplicated, confidence-checked backlog synthesized from every epic, story, plan, audit, and RCA, cross-checked against the code (declared status fields drift). This is `/rfp status` and `/roadmap status` unified and one level up: it spans the whole `docs/spec/` pipeline, not a single folder.
@@ -10,7 +10,7 @@ By default it reports to chat. Persist it when asked (`/status write`) or when a
 
 ## Steps
 
-1. Inventory every artifact under `docs/spec/{epics,stories,plans,audits,rca}/`; note each item's declared Status.
+1. Inventory every artifact under `docs/spec/{epics,stories,audits,rca}/` **and the plans in gitignored `docs/local/plans/`** (local to this checkout — say so if absent); note each item's declared Status.
 2. **Cross-check against the code** -- the declared Status is unreliable. For each epic/story/plan, verify done-ness against what actually builds and runs (CodeGraph + Semble + read the implementing files). Classify plans by *actual* completion, not the header.
 3. Split the backlog into tracks: **product build-out** (unfinished epics/stories) vs **refactor & conformance** (open audits + their remediation epics).
 4. Map each open code audit to its implementing plan/epic; flag audits with no plan as unplanned.

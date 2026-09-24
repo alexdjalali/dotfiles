@@ -1,6 +1,7 @@
 ---
 model: opus
-description: Review code changes for correctness, quality, and adherence to standards
+description: Review a diff -- the working tree, a branch vs its base, or a PR number -- for correctness, quality, and adherence to standards
+argument-hint: "[<paths> | <branch> | <base>..<branch> | <PR number>]"
 ---
 
 High-recall, two-pass review. The failure mode this is tuned against is a **thin review** — walking past real issues and returning three findings on a fifty-line diff. The goal is to surface **every real issue**, then rank by severity. Confidence is managed by the severity tier a finding lands in, **never by silently dropping it**. Merge everything into one ranked list.
@@ -37,7 +38,7 @@ Before looking for issues, establish what the change is *for* and what it *touch
 
 The precision-biased first pass. Pick the engine Step 1 resolved:
 
-- **Working-tree diff** → run the built-in reviewer inline at the broadest setting: `Skill(skill='code-review', args='max')`. This is the canonical Claude Code reviewer — it has an effort dial and adversarially verifies each finding before reporting, covering correctness bugs and reuse / simplification / efficiency cleanups. `max` (not `xhigh`) because thin reviews are the failure mode we are fixing and `max` gives the broadest coverage. Pass flags through when relevant: `args='max --comment'` posts findings as inline PR comments; `args='max --fix'` applies them.
+- **Working-tree diff** → run the built-in reviewer inline at the broadest setting: `Skill(skill='code-review', args='max')`. This is the canonical Claude Code reviewer — it has an effort dial and adversarially verifies each finding before reporting, covering correctness bugs and reuse / simplification / efficiency cleanups. `max` (not `xhigh`) because thin reviews are the failure mode we are fixing and `max` gives the broadest coverage. `args='max --comment'` posts findings as inline PR comments when asked. Never pass a flag that applies fixes — reviewing must not mutate the tree. **If the skill is refused or unavailable, run the manual precision pass below over the diff instead.**
 - **Committed branch / base-ref / PR** → the built-in skill sees an empty working tree and would report nothing, so run the precision pass **yourself** over the resolved `git diff <base>...<head>`: read the full changed files at the head ref and apply the same lens (correctness bugs + reuse / simplification / efficiency cleanups), adversarially verifying each finding before you keep it. For a GitHub PR, `gh pr diff <n>` is the diff and `gh pr comment` (or the built-in `/review` skill) posts findings back.
 
 Its findings are verified. **Carry every one of them forward into the merged list — do not re-cull them.**
@@ -59,7 +60,7 @@ Pass A is deliberately precision-biased and will miss whole categories. Pass B i
 8. **YAGNI**: unused abstractions, speculative params/config/hooks, code not reachable from the stated request. Confirm "unused" with a caller search before flagging.
 9. **Codebase consistency**: reinvented helpers, divergent idioms, one-off styles that ignore an existing convention. Cite the established pattern (`file:line`).
 10. **DRY**: duplicated logic, reimplementing a utility the repo already has. Cite the existing implementation (`file:line`).
-11. **Tests**: critical paths covered; assertions test behavior, not internals; a one-character bug in the implementation would still fail the test (not just truthiness); reuse existing fixtures. **Two-tier double policy (`must_fix`):** unit tests mock the boundary; integration tests run the real dependency in a Docker container via testcontainers — a hand-rolled fake, an in-memory substitute (SQLite-for-Postgres / fakeredis / in-process queue), or a mock of the very dependency an integration test exists to exercise is a `must_fix` (see `testing.md`). A new dependency (subprocess/I/O) mocked in *all* existing tests for that function.
+11. **Tests**: critical paths covered; assertions test behavior, not internals; a one-character bug in the implementation would still fail the test (not just truthiness); reuse existing fixtures. Doubles match the tier per `testing.md` *Test Double Policy* (a fake, in-memory substitute, or mocked integration dependency is `must_fix`). A new dependency (subprocess/I/O) mocked in *all* existing tests for that function.
 12. **Standards**: file > 800 lines, function > 50 lines, nesting > 4 levels, `any`/`interface{}` without narrowing, bare `except:`, hardcoded secrets/URLs/config.
 13. **Design**: SOLID violations, premature or missing abstraction, inappropriate coupling, leaked persistence models across layers.
 14. **Observability**: errors swallowed without logging, missing context in error messages, log level misuse, no signal on the failure branch.
@@ -116,10 +117,11 @@ If a tier is empty, say so explicitly (e.g. "no `must_fix`"). A genuinely clean 
 - NEVER flag `must_fix` without naming the failure scenario.
 - NEVER suggest adding features that are not called anywhere (YAGNI).
 - Consistency and DRY findings MUST cite the established pattern or existing implementation (`file:line`) the change diverges from or duplicates.
-- Enforce the two-tier test-double policy: unit mocks the boundary, integration uses testcontainers; flag any hand-rolled fake or in-memory substitute — and any integration test that mocks its dependency — as `must_fix` (see `testing.md`).
+- Enforce the two-tier test-double policy (`testing.md` *Test Double Policy*) — every violation is `must_fix`.
 - Do not re-cull Pass A's verified findings — carry them forward.
 - NEVER run a git write command (checkout/pull/commit/reset) as part of a review — fetch and diff are read-only; reviewing must not mutate the working tree.
 
 ## Next Step
 
-Apply all `must_fix` and `should_fix` items. Run the affected tests after each fix.
+- **Invoked from `spec-verify` / `spec-bugfix-verify`:** hand the findings back to that phase — it applies every `must_fix` and `should_fix` (running the affected tests after each fix) as part of the approved plan.
+- **Invoked directly:** report only. Ask which findings to address before changing any code.

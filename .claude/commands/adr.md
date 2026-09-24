@@ -1,20 +1,20 @@
 ---
 model: opus
 description: Write an Architecture Decision Record, or transition an existing one (accept/reject/supersede)
-argument-hint: "[<decision title> | accept|reject|supersede <NNN> [by <MMM>]]"
+argument-hint: "[<decision title> | accept|reject|supersede <NNNN> [by <MMMM>]]"
 ---
 
 Create a new ADR in `docs/adr/`, or move an existing one through its lifecycle. Dispatch on args:
 
-- `accept <NNN>` / `reject <NNN>` / `supersede <NNN> by <MMM>` → **transition** (see Lifecycle).
+- `accept <NNNN>` / `reject <NNNN>` / `supersede <NNNN> by <MMMM>` → **transition** (see Lifecycle).
 - anything else (a decision title/description) → **create** a new ADR.
 
 ## Create (default)
 
 Uses `~/.claude/templates/adr.md`.
 
-1. Scan `docs/adr/` for existing files; determine the next sequential number.
-2. Create `docs/adr/NNN-<kebab-slug>.md` from the template.
+1. Scan `docs/adr/` for existing files; determine the next sequential number (4 digits, zero-padded: `0001`, `0002`, …).
+2. Create `docs/adr/NNNN-<kebab-slug>.md` from the template (heading `ADR-NNNN: <Title>`).
 3. Fill in: title, status (Proposed), context, decision, rationale, consequences, and the alternatives table with rejected options and their trade-offs.
 4. Cross-reference related or superseded ADRs.
 
@@ -22,11 +22,11 @@ Uses `~/.claude/templates/adr.md`.
 
 An ADR is a living record: `Proposed → Accepted | Rejected | Superseded`. A `Proposed` ADR left un-transitioned silently blocks the work that depends on it — resolving it is a real step, not bookkeeping.
 
-- **`/adr accept <NNN>`** — set `Status: Accepted`, stamp the date. The decision is now binding; downstream `/arch` / `/design` / `/spec` may rely on it. Note which of them just unblocked.
-- **`/adr reject <NNN>`** — set `Status: Rejected`, stamp the date, add a one-line reason. Keep the record — do not delete it.
-- **`/adr supersede <NNN> by <MMM>`** — set NNN `Status: Superseded by ADR-MMM` and add a back-link from MMM's header to NNN. Create MMM first (via create mode) if it doesn't exist.
+- **`/adr accept <NNNN>`** — set `Status: Accepted`, stamp the date. The decision is now binding; downstream `/arch` / `/design` / `/spec` may rely on it. Note which of them just unblocked.
+- **`/adr reject <NNNN>`** — set `Status: Rejected`, stamp the date, add a one-line reason. Keep the record — do not delete it.
+- **`/adr supersede <NNNN> by <MMMM>`** — set NNNN `Status: Superseded by ADR-MMMM` and add a back-link from MMMM's header to NNNN. Create MMMM first (via create mode) if it doesn't exist.
 
-Every transition: preserve the original decision text, extend the `Status history` line (`Proposed <date> → Accepted <date>`), and update any ADR that cross-references NNN.
+Every transition: preserve the original decision text, extend the `Status history` line (`Proposed <date> → Accepted <date>`), and update any ADR that cross-references NNNN.
 
 ## Rules
 

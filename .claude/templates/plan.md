@@ -1,28 +1,54 @@
-# [Feature Name] Implementation Plan
+# Plan: [Title]
 
-Created: [Date]
+Type: Feature
 Status: PENDING
 Approved: No
-Iterations: 0
-Max Iterations: 3
+Iteration: 1
+Created: [Date]
 
-> **Status Lifecycle:** PENDING → COMPLETE → VERIFIED
-> **Iterations:** Tracks implement→verify cycles (incremented by verify phase)
-> **Max Iterations:** Hard cap on verify→implement loops (default 3). When reached, remaining issues are reported to user for manual decision.
+> **The single plan format for `/spec`** — `spec-plan` and `spec-bugfix-plan` write every plan from this file to `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored). Delete sections marked optional when they don't apply.
 >
-> - PENDING: Initial state, awaiting implementation
-> - COMPLETE: All tasks implemented
-> - VERIFIED: All checks passed
->
-> **Approval Gate:** Implementation CANNOT proceed until `Approved: Yes`
+> - **Type:** `Feature` or `Bugfix` — the `/spec` dispatcher routes on it (plan/verify vs bugfix-plan/bugfix-verify).
+> - **Status:** PENDING → COMPLETE → VERIFIED. PENDING: awaiting implementation · COMPLETE: all tasks implemented · VERIFIED: all checks passed.
+> - **Approved:** implementation CANNOT start until `Approved: Yes` — plan approval is the only user checkpoint.
+> - **Iteration:** starts at 1; the verify phase increments it each time it loops back to implement. The loop runs until VERIFIED.
 
 ## Summary
 
-**Goal:** [One sentence describing what this builds]
+**Goal:** [One sentence describing what this builds or fixes]
 
 **Architecture:** [2-3 sentences about chosen approach]
 
 **Tech Stack:** [Key technologies/libraries]
+
+## Goal Verification
+
+> Observable truths that must hold once the goal is achieved — `spec-verify` and the reviewers check each one against the code. For a bugfix, the Behavior Contract's "must" clause is the first truth.
+
+**Truths:**
+
+- [ ] [Observable behavior, e.g. "POST /users with a duplicate email returns 409"]
+
+**Artifacts:**
+
+- [ ] `path/to/file` — [what it must contain; real, non-stub implementation]
+
+## Bugfix (optional — `Type: Bugfix` only; delete for features)
+
+**Source:** [RCA `docs/spec/rca/<slug>.md` · issue · user report]
+
+**Behavior Contract:** Given [trigger/state], the code **did** [buggy behavior]; it **must** [correct behavior].
+
+- Parallel implementations sharing the root cause: [call sites — fixed together, or why not]
+
+**Root Cause:** [where and why the bug originates, with `file:line` evidence]
+
+**Reproducing Test (specified here; written as Task 1's RED step after approval):**
+
+- Path: `tests/...`
+- Name: `test_<function>_<scenario>_<expected>`
+- Tier / double: [unit — mocks `<boundary>` · integration — real `<service>` via testcontainers]
+- Assertion: [the exact observable value/state that fails on current code and passes after the fix]
 
 ## Architecture Diagram
 
@@ -115,13 +141,13 @@ src/
 
 ## Progress Tracking
 
-**MANDATORY: Update this checklist as tasks complete. Change `[ ]` to `[x]`.**
+**MANDATORY: Update this checklist the moment each task completes — change `[ ]` to `[x]`, Done +1, Left −1.**
 
 - [ ] Task 1: [Brief summary]
 - [ ] Task 2: [Brief summary]
 - [ ] ...
 
-**Total Tasks:** [Number] | **Completed:** 0 | **Remaining:** [Number]
+**Total Tasks:** [Number] | **Done:** 0 | **Left:** [Number]
 
 ## Implementation Tasks
 
@@ -142,6 +168,9 @@ src/
 - [Technical approach or algorithm to use]
 - [Which existing pattern to follow, with file:line reference]
 - [Integration points with other tasks or existing code]
+- [`Why >2 test classes:` note, only if one production class genuinely needs more than 2 new test classes]
+
+**Trivial:** [Optional — skip RED only if ≤ 5 net new production lines, no new branch/loop/try with a non-trivial body, no new public symbol, no new error path; name the existing covering test or verification command. Never for bugfixes. Audited against the diff at verify.]
 
 **Definition of Done:**
 
@@ -188,3 +217,14 @@ src/
 ### Deferred Ideas
 
 - [Ideas surfaced during discussion that are out of scope for this plan]
+
+## Deviations
+
+> Added by `spec-implement` when it auto-fixes an inline bug / broken import, or stops on an architectural surprise. Delete if empty.
+
+## References
+
+- Story: `docs/spec/stories/N.M-<slug>.md` (its acceptance criteria are this plan's requirements; `spec-verify` marks it Complete)
+- RCA: `docs/spec/rca/<slug>.md`
+- ADR: `docs/adr/NNNN-<slug>.md`
+- Design: `docs/spec/design/<slug>.md`

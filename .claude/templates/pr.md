@@ -29,9 +29,10 @@ Same types as conventional commits. Max 72 chars.
 
 ## References
 
-<!-- Link to spec pipeline artifacts if they exist -->
+<!-- Link to spec pipeline artifacts if they exist. Plans are gitignored and local-only:
+     name the plan for traceability, but don't link it as if reviewers can open it. -->
 
-- Plan: `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored local working doc)
+- Plan (local-only, not in the repo): `YYYY-MM-DD-<slug>`
 - Story: `docs/spec/stories/N.M-<slug>.md`
 - Epic: `docs/spec/epics/epic-NN-<slug>.md`
 - ADR: `docs/adr/NNNN-<title>.md`

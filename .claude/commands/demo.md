@@ -14,7 +14,7 @@ A demo proves the feature works through the **real system, end to end** -- the p
 2. **Verify every command, endpoint, port, flag, and credential against the codebase** (CLAUDE.md, `configs/`, the actual routes). Never invent one.
 3. Write the walkthrough: "What you'll show" (the arc), a step-count summary table, prerequisites, then numbered Parts with real commands and the output to expect at each step.
 4. Add **cleanup** and a **troubleshooting** table (symptom -> cause -> fix) for the failure modes you hit while dry-running.
-5. **Dry-run the flow** if a target is reachable (follow the live-target probe in the verification rules); record real output. If you couldn't run a step, mark it unverified -- don't present invented output as real.
+5. **Dry-run the flow** if a target is reachable (follow the live-target probe in `~/.claude/rules/browser-automation.md`); record real output. If you couldn't run a step, mark it unverified -- don't present invented output as real.
 6. Write `docs/spec/demos/<slug>.md`; add `docs/spec/demos/<slug>.sh` (`set -euo pipefail`, echo each step, assert expected output) when a scripted run helps.
 
 ## Rules

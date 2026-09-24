@@ -4,14 +4,13 @@ description: Changes review agent that verifies plan compliance, code quality, a
 tools: Read, Grep, Glob, Write, Bash(git diff:*), Bash(git log:*)
 model: claude-sonnet-5
 background: true
-permissionMode: plan
 ---
 
 # Changes Review
 
 Verify implemented code against the plan: compliance, quality, and goal achievement in one pass.
 
-**When this runs:** this is the **Codex-native `/spec` verification reviewer**. On Claude Code, `/spec`/`/fix` code review is the built-in `/code-review` skill invoked inline, and any ad-hoc diff review (working tree, a committed branch vs a base, or a PR) goes through `/review-diff` — **do not launch this agent by hand there.** "Changes review" as a phrase in the rules refers to whichever of these is active for the runtime, not exclusively to this file.
+**When this runs:** this is the **Codex-native `/spec` verification reviewer**. On Claude Code, `/spec` code review is `/review-diff` run inline by `spec-verify` / `spec-bugfix-verify` (`/fix` has no code-review step), and any ad-hoc diff review (working tree, a committed branch vs a base, or a PR) also goes through `/review-diff` — **do not launch this agent by hand there.** "Changes review" as a phrase in the rules refers to whichever of these is active for the runtime, not exclusively to this file.
 
 ## Performance Budget
 
@@ -37,7 +36,7 @@ The orchestrator provides: `plan_file`, `changed_files`, `output_path`, `runtime
 git diff HEAD -- <file1> <file2> ...
 ```
 
-If the output is empty (changes are committed on a branch), run `git diff main..HEAD -- <file1> <file2> ...` instead.
+If the output is empty (changes are committed on a branch), run `git diff main...HEAD -- <file1> <file2> ...` instead (three-dot: only what the branch introduced since it diverged from `main`).
 
 **Cross-reference** the diff files against `changed_files` from the orchestrator. Files in `changed_files` but not in the plan may be legitimate (transitive updates) — review only if they look spec-related.
 
@@ -61,8 +60,8 @@ Focus on issues hooks CANNOT catch. Review the diff for:
   - New **public class** with no test (unit OR functional) → **must_fix**
   - New **public function on an existing class** with no test (unit OR functional) AND no `Trivial:` justification on the task → **should_fix**
   - New private helper / internal function → no must-have test (covered transitively by the public-API test that exercises it)
-  - Tests with no mocking of external deps → **must_fix**
-  - Hand-rolled fake / in-memory reimplementation of a dependency where a mock or existing fixture would serve → **should_fix** (we use mocks and fixtures, not fakes)
+  - Unit tests with no mocking of external deps → **must_fix** (exempt: integration tests that run the real dependency in a Docker container via testcontainers — that is the required double for that tier)
+  - Hand-rolled fake / stub / in-memory reimplementation of a dependency, an in-memory substitute in an integration test (SQLite-for-Postgres, fakeredis), or an integration test that mocks the dependency it exists to exercise → **must_fix** (per `~/.claude/rules/testing.md` *Test Double Policy*)
 - **Test parsimony (per `~/.claude/rules/testing.md` § Test Parsimony):**
   - More than 2 new test classes for the same production class without a `Why >2 test classes:` note in the plan's Key Decisions → **must_fix**
   - Per-method test classes (e.g. `DoSomethingTests` for `Foo.DoSomething()`) → **must_fix**
@@ -118,7 +117,7 @@ Output ONLY valid JSON (no markdown wrapper):
 }
 ```
 
-**Severities:** must_fix = missing requirement, security, new public class with no behavioural coverage, unmocked external dependency in a unit test, unimplemented risk mitigation. should_fix = partial DoD, new public function on an existing class with no behavioural coverage and no `Trivial:` justification, untested mitigation, error handling gaps. suggestion = minor concern.
+**Severities:** must_fix = missing requirement, security, new public class with no behavioural coverage, unmocked external dependency in a unit test, a fake / in-memory substitute / mocked integration dependency, unimplemented risk mitigation. should_fix = partial DoD, new public function on an existing class with no behavioural coverage and no `Trivial:` justification, untested mitigation, error handling gaps. suggestion = minor concern.
 
 ## Rules
 

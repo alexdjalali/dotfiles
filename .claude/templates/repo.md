@@ -30,20 +30,18 @@
 │   └── graphql/                  # GraphQL schemas
 │
 ├── docs/                         # Documentation
-│   ├── adr/                      # Architecture Decision Records
+│   ├── adr/                      # Architecture Decision Records (NNNN-<slug>.md)
 │   ├── spec/                     # Spec pipeline artifacts (tracked)
-│   │   ├── arch/                 # Architecture diagrams
+│   │   ├── roadmap/              # Program roadmap, dependency map, critical path
+│   │   ├── arch/                 # Architecture diagrams (ARCH-NNN-<slug>.md)
+│   │   ├── design/               # Technical design docs
 │   │   ├── epics/                # Epic specifications
-│   │   └── stories/              # Implementation stories
+│   │   ├── stories/              # Implementation stories
+│   │   ├── audits/               # Standard-scoped codebase audits
+│   │   ├── rca/                  # Root-cause analyses
+│   │   └── demos/                # E2E demo walkthroughs (+ .sh)
 │   └── local/                    # Gitignored local working docs (never committed)
 │       └── plans/                # /spec implementation plans + spec-review JSON
-│
-├── frontends/                    # Frontend applications
-│   └── <app>/                    # Each frontend app
-│       ├── src/
-│       ├── __tests__/
-│       ├── package.json
-│       └── tsconfig.json
 │
 ├── zarf/                         # Infrastructure as Code
 │   ├── docker/                   # Per-service Dockerfiles
@@ -69,7 +67,7 @@
 │   ├── docker-compose.yaml       # Profile-based local stack
 │   └── docker-compose.override.yaml
 │
-├── <lib>/                        # Shared libraries (pkg/ for Go, src/ for Python)
+├── <lib>/                        # Shared libraries (pkg/ for Go, src/ for Python, packages/ for TS)
 │   ├── foundation/               # Cross-cutting concerns
 │   │   ├── builder/              # DI builder pattern
 │   │   ├── cache/                # Caching layer
@@ -100,9 +98,10 @@
 │   ├── pipeline/                 # Data processing pipelines (optional)
 │   └── workflow/                 # Workflow orchestration (optional)
 │
-├── <apps>/                       # Deployable services (apps/ for Go, entrypoints/ for Python)
+├── <apps>/                       # Deployable services (apps/ for Go and TS, entrypoints/ for Python)
 │   ├── server/                   # HTTP/gRPC servers
 │   │   └── <service>/            # Per-service entry point
+│   ├── web/                      # Frontend apps (TS: apps/<app>/ with src/, __tests__/, package.json)
 │   ├── worker/                   # Async workers
 │   ├── stream/                   # Stream consumers (Kafka, etc.)
 │   ├── scheduler/                # Periodic jobs
@@ -150,12 +149,14 @@
 
 ## Naming Conventions
 
-| Concept | Go Convention | Python Convention |
-|---------|--------------|-------------------|
-| Shared libraries | `pkg/` | `src/` |
-| Deployable services | `apps/` | `entrypoints/` |
-| Infrastructure | `zarf/` | `zarf/` |
-| Sub-packages | `pkg/go/`, `pkg/python/` | flat under `src/` |
+| Concept | Go Convention | Python Convention | TypeScript Convention |
+|---------|--------------|-------------------|-----------------------|
+| Shared libraries | `pkg/` | `src/` | `packages/` |
+| Deployable services | `apps/` | `entrypoints/` | `apps/` (incl. frontends) |
+| Infrastructure | `zarf/` | `zarf/` | `zarf/` |
+| Sub-packages | `pkg/go/`, `pkg/python/` | flat under `src/` | one workspace package per `packages/<name>/` |
+
+**Org substrate library (optional):** if your organization already ships a shared substrate library (e.g. knowledge-engine / techai-webutils), depend on it instead of scaffolding an in-repo `<lib>/`.
 
 ## Architecture Layers
 

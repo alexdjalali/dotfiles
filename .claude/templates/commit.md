@@ -55,10 +55,10 @@ Refs #118
 ```
 refactor: consolidate spec pipeline output directories
 
-Merged docs/plans/, docs/architecture/, docs/rfp/ into unified
-docs/spec/ structure with subdirectories for arch, epics, stories,
-and plans.
+Merged docs/architecture/ and docs/rfp/ into a unified docs/spec/
+structure (arch, epics, stories, ...). Plans move to the gitignored
+docs/local/plans/ so a merged PR can never delete them.
 
 BREAKING CHANGE: existing docs/plans/ paths must be updated to
-docs/spec/plans/
+docs/local/plans/
 ```

@@ -1,6 +1,6 @@
 # Codex Plan Review (Adversarial)
 
-> Prompt template for Codex `task --prompt-file` plan reviews. Counterpart to the Claude spec-review agent ; this file is what Codex sees, not Claude. Skill steps load this template, substitute `{{PLAN_PATH}}`, `{{PLAN_GOAL}}`, and `{{CONTEXT_FILES}}`, write to a `/tmp/` file, and pass it to `node codex-companion.mjs task --background --prompt-file`.
+> **Optional — for a manual Codex second opinion.** No `/spec` step runs this. Prompt template for Codex `task --prompt-file` plan reviews; counterpart to the Claude `spec-review` agent — this file is what Codex sees, not Claude. To use it, substitute `{{PLAN_PATH}}`, `{{PLAN_GOAL}}`, and `{{CONTEXT_FILES}}`, write the result to a `/tmp/` file, and run it with the companion recipe in `codex-changes-review.md` (directly via Bash, never inside a subagent).
 
 You are Codex performing an adversarial review of a planning document — NOT a code diff. Your job is to break confidence in the planned approach, not validate it.
 
@@ -22,14 +22,13 @@ Default to skepticism. Assume the plan can fail in subtle, high-cost, or user-vi
 
 ## Attack surface to prioritize
 
-- Security / auth / data-integrity bypass routes the plan does not cover (symlinks, `/proc`, named pipes, FIFOs, encoding edge cases like UTF-16 with embedded NUL bytes, race conditions between hook and tool subprocess)
+- Security / auth / data-integrity bypass routes the plan does not cover (trust-boundary gaps, encoding edge cases, time-of-check/time-of-use races)
 - Edge cases the plan punts to "Out of Scope" that the user implicitly wanted
 - Allow-list / config / toggle poisoning vectors (malformed config, type confusion, default fallback inversion)
 - Performance and resource exhaustion (regex catastrophic backtracking, large inputs, hung file descriptors)
 - Failure modes that fail-OPEN (let bad inputs through) vs fail-CLOSED
 - Test parsimony violations or non-falsifiable Definition-of-Done criteria
 - Architectural drift from existing project patterns (compare against the reference files)
-- Chained command sequences in a single tool call (e.g. `git add … && git commit …`) where a pre-execution scan sees stale state and the post-execution state never gets re-scanned
 
 ## Review method
 

@@ -159,9 +159,27 @@ test_git_lfs_step_matches_tracked_config() {
   assert_eq "git-lfs filter-process" "$("$REAL_GIT" config -f "$cfg" filter.lfs.process)" "filter.lfs.process"
 }
 
+# Why this test is important:
+#   - ~/.claude/rules, ~/.cursor/rules and ~/.kilocode/rules share a basename; a
+#     flat backup dir made the second move fail and stop the install half done.
+# What it tests:
+#   - Two existing targets with the same name are both backed up, each under its
+#     path relative to HOME, and both get linked.
+test_backup_keeps_same_named_targets_apart() {
+  load_install
+  mkdir -p "$T/src" "$HOME/.a/rules" "$HOME/.b/rules"
+  echo a > "$HOME/.a/rules/x"
+  echo b > "$HOME/.b/rules/x"
+  backup_and_link "$T/src" "$HOME/.a/rules" >/dev/null
+  backup_and_link "$T/src" "$HOME/.b/rules" >/dev/null
+  assert_eq "a b" "$(cat "$HOME"/.dotfiles-backup/*/.a/rules/x) $(cat "$HOME"/.dotfiles-backup/*/.b/rules/x)" "backed-up contents"
+  assert_eq "$T/src $T/src" "$(readlink "$HOME/.a/rules") $(readlink "$HOME/.b/rules")" "link targets"
+}
+
 run_test test_sourcing_runs_nothing
 run_test test_backup_and_link_is_idempotent
 run_test test_backup_and_link_backs_up_existing_file
+run_test test_backup_keeps_same_named_targets_apart
 run_test test_dotfiles_dir_derived_from_script_location
 run_test test_nvim_bootstrap_failure_is_reported
 run_test test_missing_bat_does_not_abort

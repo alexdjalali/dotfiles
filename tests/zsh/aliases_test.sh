@@ -89,10 +89,24 @@ test_zshrc_local_post_wins() {
   assert_eq "gs='echo post'" "$out" "gs after .zshrc"
 }
 
+# Why this test is important:
+#   - install.sh links ~/.zshrc from wherever the repo is cloned; a .zshrc that
+#     assumed ~/dotfiles loaded no conf.d module from any other clone.
+# What it tests:
+#   - With DOTFILES unset, .zshrc (reached through a ~/.zshrc link) sets
+#     DOTFILES to the repo it lives in.
+test_zshrc_finds_its_repo() {
+  ln -s "$REPO_ROOT/zsh/.zshrc" "$T/.zshrc"
+  local out
+  out=$(env -u DOTFILES HOME="$T" zsh -f -c "source ~/.zshrc 2>/dev/null; print -r -- \$DOTFILES" </dev/null)
+  assert_eq "$REPO_ROOT" "$out" "DOTFILES"
+}
+
 run_test test_aliases_are_hygienic
 run_test test_gac_commits_tracked_changes_only
 run_test test_tree_alias_needs_eza
 run_test test_machine_only_aliases_not_tracked
 run_test test_no_duplicate_timer
 run_test test_zshrc_local_post_wins
+run_test test_zshrc_finds_its_repo
 finish

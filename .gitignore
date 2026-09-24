@@ -40,7 +40,7 @@ neomutt/.neomutt/certificates
 .claude/history.jsonl
 .claude/stats-cache.json
 
-# Cursor runtime (we only track rules/ and skills-cursor/)
+# Cursor runtime (we only track rules/)
 cursor/ai-tracking/
 cursor/extensions/
 cursor/projects/

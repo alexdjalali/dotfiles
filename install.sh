@@ -28,11 +28,13 @@ backup_and_link() {
         return
     fi
 
-    # Back up existing file/symlink/directory
+    # Back up an existing file/symlink/directory under its path relative to
+    # HOME, so same-named targets (~/.claude/rules, ~/.cursor/rules) don't collide
     if [ -e "$dst" ] || [ -L "$dst" ]; then
-        mkdir -p "$BACKUP_DIR"
-        mv "$dst" "$BACKUP_DIR/"
-        warn "Backed up $dst -> $BACKUP_DIR/"
+        local backup="$BACKUP_DIR/${dst#"$HOME"/}"
+        mkdir -p "$(dirname "$backup")"
+        mv "$dst" "$backup"
+        warn "Backed up $dst -> $backup"
     fi
 
     # Ensure parent directory exists
@@ -375,7 +377,11 @@ bootstrap_nvim() {
         warn "Neovim plugin restore failed — open nvim and run :Lazy to see why"
     fi
     info "Installing Treesitter parsers (this may take a moment)..."
-    if nvim_headless -c 'lua require("nvim-treesitter").update():wait(600000)'; then
+    # install() adds the configured parsers a fresh machine lacks; update() only
+    # refreshes installed ones.
+    if nvim_headless -c 'lua local ts, want = require("nvim-treesitter"), require("astrocore").config.treesitter.ensure_installed
+        ts.install(type(want) == "table" and want or {}):wait(600000)
+        ts.update():wait(600000)'; then
         ok "Treesitter parsers installed"
     else
         warn "Treesitter parser install failed — open nvim and run :TSUpdate"
@@ -439,7 +445,8 @@ print_next_steps() {
     echo "  5. RAYCAST: Add ~/.local/scripts/raycast as a Script Command"
     echo "     directory in Raycast preferences."
     echo ""
-    echo "  6. FONT: Set your terminal font to 'MesloLGS Nerd Font' in"
+    echo "  6. FONT: The tracked iTerm profile uses JetBrainsMono Nerd Font Mono."
+    echo "     For another profile, pick a Brewfile Nerd Font in"
     echo "     iTerm > Settings > Profiles > Text > Font."
     echo ""
     echo "  7. CLAUDE CODE: Review ~/.claude/settings.local.json for"

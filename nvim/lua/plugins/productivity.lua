@@ -19,7 +19,7 @@ return {
       { "tpope/vim-dadbod", lazy = true },
       { "kristijanhusak/vim-dadbod-completion", lazy = true },
     },
-    cmd = { "DBUI", "DBUIToggle", "DB" },
+    cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DB" },
     keys = {
       { "<leader>D", "<cmd>DBUIToggle<cr>", desc = "Database UI" },
     },

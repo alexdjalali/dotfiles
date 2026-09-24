@@ -43,8 +43,9 @@ fpath=(~/.zsh/functions $fpath)
 
 source $ZSH/oh-my-zsh.sh
 
-# Dotfiles root (used by conf.d modules)
-export DOTFILES="${DOTFILES:-$HOME/dotfiles}"
+# Dotfiles root (used by conf.d modules): the repo this file lives in, found
+# through the ~/.zshrc link, so the repo can be cloned anywhere
+export DOTFILES="${DOTFILES:-${${(%):-%x}:A:h:h}}"
 
 # Source all conf.d modules in order
 for conf in "$DOTFILES/zsh/conf.d/"*.zsh(N); do

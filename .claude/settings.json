@@ -159,11 +159,11 @@
     "basedpyright@claude-code-lsps": true,
     "gopls@claude-code-lsps": true,
     "vtsls@claude-code-lsps": true,
-    "webapp-testing@awesome-claude-skills": true,
-    "github-automation@awesome-claude-skills": true,
-    "slack-automation@awesome-claude-skills": true,
-    "sentry-automation@awesome-claude-skills": true,
-    "datadog-automation@awesome-claude-skills": true,
+    "webapp-testing@awesome-claude-skills": false,
+    "github-automation@awesome-claude-skills": false,
+    "slack-automation@awesome-claude-skills": false,
+    "sentry-automation@awesome-claude-skills": false,
+    "datadog-automation@awesome-claude-skills": false,
     "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
@@ -194,5 +194,26 @@
   "preferredNotifChannel": "auto",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "showThinkingHint": true
+  "showThinkingHint": true,
+  "skillOverrides": {
+    "batch": "user-invocable-only",
+    "claude-api": "user-invocable-only",
+    "dataviz": "user-invocable-only",
+    "debug": "user-invocable-only",
+    "design": "user-invocable-only",
+    "design-sync": "user-invocable-only",
+    "doctor": "user-invocable-only",
+    "fewer-permission-prompts": "user-invocable-only",
+    "init": "user-invocable-only",
+    "keybindings-help": "user-invocable-only",
+    "loop": "user-invocable-only",
+    "run": "user-invocable-only",
+    "run-skill-generator": "user-invocable-only",
+    "schedule": "user-invocable-only",
+    "security-review": "user-invocable-only",
+    "simplify": "user-invocable-only",
+    "update-config": "user-invocable-only",
+    "verify": "user-invocable-only",
+    "workflow-authoring": "user-invocable-only"
+  }
 }

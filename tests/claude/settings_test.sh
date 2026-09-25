@@ -149,6 +149,22 @@ test_lint_hook_counts_only_added_patterns() {
   assert_eq 2 "$rc" "exit status when a print( is added"
 }
 
+# Why this test is important:
+#   - The anchor only helps if compaction actually triggers it, and the 200K
+#     auto-compact window is what keeps long /spec sessions from growing to
+#     the 1M-window models' ~967K default before compacting.
+# What it tests:
+#   - A SessionStart hook matching "compact" runs compact-anchor.sh, and
+#     autoCompactWindow is 200000.
+test_compact_anchor_hook_wired() {
+  local hooks
+  hooks=$(jq -r '.hooks.SessionStart[] | select(.matcher != null and (.matcher | test("compact"))) | .hooks[].command' "$SETTINGS" |
+    sed "s#\$HOME/dotfiles#$REPO_ROOT#g")
+  assert_contains "$hooks" "$REPO_ROOT/.claude/scripts/compact-anchor.sh" "SessionStart compact hook"
+  assert_eq 200000 "$(jq -r '.autoCompactWindow' "$SETTINGS")" "autoCompactWindow"
+}
+
+run_test test_compact_anchor_hook_wired
 run_test test_settings_uses_guard_script
 run_test test_configured_guard_blocks_force_push
 run_test test_configured_guard_fails_closed_without_launcher

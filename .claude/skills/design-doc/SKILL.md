@@ -5,7 +5,7 @@ description: Write an implementable technical design (TL;DR, diagrams, state mod
 argument-hint: "[arch] <subsystem or feature | ADR>"
 ---
 
-The "how it works / how we'll build it" **between an ADR (the decision) and a plan (the tasks)**. **Input:** a subsystem, feature, or governing ADR. **Output:** `docs/spec/design/<slug>.md` from `~/.claude/templates/design.md` — or, with `arch`, `docs/spec/arch/ARCH-NNN-<slug>.md` (next 3-digit number; the name stories link to).
+The "how it works / how we'll build it" **between an ADR (the decision) and a plan (the tasks)**. **Input:** a subsystem, feature, or governing ADR. **Output:** `docs/spec/design/<slug>.md` from `~/.claude/templates/design.md` — or, with `arch`, a new file in `docs/spec/arch/` following the folder's existing naming scheme (next number in it — e.g. `NN-<slug>.md`; `ARCH-NNN-<slug>.md` only when the folder is empty). The name is what stories link to.
 
 ## Steps
 

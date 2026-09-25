@@ -2,6 +2,7 @@
 name: spec-plan
 description: /spec planning, Feature or Bugfix — explore (or reproduce + root-cause), design 3–12 tasks per story (1 story = 1 commit), write the plan, run spec-review, get approval. Started by /spec, not unprompted; small contained bugs go to /fix.
 model: opus
+effort: xhigh
 ---
 
 **Input:** a feature request or story / epic / ADR / design-doc path (`Type: Feature`), or a bug report or RCA (`Type: Bugfix`). **Output:** an approved plan at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored) from `~/.claude/templates/plan.md`, then the hand-off to `spec-implement`. NEVER write production or test code before approval.
@@ -46,5 +47,7 @@ NEVER skip it. Launch `Agent(subagent_type='spec-review')` with `plan_file`, `us
 > - Approve — start implementing
 > - Revise — [specify changes]
 > - Cancel — stop here
+>
+> (Long session? `/compact` first, then `/spec <plan path>` — the plan carries the state.)
 
 NEVER begin without an explicit Approve. On approval set `Approved: Yes` and call `Skill(skill='spec-implement')` in the same turn — approval also authorizes the plan's story commits.

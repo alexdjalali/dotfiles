@@ -19,7 +19,8 @@ Structural change: ADR (`docs/adr/`) → design / architecture diagrams (`docs/s
 
 - **Fast checks** — per story, before each commit, on changed files: format → lint → type check → affected tests → docs updated.
 - **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (e.g. a repo-local preflight, `just lint` + `just test`), else the fast checks repo-wide + the full suite, 0 failures.
-- **Never rerun a costly step on unchanged input** — record the commit it passed on and reuse it.
+- **Never rerun a costly step on unchanged input** — record the commit it passed on and reuse it. A docs-only commit (`docs/**`, `*.md`) inherits the previous green full gate.
+- Never bypass git hooks (`--no-verify`) — a failing hook is a red fast check: fix and retry.
 
 Tools: Python `uv` `ruff` `basedpyright` · Go `gofumpt` `goimports` `golangci-lint` · TS `pnpm` `eslint` `tsc` `vitest`.
 

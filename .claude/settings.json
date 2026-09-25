@@ -89,6 +89,28 @@
     "defaultMode": "bypassPermissions"
   },
   "enableAllProjectMcpServers": true,
+  "skillOverrides": {
+    "batch": "user-invocable-only",
+    "claude-api": "user-invocable-only",
+    "dataviz": "user-invocable-only",
+    "debug": "user-invocable-only",
+    "design": "user-invocable-only",
+    "design-sync": "user-invocable-only",
+    "doctor": "user-invocable-only",
+    "fewer-permission-prompts": "user-invocable-only",
+    "init": "user-invocable-only",
+    "keybindings-help": "user-invocable-only",
+    "loop": "user-invocable-only",
+    "run": "user-invocable-only",
+    "run-skill-generator": "user-invocable-only",
+    "schedule": "user-invocable-only",
+    "security-review": "user-invocable-only",
+    "simplify": "user-invocable-only",
+    "update-config": "user-invocable-only",
+    "verify": "user-invocable-only",
+    "workflow-authoring": "user-invocable-only"
+  },
+  "autoCompactWindow": 200000,
   "hooks": {
     "SessionStart": [
       {
@@ -96,6 +118,16 @@
           {
             "type": "command",
             "command": "bash \"$HOME/dotfiles/.claude/scripts/patch-gopls-lsp.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "compact|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/compact-anchor.sh\"",
+            "timeout": 10
           }
         ]
       }
@@ -188,25 +220,5 @@
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
   "showThinkingHint": true,
-  "skillOverrides": {
-    "batch": "user-invocable-only",
-    "claude-api": "user-invocable-only",
-    "dataviz": "user-invocable-only",
-    "debug": "user-invocable-only",
-    "design": "user-invocable-only",
-    "design-sync": "user-invocable-only",
-    "doctor": "user-invocable-only",
-    "fewer-permission-prompts": "user-invocable-only",
-    "init": "user-invocable-only",
-    "keybindings-help": "user-invocable-only",
-    "loop": "user-invocable-only",
-    "run": "user-invocable-only",
-    "run-skill-generator": "user-invocable-only",
-    "schedule": "user-invocable-only",
-    "security-review": "user-invocable-only",
-    "simplify": "user-invocable-only",
-    "update-config": "user-invocable-only",
-    "verify": "user-invocable-only",
-    "workflow-authoring": "user-invocable-only"
-  }
+  "model": "claude-fable-5-1"
 }

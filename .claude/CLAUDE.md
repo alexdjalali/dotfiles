@@ -17,7 +17,8 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 - **Fast checks** — per story, before each commit, scoped to changed files: format → lint → type check → affected tests → docs updated (`documentation-sync.md`).
 - **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (e.g. a repo-local preflight, `just lint` + `just test`), else fast checks repo-wide + the full suite, 0 failures.
 - **Never rerun a costly step on unchanged input.** The full gate, reviews, `spec-review`, and live execution record the SHA (or clean tree) they passed on; later steps reuse it and re-run only what a change touched.
-- Never commit on a red fast check; never push on a red or unrun full gate.
+- **Docs-only commits inherit the gate.** A commit touching only `docs/**` and `*.md` (e.g. closing stories) keeps the previous SHA's green full gate — record it as `green @ <sha> (+docs <sha2>)`; no rerun.
+- Never commit on a red fast check; never push on a red or unrun full gate. Never bypass hooks (`--no-verify`, `LEFTHOOK=0`) — a hook failure is a red fast check: fix, re-stage, retry.
 
 Tools: Python `uv` `ruff` `basedpyright` · Go `gofumpt` `goimports` `golangci-lint` · TS `pnpm` `eslint` `tsc` `vitest`. Language standards auto-load by path from `rules/standards-*.md`.
 
@@ -36,6 +37,10 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 - **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + `Config` + `*_from_config`, failing loudly on an unknown kind); cross-cutting concerns as decorators.
 - Read configuration in one place (config layer / composition root).
 - Monorepo layout: `~/.claude/templates/repo.md`.
+
+## Compact instructions
+
+When compacting, keep verbatim: the active plan path and its header (`Type`, `Status`, `Approved`, `Iteration`, `Base`, `Reviewed`, `Full gate`); the current phase and the task in progress; each story's commit SHA; open review findings by tier; user decisions and approvals; the last gate/test result with its exit code; files changed but not yet committed. Drop tool output bodies, file contents already committed, and exploration transcripts — the plan's *Context for Implementer* carries the map. Auto-compaction runs at 200K tokens (`autoCompactWindow`); the `compact-anchor` hook re-injects the plan header afterwards.
 
 ## Anti-Patterns
 

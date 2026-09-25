@@ -11,7 +11,7 @@ One skill, three modes — all report, NEVER change code (fixes land via `/fix`,
 |------|------|--------|
 | none, or a path | **Quick sweep** | findings in chat — nothing written |
 | a standard / dimension | **Standard audit** | `docs/spec/audits/<dimension>-audit.md` from `~/.claude/templates/audit.md` |
-| `repo` | **Layout audit** vs `~/.claude/templates/repo.md` | pass/fail checklist in chat |
+| `repo` | **Layout audit** vs the project's documented layout (`CLAUDE.md`, a repository-structure doc) when it has one, else `~/.claude/templates/repo.md` | pass/fail checklist in chat |
 
 ## Quick sweep
 
@@ -34,7 +34,7 @@ Next: ask — `/rfp <epic>` (refactor epic + stories), `/spec` (user-typed, focu
 
 ## Layout audit (`repo`)
 
-Read `~/.claude/templates/repo.md`, then check and report pass/fail with what to add:
+The basis is the project's own documented layout when one exists (`CLAUDE.md`, `docs/**/repository-structure.md`) — a repo that documents its deviations isn't non-conformant; otherwise `~/.claude/templates/repo.md`. Check and report pass/fail with what to add:
 
 - [ ] `docs/adr/` with at least one `NNNN-<slug>.md`; `docs/spec/` pipeline dirs in use
 - [ ] `docs/local/` gitignored; no plan files tracked under `docs/spec/`

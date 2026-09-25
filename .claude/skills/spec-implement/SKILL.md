@@ -26,7 +26,7 @@ effort: high
 ## After each story's last task — commit
 
 1. **Fast checks** (CLAUDE.md *Quality Gates*) on the story's changed files — all green. NEVER the full gate here.
-2. `git add` exactly the story's files (never `-f`), then `git commit -m "<the story's Commit: message>"`. One commit per story — never split a story across commits or batch two stories into one.
+2. `git add` exactly the story's files (never `-f`), then `git commit -m "<the story's Commit: message>"`. One commit per story — never split a story across commits or batch two stories into one. A failing hook is a red fast check: fix, re-stage, retry — never `--no-verify`. Hooks that re-stage files (tidy, codegen) are fine. A plan from the older template (no `### Story` groups) is one story; its commit message is `<type>(<scope>): <plan title>`.
 3. Record the SHA on the story's `Commit:` line and tick it in Progress Tracking.
 
 **Verify loop-back:** the fix tasks verify added are one group — fast checks, then one `fix(<scope>): address review findings` commit.

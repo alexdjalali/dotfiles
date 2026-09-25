@@ -15,4 +15,4 @@ No fix without a root cause. Reproduce with a failing test first; read the whole
 
 ### Git — writes need explicit permission
 
-Read freely. `add`, `commit`, `push`, `pull`, `merge`, `rebase`, `reset`, `stash`, `checkout` only when asked. Never discard unstaged work, never `add -f`, never selectively unstage, never force-push main/master, never create or switch branches unless asked now; push new branches with `-u`.
+Read freely. `add`, `commit`, `push`, `pull`, `merge`, `rebase`, `reset`, `stash`, `checkout` only when asked. Never discard unstaged work, never `add -f`, never selectively unstage, never force-push main/master, never create or switch branches unless asked now; push new branches with `-u`. Never bypass hooks (`--no-verify`) — fix, re-stage, retry.

@@ -27,7 +27,7 @@ Plans live at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored), written from
 | `COMPLETE` | `spec-verify` |
 | `VERIFIED` | report done |
 
-Invoke the phase immediately — `Skill(skill='<phase>', args='<plan path | request>')`. The header decides; don't ask the user what to do. Lifecycle: `PENDING` → `COMPLETE` → `VERIFIED`; verify loops back to `PENDING` (incrementing `Iteration:`) until everything passes. Every phase serves both types — the plan is the interface. Each phase's `model:` / `effort:` pin applies when invoked via `Skill()`.
+Invoke the phase immediately — `Skill(skill='<phase>', args='<plan path | request>')`. The header decides; don't ask the user what to do. Lifecycle: `PENDING` → `COMPLETE` → `VERIFIED`; verify loops back to `PENDING` (incrementing `Iteration:`) until everything passes. Every phase serves both types — the plan is the interface. Each phase pins its own `model:` **and** `effort:` — a pin lasts the rest of the turn, so an unpinned phase would inherit the previous one's.
 
 ## Rules
 

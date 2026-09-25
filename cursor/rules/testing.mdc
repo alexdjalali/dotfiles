@@ -1,60 +1,31 @@
 ---
-description: "Testing standards — parsimony, TDD, test doubles, assertion correctness"
+description: "Testing — TDD, test doubles, parsimony, assertion correctness"
 alwaysApply: true
 ---
 
-# Testing Standards
+## Testing
 
-## Posture — parsimonious
+A repo's own testing rule overrides this — the only way to loosen the test-double policy.
 
-- Reuse existing behavioral tests first. Ceiling per new public class: **1 unit test class + 1 functional test class** (functional only when behavior can't be exercised by unit). Multiply only for genuinely independent behavioral axes.
-- Tests are **contra-variant** with code structure and **structure-insensitive** — a behavior-preserving refactor keeps them green. No one-class-per-method, no redundant assertions on the same path, no test-per-trivial-helper (no branches, I/O, or public API ⇒ the caller's test covers it), no coverage-padding.
-- Coverage is a **diagnostic, not a quota**. Critical paths (business logic, security, data integrity, error handling) need explicit behavior coverage; glue / CRUD / trivial UI don't.
-- A project may override this posture via `.claude/rules/testing-project.md` (e.g. a strict numeric coverage gate) — the **only** way to loosen the test-double policy.
+### TDD
 
-## TDD — red / green / refactor (default)
+Failing test before production code (new behavior, endpoints, bug fixes — reproduce first): RED (one behavior test) → VERIFY RED (fails because the behavior is missing, not a syntax error) → GREEN (simplest code) → VERIFY GREEN (affected tests; the full suite runs once in the full gate) → REFACTOR. Skip RED only for docs, config, dep bumps, formatting, or a trivial change (≤ 5 production lines, no new branch, public symbol, or error path) naming its covering test — never for bugfixes.
 
-1. **RED** — one minimal test for the desired behavior (behavior, not implementation). Mock external deps only. Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")`.
-2. **VERIFY RED** — run it; it must fail because the feature is missing, not a syntax error. Passes immediately → rewrite.
-3. **GREEN** — simplest code that passes. No extras.
-4. **VERIFY GREEN** — full suite green; check diagnostics.
-5. **REFACTOR** — improve; tests stay green; no new behavior.
+### Test doubles — two tiers (a violation is must-fix)
 
-Applies to new functions, endpoints, business logic, **bug fixes (reproduce first)**, behavior changes. **Skip RED** only for docs / config / dep bumps / formatting, or a planned `Trivial:` change that names its covering test/command and adds ≤ 5 net production lines with no new branch/loop/try (non-trivial body), no new public symbol, and no new error path — audited against the actual diff, not taken on trust. **Bugfixes never skip** the reproducing test. Code written first? Don't revert — write the test now and verify it catches regressions.
+- **Unit:** mock only *external* collaborators (HTTP, DB, cache, queue, object store, subprocess, clock, 3rd-party API) via a consumer-side interface mock. Never mock internal collaborators.
+- **Integration:** the real service in a throwaway **testcontainers** container via a fixture, cleaned up in teardown — Go `//go:build integration`, Python `@pytest.mark.integration`, TS a separate suite.
+- **Forbidden:** hand-rolled fakes / stubs / in-memory clients; in-memory lookalikes (SQLite-for-Postgres, fakeredis, in-process queues); mocking the dependency an integration test exists to exercise.
+- A function gains a dependency → update all its tests to mock it. A unit test > 1 s is likely unmocked I/O.
 
-## Strategy & doubles
+### Writing tests
 
-- **Unit** — pure logic/validation; <1 ms; mock ALL external deps. **Integration** — real dependency in a Docker container via testcontainers + fixtures. **E2E** — full user workflow.
-- **Two-tier doubles (see `global-standards` → Test Doubles):** unit mocks the boundary; integration uses testcontainers. A hand-rolled fake / in-memory substitute (SQLite-for-Postgres, `fakeredis`) is a `must_fix`.
-- **Property-based** (`hypothesis` / `fast-check` / `go test -fuzz`) for parsers, serializers, invariants, encode/decode roundtrips — not simple CRUD/UI.
+- **Parsimony:** reuse existing tests first; ≤ 1 unit + 1 functional test class per new public class; no per-method classes, redundant same-path tests, or coverage padding. Tests track behavior — a behavior-preserving refactor must not break them.
+- **Black-box**, public surface; never export a symbol or add a test-only method for testability.
+- Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`. Every test has a comment on why it matters and what it asserts.
+- Property-based tests (`hypothesis`, `fast-check`, `go test -fuzz`) for parsers, serializers, invariants, roundtrips.
+- **Assertion check:** would a one-character bug still pass? right field? expected value derived independently? asserts behavior, not calls?
 
-## Black-box + test docs
+### Zero tolerance
 
-- Behavioral tests use an **external test package** through the **public surface**; white-box (internal) tests are a last resort — **never export a symbol solely to test it**.
-- Every test carries a **why / what** doc comment: why the behavior matters + what it asserts.
-
-## Mandatory mocking (unit)
-
-- Mock at the module level (where imported): HTTP/network, subprocess, file I/O, DB, third-party APIs, time. A unit test >1 s usually has unmocked I/O.
-- **Mock audit on dependency change:** when a function gains a new dep (subprocess/helper/I/O), update **every** existing test for it — grep the name in tests, confirm the new call is mocked. #1 cause of CI-only failures.
-
-## Assertion correctness (>62% of LLM assertions are wrong)
-
-Before committing an assertion: (1) would a one-char bug still pass? Use `== 42`, not truthiness. (2) right field? (`status` vs `body.error`). (3) hand-computed expected values verified a second way. (4) assert the spec-named behavior, not internal mechanics. Ambiguous spec → **stop and ask**.
-
-## Anti-patterns
-
-Dependent tests; testing implementation not behavior (`assert result == expected`, not `mock.assert_called_with`); incomplete mocks that hide the real API; unmocked env deps (pass locally, fail CI); test-only methods in production; a fake where a mock (unit) or a container (integration) belongs.
-
-## Zero tolerance for failing tests
-
-Fix every failure before work is done. Run the FULL suite, not just touched files. "Pre-existing" is no excuse — if you see it, you fix it.
-
-## Completion checklist
-
-- [ ] ≤1 unit + ≤1 functional test class per new public class
-- [ ] Asserts observable behavior; no redundant same-path tests
-- [ ] Critical-path coverage adequate; naming convention followed
-- [ ] Unit mocks the boundary; integration uses testcontainers (no fakes)
-- [ ] Full suite passes (0 failures) — not just touched files
-- [ ] Program actually executed and verified
+Fix every failing test before done — "pre-existing" is no excuse. Tests passing ≠ program working: run it too.

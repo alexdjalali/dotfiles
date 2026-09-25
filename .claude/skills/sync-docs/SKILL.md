@@ -1,6 +1,8 @@
 ---
-model: opus
-description: Repo-wide sweep of a project's docs and rules (.claude/rules/, docs/, CLAUDE.md, READMEs, docstrings) against the current code, fixing what is stale. Per-change doc updates happen inline instead.
+name: sync-docs
+model: claude-opus-4-8
+effort: high
+description: Repo-wide sweep of a project's docs and rules (.claude/rules/, docs/, CLAUDE.md, READMEs, docstrings) against the current code, fixing what is stale. Use when docs have drifted across the repo or after a large refactor; per-change doc updates happen inline instead.
 ---
 
 A repo-wide sweep; the always-on per-change rule is `documentation-sync.md`. **Input:** the current codebase. **Output:** minimal edits to stale project docs, plus a report of every file changed and any global drift.
@@ -18,4 +20,4 @@ A repo-wide sweep; the always-on per-change rule is `documentation-sync.md`. **I
 
 ## Next Step
 
-Run the quality gates (CLAUDE.md *Quality Gates*), then suggest `/github` to commit the doc updates (with the code change that prompted them, if any).
+Run the fast checks (CLAUDE.md *Quality Gates*), then suggest `/github` (it runs the full gate once, after committing) to commit the doc updates (with the code change that prompted them, if any).

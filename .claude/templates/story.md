@@ -95,7 +95,6 @@ src/
 ### Completion Workflow
 
 - [ ] All checklist items above are satisfied
-- [ ] Run project quality gates (format, lint, type check, tests)
-- [ ] All quality gates pass
-- [ ] Commit with conventional commit message
+- [ ] Fast checks pass (format, lint, type check, affected tests)
+- [ ] One commit for this story, conventional message (the full gate runs once per epic, after the last commit)
 - [ ] Update story status from "Todo" to "Complete" (handled by `/spec-verify`)

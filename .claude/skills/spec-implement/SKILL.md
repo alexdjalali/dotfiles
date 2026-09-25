@@ -1,22 +1,35 @@
 ---
-description: /spec implementation — execute an approved plan task by task with TDD, ticking progress, then hand off to verify. Runs after plan approval or a verify loop-back.
-model: opus
+name: spec-implement
+description: /spec implementation — execute an approved plan task by task with TDD, one commit per story, then hand off to verify. Runs after plan approval or a verify loop-back.
+model: claude-opus-4-8
+effort: high
 ---
 
-**Input:** a plan in `docs/local/plans/` with `Status: PENDING`, `Approved: Yes` (Feature or Bugfix — the plan is the interface). **Output:** every task done and ticked, `Status: COMPLETE`, and the hand-off to the verify phase.
+**Input:** a plan in `docs/local/plans/` with `Status: PENDING`, `Approved: Yes` (Feature or Bugfix — the plan is the interface). **Output:** every task done and ticked, one commit per story (plus one review-fix commit on a verify loop-back), `Status: COMPLETE`, and the hand-off to the verify phase.
+
+**Before the first commit** (`Base:` empty): `git status --short` — unrelated uncommitted changes → STOP and ask; clean → set `Base:` to `git rev-parse HEAD`. Approval authorizes the commits below and nothing else (`development-practices.md` *Git*).
+
+**Don't re-explore.** The plan's Context for Implementer and each task's Files are the map; look up only what a task needs that the plan doesn't say.
 
 ## Per task — each unchecked task in order, including fix tasks a verify loop added
 
 1. **Read the task** — know exactly what its Definition of Done requires.
-2. **RED** — one failing test for the behavior the task introduces, at the right tier with the right double (`testing.md` *Test Double Policy*; reuse existing fixtures; NEVER a hand-rolled fake, and NEVER a mock or in-memory substitute such as SQLite-for-Postgres or fakeredis for an integration dependency). For a bugfix, Task 1 is the plan's specified reproducing test. Run it: it must fail for the right reason — the feature is missing / the bug is present, not a syntax or import error. A test that passes immediately is testing the wrong thing; rewrite it. Only a task whose `Trivial:` claim holds (`testing.md` limits) skips RED — run its named covering test/command instead; bugfix tasks never do.
-3. **GREEN** — the simplest code that passes; NEVER more than the task requires (YAGNI). Match the surrounding code's patterns and naming; NEVER reinvent a helper the repo already provides.
-4. **Full suite** — run it; NEVER proceed past a failure.
+2. **RED** — one failing test for the task's behavior, tier and double per `testing.md` *Test Double Policy*, reusing existing fixtures. For a bugfix, Task 1 is the plan's reproducing test. It must fail for the right reason (behavior missing / bug present — not a syntax or import error). Only a task whose `Trivial:` claim holds skips RED — run its named covering command instead.
+3. **GREEN** — the simplest code that passes; nothing the task doesn't require. Match surrounding patterns; reuse the repo's helpers. Anything the plan didn't cover (infra, CLI, config, a new dependency) is a Deviation, not a silent add.
+4. **Affected tests** — run the tests for the code this task touched; NEVER proceed past a failure. The full suite waits for the full gate.
 5. **Refactor** — clarity only; tests stay green.
-6. **Code-addition checklist** against the diff (below). A "yes" the plan didn't cover is a Deviation, not a silent add.
-7. **Docs** — update every comment, docstring, README, or architecture doc that references the changed code, directly or indirectly (`documentation-sync.md`; `codegraph_callers` / `codegraph_impact` find the indirect ones). NEVER leave one stale.
-8. **Tick it now** — `- [ ]` → `- [x]`, Progress Tracking Done +1, Left −1. NEVER batch-mark.
+6. **Docs** — update every doc referencing the changed code, directly or indirectly (`documentation-sync.md`).
+7. **Tick it now** — `- [ ]` → `- [x]`, Progress Tracking Done +1, Left −1. NEVER batch-mark.
 
-**Code-addition checklist:** (1) infra/deploy change? (2) CLI/tooling change? (3) consistent with the project's philosophy, mirroring gold-standard/reference code? (4) right test *types* (unit / integration / e2e; fuzz/chaos when warranted) with the right double? (5) config change? (6) as simple as possible (DRY/YAGNI)? (7) as general as possible — interface + config-selected, capped by (6)? (8) reuses the shared-library abstractions? A repo's `.claude/rules/code-addition-checklist.md` supplies the concrete answers.
+**Red flags — stop and do the step:** "too simple to test" · "I'll write the test after" · "it passed immediately, fine" · "the plan didn't say, but I'll add it" · "I'll batch the ticks". Each is how a verify loop-back starts.
+
+## After each story's last task — commit
+
+1. **Fast checks** (CLAUDE.md *Quality Gates*) on the story's changed files — all green. NEVER the full gate here.
+2. `git add` exactly the story's files (never `-f`), then `git commit -m "<the story's Commit: message>"`. One commit per story — never split a story across commits or batch two stories into one.
+3. Record the SHA on the story's `Commit:` line and tick it in Progress Tracking.
+
+**Verify loop-back:** the fix tasks verify added are one group — fast checks, then one `fix(<scope>): address review findings` commit.
 
 ## Deviations
 
@@ -27,6 +40,6 @@ Record every one in the plan's `## Deviations` section.
 
 ## After the last task
 
-1. Run the quality gates (CLAUDE.md *Quality Gates*) — all green.
+1. Every story (and fix group) is committed; `git status --short` shows none of the plan's files uncommitted.
 2. Set `Status: COMPLETE`.
-3. In the same turn, hand off by `Type:` — `Skill(skill='spec-verify')` (Feature) or `Skill(skill='spec-bugfix-verify')` (Bugfix). Don't stop for the user.
+3. In the same turn, call `Skill(skill='spec-verify')`. Don't stop for the user.

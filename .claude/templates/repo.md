@@ -32,14 +32,12 @@
 ├── docs/                         # Documentation
 │   ├── adr/                      # Architecture Decision Records (NNNN-<slug>.md)
 │   ├── spec/                     # Spec pipeline artifacts (tracked)
-│   │   ├── roadmap/              # Program roadmap, dependency map, critical path
 │   │   ├── arch/                 # Architecture diagrams (ARCH-NNN-<slug>.md)
 │   │   ├── design/               # Technical design docs
 │   │   ├── epics/                # Epic specifications
 │   │   ├── stories/              # Implementation stories
 │   │   ├── audits/               # Standard-scoped codebase audits
-│   │   ├── rca/                  # Root-cause analyses
-│   │   └── demos/                # E2E demo walkthroughs (+ .sh)
+│   │   └── rca/                  # Root-cause analyses
 │   └── local/                    # Gitignored local working docs (never committed)
 │       └── plans/                # /spec implementation plans + spec-review JSON
 │

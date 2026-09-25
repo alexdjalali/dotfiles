@@ -1,53 +1,14 @@
-## Code Review Reception
+## Receiving Code Review
 
-When receiving code review feedback — from users, `/review-diff` (which runs the built-in `/code-review`), review agents, or external tools like CodeRabbit — apply these guidelines.
+Read it all → restate each item → verify against the code → respond → implement one item at a time, testing each. Anything unclear → ask about **all** unclear items before implementing any.
 
-### Response Sequence
+| Source | Handling |
+|---|---|
+| **User** | Trusted — implement once understood. |
+| **Workflow reviews** (`/review-diff`, `spec-review`, Codex `changes-review` / companion) | `must_fix` / `should_fix` → fix; `suggestion` → if quick. No discussion. The invoking workflow's lane rules win (`spec-verify` fixes via a loop-back commit). |
+| **External** (CodeRabbit, PR reviewers) | Verify first: correct for *this* codebase? breaks something? a reason for the current code? conflicts with the user's decisions → discuss with the user first. |
 
-1. **Read** — Complete feedback without reacting
-2. **Understand** — Restate requirement in own words (or ask)
-3. **Verify** — Check against codebase reality
-4. **Evaluate** — Technically sound for THIS codebase?
-5. **Respond** — Technical acknowledgment or reasoned pushback
-6. **Implement** — One item at a time, test each
-
-If any item is unclear: **STOP** — do not implement anything yet. Ask for clarification on all unclear items first. Partial understanding = wrong implementation.
-
-### Source-Specific Handling
-
-| Source | Approach |
-|--------|----------|
-| **User feedback** | Trusted — implement after understanding. Still ask if scope unclear. Skip to action or technical acknowledgment. |
-| **External reviewers** | Verify first: (1) technically correct for THIS codebase? (2) breaks existing functionality? (3) reason for current implementation? (4) conflicts with user's prior decisions? If conflicts → stop and discuss with user first. |
-| **Workflow reviews** (spec-review, /review-diff findings on Claude Code, changes-review on Codex, Codex companion) | `must_fix` and `should_fix` → fix immediately. `suggestion` → implement if quick. No discussion needed. Apply the invoking workflow's finding→action rule when one exists (spec-verify categorizes in Phase 1 and resolves in the Phase 4 decision loop; `/fix` runs no code-review step — findings there come from the quality gates and the reproducing test) — out-of-lineage and scope-expanding findings follow those lane rules, not blanket auto-fix. |
-
-### YAGNI Check
-
-When a reviewer suggests adding or "properly implementing" a feature:
-
-1. Search codebase for actual usage (Semble `semble search`, `Grep`, or LSP `findReferences`)
-2. If unused → push back: "This isn't called anywhere. Remove it (YAGNI)?"
-3. If used → implement properly
-
-### Implementation Order (Multi-Item Feedback)
-
-1. Clarify anything unclear **first**
-2. Blocking issues (breaks, security)
-3. Simple fixes (typos, imports, naming)
-4. Complex fixes (refactoring, logic changes)
-5. Test each fix individually, verify no regressions
-
-### Forbidden Responses
-
-| Never Say | Instead |
-|-----------|---------|
-| "You're absolutely right!" | State the technical requirement |
-| "Great point!" / "Excellent feedback!" | Just start working — actions > words |
-| "Let me implement that now" (before verification) | Verify against codebase first |
-| "Thanks for catching that!" | "Fixed. [Brief description of what changed]" |
-
-### When to Push Back
-
-Push back with technical reasoning when: suggestion breaks existing functionality, reviewer lacks full context, violates YAGNI, technically incorrect for this stack, or conflicts with user's architectural decisions.
-
-If you pushed back and were wrong: state the correction factually and move on. No apologies or over-explaining.
+- **YAGNI:** a suggestion to add or "properly implement" something → search for real callers; none → push back ("unused — remove it?").
+- **Order:** clarify → blocking (breaks, security) → simple → complex.
+- **Push back** with technical reasons when a suggestion is wrong, breaks things, lacks context, or conflicts with the user's decisions; if you were wrong, correct it factually and move on.
+- No performative agreement ("You're absolutely right!", "Great catch!") — state the fix: "Fixed. <what changed>".

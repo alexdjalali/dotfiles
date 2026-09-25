@@ -1,44 +1,18 @@
-# Development Practices
+## Development Practices
 
-## Change discipline
+### Changes
 
-- **Think before coding.** Ambiguous request → state assumptions, present alternatives, ask — before writing code.
-- **Lineage test.** Every changed line traces to the request. If it doesn't, revert it.
-- **Orphan cleanup.** Remove imports / vars / functions *your* change made unused. Don't delete pre-existing dead code — mention it.
-- **Self-check.** "Would a senior engineer call this overcomplicated?" 200 lines that could be 50 → rewrite. Complexity is earned by actual requirements.
-- **⛔ Never invent values.** File paths, env var names, keys, IDs (UUIDs/FKs/third-party ids), URLs, ports, versions, service names, function/class names, library API signatures — confirm them (read the code, run the command, or ask). Pattern-matching a plausible value is the top cause of agent-introduced incidents. Unsure → **stop and ask**.
+- Ambiguous request → state assumptions and ask before coding.
+- **Lineage test:** every changed line traces to the request. Remove what your change orphaned; mention, don't delete, pre-existing dead code.
+- Simplest thing that works — if 200 lines could be 50, rewrite.
+- **Never invent values** (paths, env vars, keys, IDs, URLs, ports, versions, unverified APIs) — confirm by reading, running, or asking.
+- Before modifying a shared function, find all its callers. Prefer a tool's CLI over hand-rolling its behavior.
+- Hot paths cache/memoize. Formatters own style. Backward compatibility only when required.
 
-## Project policies
+### Debugging
 
-- File size aim <800 lines (>1000 = split signal, and only when it's the task's focus). Test files exempt.
-- Before modifying a shared / non-trivial function, trace its callers and callees — it catches callers you'd otherwise miss.
-- Fix obvious mistakes (syntax, typos, imports) in code you're actively writing; do **not** auto-fix code the *user* edited — report it.
-- Hot paths (render loops, request handlers, polling) cache/memoize; don't redo work when the input is unchanged.
-- Check diagnostics before starting and after changes; fix all errors before marking complete. Automated formatters own style.
-- Backward compatibility only when explicitly required.
+No fix without a root cause. Reproduce with a failing test first; read the whole error; check recent changes; trace data flow from symptom to source; compare with working code; instrument boundaries. State one falsifiable hypothesis and test it one variable at a time. **3+ failed fixes = wrong approach — stop.** Revert-first when a change breaks things. Replace sleeps with condition polling (timeout + clear error). After fixing, validate at each layer the bad data passed through. Prove the fix: revert it, the test fails; re-apply, it passes.
 
-## Systematic debugging (no fix without root cause)
+### Git — writes need explicit permission
 
-1. **Root cause** — read the whole error, reproduce consistently, check the diff, instrument at boundaries.
-2. **Pattern analysis** — find working examples + parallel implementations; compare; identify every difference.
-3. **Hypothesis** — specific, falsifiable; test one variable at a time.
-4. **Fix** — failing test first, single fix, verify completely.
-
-- **Red flags → STOP:** "quick fix for now", multiple changes at once, proposing a fix before tracing data flow. **3+ failed fixes = architectural problem** — question the pattern, don't fix again.
-- **Revert-first** when something breaks: revert → consider deleting the broken thing → one-line targeted fix → else stop and reconsider.
-- **Meta-debugging:** treat your own code as foreign — your mental model is a guess; the code's behavior is truth.
-- **Defense in depth** after a fix: trace back to the original trigger, fix at the source, then validate at each layer the data passes (entry point, business logic, environment guards, debug instrumentation) so the bug is structurally impossible, not just patched.
-- **Condition-based waiting** for flaky/async tests: poll for the actual condition (every ~10 ms, with a timeout and a clear error) instead of an arbitrary `sleep` — except when testing real timing (debounce, throttle), and document why there.
-
-## Constraint classification
-
-- **Hard** — non-negotiable (physics, external contracts, security, deadlines).
-- **Soft** — conventions/preferences, negotiable if the trade-off is stated.
-- **Ghost** — a past constraint baked in that no longer applies. Highest value to find: ask "why can't we do X?" — if nobody can name a current requirement, it's a ghost.
-
-## Git operations
-
-- **Read git state freely. NEVER run a write command without explicit user permission** — `add`, `commit`, `push`, `pull`, `merge`, `rebase`, `reset`, `stash`, `checkout`. "Fix this bug" ≠ "commit it." (Editing files is always fine — this is about git commands.)
-- **Never `git checkout --` on unstaged changes** (irreversible) — tell the user the consequence and let *them* run it. **Never `git add -f`** — if a file is gitignored, tell the user. **Never selectively unstage** — commit all staged changes as-is. Push new branches with `-u`.
-- **Respect the active branch — never auto-branch;** create or switch branches only when the user asks in this request. A project convention that mandates a branch-name pattern is not such a request — surface it and ask.
-- Read commands (`status`, `diff`, `log`, `show`, `branch`) are always allowed.
+Read freely. `add`, `commit`, `push`, `pull`, `merge`, `rebase`, `reset`, `stash`, `checkout` only when asked. Never discard unstaged work, never `add -f`, never selectively unstage, never force-push main/master, never create or switch branches unless asked now; push new branches with `-u`.

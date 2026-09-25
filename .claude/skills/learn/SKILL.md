@@ -1,9 +1,11 @@
 ---
-model: opus
+name: learn
+model: claude-opus-4-8
+effort: high
 description: Capture a non-obvious, reusable lesson from this session as a project skill (.claude/skills/<slug>/SKILL.md). Use after a hard-won debugging insight, workaround, or repeatable workflow.
 ---
 
-**Input:** the current session. **Output:** one new `.claude/skills/<slug>/SKILL.md` in the project, with its path reported. One insight per skill; snippets and one-offs go to `/vault` instead.
+**Input:** the current session. **Output:** one new `.claude/skills/<slug>/SKILL.md` in the project, with its path reported. One insight per skill; one-off snippets aren't worth a skill — skip them.
 
 ## When to extract
 
@@ -22,7 +24,7 @@ Test: "Would this have saved 10+ minutes at session start?" If not, skip it. NEV
 
 1. Pick the single most reusable insight and its category (debugging, tooling, testing, architecture, …).
 2. Choose a short kebab-case slug. The folder name is the command (`/<slug>`) — make sure it doesn't collide with an existing skill, a bundled skill, or a built-in command (`/debug`, `/design`, `/verify`, `/review`, `/status`, …); a same-named skill shadows or is shadowed.
-3. Write `.claude/skills/<slug>/SKILL.md` — it must be exactly that path (a loose `.md` elsewhere never loads). `description` is what Claude matches on: say what it does AND when to use it, key use case first. `name` is optional (a display label, defaulting to the folder name); if set, match the folder.
+3. Write `.claude/skills/<slug>/SKILL.md` — it must be exactly that path (a loose `.md` elsewhere never loads). Frontmatter per the Agent Skills spec: `name` = the folder name (lowercase, digits, hyphens, ≤ 64 chars); `description` (≤ 1024 chars, third person) says what it does **and** "Use when …" with the trigger terms a user would say — it is all Claude sees when choosing a skill. Body: only what Claude doesn't already know, one term per concept, concrete examples; move long reference material to a sibling file linked directly from SKILL.md (one level deep).
 
 ```markdown
 ---
@@ -46,3 +48,4 @@ A concrete command sequence or before/after snippet.
 ```
 
 4. Keep it under 60 lines — longer means it's two skills.
+5. **Test it:** in a fresh session, give a task that should trigger it — it must be picked from the description alone and followed without extra prompting; revise until it is.

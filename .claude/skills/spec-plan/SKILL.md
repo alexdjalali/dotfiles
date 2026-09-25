@@ -1,61 +1,50 @@
 ---
-description: /spec feature planning — explore the code, design 3–12 testable tasks, write the plan, run spec-review, get approval. Started by /spec, not unprompted.
+name: spec-plan
+description: /spec planning, Feature or Bugfix — explore (or reproduce + root-cause), design 3–12 tasks per story (1 story = 1 commit), write the plan, run spec-review, get approval. Started by /spec, not unprompted; small contained bugs go to /fix.
 model: opus
 ---
 
-**Input:** a feature request, or a story / ADR / design-doc path. **Output:** an approved plan at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored), then the hand-off to `spec-implement`. No production or test code before approval.
+**Input:** a feature request or story / epic / ADR / design-doc path (`Type: Feature`), or a bug report or RCA (`Type: Bugfix`). **Output:** an approved plan at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored) from `~/.claude/templates/plan.md`, then the hand-off to `spec-implement`. NEVER write production or test code before approval.
 
 ## Phase 1 — Explore
 
-1. **Requirements source.** Given a story (`docs/spec/stories/…`), read it first: its **acceptance criteria are the requirements**; its code-addition answers and Proposed Repository Structure seed the design. Cite it — and any ADR / design doc passed in — under References.
+1. **Requirements source** — cite every one under References.
+   - **Epic** (`docs/spec/epics/…`) → read it and every open story it lists, in order; each story becomes one story group (one commit).
+   - **Story** → its **acceptance criteria are the requirements**; its code-addition answers and Proposed Repository Structure seed the design.
+   - **RCA** → its root cause (`file:line`) and fix sketch are the starting point — re-confirm both against the current code, don't re-derive.
 2. Ambiguous request → ask one clarifying question before continuing.
-3. With CodeGraph + Semble: find every file the change touches, similar features and the patterns they use, and the call chains upstream and downstream of the affected area.
-4. Note entry points, data models, tests to extend, and files to create or modify.
+3. With CodeGraph + Semble: every file the change touches, similar features and their patterns, and the call chains up- and downstream. Record what you found in the plan's **Context for Implementer** (patterns `file:line`, key files, gotchas) — it is the map later phases use instead of re-exploring.
+4. **Bugfix only:** reproduce consistently (trigger, inputs, observed vs expected); trace to the **root cause, not the symptom**, including every parallel implementation sharing the flaw; specify the reproducing test — path, name, tier/double (`testing.md` *Test Double Policy*), and the exact assertion that fails *because the bug exists* and passes after the fix.
 
 ## Phase 2 — Design
 
-Design **3–12 tasks** — NEVER more than 12; split into several plans instead. Each task is independently testable (a failing test can be written for it alone), one focused TDD cycle, sequenced without circular dependencies, and aligned with the repo's existing patterns (reuse its helpers, naming, conventions — no parallel ones). NEVER include a task that doesn't trace to the request or the story's acceptance criteria.
-
-**Code-addition checklist** — the plan answers all eight before tasks are final; a "yes" to infra/CLI/config is its own task, not an afterthought:
-
-1. **Infra/deploy?** a dev-environment change and a staging/prod (IaC) change?
-2. **CLI/tooling?** a change to the project's CLI or task runner?
-3. **Philosophy / gold standard?** consistent with the project's design philosophy, mirroring an existing reference implementation? (a deviation is an ADR, not a silent exception)
-4. **Right test *types*, right double** (`testing.md` *Test Double Policy*)? unit / integration / e2e, plus property/fuzz and chaos/resiliency when warranted. A task that adds an integration test **names the Docker image + testcontainers module** (e.g. `postgres:16` via `testcontainers-go` / `testcontainers[postgres]` / `@testcontainers/postgresql`) — NEVER plan one that mocks its dependency or uses an in-memory substitute.
-5. **Config?** a config change (ideally selecting an impl by configuration, not a hard-coded import)?
-6. **As simple as possible?** DRY, YAGNI — no duplicated logic, no speculative knobs.
-7. **As general as possible?** behind an interface, config-selected, injected explicitly — Q6 is the ceiling.
-8. **Reuse shared abstractions?** the shared-library patterns/helpers rather than reinventions?
-
-A repo's `.claude/rules/code-addition-checklist.md` supplies the concrete answers (real infra tiers, CLI, test layers, shared-library packages) — follow it when present.
+- **1 story = 1 commit** — group tasks by story; each group leaves the tree green on its own. **3–12 tasks per story**, NEVER more; a story needing more is two stories (say so; `/rfp` owns the split). A bugfix is one group.
+- Each task: independently testable, one focused TDD cycle, no circular dependencies, reusing the repo's helpers and conventions. NEVER a task that doesn't trace to the request or acceptance criteria. Fold setup, config, and docs into the task whose deliverable needs them.
+- **Interfaces:** a task that others build on names what it produces (exact function/type names, signatures); a task that uses them names what it consumes.
+- **No placeholders** — each is a plan failure: "TBD", "add error handling", "handle edge cases", "similar to Task N", tests without their assertion, or a name no task defines.
+- **Code-addition checklist** — answer all eight from `~/.claude/templates/code-addition-checklist.md` before tasks are final (a repo's `.claude/rules/code-addition-checklist.md` supplies concrete answers); a "yes" to infra/CLI/config is its own task.
+- **Bugfix:** the Behavior Contract — Given <trigger>, the code **did** <bug>; it **must** <correct behavior> — plus every parallel implementation, fixed together or with a stated reason. Task 1 writes the reproducing test (RED on current code); later tasks fix the root cause.
 
 ## Phase 3 — Write the plan
 
-From `~/.claude/templates/plan.md` (the single plan format), header `Type: Feature`, `Status: PENDING`, `Approved: No`, `Iteration: 1`.
+Header `Type: Feature | Bugfix`, `Status: PENDING`, `Approved: No`, `Iteration: 1`.
 
-- Always fill: Summary, **Goal Verification** (truths + artifacts), Scope, Progress Tracking (Done/Left), Implementation Tasks (each with Files, Definition of Done, Verify), Testing Strategy, Risks, **References** (the story / `docs/adr/NNNN-<slug>.md` / design doc).
-- **Proposed Repository Structure** — required whenever new files are created, omitted otherwise. Inspect the real tree first (`codegraph_files` / `ls`; standard: `~/.claude/templates/repo.md`); if the layout must DEVIATE from the current structure, STOP and ask the user before finalizing.
-- `Trivial:` only within the limits the template states (audited at verify).
-- Delete the Bugfix block and every optional section that doesn't apply.
+- Always fill: Summary, **Goal Verification** (truths + artifacts; for a bugfix the contract's "must" clause is the first truth), Scope, Progress Tracking (grouped by story), Implementation Tasks (`### Story N` groups, each with a conventional `Commit:` message), Testing Strategy, Risks, References.
+- **Bugfix block** (Bugfix only): Source, Behavior Contract, Root Cause, Reproducing Test spec.
+- **Proposed Repository Structure** — only when new files are created; match the real tree (`codegraph_files` / `ls`); read `~/.claude/templates/repo.md` only when a new top-level directory is needed. A layout that must DEVIATE → ask the user before finalizing.
+- `Trivial:` only within the template's limits; bugfix tasks never. Delete every section that doesn't apply.
+
+**Self-review before Phase 4** (inline, not an agent): every requirement / acceptance criterion maps to a task · no placeholders · names and signatures agree across tasks · the edge cases and failure inputs a user would hit (empty, invalid, concurrent, first-run) each have a task whose test pins them. Fix gaps inline.
 
 ## Phase 4 — Review the plan
 
-NEVER skip this pass — it catches the gaps and bad assumptions you missed. Launch `Agent(subagent_type='spec-review')` with:
-
-- `plan_file` — the plan path
-- `user_request` — the original request verbatim (plus the story's acceptance criteria when planning from one)
-- `clarifications` — Phase 1 answers (optional)
-- `output_path` — `docs/local/plans/.spec-review-<slug>.json`
-
-It runs in the background, does one combined alignment + adversarial-assumption review (full coverage of the requirements; assumptions or edge cases that could break the plan), and writes JSON. Poll for the file with a bash existence loop, Read it once, and fold in every `must_fix` / `should_fix` before presenting.
+NEVER skip it. Launch `Agent(subagent_type='spec-review')` with `plan_file`, `user_request` (the request or bug report verbatim, plus story acceptance criteria / RCA symptom), `clarifications` (optional), and `output_path` = `docs/local/plans/.spec-review-<slug>.json`. It runs in the background and writes JSON — poll for the file with a bash existence loop, Read it once, fold in every `must_fix` / `should_fix`. **Once per plan:** a Revise round re-runs it only if the revision adds or removes stories/tasks or changes scope — wording and detail edits don't.
 
 ## Phase 5 — Approval
-
-Present the complete plan and ask:
 
 > Plan ready. Approve to begin implementation?
 > - Approve — start implementing
 > - Revise — [specify changes]
 > - Cancel — stop here
 
-NEVER begin implementation without an explicit Approve. On approval, set `Approved: Yes` and call `Skill(skill='spec-implement')` in the same turn — approval was the manual gate; don't wait for the user to re-type anything.
+NEVER begin without an explicit Approve. On approval set `Approved: Yes` and call `Skill(skill='spec-implement')` in the same turn — approval also authorizes the plan's story commits.

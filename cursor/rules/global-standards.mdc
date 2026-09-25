@@ -1,141 +1,39 @@
 ---
-description: "Global engineering standards — process, architecture, quality gates, git"
+description: "Global engineering standards — process, quality gates, architecture, git"
 alwaysApply: true
 ---
 
 # Global Engineering Standards
 
+Companion rules: `testing`, `verification`, `development-practices`, `code-review-reception`, `documentation-sync`; language rules load by file type (`python.mdc` (`.py` files), `go.mdc` (`.go` files), `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)). A project's constitution (`docs/constitution.md`) and its own rules override these.
+
 ## Process
 
-All structural changes follow: ADR → Arch → RFP → Spec (Plan → Implement → Verify) → Ship.
+Structural change: ADR (`docs/adr/`) → design / architecture diagrams (`docs/spec/design/`, `docs/spec/arch/`) → epic → stories (`docs/spec/epics/`, `docs/spec/stories/`) → plan (gitignored `docs/local/plans/`, `~/.claude/templates/plan.md`) → implement → verify → PR. Audits go in `docs/spec/audits/`, bug diagnoses in `docs/spec/rca/`. Templates: `~/.claude/templates/`.
 
-- **ADR first**: Before architectural changes, write an ADR in `docs/adr/`.
-- **Architecture**: Diagram affected components in `docs/spec/arch/`.
-- **Decompose**: Break epics into stories via `/rfp` → `docs/spec/epics/` + `docs/spec/stories/`.
-- **Plan before code**: Use `/spec` for non-trivial work → `docs/local/plans/` (gitignored local working docs, never committed; format: `~/.claude/templates/plan.md`).
-- **TDD mandatory**: Write failing tests FIRST. Red → Green → Refactor.
-- **Verify before done**: Run linters, type checkers, and tests before marking work complete.
+- **ADR first** for architectural changes and any deviation from an established pattern.
+- **TDD mandatory**; **verify before done**.
+- **1 story = 1 commit** — commit each story on fast checks, review the whole commit range once, commit the fixes, then run the full gate once.
 
-**Supporting artifacts** (each writes to a `docs/spec/` folder): **Roadmap** (`docs/spec/roadmap/` — sequence epics, dependency map, critical path) · **Design** (`docs/spec/design/` — the "how it works" between ADR and plan) · **Audit** (`docs/spec/audits/` — durable standard-scoped codebase audit) · **RCA** (`docs/spec/rca/` — evidence-cited bug diagnosis) · **Demo** (`docs/spec/demos/` — E2E walkthrough proving a shipped epic).
+## Quality Gates
 
-## Language Standards
+- **Fast checks** — per story, before each commit, on changed files: format → lint → type check → affected tests → docs updated.
+- **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (e.g. a repo-local preflight, `just lint` + `just test`), else the fast checks repo-wide + the full suite, 0 failures.
+- **Never rerun a costly step on unchanged input** — record the commit it passed on and reuse it.
 
-Consult the language-specific rule file for your current language:
-- **Python**: `python.mdc` (`.py` files)
-- **Go**: `go.mdc` (`.go` files)
-- **TypeScript/React/Tailwind**: `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)
+Tools: Python `uv` `ruff` `basedpyright` · Go `gofumpt` `goimports` `golangci-lint` · TS `pnpm` `eslint` `tsc` `vitest`.
 
-Key tools: Python=`uv`+`ruff`+`basedpyright`, Go=`gofumpt`+`goimports`+`golangci-lint`, TS=`pnpm`/detect+`eslint`+`tsc`+`vitest`.
+## Git
 
-**Precedence:** a project's own `.claude/rules/*` (or equivalent project rules) override these global standards. Repo-specific architecture (layered stacks, DI frameworks, employer conventions) belongs in that repo's config, not here.
+Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-description>`; never force-push main/master.
 
-**Companion rules (this directory):** `testing`, `verification`, `development-practices`, `code-review-reception`, `documentation-sync` — the behavioral standards that back the process above.
+## Architecture
 
-## Project Constitution
+- Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code.
+- DI at the composition root; repository pattern; separate persistence models, domain entities, DTOs; early returns.
+- **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + `Config` + `*_from_config`, failing loudly on an unknown kind); cross-cutting concerns as decorators.
+- Read configuration in one place. Monorepo layout: `~/.claude/templates/repo.md` (infrastructure in `zarf/`; Go `pkg/` + `apps/`, Python `src/` + `entrypoints/`, TS `packages/` + `apps/`).
 
-If a project has `docs/constitution.md` or `.claude/constitution.md`, its principles
-take precedence over global standards for that project. Use constitutions to:
-- Establish non-negotiable project-specific principles (e.g., "no ORM", "gRPC only")
-- Override global defaults when justified (e.g., different coverage thresholds)
-- Document technology constraints and quality budgets
+## Anti-Patterns
 
-Template: `~/.claude/templates/constitution.md`
-
-## Project Memory
-
-Significant decisions, domain context, and learnings persist per project — review them before starting work on unfamiliar areas. They survive session clears and provide cross-session continuity.
-
-- Decisions and context live in the tracked `docs/` pipeline (ADRs, design docs, RCAs)
-- Reusable lessons live as project skills (`.claude/skills/<slug>/SKILL.md`); snippets and one-off solutions in `.claude/vault/`
-- Store: domain concepts, past architectural decisions, team conventions, gotchas
-
-## Templates
-
-Use the templates at `~/.claude/templates/` for document generation:
-- **ADR**: `~/.claude/templates/adr.md`
-- **Epic Spec**: `~/.claude/templates/epic.md`
-- **Story/RFP**: `~/.claude/templates/story.md`
-- **Plan**: `~/.claude/templates/plan.md`
-- **Commit Message**: `~/.claude/templates/commit.md`
-- **Pull Request**: `~/.claude/templates/pr.md`
-- **Monorepo Scaffold**: `~/.claude/templates/repo.md`
-- **Constitution**: `~/.claude/templates/constitution.md`
-- **Checklist**: `~/.claude/templates/checklist.md`
-- **Roadmap**: `~/.claude/templates/roadmap.md`
-- **Design Doc**: `~/.claude/templates/design.md`
-- **Audit**: `~/.claude/templates/audit.md`
-- **RCA**: `~/.claude/templates/rca.md`
-- **Demo Walkthrough**: `~/.claude/templates/demo.md`
-- **Program Status / Backlog**: `~/.claude/templates/status.md`
-- **Linear tickets** (epic / story / bug / task + diagram guide): `~/.claude/templates/linear/`
-
-## Monorepo Standard
-
-New repositories follow the standard monorepo template (`~/.claude/templates/repo.md`):
-- Layered architecture: Foundation → Client → Service/Domain → Controller/API → Entrypoint
-- Infrastructure in `zarf/` (Docker, K8s, Terraform, observability)
-- Spec pipeline in `docs/adr/` + `docs/spec/{roadmap,arch,design,epics,stories,audits,rca,demos}` (tracked); plans + spec-review JSON live in **gitignored** `docs/local/plans/` (never committed)
-- Language conventions: Go=`pkg/`+`apps/`, Python=`src/`+`entrypoints/`, TS=`packages/`+`apps/`
-
-## Quality Gates (before every commit)
-
-Skills say "run the quality gates" for this. Use the project's own full gate when it documents one (a CLI such as `search preflight`, or `justfile` / `Makefile` / `package.json` targets such as `just lint` + `just test`); otherwise run, for the languages in the diff and in order:
-
-1. Format — `ruff format` / `gofumpt` + `goimports` / `prettier` (hooks also format on save)
-2. Lint — `ruff check` / `golangci-lint run` / `eslint`
-3. Type check — `basedpyright` / `go vet` / `tsc --noEmit`
-4. Tests — the full suite, 0 failures (`testing.md` *Zero Tolerance* and its completion checklist)
-5. Docs & consistency — every doc referencing the change updated (`documentation-sync.md`); the touched files' patterns and helpers reused
-
-Never skip a gate because a change "looks small"; never commit with one red.
-
-## Test Doubles (two tiers)
-
-- **Unit → mock the boundary.** Real code under test; external collaborators (HTTP, DB, cache, queue, object store, subprocess, clock, 3rd-party API) replaced by a **mock** (generated, or a mock of a small consumer-side interface). Reuse existing fixtures.
-- **Integration → real dependency in a Docker container via testcontainers**, driven by fixtures, cleaned up in teardown — Go `testcontainers-go` (`//go:build integration`), Python `testcontainers` (`@pytest.mark.integration`), Node `@testcontainers/postgresql`.
-- **`must_fix`:** a hand-rolled fake / stub / in-memory client, an in-memory substitute where a real service belongs (SQLite-for-Postgres, `fakeredis`, in-process queue), or a mock of the very dependency an integration test exists to exercise. Folder ≠ tier: a mock inside `integration/` is a mislabeled unit test.
-
-## Git Conventions
-
-- Conventional commits: `<type>(<scope>): <description>`, scope optional (feat, fix, refactor, docs, test, chore, perf, ci, style)
-- Branch naming: `<type>/<short-description>`
-- Never force-push to main/master
-
-## Architecture Patterns
-
-- Clean/layered: Foundation → Client → Service/Domain → Controller/API
-- Dependency injection at composition root
-- Repository pattern for data access
-- Early returns over nested conditionals
-- Separate persistence models, domain entities, and DTOs
-- Implementation behind an interface, selected by configuration: the contract lives in a dependency-free core layer; the impl is chosen through a factory (`Kind` + `Config` + a `*_from_config` constructor that fails loudly on an unknown kind), injected at the composition root, wrapped by decorators (resilience, observability) — swapping impls (stub → real) is a config change, not a logic edit
-- Layers import downward only; no lateral imports between same-layer packages; app code may import shared libs, shared libs never import app code
-- Read configuration in one place — a config layer or the composition root, not env reads scattered through business logic
-- A deviation from an established pattern is an ADR, not a silent exception
-
-## Cross-Agent Sync
-
-`~/.claude/` (CLAUDE.md + rules) is the source of truth; `cursor/rules/` and `kilocode/rules/` carry identical condensed copies (Kilocode = the same body without frontmatter). When a source changes, edit the Cursor copy, then run `.claude/scripts/sync-mirrors.sh` to regenerate the Kilocode copy. There are no skill equivalents here — the Claude Code skills (`/spec`, `/rfp`, …) are named above for their artifact conventions only.
-
-| Mirror | Source (`dotfiles/.claude/`) |
-|---|---|
-| `global-standards` | `CLAUDE.md` (+ the Test Doubles summary from `rules/testing.md`) |
-| `testing` | `rules/testing.md` |
-| `verification` | `rules/verification.md` (+ the live-target probe from `rules/browser-automation.md`) |
-| `development-practices` | `rules/development-practices.md` (+ the debugging method from `skills/investigate/SKILL.md`) |
-| `code-review-reception` | `rules/code-review-reception.md` |
-| `documentation-sync` | `rules/documentation-sync.md` |
-| `go` / `python` / `typescript(-react)` | `rules/standards-golang.md` / `standards-python.md` / `standards-typescript.md` + `standards-frontend.md` |
-
-Not mirrored: `rules/task-and-workflow.md`, `rules/mcp-servers.md`, `rules/cli-tools.md`, `rules/browser-automation.md` (tool tiers), `rules/linear.md`, `rules/standards-backend.md`.
-
-## Anti-Patterns to Avoid
-
-- Files >800 lines, functions >50 lines, nesting >4 levels
-- Hardcoded secrets/URLs/config values
-- Mutable shared state across goroutines/async tasks
-- `any`/`interface{}` without type narrowing
-- Import cycles
-- Testing implementation details instead of behavior
-- Fakes / in-memory substitutes where a mock (unit) or a real container (integration) belongs
-- Silently deleting an existing doc comment while editing its symbol (revise it, never drop it)
+Files > 800 lines, functions > 50, nesting > 4 · hardcoded secrets/URLs/config · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior · fakes / in-memory substitutes for real dependencies.

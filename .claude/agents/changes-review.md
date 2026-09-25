@@ -10,7 +10,7 @@ background: true
 
 Verify implemented code against the plan: compliance, quality, and goal achievement in one pass.
 
-**When this runs:** this is the **Codex-native `/spec` verification reviewer**. On Claude Code, `/spec` code review is `/review-diff` run inline by `spec-verify` / `spec-bugfix-verify` (`/fix` has no code-review step), and any ad-hoc diff review (working tree, a committed branch vs a base, or a PR) also goes through `/review-diff` — **do not launch this agent by hand there.** "Changes review" as a phrase in the rules refers to whichever of these is active for the runtime, not exclusively to this file.
+**When this runs:** this is the **Codex-native `/spec` verification reviewer**. On Claude Code, `/spec` code review is `/review-diff` run inline by `spec-verify` (`/fix` has no code-review step), and any ad-hoc diff review (working tree, a committed branch vs a base, or a PR) also goes through `/review-diff` — **do not launch this agent by hand there.** "Changes review" as a phrase in the rules refers to whichever of these is active for the runtime, not exclusively to this file.
 
 ## Performance Budget
 
@@ -62,7 +62,7 @@ Focus on issues hooks CANNOT catch. Review the diff for:
   - New private helper / internal function → no must-have test (covered transitively by the public-API test that exercises it)
   - Unit tests with no mocking of external deps → **must_fix** (exempt: integration tests that run the real dependency in a Docker container via testcontainers — that is the required double for that tier)
   - Hand-rolled fake / stub / in-memory reimplementation of a dependency, an in-memory substitute in an integration test (SQLite-for-Postgres, fakeredis), or an integration test that mocks the dependency it exists to exercise → **must_fix** (per `~/.claude/rules/testing.md` *Test Double Policy*)
-- **Test parsimony (per `~/.claude/rules/testing.md` § Test Parsimony):**
+- **Test parsimony (per `~/.claude/rules/testing-authoring.md` § Parsimony):**
   - More than 2 new test classes for the same production class without a `Why >2 test classes:` note in the plan's Key Decisions → **must_fix**
   - Per-method test classes (e.g. `DoSomethingTests` for `Foo.DoSomething()`) → **must_fix**
   - Two or more tests asserting the same observable behaviour through different internal paths → **should_fix**

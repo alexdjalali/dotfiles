@@ -1,9 +1,10 @@
 ---
+name: rca
 model: opus
 description: Diagnose the root cause of one or more bugs and record a diagnosis-only, file:line-cited report in docs/spec/rca/. Use when related bugs need a written diagnosis before fixing, or someone else will fix it.
 ---
 
-The persistent, evidence-cited sibling of `/investigate` (which finds the cause live and fixes it): `/rca` captures the causal chain with `file:line` proof so a fix can be built from it. **Input:** one symptom or a cluster of related ones. **Output:** `docs/spec/rca/<slug>.md` from `~/.claude/templates/rca.md`. NEVER apply a fix here — diagnosis only.
+The persistent, evidence-cited diagnosis lane (`/fix` finds the cause live and fixes it): `/rca` captures the causal chain with `file:line` proof so a fix can be built from it. **Input:** one symptom or a cluster of related ones. **Output:** `docs/spec/rca/<slug>.md` from `~/.claude/templates/rca.md`. NEVER apply a fix here — diagnosis only.
 
 ## Steps
 
@@ -28,4 +29,4 @@ Ask:
 > - `/spec` — larger fix: plan → implement → verify (bugfix lane)
 > - Done — diagnosis only
 
-Run `/fix` via `Skill()` if chosen; `/spec` is suggested for the user to type — never invoked.
+Run `/fix` via `Skill()` if chosen; `/spec` is user-typed.

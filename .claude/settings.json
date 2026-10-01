@@ -11,7 +11,6 @@
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "true",
     "ENABLE_LSP_TOOL": "true",
     "CLAUDE_CODE_AUTO_CONNECT_IDE": "true",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "true",
     "CLAUDE_CODE_HIDE_ACCOUNT_INFO": "true",
     "DISABLE_TELEMETRY": "true",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-5",
@@ -86,8 +85,9 @@
       "LSP"
     ],
     "deny": [],
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "auto"
   },
+  "model": "claude-fable-5-1[1m]",
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "batch": "user-invocable-only",
@@ -110,7 +110,6 @@
     "verify": "user-invocable-only",
     "workflow-authoring": "user-invocable-only"
   },
-  "autoCompactWindow": 200000,
   "hooks": {
     "SessionStart": [
       {
@@ -210,6 +209,7 @@
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
+  "autoCompactWindow": 200000,
   "prefersReducedMotion": true,
   "autoDreamEnabled": false,
   "showThinkingSummaries": true,
@@ -219,6 +219,5 @@
   "preferredNotifChannel": "auto",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "showThinkingHint": true,
-  "model": "claude-fable-5-1"
+  "showThinkingHint": true
 }

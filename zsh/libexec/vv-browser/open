@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Opens each URL in the dedicated Chrome profile
+# (VV_CHROME_PROFILE, a Chrome profile directory; default "Profile 1").
+#
+# Named `open` on purpose: the Auth0 CLI launches its login page with `open`,
+# so putting this directory first on PATH redirects it; the AWS CLI takes it as
+# $BROWSER. It runs the system `open` by absolute path (VV_OPEN_BIN overrides
+# it in tests) so it never re-invokes itself.
+set -euo pipefail
+exec "${VV_OPEN_BIN:-/usr/bin/open}" -na "Google Chrome" --args \
+  --profile-directory="${VV_CHROME_PROFILE:-Profile 1}" "$@"

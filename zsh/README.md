@@ -219,6 +219,29 @@ colon-separated `PROJECT_ROOTS` (default in `conf.d/01-env.zsh`). Override it in
 export PROJECT_ROOTS="$HOME/projects:$HOME/work"
 ```
 
+### Cloud Sign-In (AWS + Auth0)
+
+`conf.d/11-logins.zsh` has one sign-in command per identity: the `vv` ones open in
+dedicated Chrome profiles (`zsh/libexec/vv-browser/open`; AWS and Auth0 each get
+their own), the `gt` ones in the default browser. The AWS sessions are cached separately, so both stay signed in.
+
+| Command | Signs in to |
+|---|---|
+| `aws-login-vv` | the `VV_SSO_SESSION` Identity Center session |
+| `aws-login-gt` | the `GT_AWS_PROFILE` `aws login` profile |
+| `auth0-login-vv` | the Auth0 CLI from the `VV_AUTH0_CHROME_PROFILE` profile, then makes `VV_AUTH0_TENANT` the default |
+| `auth0-login-gt` | the Auth0 CLI (tenant picked on the login page) |
+
+The names are machine-only, so they go in the untracked `~/.zshrc.local` (never
+in this public repo); a helper stops with a message when one is unset:
+```bash
+export VV_SSO_SESSION="<sso-session name in ~/.aws/config>"
+export VV_AUTH0_TENANT="<tenant>.auth0.com"
+export GT_AWS_PROFILE="<aws login profile name>"
+export VV_CHROME_PROFILE="Profile 1"         # AWS; chrome://version → Profile Path
+export VV_AUTH0_CHROME_PROFILE="Profile 2"   # Auth0
+```
+
 ### Add Custom Aliases
 
 Put personal and machine-only aliases (anything that depends on files the repo

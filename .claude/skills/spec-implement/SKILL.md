@@ -14,14 +14,14 @@ effort: high
 ## Per task — each unchecked task in order, including fix tasks a verify loop added
 
 1. **Read the task** — know exactly what its Definition of Done requires.
-2. **RED** — one failing test for the task's behavior, tier and double per `testing.md` *Test Double Policy*, reusing existing fixtures. For a bugfix, Task 1 is the plan's reproducing test. It must fail for the right reason (behavior missing / bug present — not a syntax or import error). Only a task whose `Trivial:` claim holds skips RED — run its named covering command instead.
+2. **RED** (features) — one failing test for the task's behavior, tier and double per `testing.md` *Test Double Policy*, reusing existing fixtures. It must fail for the right reason (behavior missing — not a syntax or import error). Only a task whose `Trivial:` claim holds skips RED — run its named covering command instead. **Bugfix tasks skip RED:** fix first; the plan's last task writes the reproducing test, which `spec-verify` revert-proves.
 3. **GREEN** — the simplest code that passes; nothing the task doesn't require. Match surrounding patterns; reuse the repo's helpers. Anything the plan didn't cover (infra, CLI, config, a new dependency) is a Deviation, not a silent add.
 4. **Affected tests** — run the tests for the code this task touched; NEVER proceed past a failure. The full suite waits for the full gate.
 5. **Refactor** — clarity only; tests stay green.
 6. **Docs** — update every doc referencing the changed code, directly or indirectly (`documentation-sync.md`).
 7. **Tick it now** — `- [ ]` → `- [x]`, Progress Tracking Done +1, Left −1. NEVER batch-mark.
 
-**Red flags — stop and do the step:** "too simple to test" · "I'll write the test after" · "it passed immediately, fine" · "the plan didn't say, but I'll add it" · "I'll batch the ticks". Each is how a verify loop-back starts.
+**Red flags — stop and do the step:** "too simple to test" · "I'll write the test after" (features) · "it works, skip the test" (bugfixes) · "it passed immediately, fine" · "the plan didn't say, but I'll add it" · "I'll batch the ticks". Each is how a verify loop-back starts.
 
 ## After each story's last task — commit
 

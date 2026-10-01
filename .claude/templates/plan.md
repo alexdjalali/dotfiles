@@ -25,7 +25,7 @@ Full gate: [spec-verify: `green @ <sha>`]
 - **Source:** [RCA / issue / report]
 - **Behavior Contract:** Given [trigger], the code **did** [bug]; it **must** [correct behavior]. Parallel implementations: [call sites — fixed together, or why not].
 - **Root Cause:** [where and why, `file:line`]
-- **Reproducing Test:** `tests/...` · `test_<fn>_<scenario>_<expected>` · [unit mocking `<boundary>` | integration, real `<service>` via testcontainers] · asserts [the exact value that fails now and passes after the fix]
+- **Reproducing Test** (the last task — written after the fix, revert-proven at verify): `tests/...` · `test_<fn>_<scenario>_<expected>` · [unit mocking `<boundary>` | integration, real `<service>` via testcontainers] · asserts [the exact value that failed before the fix and passes after]
 
 ## Scope
 

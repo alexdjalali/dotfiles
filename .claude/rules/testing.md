@@ -4,7 +4,7 @@ Core policy, always loaded. Writing or editing a test file also loads `testing-a
 
 ### TDD
 
-**⛔ Failing test before production code** — new functions, endpoints, business logic, behavior changes, and bug fixes (reproduce first).
+**⛔ Failing test before production code** — new functions, endpoints, business logic, behavior changes. **Bug fixes are the exception: reproduce, root-cause, fix — then write the reproducing test at the end** and prove it with the revert-test (fails with the fix reverted, passes re-applied). The test is still mandatory; only its timing moves.
 
 1. **RED** — one minimal behavior test; mocks for external deps only.
 2. **VERIFY RED** — fails because the behavior is missing, not a syntax/import error; passes immediately → rewrite it.

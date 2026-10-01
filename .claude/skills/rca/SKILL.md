@@ -25,7 +25,7 @@ The persistent, evidence-cited diagnosis lane (`/fix` finds the cause live and f
 Ask:
 
 > Diagnosis recorded. Fix it?
-> - `/fix <slug>` — quick-lane fix (reproducing test first, revert-test proof)
+> - `/fix <slug>` — quick-lane fix (root-cause, fix, then the revert-proven reproducing test)
 > - `/spec` — larger fix: plan → implement → verify (bugfix lane)
 > - Done — diagnosis only
 

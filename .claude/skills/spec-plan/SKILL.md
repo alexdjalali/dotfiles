@@ -24,7 +24,7 @@ effort: xhigh
 - **Interfaces:** a task that others build on names what it produces (exact function/type names, signatures); a task that uses them names what it consumes.
 - **No placeholders** — each is a plan failure: "TBD", "add error handling", "handle edge cases", "similar to Task N", tests without their assertion, or a name no task defines.
 - **Code-addition checklist** — answer all eight from `~/.claude/templates/code-addition-checklist.md` before tasks are final (a repo's `.claude/rules/code-addition-checklist.md` supplies concrete answers); a "yes" to infra/CLI/config is its own task.
-- **Bugfix:** the Behavior Contract — Given <trigger>, the code **did** <bug>; it **must** <correct behavior> — plus every parallel implementation, fixed together or with a stated reason. Task 1 writes the reproducing test (RED on current code); later tasks fix the root cause.
+- **Bugfix:** the Behavior Contract — Given <trigger>, the code **did** <bug>; it **must** <correct behavior> — plus every parallel implementation, fixed together or with a stated reason. The fix tasks come first; the **last task writes the reproducing test** (at the end, per `testing.md`) — `spec-verify` proves it with the revert-test.
 
 ## Phase 3 — Write the plan
 

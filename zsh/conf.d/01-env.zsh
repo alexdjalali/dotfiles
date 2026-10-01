@@ -17,8 +17,10 @@ export GPG_TTY=${TTY:-$(tty)}
 export GOPATH="$HOME/go"
 
 # PATHs (consolidated, zsh array form, deduplicated)
-# Highest priority first — Homebrew (Apple Silicon) before Intel path
+# Highest priority first — go-installed tools (project-pinned versions) shadow
+# Homebrew's, then Homebrew (Apple Silicon) before Intel path
 path=(
+  $GOPATH/bin
   /opt/homebrew/bin
   /usr/local/bin
   $HOME/bin
@@ -27,7 +29,6 @@ path=(
   $HOME/.cargo/bin(N)
   $HOME/.bun/bin(N)
   $HOME/Library/Python/3.*/bin(N)
-  $GOPATH/bin
   $HOME/TechAI/*/bin(N)
   $HOME/Personal/*/bin(N)
   $path

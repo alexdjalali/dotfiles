@@ -22,7 +22,9 @@ _cache_init direnv direnv hook zsh
 _cache_init atuin atuin init zsh --disable-up-arrow
 
 # Mise - universal version manager (install: brew install mise)
-_cache_init mise mise activate zsh
+# Not cached: `mise activate` bakes the current PATH into its output, so a cached
+# copy would pin a stale PATH order until mise itself is upgraded.
+(( $+commands[mise] )) && eval "$(mise activate zsh)"
 
 # Lazy load nvm (saves ~200ms startup time; use function, not alias, for proper arg forwarding)
 export NVM_DIR="$HOME/.nvm"

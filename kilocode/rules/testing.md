@@ -4,7 +4,7 @@ A repo's own testing rule overrides this — the only way to loosen the test-dou
 
 ### TDD
 
-Failing test before production code (new behavior, endpoints, bug fixes — reproduce first): RED (one behavior test) → VERIFY RED (fails because the behavior is missing, not a syntax error) → GREEN (simplest code) → VERIFY GREEN (affected tests; the full suite runs once in the full gate) → REFACTOR. Skip RED only for docs, config, dep bumps, formatting, or a trivial change (≤ 5 production lines, no new branch, public symbol, or error path) naming its covering test — never for bugfixes.
+Failing test before production code (new behavior, endpoints): RED (one behavior test) → VERIFY RED (fails because the behavior is missing, not a syntax error) → GREEN (simplest code) → VERIFY GREEN (affected tests; the full suite runs once in the full gate) → REFACTOR. **Bug fixes are the exception:** reproduce, root-cause, fix, then write the reproducing test at the end and revert-prove it (fails with the fix reverted, passes re-applied). Skip RED only for docs, config, dep bumps, formatting, or a trivial change (≤ 5 production lines, no new branch, public symbol, or error path) naming its covering test — never for bugfixes.
 
 ### Test doubles — two tiers (a violation is must-fix)
 

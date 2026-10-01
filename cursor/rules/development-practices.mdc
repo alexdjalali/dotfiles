@@ -16,7 +16,7 @@ alwaysApply: true
 
 ### Debugging
 
-No fix without a root cause. Reproduce with a failing test first; read the whole error; check recent changes; trace data flow from symptom to source; compare with working code; instrument boundaries. State one falsifiable hypothesis and test it one variable at a time. **3+ failed fixes = wrong approach — stop.** Revert-first when a change breaks things. Replace sleeps with condition polling (timeout + clear error). After fixing, validate at each layer the bad data passed through. Prove the fix: revert it, the test fails; re-apply, it passes.
+No fix without a root cause. Reproduce it; read the whole error; check recent changes; trace data flow from symptom to source; compare with working code; instrument boundaries. State one falsifiable hypothesis and test it one variable at a time. **3+ failed fixes = wrong approach — stop.** Revert-first when a change breaks things. Replace sleeps with condition polling (timeout + clear error). After fixing, validate at each layer the bad data passed through. Prove the fix: revert it, the test fails; re-apply, it passes.
 
 ### Git — writes need explicit permission
 

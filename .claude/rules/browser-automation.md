@@ -9,124 +9,29 @@ paths:
 
 ## Browser Automation for E2E Testing
 
-**MANDATORY for E2E testing of any app with a UI.** API tests verify backend; browser automation verifies what the user sees.
+**⛔ A UI change needs browser verification**, in `/spec` and quick mode alike. Unit tests and typechecks are not enough. Stale bundles, undeployed code, CSS layout, and elements that are in the DOM but hidden all pass tests. "Small CSS change" and "tests cover it" are not excuses. Tool tables, per-tool notes, session isolation and the E2E checklist are in `~/.claude/templates/browser-tools.md`; read it when you drive a tool.
 
-### ⛔ Frontend Changes Require Browser Verification
+**Procedure:** resolve a live target (the probe below) → pick a tool → open the affected page and interact with the changed UI → report what you saw. "UI works" needs browser evidence.
 
-Unit tests and typechecks are NOT sufficient for UI changes. After tests pass, verify with browser automation that the change works in the running app — in BOTH `/spec` and quick mode.
+### ⛔ Live-target probe, required before any "I can't run live E2E" claim
 
-**Procedure (quick mode):**
+Never conclude "unit-verified is sufficient" without trying a live target. Run the tiers in order and record each one's outcome: the command, its exit status, and any error.
 
-1. **Resolve a live target FIRST — no skipping to "unit-verified"** (see "Live-target probe" below). Tests passing is not a substitute for never opening a browser against a deployed instance.
-2. Pick a browser tool (tier priority and detection below).
-3. Navigate to the affected page, interact with the changed UI, verify correct behavior.
-4. Report what you saw — "UI works" requires browser evidence, not "tests pass."
-
-**Don't skip.** "Small CSS change" or "tests cover it" is not an excuse. Common pitfalls: stale cached bundles, bundle not deployed, CSS layout invisible to tests, elements in DOM but not visible/interactive.
-
-### ⛔ Live-Target Probe — required before any "I can't run live E2E" claim
-
-**Failure mode this rule prevents:** unit tests pass, no local server is running, the model concludes "unit-verified is sufficient" and marks the work done WITHOUT ever opening a browser against a deployed instance. The user's local setup was perfectly capable of a preview deploy — the model just didn't ask.
-
-Before declaring live E2E impossible, you MUST run a 4-tier probe and record the outcome of each tier:
-
-| Tier | What | Skip reason allowed |
+| Tier | What | Skip only when |
 |---|---|---|
-| 1 | Reuse an already-running local server (curl/health check the port named in the plan or repo defaults) | No process listening AND no health endpoint |
-| 2 | Start the dev server yourself in background, poll its health endpoint up to 60s | No documented start command in plan / `package.json` / `pyproject.toml` / `Makefile` |
-| 3 | Detect deploy backends (Vercel, Fly, Netlify, Cloudflare Wrangler, Render, AWS, Heroku, GitHub-Actions deploy workflow), run the backend's auth-check command, attempt a preview deploy with the eligible one | Every detected backend's auth-check returns "not logged in" — quote the exact command + output |
-| 4 | Unit-only fallback (`UNIT_VERIFIED` instead of `LIVE_PASS`) | Only after Tiers 1–3 above ALL failed with documented reasons |
+| 1 | Reuse a running local server (health-check the plan's or repo's port) | nothing is listening and there is no health endpoint |
+| 2 | Start the dev server in the background and poll its health for up to 60 s | there is no documented start command (plan / `package.json` / `pyproject.toml` / `Makefile`) |
+| 3 | Detect a deploy backend from repo markers (Vercel, Fly, Netlify, Wrangler, Render, AWS, Heroku, a GH-Actions deploy), run its auth check, and attempt a preview deploy | every detected backend's auth check says "not logged in" (quote the command and output) |
+| 4 | Unit-only fallback: report `UNIT_VERIFIED`, not `LIVE_PASS` | only after tiers 1–3 failed with documented reasons |
 
-**Acceptance criteria for the probe:**
+"No marker files for any backend" is the only allowed no-attempt skip for tier 3. If a marker exists, run that backend's auth check. Clean up a preview deploy made only for verification, or note it in the report. `spec-verify` Phase 3 runs this probe for UI changes.
 
-- Every tier you attempted must have its outcome in the verification report (command run, exit status, error captured if any). "I assumed it wasn't available" is not a documented outcome.
-- "No marker files for any deploy backend" is the ONLY no-attempt skip allowed for Tier 3. If `vercel.json` / `fly.toml` / etc. exists, you MUST run the auth-check for that backend before claiming Tier 3 is unavailable.
-- Tier 3 success obligates you to clean up: e.g. `vercel rm <deployment-id>` for ad-hoc preview deploys created solely for verification, OR leave them with an explicit note in the verification report.
+### Tools, in fallback order
 
-**The probe is generic across backends.** Do not hard-code Vercel — detect the backend from repo markers and use the right command. `spec-verify` Phase 3 runs this probe for UI changes; adding a new backend is a one-row edit to the Tier 3 row above.
+Claude Code Chrome (`mcp__claude-in-chrome__*`) → Chrome DevTools MCP (`mcp__plugin_chrome-devtools-mcp_*`; use it for Lighthouse and traces) → `playwright-cli` (complex flows, auth, mocking, multi-tab) → `agent-browser` (lightweight checks). Detect the MCP tools in your tool list, and the CLIs with `which`. In `/spec` or any parallel run, pass `--session "${BROWSER_SESSION_ID:-default}"` to the CLIs (`-s=` for playwright-cli).
 
-### Tool Selection: 4-Tier Priority
+### ⛔ E2E hard rules
 
-Pick the tool that gives the most accurate verification for the situation, not the fastest.
-
-| Priority | Tool | Best For | Key Advantage |
-|----------|------|----------|---------------|
-| 1st | Claude Code Chrome (`mcp__claude-in-chrome__*`) | Quick E2E, visual check | Shares user's existing browser session, natural-language `find` |
-| 2nd | Chrome DevTools MCP (`mcp__plugin_chrome-devtools-mcp_*`) | DevTools-level debugging, perf audits | Direct CDP, Lighthouse, tracing — no extension needed |
-| 3rd | `playwright-cli` | Thorough E2E, complex flows | Most reliable targeting, persistent sessions, network mocking, tracing, multi-tab |
-| 4th | `agent-browser` | Lightweight checks | Concise output (200–400 tk/page), fast startup |
-
-### Override the Default
-
-| Situation | Use |
-|-----------|-----|
-| Lighthouse / performance trace | Chrome DevTools MCP |
-| Network mocking, tracing, video | playwright-cli |
-| Multi-tab workflow | playwright-cli |
-| Persistent browser profile | playwright-cli (`--persistent`) |
-| Auth flow (Clerk, OAuth) | playwright-cli (most reliable) or agent-browser |
-| Already logged in, quick visual | Claude Code Chrome |
-| Simple click-and-verify | agent-browser |
-
-### Detection
-
-1. **Claude Code Chrome:** `mcp__claude-in-chrome__*` in your tools list.
-2. **Chrome DevTools MCP:** `mcp__plugin_chrome-devtools-mcp_chrome-devtools__*` in your tools list.
-3. **playwright-cli / agent-browser:** `which playwright-cli` / `which agent-browser`.
-
-**Fallback chain:** Claude Code Chrome → Chrome DevTools MCP → playwright-cli → agent-browser.
-
-### ⛔ E2E Hard Rules — read before claiming "verified"
-
-**1. Tier error → next tier in the chain. Period.**
-If tier N errors (e.g., Chrome DevTools MCP "no Chrome binary"), the ONLY allowed next step is tier N+1. Never substitute a non-browser tool. If tiers 1–4 all fail, STOP and tell the user — do not claim E2E.
-
-**Forbidden as E2E substitutes** (each only proves what's in parentheses, not user behavior):
-`web-fetch` / `fetch_url` / `curl` (SSR HTML ships) · reading source files (code exists) · API 200s (backend works) · typecheck / unit tests (code shape) · "no console errors on load" (page parsed).
-
-**2. E2E = interaction, not load.**
-For every user-facing path the change touches, you MUST: snapshot → **click the primary action** (button, link, form submit) → re-snapshot → confirm new state. No click + re-snapshot pair = not E2E.
-
-**3. Self-check before saying "verified" / "works" / "done":**
-- [ ] Used a tier 1–4 tool (named one)?
-- [ ] Actually clicked the thing the change affects?
-- [ ] Re-snapshotted and saw the expected new state?
-
-Any "no" → not verified. Say so explicitly; do not claim done.
-
-### Common Workflow Shape (all tools)
-
-1. Get current state (tab/page/snapshot)
-2. Navigate to target URL
-3. Snapshot / read elements (gives you refs)
-4. Interact (click / fill / press)
-5. Re-snapshot to verify
-
-### Session Isolation — MANDATORY in /spec or any parallel workflow
-
-Without session isolation, parallel agents share one browser instance and clobber each other.
-
-```bash
-# agent-browser — pass a unique session id per parallel agent
-agent-browser --session "${BROWSER_SESSION_ID:-default}" <command>
-
-# playwright-cli
-playwright-cli -s="${BROWSER_SESSION_ID:-default}" <command>
-```
-
-Chrome MCP and Chrome DevTools MCP target tabs/pages directly — no session ID needed.
-
-### Tool-Specific Notes
-
-- **Claude Code Chrome:** load tools via `ToolSearch(query="select:mcp__claude-in-chrome__<tool>")` first. Avoid triggering `alert/confirm/prompt` — they block the extension. Use `javascript_tool` + `console.log` for debugging.
-- **Chrome DevTools MCP:** load via `ToolSearch(query="chrome-devtools-mcp", max_results=30)`. Snapshots use `uid=` refs that go stale after navigation — re-snapshot. Unique: `lighthouse_audit`, `performance_start_trace`, `evaluate_script`, `emulate`, network/console listing.
-- **agent-browser:** uses `@e1`/`@e2` refs from `snapshot -i`. Refs invalidate after navigation/forms/dynamic loads — re-snapshot. Full command reference: `agent-browser --help`.
-- **playwright-cli:** refs are bare numbers (`e1`, not `@e1`). Snapshots saved to files. Unique: `--persistent` profiles, `route` for mocking, `tracing-start/stop`, `video-start/stop`, cookie/localStorage management, `run-code` for raw Playwright. Full reference: `playwright-cli --help`.
-
-### E2E Checklist
-
-- [ ] User can complete the main workflow
-- [ ] Forms validate and show errors correctly
-- [ ] Success states display after operations
-- [ ] Navigation works between pages
-- [ ] Error states render properly
+1. **A tool error moves you to the next tool in the chain. Period.** Never substitute a non-browser tool. If all four tools fail, stop and tell the user; do not claim E2E. These prove only what's in parentheses, never user behavior: `web-fetch` / `curl` (the SSR HTML ships) · reading source (the code exists) · API 200s (the backend works) · typecheck or unit tests (the code's shape) · no console errors on load (the page parsed).
+2. **E2E means interaction, not a page load.** For every user-facing path the change touches: snapshot → **click the primary action** → re-snapshot → confirm the new state.
+3. **Before you say "verified", "works" or "done":** did you name the tool you used, click the thing the change affects, and see the expected state on a re-snapshot? Any "no" means it isn't verified; say so.

@@ -13,7 +13,7 @@
     "CLAUDE_CODE_AUTO_CONNECT_IDE": "true",
     "CLAUDE_CODE_HIDE_ACCOUNT_INFO": "true",
     "DISABLE_TELEMETRY": "true",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-5",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-5-5",
     "FORCE_AUTOUPDATE_PLUGINS": "true",
     "CLAUDE_CODE_ENABLE_TASKS": "true",
     "CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS": "true",
@@ -78,7 +78,6 @@
       "Grep",
       "NotebookEdit",
       "Read",
-      "TodoWrite",
       "WebFetch",
       "WebSearch",
       "Write",
@@ -87,7 +86,6 @@
     "deny": [],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5-1[1m]",
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "batch": "user-invocable-only",

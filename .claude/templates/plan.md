@@ -45,6 +45,10 @@ Matches the current layout — or deviates, confirmed with the user: [what / why
 The map later phases use instead of re-exploring:
 
 - **Patterns:** [`file:line` to mirror] · **Key files:** [path — why] · **Gotchas:** [non-obvious things] · **Runtime:** [start / health check / port, if a service]
+- **Shape** (`code-addition-checklist.md`): core interface [name] · `Kind`s [stub default, real kinds] · composition root [file — where it is wired] · decorators [which, in the per-layer order] · error codes [new codes]
+- **Config:** [owning slice; new fields + fail-safe `base` default; env overlay / secrets entries]
+- **Codegen:** [source → generator command → generated paths; or "none"]
+- **Operability:** [timeouts; logs/metrics/spans added; health/readiness/shutdown impact]
 
 ## Progress Tracking
 

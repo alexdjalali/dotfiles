@@ -3,8 +3,9 @@
 ### Changes
 
 - **Ambiguous request →** state assumptions and ask before coding.
-- **Lineage test:** every changed line traces to the request; otherwise revert it. Remove what *your* change orphaned; mention (don't delete) pre-existing dead code.
-- **Simplest thing:** if 200 lines could be 50, rewrite. Complexity is earned by real requirements.
+- **Lineage test:** every changed line traces to the request; otherwise revert it. The interface, factory, config, decorators, tests, and docs that put the requested behavior in the project's shape (`code-addition-checklist.md`) *are* the request — not scope creep. Unrelated refactors are. Remove what *your* change orphaned; mention (don't delete) pre-existing dead code.
+- **Least hand-maintained code:** generate > generalize > hand-write. Derive code from a contract with the project's generator; otherwise build the general shape (interface + `Kind` + config + DI + decorators) once and configure it; hand-write only the residue. Shorter is better *within* that shape — if 200 lines could be 50, rewrite.
+- **Generated code:** never hand-edit it — change the source (proto, schema, template, `wire.go`) and regenerate through the project's CLI; commit the output; CI fails on drift.
 - **⛔ Never invent values** — paths, env vars, keys, IDs, URLs, ports, hosts, versions, service names, unverified functions or library signatures. Confirm by reading the code, running the command, or asking.
 - **Before modifying a shared function**, trace `codegraph_callers` / `codegraph_callees` (then Grep for dynamic callers).
 - Fix obvious mistakes in code you're writing; report — don't auto-fix — code the user edited.

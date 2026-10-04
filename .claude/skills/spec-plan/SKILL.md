@@ -23,7 +23,7 @@ effort: xhigh
 - Each task: independently testable, one focused TDD cycle, no circular dependencies, reusing the repo's helpers and conventions. NEVER a task that doesn't trace to the request or acceptance criteria. Fold setup, config, and docs into the task whose deliverable needs them.
 - **Interfaces:** a task that others build on names what it produces (exact function/type names, signatures); a task that uses them names what it consumes.
 - **No placeholders** — each is a plan failure: "TBD", "add error handling", "handle edge cases", "similar to Task N", tests without their assertion, or a name no task defines.
-- **Code-addition checklist** — answer all eight from `~/.claude/templates/code-addition-checklist.md` before tasks are final (a repo's `.claude/rules/code-addition-checklist.md` supplies concrete answers); a "yes" to infra/CLI/config is its own task.
+- **Code-addition checklist** — answer every question in `~/.claude/templates/code-addition-checklist.md` before tasks are final (a repo's `.claude/rules/code-addition-checklist.md`, when present, supplies concrete answers and may add questions; answer its full list); a "yes" to infra/CLI/config/codegen is its own task, and the answers fill the plan's *Shape*, *Config*, *Codegen*, and *Operability* lines.
 - **Bugfix:** the Behavior Contract — Given <trigger>, the code **did** <bug>; it **must** <correct behavior> — plus every parallel implementation, fixed together or with a stated reason. The fix tasks come first; the **last task writes the reproducing test** (at the end, per `testing.md`) — `spec-verify` proves it with the revert-test.
 
 ## Phase 3 — Write the plan
@@ -34,6 +34,7 @@ Header `Type: Feature | Bugfix`, `Status: PENDING`, `Approved: No`, `Iteration: 
 - **Bugfix block** (Bugfix only): Source, Behavior Contract, Root Cause, Reproducing Test spec.
 - **Proposed Repository Structure** — only when new files are created; match the real tree (`codegraph_files` / `ls`); read `~/.claude/templates/repo.md` only when a new top-level directory is needed. A layout that must DEVIATE → ask the user before finalizing.
 - `Trivial:` only within the template's limits; bugfix tasks never. Delete every section that doesn't apply.
+- Prose follows `~/.claude/templates/prose-style.md`.
 
 **Self-review before Phase 4** (inline, not an agent): every requirement / acceptance criterion maps to a task · no placeholders · names and signatures agree across tasks · the edge cases and failure inputs a user would hit (empty, invalid, concurrent, first-run) each have a task whose test pins them. Fix gaps inline.
 

@@ -28,17 +28,18 @@ No lock file? Check `packageManager` in `package.json`, or default to **pnpm** (
 
 ### Code Style
 
-- Self-documenting code, minimize comments
-- One-line JSDoc for exports: `/** Calculate discounted price. */`
-- **No tracker IDs or dead links in comments:** don't cite issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or JSDoc — they rot and couple the code to an external tracker; that context belongs in the commit/PR/tracker. If a comment references a doc, link only a committed in-repo doc (under `docs/`), never a gitignored or scratch path.
-- **Import order:** Node built-ins (`node:`) → External → Internal → Relative
-- **File names:** kebab-case (`user-service.ts`)
+- **Docs:** a one-line JSDoc on every export (`/** Calculate discounted price. */`); TSDoc `@param`/`@returns` for library packages; inline comments only for non-obvious logic. Tracker IDs and link rules: `documentation-sync.md`.
+- **Imports:** Node built-ins (`node:`) → external → internal via the project's path alias (`@/…`) → relative siblings; no deep `../../` chains.
+- **File names:** follow the project. Default: kebab-case modules (`user-service.ts`), PascalCase React component files (`UserCard.tsx`, `standards-frontend.md`).
+- `const` assertions for literal types: `const ROLES = ['admin', 'user'] as const`. Guard clauses over nesting.
 
-### Common Patterns
+### Architecture (services, CLIs, shared packages)
 
-- Prefer `node:` prefix for built-ins: `import { readFile } from 'node:fs/promises'`
-- Use `const` assertions for literal types: `const ROLES = ['admin', 'user'] as const`
-- Don't swallow errors — log and re-throw
+- **The One Idea** (`CLAUDE.md` *Architecture*): a contract `interface` in the core package; a `kind` + `Config` + `fromConfig(config)` factory that returns the interface, defaults to a stub/noop, and throws on an unknown kind (an exhaustive `switch` over a string-literal union with a `never` check).
+- Constructor injection wired in one composition root per entrypoint — no module-level singletons or side-effecting imports. Resilience and observability are wrapper decorators applied there.
+- **Config:** parsed and validated once at startup (a schema validator such as zod), typed, documented; `process.env` / `import.meta.env` read only in the config module.
+- **Errors** carry a code (a typed error class with a `code` field); don't swallow — wrap with a code or re-throw.
+- **Codegen:** API clients and types come from the contract (OpenAPI / proto / GraphQL) via the project's generator; output committed, lint-excluded, never hand-edited; CI fails on drift.
 
 ### Testing - Minimal Output
 
@@ -81,7 +82,8 @@ Check `package.json` scripts first — projects often have custom configurations
 - [ ] Explicit return types on exports
 - [ ] No `any` types
 - [ ] Correct lock file committed
-- [ ] Production files ideally under 800 lines (1000+ = consider splitting)
+- [ ] Generated clients/types in sync with their contract
+- [ ] Production files ideally under 800 lines (generated files exempt)
 
 ### Quick Reference
 

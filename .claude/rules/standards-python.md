@@ -77,22 +77,84 @@ def test_store_crud_persists_against_real_postgres(pg_url: str) -> None:
 ### Libraries
 
 - **Boundary models & config:** `pydantic` v2 (`BaseModel`, `pydantic-settings` `BaseSettings`); frozen dataclasses or `attrs` for internal value objects that don't need validation.
-- **Logging:** `structlog` (structured) — never `print()` in production.
-- **HTTP:** `httpx` (async-capable). **Ruff line length:** follow the project's `pyproject.toml` (commonly 88–110).
+- **Logging:** `structlog` (structured, context-bound) — never `print()` in production.
+- **HTTP:** `httpx` (async-capable). **Ruff:** the project's `pyproject.toml` (line length commonly 88–110; `select = ["ALL"]` with documented ignores where the project uses it).
 
 ### Code Style
 
-- **Docstrings:** One-line for most functions. Multi-line only for complex logic. Skip when name is self-explanatory.
-- **Type hints:** Required on public functions. Use modern syntax: `list[int]`, `Item | None` (not `List`, `Optional`).
-- **Imports:** Standard → Third-party → Local. Ruff auto-sorts. Absolute imports; no cross-package relative imports.
-- **Comments:** Only for complex algorithms, non-obvious logic, or workarounds.
-- **No tracker IDs or dead links in comments:** don't cite issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or docstrings — they rot and couple the code to an external tracker; that context belongs in the commit/PR/tracker. If a comment references a doc, link only a committed in-repo doc (under `docs/`), never a gitignored or scratch path.
+- **Type hints** on every public function; modern syntax (`list[int]`, `Item | None`). Contracts are `typing.Protocol`s in the core package; a local protocol extends the core one.
+- **Imports:** absolute; no cross-package relative imports. Heavy backend dependencies are imported inside the factory branch that needs them.
+- **Guard clauses** over nesting. Comments only for non-obvious logic.
+
+### Documentation
+
+- A module docstring on every file.
+- Every public class, function, and method has a docstring — one line unless the logic needs Google-style `Args`/`Returns`/`Raises`. Every model/config field is documented (`Field(..., description=...)` or an attribute docstring); trivially obvious fields are exempt.
+- Revise a docstring when you edit its symbol — never delete it. Tracker IDs and link rules: `documentation-sync.md`.
+
+### Errors
+
+- **Errors carry a code:** raise or `wrap(...)` into the project's `AppError` hierarchy; transient/permanent and the HTTP/gRPC status derive from the code; the transport edge sanitizes the message.
+- No bare `except:`; catch the specific exception, then wrap with a code or re-raise. Never swallow.
+
+### Factories, DI, and decorators
+
+```python
+class StoreKind(StrEnum):
+    """Names a Store backend."""
+
+    STUB = "stub"
+    """Zero-I/O default, so the graph boots with no infrastructure."""
+
+    POSTGRES = "postgres"
+    """Rows in PostgreSQL."""
+
+
+@dataclass(frozen=True, slots=True)
+class StoreConfig:
+    """Selects and configures a Store backend; holds every kind's settings."""
+
+    kind: StoreKind = StoreKind.STUB
+    """Which backend to build."""
+
+    dsn: str = ""
+    """Connection string for POSTGRES."""
+
+
+def store_from_config(cfg: StoreConfig) -> Store:
+    """Return the Store backend ``cfg.kind`` names; fail loudly on an unknown kind."""
+    match cfg.kind:
+        case StoreKind.STUB:
+            return StubStore()
+        case StoreKind.POSTGRES:
+            from app.clients.store.postgres import PostgresStore  # heavy dep, lazy
+
+            return PostgresStore(cfg.dsn)
+        case _:
+            raise AppError(ErrorCode.INVALID_CONFIG, f"store: unknown kind {cfg.kind!r}")
+```
+
+- **Composition root:** one `deps.py` per deployable builds the graph from settings — constructor injection only, no I/O at import or construction, no module-level singletons; lifetimes and teardown live there (FastAPI lifespan / `Depends` reads from it).
+- **Decorators** (logging, tracing, metrics, retry with backoff + jitter on transient codes, circuit breaker, timeout) are proxies that wrap the protocol at the composition root, in the per-layer order (`CLAUDE.md` *Architecture*) — never inlined in a backend, never doubled over an SDK that already retries.
+
+### Configuration
+
+- `pydantic-settings` `BaseSettings` loads layered YAML (`base` → env overlay → gitignored secrets) with env-var overrides, validated at startup. Every field is `Field(default, description=...)` with a fail-safe `base` value.
+- Each tier exposes a `*_config()` builder that maps settings onto its frozen `Config`; `os.environ` is read only in the config layer or entrypoints.
+
+### Observability
+
+- `structlog` bound with request/trace IDs; OpenTelemetry spans on every boundary; metrics through the metrics decorator.
+- Health and readiness endpoints; readiness flips before the drain; graceful shutdown cancels and awaits tasks.
+
+### Code generation
+
+- Contract-derived code (protobuf/gRPC stubs, API clients, models from a schema) comes from the project's generator via its CLI (e.g. `buf generate`); output is committed, carries a generated header, is excluded from lint, and is never hand-edited. CI regenerates and fails on drift.
+- A repeated shape with no off-the-shelf generator is a template (e.g. Jinja2) behind a CLI subcommand, not copy-paste.
 
 ### Common Patterns
 
-- **No bare `except`:** Catch specific exceptions, log, and re-raise
-- **Context managers:** `with open(path) as f:` for resources
-- **Pathlib over os.path:** `Path(__file__).parent / "config.yaml"`
+- **Context managers** for resources; **`pathlib`** over `os.path`.
 
 ### Project Configuration
 
@@ -108,4 +170,5 @@ def test_store_crud_persists_against_real_postgres(pg_url: str) -> None:
 - [ ] `basedpyright src` — clean (adapt to your source dirs)
 - [ ] Critical-path coverage adequate (see testing.md "Test Strategy & Coverage")
 - [ ] No unused imports
-- [ ] Production files ideally under 800 lines (1000+ = consider splitting)
+- [ ] Generated code in sync with its source
+- [ ] Production files ideally under 800 lines (generated files exempt)

@@ -19,6 +19,7 @@ The "how it works / how we'll build it" **between an ADR (the decision) and a pl
 
 - The DECISION belongs in an ADR — cross-reference it, don't duplicate it.
 - Implementable, not aspirational — a reader can plan tasks from it.
+- Prose follows `~/.claude/templates/prose-style.md`; run its self-check before writing the file.
 
 ## Next Step
 

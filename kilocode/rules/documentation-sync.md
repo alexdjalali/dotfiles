@@ -5,3 +5,5 @@
 - **When:** public API / CLI flag / config / endpoint added, renamed, removed; documented behavior changed; breaking change (CHANGELOG, migration note); layout changed. Not for internal refactors, bugs restoring documented behavior, or test-only changes — say "no doc impact".
 - **Where:** search docs, READMEs, agent instruction files, docstrings, and comments for the changed symbol, then one hop out for docs describing dependent behavior.
 - **How:** change only what's now wrong; fix counts and lists; one term everywhere; revise — never silently delete — a doc comment when editing its symbol. Report the doc files touched.
+- **Generated docs** (config/API/CLI references) are regenerated from their source, never hand-edited.
+- **Comments:** no issue-tracker IDs in comments or doc comments (context goes in the commit/PR); link only committed in-repo docs under `docs/`, never gitignored or scratch paths.

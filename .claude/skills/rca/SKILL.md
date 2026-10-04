@@ -19,6 +19,7 @@ The persistent, evidence-cited diagnosis lane (`/fix` finds the cause live and f
 
 - NEVER state a root cause without `file:line` evidence — an unproven cause is labeled "not yet pinned", with the capture step needed to confirm it.
 - One root cause per numbered finding; a shared cause is called out as shared.
+- Prose follows `~/.claude/templates/prose-style.md`; run its self-check before writing the file.
 
 ## Next Step
 

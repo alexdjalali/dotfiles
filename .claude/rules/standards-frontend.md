@@ -28,9 +28,12 @@ paths:
 
 - **React 19**, functional components only. **React Compiler** handles memoization — don't scatter `useMemo`/`useCallback`; add manual memoization only where profiling shows the compiler can't help.
 - Custom hooks (`use*`) for shared logic; `useReducer` for complex state, `useState` for simple. Always specify effect dependency arrays and clean up subscriptions/listeners.
-- Props: destructure in the signature; `interface` for prop types. One exported component per file; colocate styles and tests. Error boundaries at route/feature level.
+- Props: destructure in the signature; `interface` for prop types. One `export default function` component per PascalCase file with a colocated `*.test.tsx`; a one-line `/** UserCard — … */` doc on every exported component. Error boundaries at route/feature level.
+- **Layout (feature-first):** `components/ui/` primitives · `components/shared/` cross-feature composites · `features/<domain>/` domain UI behind a barrel `index.ts` · `layout/` the app shell. Import through the `@/*` alias; deep `../../` imports are lint-banned.
+- **Data:** server state goes through the query layer (e.g. TanStack Query hooks per feature) — never a raw `fetch` in a component; mutations invalidate their query keys. API clients/types are generated from the backend contract.
+- **i18n:** user-visible strings go through `t()`; literal JSX strings are a lint error where the project enforces it.
 - **Tailwind v4** (`@tailwindcss/vite`): theme is configured CSS-first via `@theme`, not `tailwind.config.ts`. Merge conditional classes with `tailwind-merge`; extract repeated patterns into components, not `@apply`.
-- **Testing:** `vitest` + React Testing Library; test behavior not implementation. Mock the network boundary (MSW / `vi.mock`) — mocks and fixtures, not fakes.
+- **Testing:** `vitest` + React Testing Library with role/text queries; test behavior not implementation. Mock the network boundary (MSW / `vi.mock`) — mocks and fixtures, not fakes. Browser E2E is Playwright across the project's browser matrix.
 
 ## CSS
 
@@ -83,8 +86,8 @@ Then execute that direction with precision across every detail below.
 
 ## Performance
 
-- **Cache expensive work:** Parsing, transforming, or filtering data in a render/update path must be memoized. If input hasn't changed, output must not be recomputed.
-- **Isolate re-renders:** List items should not re-render when unrelated parent state changes. Use framework memoization primitives on list item components.
+- **Cache expensive work:** parsing, transforming, or filtering in a render/update path must not recompute on unchanged input. In React with the Compiler enabled, the compiler does this — add `useMemo`/`memo` only where profiling shows it can't; elsewhere use the framework's memoization primitive.
+- **Isolate re-renders:** list items should not re-render when unrelated parent state changes — keep state local and keys stable; the same Compiler rule applies.
 - **Minimize dependency weight:** Import only what you use. Full library imports where tree-shaken alternatives exist waste bandwidth and parse time.
 - **Polling-safe:** If the view refreshes on an interval, child components must not redo expensive work when the underlying data hasn't changed.
 

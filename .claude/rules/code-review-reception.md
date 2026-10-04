@@ -8,7 +8,7 @@ Read it all → restate each item → verify against the code → respond → im
 | **Workflow reviews** (`/review-diff`, `spec-review`, Codex `changes-review` / companion) | `must_fix` / `should_fix` → fix; `suggestion` → if quick. No discussion. The invoking workflow's lane rules win (`spec-verify` fixes via a loop-back commit). |
 | **External** (CodeRabbit, PR reviewers) | Verify first: correct for *this* codebase? breaks something? a reason for the current code? conflicts with the user's decisions → discuss with the user first. |
 
-- **YAGNI:** a suggestion to add or "properly implement" something → search for real callers; none → push back ("unused — remove it?").
+- **Shape, not size:** judge a suggestion against the One Idea (`code-addition-checklist.md`), not line count. Moving code toward interface + `Kind` + config + DI + decorators, or onto a generator, is in scope; collapsing that shape back into a hard-coded concrete call is a regression — push back. A suggestion to keep a symbol nothing calls → search for real callers; none → "unused — remove it?".
 - **Order:** clarify → blocking (breaks, security) → simple → complex.
 - **Push back** with technical reasons when a suggestion is wrong, breaks things, lacks context, or conflicts with the user's decisions; if you were wrong, correct it factually and move on.
 - No performative agreement ("You're absolutely right!", "Great catch!") — state the fix: "Fixed. <what changed>".

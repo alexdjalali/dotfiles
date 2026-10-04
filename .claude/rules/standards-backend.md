@@ -29,7 +29,22 @@ paths:
 - **Query params:** Filtering (`?status=active`), sorting (`?sort=created_at`), pagination (`?page=2&limit=50`)
 - **Status codes:** `200` OK, `201` Created, `204` No Content | `400`/`401`/`403`/`404`/`409`/`422` | `500`/`503`
 - **Response structure:** `{ "data": {...} }` for success, `{ "error": { "code": "...", "message": "..." } }` for errors
-- **Validation:** At API boundary. Never expose internal errors (stack traces, DB errors).
+- **Validation:** at the API boundary, through one chokepoint; request/response DTOs generated from the contract (proto / OpenAPI) where the project has one. Never expose internal errors (stack traces, DB errors) — the error `code` maps to the status, the message is sanitized.
+- **Contract first:** the endpoint is defined in the contract, handlers and clients are generated from it, and a breaking-change check runs in CI.
+
+## Resilience
+
+- **Timeouts:** every external call has a chosen deadline, propagated through the context.
+- **Retry** only transient error codes, with exponential backoff + jitter and a cap; idempotent operations only (or with an idempotency key). Don't stack a retry over an SDK that already retries.
+- **Circuit breaker** per failure domain; **bulkhead** / concurrency limit per downstream; **rate limit** at the edge; graceful degradation when a dependency is down.
+- **Messaging:** transactional outbox for publish-after-write; consumers dedupe (idempotent handlers) and dead-letter after bounded retries.
+- All of the above are decorators applied at the composition root in the per-layer order (`CLAUDE.md` *Architecture*), never inlined in a handler or repository.
+
+## Observability
+
+- Structured JSON logs with request and trace IDs; no secrets or PII in logs.
+- RED metrics (rate, errors, duration) per endpoint and per downstream; OpenTelemetry spans across every boundary with trace context propagated.
+- `/healthz` (liveness) and `/readyz` (readiness, flips false before drain); graceful shutdown drains in-flight work within a deadline.
 
 ## Models
 
@@ -47,7 +62,7 @@ paths:
 - **⛔ SQL injection prevention:** NEVER concatenate user input. Always parameterized queries or ORM methods.
 - **N+1 prevention:** `joinedload` for one-to-one, `selectinload` for large collections
 - **Performance:** Select only required columns, filter in DB not app, avoid leading wildcards
-- **Timeouts:** Simple 1-2s, reports 10-30s, background 60s+
+- **Query timeouts:** Simple 1-2s, reports 10-30s, background 60s+
 - **Transactions:** For multiple related writes and read-then-write (`FOR UPDATE`)
 - **Integration-test against a real DB container** (testcontainers), never SQLite-for-Postgres or an in-memory substitute — SQL dialect, constraints, migrations, and transaction semantics do not survive the swap. See `testing.md` *Test Double Policy*.
 
@@ -64,7 +79,9 @@ paths:
 
 ## Checklist
 
-- [ ] REST principles, correct status codes
+- [ ] REST principles, correct status codes; contract updated and code regenerated
+- [ ] External calls: timeout, retry on transient codes only, breaker — via decorators
+- [ ] Logs, metrics, spans on new paths; health/readiness unaffected or extended
 - [ ] All user input parameterized
 - [ ] Models: timestamps, constraints, appropriate types
 - [ ] No N+1 queries, only required columns

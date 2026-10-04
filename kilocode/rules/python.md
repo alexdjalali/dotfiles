@@ -14,7 +14,13 @@
 - Logging: `structlog` (structured); HTTP: `httpx` (async-capable)
 - Async: `async def` + `await`; `asyncio.run()` only at boundaries
 - Imports: absolute only; no cross-package relative imports
-- Docstrings: one line for most functions; multi-line (Google style) only for complex logic; skip when the name is self-explanatory. Line length: follow the project's `pyproject.toml` (commonly 88–110).
+- Docstrings: one line unless the logic needs Google-style sections; every model/config field documented (`Field(description=...)` or attribute docstring). Line length: follow the project's `pyproject.toml` (commonly 88–110).
+- Errors carry a code: raise/`wrap` into the project's `AppError`; sanitize at the transport edge
+- Factory: `Kind` enum + frozen `Config` + `*_from_config(cfg) -> Protocol`, stub default, unknown kind raises, heavy deps imported lazily inside the branch
+- DI: one `deps.py` composition root per deployable; constructor injection; no module-level singletons or I/O at import
+- Decorators: logging / tracing / metrics / retry (transient only) / circuit breaker / timeout proxies applied in `deps.py`, never inlined
+- Config: `pydantic-settings` over layered YAML (base → env → secrets; env overrides), validated at startup; `os.environ` only in the config layer or entrypoints
+- Codegen: contract-derived code from the project's generator (e.g. `buf generate`), committed, never hand-edited, CI fails on drift
 - No `print()` in production; use structured logging
 - No bare `except:`
 
@@ -31,9 +37,9 @@
 ## Documentation Requirements
 
 - Module-level docstrings on all files (summary, coverage, structure)
-- Docstrings on public classes and non-obvious public functions (see Code Style for length)
+- Docstrings on every public class, function, and method (see Code Style for length)
 - Inline comments for non-obvious logic only
-- No issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or docstrings — they rot and couple code to an external tracker; keep that context in the commit/PR/tracker. Link only committed in-repo docs (under `docs/`), never gitignored or scratch paths
+- No issue-tracker IDs in comments; link only committed in-repo docs under `docs/`
 - Type hints on all public APIs (`basedpyright` strict compliance)
 
 ## Quality Gates (pre-commit hooks)

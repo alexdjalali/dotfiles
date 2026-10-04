@@ -29,6 +29,23 @@ sequenceDiagram
 are, what is config-selected (`Kind`/factory), what resiliency is built in, and
 what is deliberately deferred.>
 
+### Code generation
+
+<The contracts this design is derived from (proto / OpenAPI / schema / DI graph /
+templates), the generator that owns each, where output lands, and the drift check.
+"None" is a decision — say why the code can't be generated.>
+
+### Operability
+
+<Per external dependency: timeout, retry policy (transient codes only), circuit
+breaker / bulkhead, and the decorator order. The new error codes. The logs,
+metrics, and spans added; health/readiness; shutdown and drain. How it degrades.>
+
+### Configuration
+
+<The config slice each layer owns, the `Kind`s and their stub default, new fields
+with their fail-safe `base` values, and what lives in env overlays vs secrets.>
+
 ## State / data model
 
 ```

@@ -8,9 +8,9 @@ Core policy, always loaded. Writing or editing a test file also loads `testing-a
 
 1. **RED** — one minimal behavior test; mocks for external deps only.
 2. **VERIFY RED** — fails because the behavior is missing, not a syntax/import error; passes immediately → rewrite it.
-3. **GREEN** — simplest passing code; hardcoding is fine.
+3. **GREEN** — the least code that passes; a hard-coded value is fine for one cycle.
 4. **VERIFY GREEN** — affected tests pass, diagnostics clean. The full suite runs once, in the full gate.
-5. **REFACTOR** — stay green, no new behavior.
+5. **REFACTOR** — stay green, no new behavior; finish in the project's shape (`code-addition-checklist.md`) — no hard-coded value or concrete dependency survives the cycle.
 
 **Skip RED only for** docs, config, dep bumps, formatting — or a plan task's `Trivial:` claim naming its covering test/command: ≤ 5 net new production lines, no new branch/loop/try with a non-trivial body, no new public symbol, no new error path (audited at verify). **Bugfixes never qualify.** Code written first? Write the test now and prove it catches the regression.
 
@@ -23,7 +23,7 @@ A violation is a `must_fix`.
 | **Unit** | the code under test | a **mock** of the consumer-side interface for an *external* collaborator (HTTP, DB, cache, queue, object store, subprocess, clock, 3rd-party API) — generated or a small hand-written mock. Never mock an internal collaborator. |
 | **Integration** | code + the **real service** | none — the real dependency in a throwaway **testcontainers** container via a fixture, cleaned up in teardown |
 
-**Forbidden:** a hand-rolled fake / stub / in-memory client in any test; an in-memory lookalike for integration (SQLite-for-Postgres, fakeredis/miniredis, in-process queue, map-backed repository); mocking the dependency an integration test exists to exercise; an `integration/` test that mocks its dependency.
+**Forbidden:** a hand-rolled fake / stub / in-memory client in any test; an in-memory lookalike for integration (SQLite-for-Postgres, fakeredis/miniredis, in-process queue, map-backed repository); mocking the dependency an integration test exists to exercise; an `integration/` test that mocks its dependency. **Not a test double:** a factory's shipped stub/noop `Kind` (production code, selected by config) — a wiring test may build the composition root on stub kinds to prove the graph boots with zero I/O, but a behavior test still mocks the boundary.
 
 Unit tests mock HTTP, subprocess, file I/O, DB, and 3rd-party clients where imported, not where defined; a unit test > 1 s is likely unmocked I/O. When a function gains a dependency, update **all** its existing tests to mock it.
 

@@ -12,4 +12,4 @@ Load a deferred tool with `ToolSearch` (`"select:<name>"` or keywords) before ca
 | Concept, cross-cutting feature, "where is X configured" | `mcp__semble__search` (`mode` hybrid/semantic/bm25) |
 | Similar code / parallel implementations | `mcp__semble__find_related(file_path, line)` |
 
-**Others:** `context7` for library docs (`resolve-library-id` → `query-docs`, ≤ 3 calls) · `web-search` / `web-fetch` over built-in WebSearch/WebFetch · `grep-mcp` `searchGitHub` for real-world code examples.
+**Others:** `context7` for library docs (the claude.ai connector; `resolve-library-id` → `query-docs`, ≤ 3 calls) · `web-search` / `web-fetch` over built-in WebSearch/WebFetch · `grep-mcp` `searchGitHub` for real-world code examples.

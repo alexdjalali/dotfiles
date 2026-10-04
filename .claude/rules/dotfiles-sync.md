@@ -21,4 +21,4 @@ paths:
 | `code-review-reception` / `documentation-sync` | the same-named rule |
 | `go` / `python` / `typescript-react` | `rules/standards-golang.md` / `standards-python.md` / `standards-typescript.md` + `standards-frontend.md` |
 
-Not mirrored: `task-and-workflow`, `mcp-servers`, `linear`, `browser-automation`, `standards-backend`, `dotfiles-sync`, and all skills/agents.
+Not mirrored: `task-and-workflow`, `communication`, `mcp-servers`, `linear`, `browser-automation`, `standards-backend`, `dotfiles-sync`, and all skills/agents.

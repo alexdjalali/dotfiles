@@ -63,16 +63,35 @@ src/
 
 ## Checklist
 
-### Coding Patterns (apply where appropriate)
+### Architecture — the One Idea (behind an interface, selected by config, injected explicitly, wrapped by decorators)
 
-- [ ] **Fluent Interface** — method chaining for readable configuration/setup
-- [ ] **Builder Pattern** — complex object construction
-- [ ] **DRY** — no duplicated logic; extract shared utilities
-- [ ] **Decorator Pattern** — wrap behavior (retry, circuit breaker, logging)
-- [ ] **Strategy Pattern** — interchangeable algorithms (e.g., error classifiers)
-- [ ] **Observer Pattern** — event-driven notifications (e.g., metrics, logging hooks)
-- [ ] **Singleton Pattern** — single instance resources (e.g., DB connections, model instances)
-- [ ] **Facade Pattern** — simplified interface over complex subsystems
+- [ ] **Core interface** — the contract lives in the dependency-free core; consumers depend on it (accept interfaces, return structs)
+- [ ] **Factory** — `Kind` + frozen `Config` + `*_from_config` / `NewFromConfig` returns the interface; default kind is a stub/noop; an unknown kind fails loudly; each backend in its own package, heavy deps lazy-imported
+- [ ] **Dependency injection** — constructor injection only, wired at the composition root (Go: Wire provider set → generated `wire_gen.go`; Python: `deps.py`); no I/O during construction; no globals, singletons, or service locators — lifetimes are owned by the root, torn down in reverse order
+- [ ] **Stub-first** — the whole graph builds against stubs with zero I/O
+- [ ] **Decorators** — timeout, retry (backoff + jitter, transient only), circuit breaker, tracing, metrics, logging wrap the interface at the composition root in the per-layer order; never inlined in a backend
+- [ ] **Coded errors** — every error wraps with a code (transient/permanent and transport status derive from it); sanitized at the transport edge
+- [ ] **Patterns over helpers** — Strategy / Adapter / Repository / Pipeline stage; DRY = push logic down into the shared library, inject product strategy up
+
+### Config
+
+- [ ] New settings live in the owning layer's typed config slice, validated before startup
+- [ ] Layered: fail-safe `base` default (selects stubs, no account IDs) → env overlay → gitignored secrets; env vars override YAML
+- [ ] No env/config reads outside the config layer or entrypoints
+- [ ] Every field documented (description / doc comment); config reference docs regenerated if the project generates them
+
+### Code Generation
+
+- [ ] Contract-derived code (proto, OpenAPI, schema, DI graph, mocks, enums) changed at its source and regenerated via the project CLI — no hand edits to generated files
+- [ ] Generated output committed; drift check passes
+- [ ] A repeated shape is a scaffold/template, not copy-paste
+
+### Observability & Resilience
+
+- [ ] Every external call has a chosen timeout
+- [ ] Structured logs (context-carrying, trace-correlated), metrics, and spans on the new paths
+- [ ] Health/readiness and graceful shutdown cover any new long-lived resource
+- [ ] Failure modes named (idempotency, DLQ, degradation) where the story crosses a network or queue
 
 ### Testing Requirements
 
@@ -86,7 +105,7 @@ src/
 ### Documentation Requirements
 
 - [ ] Module/package-level documentation on all files
-- [ ] Public API documentation on classes, methods, and functions
+- [ ] Every symbol documented — types, functions, methods, struct fields / attributes, enum values (trivially obvious fields exempt)
 - [ ] Inline comments for non-obvious logic only
 - [ ] Type annotations on all public APIs
 - [ ] Architecture diagram updated (if structural change)

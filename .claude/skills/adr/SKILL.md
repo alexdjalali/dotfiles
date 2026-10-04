@@ -31,6 +31,7 @@ Every transition preserves the original decision text, extends the `Status histo
 - Only an explicit `/adr accept` makes an ADR binding.
 - NEVER delete a rejected or superseded ADR — transition its status and keep the history.
 - An ADR records a decision, not a to-do list.
+- Prose follows `~/.claude/templates/prose-style.md`; run its self-check before writing the file.
 
 ## Next Step
 

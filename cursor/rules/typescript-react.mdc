@@ -22,7 +22,10 @@ alwaysApply: false
 - State: prefer `useReducer` for complex state; `useState` for simple values
 - Effects: always specify dependency arrays; clean up subscriptions/listeners
 - React 19 + **React Compiler** handles memoization — don't scatter `useMemo`/`useCallback`; add manually only where profiling shows the compiler can't help
-- Component files: one exported component per file; colocate styles and tests
+- Component files: one `export default function` per PascalCase file; colocated `*.test.tsx`; one-line `/** Name — … */` doc
+- Feature-first layout: `components/ui` primitives, `components/shared` composites, `features/<domain>` behind a barrel `index.ts`, `layout/` shell; import via `@/*`, no deep `../../`
+- Data via the query layer (e.g. TanStack Query) — no raw `fetch` in components; mutations invalidate their keys; API clients/types generated from the backend contract, never hand-edited
+- User-visible strings through `t()` (i18n)
 - Error boundaries for failure isolation at route/feature level
 
 ## Tailwind CSS
@@ -52,11 +55,12 @@ alwaysApply: false
 
 ## Documentation Requirements
 
-- JSDoc on all public functions, types, and exported modules
+- JSDoc on every export
+- Services/shared packages: contract `interface` + `kind`/`Config`/`fromConfig` factory with a stub default and exhaustive `switch`; constructor injection at one composition root; config validated once; env read only in the config module; errors carry a `code`
 - TSDoc for library packages (`@param`, `@returns`, `@example`)
 - Inline comments for non-obvious logic only
 - No comments that restate the code
-- No issue-tracker ticket IDs (Linear/Jira/GitHub issue numbers) in comments or JSDoc — they rot and couple code to an external tracker; keep that context in the commit/PR/tracker. Link only committed in-repo docs (under `docs/`), never gitignored or scratch paths
+- No issue-tracker IDs in comments; link only committed in-repo docs under `docs/`
 
 ## Quality Gates
 

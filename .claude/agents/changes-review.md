@@ -2,7 +2,7 @@
 name: changes-review
 description: Changes review agent that verifies plan compliance, code quality, and goal achievement in a single pass. Returns structured JSON findings.
 tools: Read, Grep, Glob, Write, Bash(git diff:*), Bash(git log:*)
-model: claude-sonnet-5
+model: claude-sonnet-5-5
 background: true
 ---
 
@@ -68,7 +68,11 @@ Focus on issues hooks CANNOT catch. Review the diff for:
   - Two or more tests asserting the same observable behaviour through different internal paths → **should_fix**
   - Test class structure that mirrors a recently-refactored production-class structure (test moved purely because the code moved, not because behaviour changed) → **suggestion**
   - Task declares `Trivial:` but does not name an existing covering test/verification command, OR the diff shows >5 net new lines of production code, OR introduces a new branch (`if`/`else`/`match`/`try`/`for` with a non-trivial body), OR adds a new public method/function, OR adds a new error path → **must_fix** (the implementer must remove the `Trivial:` field and write a real RED test)
-- **Error handling:** bare except, swallowed errors → **should_fix**
+- **Error handling:** bare except, swallowed errors → **should_fix**; a code-less error where the project has coded errors (Go `Wrap(err, code, msg)`, Python `AppError`), or internal detail leaked past the transport edge → **should_fix**
+- **One-Idea shape (per `~/.claude/templates/code-addition-checklist.md`):** a swappable component bound to a concrete type instead of a core interface, impl chosen by `if`/import instead of a `Kind` + `Config` + factory, a factory with no stub/noop default or that silently falls back on an unknown kind, construction or I/O outside the composition root, a global/singleton/service locator → **should_fix**
+- **Resilience & observability:** an external call with no timeout, retry/circuit-breaker/logging/tracing inlined in a backend instead of a decorator applied at the composition root, retry on a permanent error → **should_fix**; a new failure branch that neither logs, counts, nor returns a coded error → **should_fix**
+- **Config:** env/config read outside the config layer or entrypoints, a new field with no fail-safe `base` default or no doc, a hard-coded value that belongs in config → **should_fix**
+- **Codegen:** a generated file (`Code generated … DO NOT EDIT.` header or the project's generated paths) changed without its source, or a source (proto, schema, `wire.go`, template) changed without regenerated output → **must_fix**; hand-written code a project generator already produces → **should_fix**
 - **Consistency & DRY:** change diverges from an established repo pattern / naming / error-handling idiom, or duplicates an existing helper instead of reusing it (cite the `file:line` it diverges from or duplicates) → **should_fix**
 - **Docs sync:** a code change whose symbol or behavior is referenced by an inline comment, docstring, README, or architecture doc — directly or indirectly (via a caller) — that was NOT updated in the same change → **should_fix**
 
@@ -77,7 +81,7 @@ Focus on issues hooks CANNOT catch. Review the diff for:
 Verify the plan's Goal Verification truths against actual code:
 
 - For each truth, confirm evidence exists in the diff or via targeted Grep
-- For each artifact, confirm it exists and is non-stub (check for `pass`, `return None`, `NotImplementedError`, empty renders)
+- For each artifact, confirm it exists and is non-stub — a factory's declared stub/noop *kind* is a legitimate artifact, a stub standing in for the requested behavior is not (check for `pass`, `return None`, `NotImplementedError`, empty renders)
 - Status: **verified** (evidence found), **failed** (missing/stub), **uncertain** (can't confirm statically)
 - **goal_score**: `achieved` = all verified, `partial` = some failed, `not_achieved` = majority failed
 

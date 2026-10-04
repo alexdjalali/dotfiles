@@ -25,7 +25,7 @@ NEVER mark a bugfix VERIFIED without it. Revert the fix (not the test) with Edit
 
 ## Phase 3 — Full gate (once)
 
-The tree must be clean (a project gate may check it): `git status --short` shows nothing but the gitignored plan. Unrelated files the user chose to keep at the start → the gate may fail its clean-tree check; ask the user to commit or stash them (never do it yourself), then run. Run the full gate (CLAUDE.md *Quality Gates*) at HEAD — skip if `Full gate:` already records HEAD. Green → `Full gate: green @ <sha>`. Red → fix tasks, loop back; the fix commit is reviewed as `<Reviewed>...HEAD`, then the gate re-runs once. Flag any production file over 800 lines.
+The tree must be clean (a project gate may check it): `git status --short` shows nothing but the gitignored plan. Unrelated files the user chose to keep at the start → the gate may fail its clean-tree check; ask the user to commit or stash them (never do it yourself), then run. Run the full gate (CLAUDE.md *Quality Gates*) at HEAD — skip if `Full gate:` already records HEAD. Green → `Full gate: green @ <sha>`. Red → fix tasks, loop back; the fix commit is reviewed as `<Reviewed>...HEAD`, then the gate re-runs once. Flag any production file over 800 lines (generated files exempt).
 
 ## Phase 4 — Execute (once, at the final HEAD)
 

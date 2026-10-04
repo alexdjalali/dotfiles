@@ -1,6 +1,6 @@
 ---
 name: rfp
-model: claude-opus-4-8
+model: claude-opus-5-5
 effort: high
 description: Decompose an epic into independently testable stories (docs/spec/epics/ + docs/spec/stories/), or report per-epic story progress with `status`. Use when an epic needs breaking into implementable stories.
 argument-hint: "[status | <epic name or file>]"
@@ -27,7 +27,7 @@ Scan `docs/spec/epics/` and `docs/spec/stories/`; per epic, count stories by `**
    - **fits one commit** — `/spec` makes exactly one commit per story, so each story leaves the tree green on its own and is small enough to review as a unit (≤ 12 plan tasks);
    - answers the **code-addition checklist** (`~/.claude/templates/code-addition-checklist.md`), so the *how* is scoped, not just the *what*;
    - **creates new files → includes a Proposed Repository Structure** (the story template's section): a tree of new/changed paths consistent with the current layout (inspect it first — `codegraph_files` / `ls`). NEVER finalize a story whose layout deviates from the current structure without the user's confirmation.
-3. Write each story to `docs/spec/stories/<N>.<M>-<slug>.md` from `~/.claude/templates/story.md` — numbered from the epic (epic 5 → 5.1, 5.2, …), titled with a verb phrase ("Add user authentication", not "User authentication").
+3. Write each story to `docs/spec/stories/<N>.<M>-<slug>.md` from `~/.claude/templates/story.md` — numbered from the epic (epic 5 → 5.1, 5.2, …), titled with a verb phrase ("Add user authentication", not "User authentication"). Prose follows `~/.claude/templates/prose-style.md`.
 4. Update the epic's stories table with relative links and status `Todo`.
 
 ## Next Step

@@ -25,11 +25,16 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 
 ## Architecture
 
-- Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code.
-- DI at the composition root; repository pattern; separate persistence models, domain entities, DTOs; early returns.
-- **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + `Config` + `*_from_config`, failing loudly on an unknown kind); cross-cutting concerns as decorators.
-- Read configuration in one place. Monorepo layout: `~/.claude/templates/repo.md` (infrastructure in `zarf/`; Go `pkg/` + `apps/`, Python `src/` + `entrypoints/`, TS `packages/` + `apps/`).
+**The One Idea:** everything is an implementation detail behind an interface, selected by configuration, injected explicitly, and wrapped by decorators. General by default.
+
+- **Generate > generalize > hand-write.** Contract-derived code (proto, OpenAPI, schema, DI graph, mocks) comes from the project's generator via its CLI; output committed, never hand-edited, CI fails on drift. A repeated shape becomes a template.
+- Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code. DRY = push logic down, inject product strategy up.
+- **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + frozen `Config` + `*_from_config` / `NewFromConfig`) that returns the interface, defaults to a stub/noop, and fails loudly on an unknown kind.
+- **DI:** constructor injection at one composition root per deployable (Go Wire, Python `deps.py`); no I/O during construction, no globals/singletons. Repository pattern; separate persistence models, domain entities, DTOs; early returns.
+- **Decorators** carry resilience and observability, applied at the composition root in a per-layer order (e.g. client: bulkhead → retry → circuit breaker → timeout → tracing → metrics → logging). Every external call has a timeout; retry only transient errors with backoff + jitter.
+- **Errors carry a code;** sanitize at the transport edge. **Observability:** structured, trace-correlated logs, metrics, traces, health/readiness, graceful shutdown.
+- **Config:** layered YAML (fail-safe `base` → env overlay → gitignored secrets), env overrides; typed, validated, documented; read in one place. Monorepo layout: `~/.claude/templates/repo.md` (infrastructure in `zarf/`; Go `pkg/` + `apps/`, Python `src/` + `entrypoints/`, TS `packages/` + `apps/`).
 
 ## Anti-Patterns
 
-Files > 800 lines, functions > 50, nesting > 4 · hardcoded secrets/URLs/config · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior · fakes / in-memory substitutes for real dependencies.
+Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · hand-edited generated code · globals/singletons · inlined retry/logging · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior · fakes / in-memory substitutes for real dependencies.

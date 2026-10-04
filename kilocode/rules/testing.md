@@ -4,13 +4,13 @@ A repo's own testing rule overrides this — the only way to loosen the test-dou
 
 ### TDD
 
-Failing test before production code (new behavior, endpoints): RED (one behavior test) → VERIFY RED (fails because the behavior is missing, not a syntax error) → GREEN (simplest code) → VERIFY GREEN (affected tests; the full suite runs once in the full gate) → REFACTOR. **Bug fixes are the exception:** reproduce, root-cause, fix, then write the reproducing test at the end and revert-prove it (fails with the fix reverted, passes re-applied). Skip RED only for docs, config, dep bumps, formatting, or a trivial change (≤ 5 production lines, no new branch, public symbol, or error path) naming its covering test — never for bugfixes.
+Failing test before production code (new behavior, endpoints): RED (one behavior test) → VERIFY RED (fails because the behavior is missing, not a syntax error) → GREEN (least code that passes) → VERIFY GREEN (affected tests; the full suite runs once in the full gate) → REFACTOR (into the project's shape — no hard-coded value or concrete dependency survives). **Bug fixes are the exception:** reproduce, root-cause, fix, then write the reproducing test at the end and revert-prove it (fails with the fix reverted, passes re-applied). Skip RED only for docs, config, dep bumps, formatting, or a trivial change (≤ 5 production lines, no new branch, public symbol, or error path) naming its covering test — never for bugfixes.
 
 ### Test doubles — two tiers (a violation is must-fix)
 
 - **Unit:** mock only *external* collaborators (HTTP, DB, cache, queue, object store, subprocess, clock, 3rd-party API) via a consumer-side interface mock. Never mock internal collaborators.
 - **Integration:** the real service in a throwaway **testcontainers** container via a fixture, cleaned up in teardown — Go `//go:build integration`, Python `@pytest.mark.integration`, TS a separate suite.
-- **Forbidden:** hand-rolled fakes / stubs / in-memory clients; in-memory lookalikes (SQLite-for-Postgres, fakeredis, in-process queues); mocking the dependency an integration test exists to exercise.
+- **Forbidden:** hand-rolled fakes / stubs / in-memory clients; in-memory lookalikes (SQLite-for-Postgres, fakeredis, in-process queues); mocking the dependency an integration test exists to exercise. A factory's shipped stub/noop `Kind` is production code, not a test double — a wiring test may boot the graph on it; behavior tests still mock the boundary.
 - A function gains a dependency → update all its tests to mock it. A unit test > 1 s is likely unmocked I/O.
 
 ### Writing tests

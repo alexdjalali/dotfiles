@@ -32,10 +32,16 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 
 ## Architecture
 
-- Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code.
-- DI at the composition root; repository pattern for data access; separate persistence models, domain entities, DTOs; early returns.
-- **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + `Config` + `*_from_config`, failing loudly on an unknown kind); cross-cutting concerns as decorators.
-- Read configuration in one place (config layer / composition root).
+**The One Idea:** everything is an implementation detail behind an interface, selected by configuration, injected explicitly, and wrapped by decorators. General by default; the checklist is `~/.claude/templates/code-addition-checklist.md`.
+
+- **Generate > generalize > hand-write.** Code derived from a contract (proto, OpenAPI, schema, DI graph, mocks) comes from the project's generator via its CLI; output is committed, never hand-edited, and CI fails on drift. A repeated shape becomes a template/scaffold.
+- Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code. DRY = push logic down into the shared library, inject product strategy up.
+- **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + frozen `Config` + `*_from_config` / `NewFromConfig`) that returns the interface, defaults to a stub/noop so the graph boots with zero infra, and fails loudly on an unknown kind.
+- **DI:** constructor injection, wired at one composition root per deployable (Go: Wire; Python: `deps.py`); no I/O during construction, no globals/singletons, teardown in reverse order. Repository pattern for data; separate persistence models, domain entities, DTOs; early returns.
+- **Decorators** carry resilience and observability, applied at the composition root, never inside a backend. Order, outermost first — Controller: tracing → metrics → logging → recovery → rate limit → auth → validation · Service: validation → retry → tracing → metrics → logging · Repository: caching → retry → circuit breaker → timeout → tracing → metrics → logging · Client: bulkhead → retry → circuit breaker → timeout → tracing → metrics → logging. Every external call has a chosen timeout; retry only transient errors, with backoff + jitter; don't double-wrap an SDK that already retries.
+- **Errors carry a code;** transient/permanent and transport status derive from it; sanitize at the transport edge.
+- **Config:** layered YAML (`base` fail-safe, selects stubs → env overlay → gitignored secrets), env vars override; each layer owns a typed, validated, documented slice; read only in the config layer / composition root.
+- **Observability:** structured logs through a logger interface with trace correlation, metrics, traces; health + readiness (flips before drain); graceful shutdown.
 - Monorepo layout: `~/.claude/templates/repo.md`.
 
 ## Compact instructions
@@ -44,6 +50,6 @@ When compacting, keep verbatim: the active plan path and its header (`Type`, `St
 
 ## Anti-Patterns
 
-Files > 800 lines, functions > 50, nesting > 4 · hardcoded secrets/URLs/config · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior.
+Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · config/env read outside the config layer · hand-edited generated code · globals/singletons/service locators · impl selected by `if`/import instead of a `Kind` factory · retry/logging/tracing inlined instead of a decorator · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior.
 
 @RTK.md

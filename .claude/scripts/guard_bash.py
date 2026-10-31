@@ -405,13 +405,18 @@ def current_branch(cwd: str, git_opts: list[str]) -> str:
     return result.stdout.strip() if result.returncode == 0 else ""
 
 
-def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
-    refspecs = positionals(args, PUSH_OPTS_WITH_VALUE)[1:]
-    force = (
+def forced(args: list[str], refspecs: list[str]) -> bool:
+    """Whether a push forces: -f / --force, --force-with-lease, or a +refspec."""
+    return (
         any(r.startswith("+") for r in refspecs)
         or has_flag(args, "f", "--force")
         or uses_flag(args, "--force-with-lease")
     )
+
+
+def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
+    refspecs = positionals(args, PUSH_OPTS_WITH_VALUE)[1:]
+    force = forced(args, refspecs)
     delete = has_flag(args, "d", "--delete")
     if uses_flag(args, "--mirror"):
         raise Blocked("git push --mirror rewrites and deletes remote branches")
@@ -543,7 +548,7 @@ def backstop(code: str, cwd: str) -> None:
             if "push" in rest and (
                 uses_flag(rest, "--mirror")
                 or (
-                    has_flag(rest, "f", "--force")
+                    forced(rest, [w for w in rest if not w.startswith("-")])
                     and (
                         push_targets & PROTECTED_BRANCHES
                         or uses_flag(rest, "--all")

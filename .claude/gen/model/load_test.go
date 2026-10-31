@@ -135,8 +135,8 @@ func TestLoadRejectsUnknownSkillKey(t *testing.T) {
 //     or skill stub must load as empty, like a missing one.
 //
 // What it tests:
-//   - Load succeeds with empty gen.yaml and skills/x.yaml: no targets, one
-//     skill with no fields set.
+//   - Load succeeds with empty gen.yaml and skills/x.yaml: no targets, and
+//     one skill built from x.yaml whose YAML fields are all unset.
 func TestLoadEmptyFilesLoadAsEmpty(t *testing.T) {
 	root := t.TempDir()
 	writeFile(t, root, ".claude/src/gen.yaml", "")
@@ -145,7 +145,7 @@ func TestLoadEmptyFilesLoadAsEmpty(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(m.Gen.Targets) != 0 || len(m.Skills) != 1 || m.Skills[0].File != "x" {
+	if len(m.Gen.Targets) != 0 || len(m.Skills) != 1 || m.Skills[0].File != "x" || m.Skills[0].Name != "" {
 		t.Fatalf("model = %+v", m)
 	}
 }

@@ -145,7 +145,7 @@ func TestLoadEmptyFilesLoadAsEmpty(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(m.Gen.Targets) != 0 || len(m.Skills) != 1 || m.Skills[0].Name != "" {
+	if len(m.Gen.Targets) != 0 || len(m.Skills) != 1 || m.Skills[0].File != "x" {
 		t.Fatalf("model = %+v", m)
 	}
 }

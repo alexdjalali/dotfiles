@@ -543,10 +543,15 @@ def backstop(code: str, cwd: str) -> None:
             if "push" in rest and (
                 uses_flag(rest, "--mirror")
                 or (
-                    has_flag(rest, "f", "--force") and push_targets & PROTECTED_BRANCHES
+                    has_flag(rest, "f", "--force")
+                    and (
+                        push_targets & PROTECTED_BRANCHES
+                        or uses_flag(rest, "--all")
+                        or uses_flag(rest, "--branches")
+                    )
                 )
             ):
-                raise Blocked("force-push to main/master (backstop)")
+                raise Blocked("force-push to main/master or every branch (backstop)")
             if "clean" in rest and has_flag(rest, "f", "--force"):
                 raise Blocked("git clean -f deletes untracked files (backstop)")
             after = rest[rest.index("checkout") + 1 :] if "checkout" in rest else []

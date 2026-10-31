@@ -277,3 +277,24 @@ func TestNextEdgeMustExist(t *testing.T) {
 		t.Fatalf("errors = %v", fields(errs))
 	}
 }
+
+// TestMirrorRuleNeedsSummary tests the summary requirement for mirrors.
+//
+// Why this test is important:
+//   - Mirrors render a rule's summary; a missing one renders an empty
+//     sentence into Cursor and Kilocode.
+//
+// What it tests:
+//   - A rule targeting cursor/go without summary reports /0/summary naming
+//     the rule and the mirror; a claude-md-only rule needs none.
+func TestMirrorRuleNeedsSummary(t *testing.T) {
+	mirrored, local := validRule("a"), validRule("b")
+	mirrored.Targets = []string{"claude-md", "cursor/go"}
+	errs := model.Validate(&model.Model{Rules: []model.Rule{mirrored, local}})
+	if !hasField(errs, "rules.yaml", "/0/summary") || hasField(errs, "rules.yaml", "/1/summary") {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+	if want := `rule "a" targets cursor/go but has no summary`; !strings.Contains(errs[0].Message, want) {
+		t.Fatalf("message = %q, want %q", errs[0].Message, want)
+	}
+}

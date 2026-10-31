@@ -12,19 +12,23 @@ import (
 // bound to m:
 //
 //	rule ID        the rule's statement
+//	summary ID     the rule's condensed summary, for mirrors
 //	rules TARGET   "- statement" lines for every rule listing TARGET, catalog order
 //	lenses GROUP   rules listing GROUP-lenses, as bullets grouped by category
 //	model ROLE     "model (effort)" or "model" for a models.yaml role
 //	next SKILL     "- `/name` — summary" lines for the skill's next edges
 //	indent N TEXT  TEXT with N spaces before every line (use in a pipeline)
+//	mirror NAME    the Cursor rule NAME's body: frontmatter and trailing newlines stripped
 func FuncMap(m *model.Model) template.FuncMap {
 	return template.FuncMap{
-		"rule":   func(id string) (string, error) { return ruleStatement(m, id) },
-		"rules":  func(target string) string { return ruleList(m, target) },
-		"lenses": func(group string) string { return lensList(m, group+"-lenses") },
-		"model":  func(role string) (string, error) { return roleModel(m, role) },
-		"next":   func(skill string) (string, error) { return nextList(m, skill) },
-		"indent": indent,
+		"rule":    func(id string) (string, error) { return ruleStatement(m, id) },
+		"summary": func(id string) (string, error) { return ruleSummary(m, id) },
+		"rules":   func(target string) string { return ruleList(m, target) },
+		"lenses":  func(group string) string { return lensList(m, group+"-lenses") },
+		"model":   func(role string) (string, error) { return roleModel(m, role) },
+		"next":    func(skill string) (string, error) { return nextList(m, skill) },
+		"indent":  indent,
+		"mirror":  func(name string) (string, error) { return mirrorBody(m, name) },
 	}
 }
 
@@ -36,6 +40,17 @@ func ruleStatement(m *model.Model, id string) (string, error) {
 		}
 	}
 	return "", model.New(model.CodeInvalidModel, fmt.Sprintf("unknown rule %q", id))
+}
+
+// ruleSummary returns the summary of the rule with id; a rule without one is
+// an error, since a mirror would render an empty sentence.
+func ruleSummary(m *model.Model, id string) (string, error) {
+	for _, r := range m.Rules {
+		if r.ID == id && r.Summary != "" {
+			return r.Summary, nil
+		}
+	}
+	return "", model.New(model.CodeInvalidModel, fmt.Sprintf("rule %q has no summary", id))
 }
 
 // rulesFor returns the rules whose targets include target, in catalog order.
@@ -121,4 +136,14 @@ func nextList(m *model.Model, name string) (string, error) {
 func indent(n int, text string) string {
 	pad := strings.Repeat(" ", n)
 	return pad + strings.ReplaceAll(text, "\n", "\n"+pad)
+}
+
+// mirrorBody renders the Cursor template name and strips its frontmatter and
+// trailing newlines, so other targets compose it without a second copy.
+func mirrorBody(m *model.Model, name string) (string, error) {
+	body, err := execFile(m, srcPath(m, "mirrors/cursor/"+name+".mdc.tmpl"), m)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimRight(string(stripFrontmatter(body)), "\n"), nil
 }

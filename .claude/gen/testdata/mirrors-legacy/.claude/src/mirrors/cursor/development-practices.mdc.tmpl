@@ -1,0 +1,24 @@
+---
+description: "Development practices — change discipline, debugging, git safety"
+alwaysApply: true
+---
+
+## Development Practices
+
+### Changes
+
+- Ambiguous request → state assumptions and ask before coding.
+- **Lineage test:** every changed line traces to the request. The interface, factory, config, decorators, tests, and docs that put the requested behavior in the project's shape are the request, not scope creep; unrelated refactors are. Remove what your change orphaned; mention, don't delete, pre-existing dead code.
+- **Least hand-maintained code:** generate > generalize > hand-write. Derive code from a contract with the project's generator; otherwise build the general shape (interface + `Kind` + config + DI + decorators) once and configure it. Shorter is better within that shape.
+- **Generated code:** never hand-edit — change the source and regenerate through the project's CLI; commit the output; CI fails on drift.
+- **Never invent values** (paths, env vars, keys, IDs, URLs, ports, versions, unverified APIs) — confirm by reading, running, or asking.
+- Before modifying a shared function, find all its callers. Prefer a tool's CLI over hand-rolling its behavior.
+- Hot paths cache/memoize. Formatters own style. Backward compatibility only when required.
+
+### Debugging
+
+No fix without a root cause. Reproduce it; read the whole error; check recent changes; trace data flow from symptom to source; compare with working code; instrument boundaries. State one falsifiable hypothesis and test it one variable at a time. **3+ failed fixes = wrong approach — stop.** Revert-first when a change breaks things. Replace sleeps with condition polling (timeout + clear error). After fixing, validate at each layer the bad data passed through. Prove the fix: revert it, the test fails; re-apply, it passes.
+
+### Git — writes need explicit permission
+
+Read freely. `add`, `commit`, `push`, `pull`, `merge`, `rebase`, `reset`, `stash`, `checkout` only when asked. Never discard unstaged work, never `add -f`, never selectively unstage, never force-push main/master, never create or switch branches unless asked now; push new branches with `-u`. Never bypass hooks (`--no-verify`) — fix, re-stage, retry.

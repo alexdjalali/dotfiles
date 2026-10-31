@@ -46,6 +46,7 @@ func Validate(m *Model) []Error {
 	errs = append(errs, checkSchema("rules.json", "rules.yaml", m.Rules)...)
 	errs = append(errs, checkRuleIDs(m.Rules)...)
 	errs = append(errs, checkEmphasis(m.Rules)...)
+	errs = append(errs, checkMirrorSummaries(m.Rules)...)
 	for _, sk := range m.Skills {
 		errs = append(errs, checkSkill(m, sk)...)
 	}
@@ -66,6 +67,38 @@ func checkEmphasis(rules []Rule) []Error {
 		}
 	}
 	return errs
+}
+
+// mirrorPrefixes are the target prefixes that render a rule's summary.
+var mirrorPrefixes = []string{"cursor/"}
+
+// checkMirrorSummaries reports rules that target a mirror without a summary:
+// mirrors render the condensed summary, not the statement.
+func checkMirrorSummaries(rules []Rule) []Error {
+	var errs []Error
+	for i, r := range rules {
+		if r.Summary != "" {
+			continue
+		}
+		for _, t := range r.Targets {
+			if mirrorTarget(t) {
+				msg := fmt.Sprintf("rule %q targets %s but has no summary", r.ID, t)
+				errs = append(errs, Error{"rules.yaml", fmt.Sprintf("/%d/summary", i), msg})
+				break
+			}
+		}
+	}
+	return errs
+}
+
+// mirrorTarget reports whether target names a mirror file.
+func mirrorTarget(target string) bool {
+	for _, p := range mirrorPrefixes {
+		if strings.HasPrefix(target, p) {
+			return true
+		}
+	}
+	return false
 }
 
 // descriptionBudget is the skill-listing cap on description + when_to_use.

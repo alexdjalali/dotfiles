@@ -41,7 +41,9 @@ func (SkillsTarget) Render(m *model.Model) ([]File, error) {
 		buf.Write(front)
 		buf.WriteString("---\n\n")
 		for _, cmd := range sk.Inject {
-			buf.WriteString("!`" + cmd + "`\n")
+			buf.WriteString("!`")
+			buf.WriteString(cmd)
+			buf.WriteString("`\n")
 		}
 		if len(sk.Inject) > 0 {
 			buf.WriteString("\n")

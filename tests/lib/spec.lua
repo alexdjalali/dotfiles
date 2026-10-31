@@ -5,6 +5,13 @@
 -- with `finish()`, which prints a summary and exits non-zero on any failure.
 local M = { passed = 0, failed = 0 }
 
+-- A headless spec cannot answer a prompt, and one that waits hangs the whole
+-- suite (kulala.nvim asks for a license token when an HTTP buffer opens), so
+-- every prompt raises instead.
+for _, name in ipairs({ "input", "inputsecret", "inputlist", "confirm" }) do
+  vim.fn[name] = function() error(("spec: interactive prompt (vim.fn.%s)"):format(name), 2) end
+end
+
 --- Fire the UI-start event a headless instance never receives, so lazy.nvim's
 --- VeryLazy plugins load exactly as they do in an interactive session.
 function M.boot()

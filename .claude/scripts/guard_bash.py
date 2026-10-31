@@ -416,8 +416,8 @@ def forced(args: list[str], refspecs: list[str]) -> bool:
 
 def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
     """Block --mirror, forced --all/--branches, and force-pushes or deletes of
-    main/master, a wildcard destination, or a branch that cannot be resolved
-    (a branchless push counts as the checked-out branch)."""
+    main/master or a wildcard destination; a push naming no branch counts as
+    the checked-out branch, and is blocked when that cannot be determined."""
     refspecs = positionals(args, PUSH_OPTS_WITH_VALUE)[1:]
     force = forced(args, refspecs)
     delete = has_flag(args, "d", "--delete")

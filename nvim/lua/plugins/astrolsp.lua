@@ -11,6 +11,9 @@ return {
     },
     formatting = {
       format_on_save = { enabled = true },
+      -- One formatter per filetype: none-ls runs prettier (JSON, CSS, HTML) and
+      -- shfmt (shell), so these servers' own formatters stay off.
+      disabled = { "jsonls", "cssls", "html", "bashls" },
       timeout_ms = 1000,
     },
     ---@diagnostic disable: missing-fields
@@ -19,9 +22,9 @@ return {
       -- exists so live diagnostics use the version the repo pins, not the global
       -- Mason copy. Falls back to whatever `ruff` is on PATH outside a venv.
       ruff = {
-        cmd = function(dispatchers)
+        cmd = function(dispatchers, config)
           local exe = "ruff"
-          local root = vim.fs.root(0, { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" })
+          local root = config.root_dir or vim.fs.root(0, { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" })
           if root then
             local local_ruff = root .. "/.venv/bin/ruff"
             if vim.fn.executable(local_ruff) == 1 then exe = local_ruff end

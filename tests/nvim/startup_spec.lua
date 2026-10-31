@@ -30,19 +30,20 @@ end)
 --     macOS SIGKILL every new session that loaded them (then on VeryLazy).
 -- What it tests:
 --   - After VeryLazy and an explicit avante load, every native module the
---     build produced (lua/*.so) is loaded and nvim keeps running for 3 s. A kill ends the process, which the
---     runner reports as a failure.
+--     build produced (lua/*.so) loads (avante requires some, e.g. avante_acp,
+--     only on first use, so the spec requires each one) and nvim keeps running
+--     for 3 s. A kill ends the process, which the runner reports as a failure.
 spec.it("survives loading avante's native modules", function()
   spec.eq(true, vim.g.did_very_lazy, "VeryLazy should have fired")
   require("lazy").load({ plugins = { "avante.nvim" } })
-  vim.wait(3000, function() return false end, 50)
   local dir = require("lazy.core.config").plugins["avante.nvim"].dir
   local built, unloaded = vim.fn.glob(dir .. "/lua/*.so", false, true), {}
   spec.eq(true, #built > 0, "avante's build should have produced native modules")
   for _, so in ipairs(built) do
     local name = vim.fn.fnamemodify(so, ":t:r")
-    if not package.loaded[name] then table.insert(unloaded, name) end
+    if not pcall(require, name) then table.insert(unloaded, name) end
   end
+  vim.wait(3000, function() return false end, 50)
   spec.eq({}, unloaded, "native modules that failed to load")
 end)
 

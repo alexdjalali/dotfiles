@@ -7,7 +7,7 @@ return {
     -- startup: its native modules are the riskiest code in the config, so a
     -- broken build can only break Avante, never every new nvim session.
     cmd = {
-      "AvanteACPModels", "AvanteACPModes", "AvanteAsk", "AvanteBuild", "AvanteChat", "AvanteChatNew",
+      "Avante", "AvanteACPModels", "AvanteACPModes", "AvanteAsk", "AvanteBuild", "AvanteChat", "AvanteChatNew",
       "AvanteClear", "AvanteEdit", "AvanteFocus", "AvanteHistory", "AvanteModels", "AvanteRefresh",
       "AvanteShowRepoMap", "AvanteStop", "AvanteSwitchInputProvider", "AvanteSwitchProvider",
       "AvanteSwitchSelectorProvider", "AvanteToggle",
@@ -38,6 +38,8 @@ return {
       vim.g.avante = vim.tbl_deep_extend("keep", vim.g.avante or {}, { log_level = "warn" })
     end,
     dependencies = {
+      -- avante's :Avante* command parser (required since avante 0f59641)
+      { "ColinKennedy/mega.cmdparse", dependencies = { "ColinKennedy/mega.logging" } },
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
       "nvim-telescope/telescope.nvim",
@@ -49,7 +51,7 @@ return {
       providers = {
         claude = {
           endpoint = "https://api.anthropic.com",
-          model = "claude-sonnet-5",
+          model = "claude-sonnet-5-5",
           extra_request_body = {
             max_tokens = 8192,
           },

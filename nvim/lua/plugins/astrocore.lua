@@ -46,17 +46,17 @@ return {
     },
     mappings = {
       n = {
-        ["<C-s>"] = { "<cmd>w<cr>", desc = "Save" },
+        -- <leader>n is the Neorg, Noice and Neogen prefix, so AstroNvim's
+        -- "New File" mapping (a key that is also a prefix) is off; use :enew.
+        ["<Leader>n"] = false,
+        -- <C-s> in normal/visual mode is AstroNvim's (Force write).
         ["<S-h>"] = { "<cmd>bprevious<cr>", desc = "Prev buffer" },
         ["<S-l>"] = { "<cmd>bnext<cr>", desc = "Next buffer" },
-        -- Window navigation
-        ["<C-h>"] = { "<C-w>h", desc = "Move to left window" },
-        ["<C-j>"] = { "<C-w>j", desc = "Move to below window" },
-        ["<C-k>"] = { "<C-w>k", desc = "Move to above window" },
-        ["<C-l>"] = { "<C-w>l", desc = "Move to right window" },
+        -- Window navigation (<C-h/j/k/l>) and lazygit (<leader>gg) are AstroNvim's
+        -- (smart-splits, toggleterm).
         -- Git
-        ["<leader>gg"] = { "<cmd>LazyGit<cr>", desc = "LazyGit" },
-        ["<leader>gd"] = { "<cmd>DiffviewOpen<cr>", desc = "Diff view" },
+        -- <leader>gD: gitsigns sets <leader>gd (View Git diff) in every git buffer.
+        ["<leader>gD"] = { "<cmd>DiffviewOpen<cr>", desc = "Diff view" },
         ["<leader>gh"] = { "<cmd>DiffviewFileHistory %<cr>", desc = "File history" },
         -- DevOps & Infrastructure (using <leader>L to avoid conflict with LSP <leader>l)
         ["<leader>L"] = { desc = "DevOps Tools" },

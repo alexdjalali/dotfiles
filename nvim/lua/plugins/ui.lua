@@ -29,7 +29,7 @@ return {
     version = "*",
     keys = {
       {
-        "<leader>wp",
+        "<leader>V", -- <leader>w is AstroNvim's Save
         function()
           local picked_window_id = require("window-picker").pick_window()
           if picked_window_id then
@@ -81,7 +81,9 @@ return {
           ["vim.lsp.util.stylize_markdown"] = true,
         },
         hover = { enabled = true },
-        signature = { enabled = true, auto_open = { enabled = true } },
+        -- noice renders signature help; AstroLSP's lsp_auto_signature_help
+        -- autocmd opens it, so noice's own auto-open would trigger it twice.
+        signature = { enabled = true, auto_open = { enabled = false } },
       },
       presets = {
         bottom_search = true,

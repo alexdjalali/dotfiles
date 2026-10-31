@@ -1,25 +1,6 @@
 -- Python development enhancements
 ---@type LazySpec
 return {
-  -- One tool per job: mason-null-ls registers a source for every Mason tool,
-  -- which would add black and isort (from the python pack) next to ruff. An
-  -- empty handler skips a source.
-  {
-    "jay-babu/mason-null-ls.nvim",
-    opts = {
-      handlers = {
-        black = function() end,
-        isort = function() end,
-        -- basedpyright is the type checker.
-        mypy = function() end,
-        -- none-ls.lua runs the project's own eslint.
-        eslint_d = function() end,
-        -- none-ls.lua runs markdownlint-cli2, which reads cli2 configs.
-        markdownlint = function() end,
-      },
-    },
-  },
-
   -- Configure basedpyright with enhanced settings
   {
     "AstroNvim/astrolsp",
@@ -28,30 +9,23 @@ return {
         basedpyright = {
           -- Prefer the repo's pinned basedpyright (<root>/.venv/bin) over Mason's
           -- copy; Mason's is the fallback outside a repo venv.
-          cmd = function(dispatchers)
+          cmd = function(dispatchers, config)
             local exe = "basedpyright-langserver"
-            local root = vim.fs.root(0, { ".venv", ".git" })
+            local root = config.root_dir or vim.fs.root(0, { ".venv", ".git" })
             if root then
               local local_exe = root .. "/.venv/bin/basedpyright-langserver"
               if vim.fn.executable(local_exe) == 1 then exe = local_exe end
             end
             return vim.lsp.rpc.start({ exe, "--stdio" }, dispatchers)
           end,
+          -- Point basedpyright at the venv in the project root (the LSP root_dir,
+          -- not the cwd, which differs when nvim starts in a subdirectory).
           before_init = function(_, c)
-            -- Auto-detect uv .venv or standard venv
-            local cwd = vim.fn.getcwd()
-            local venv_paths = {
-              cwd .. "/.venv",
-              cwd .. "/venv",
-              cwd .. "/.virtualenv",
-              cwd .. "/env",
-            }
-            for _, venv in ipairs(venv_paths) do
-              if vim.fn.isdirectory(venv) == 1 then
-                if not c.settings.python then
-                  c.settings.python = {}
-                end
-                c.settings.python.pythonPath = venv .. "/bin/python"
+            local root = c.root_dir or vim.fn.getcwd()
+            for _, name in ipairs({ ".venv", "venv", ".virtualenv", "env" }) do
+              local python = root .. "/" .. name .. "/bin/python"
+              if vim.fn.executable(python) == 1 then
+                c.settings.python = vim.tbl_extend("force", c.settings.python or {}, { pythonPath = python })
                 break
               end
             end
@@ -122,21 +96,23 @@ return {
           },
           repl_open_cmd = "vertical botright 80 split",
         },
+        -- iron sets these keymaps globally (every buffer), so they live under
+        -- <leader>X ("eXecute"), not AstroNvim's <leader>p (Packages) group.
         keymaps = {
-          send_motion = "<leader>ps",
-          visual_send = "<leader>ps",
-          send_file = "<leader>pf",
-          send_line = "<leader>pl",
-          send_paragraph = "<leader>pp",
-          send_until_cursor = "<leader>pu",
-          send_mark = "<leader>pm",
-          mark_motion = "<leader>pM",
-          mark_visual = "<leader>pM",
-          remove_mark = "<leader>pd",
-          cr = "<leader>p<cr>",
-          interrupt = "<leader>p<space>",
-          exit = "<leader>pq",
-          clear = "<leader>pc",
+          send_motion = "<leader>Xs",
+          visual_send = "<leader>Xs",
+          send_file = "<leader>Xf",
+          send_line = "<leader>Xl",
+          send_paragraph = "<leader>Xp",
+          send_until_cursor = "<leader>Xu",
+          send_mark = "<leader>Xm",
+          mark_motion = "<leader>XM",
+          mark_visual = "<leader>XM",
+          remove_mark = "<leader>Xd",
+          cr = "<leader>X<cr>",
+          interrupt = "<leader>X<space>",
+          exit = "<leader>Xq",
+          clear = "<leader>Xc",
         },
         highlight = { italic = true },
         ignore_blank_lines = true,
@@ -146,9 +122,10 @@ return {
       require("iron.core").setup(opts)
     end,
     keys = {
-      { "<leader>pr", "<cmd>IronRepl<cr>", desc = "Open Python REPL", ft = "python" },
-      { "<leader>pR", "<cmd>IronRestart<cr>", desc = "Restart REPL", ft = "python" },
-      { "<leader>pH", "<cmd>IronHide<cr>", desc = "Hide REPL", ft = "python" },
+      { "<leader>X", nil, desc = "Python REPL" },
+      { "<leader>Xr", "<cmd>IronRepl<cr>", desc = "Open Python REPL", ft = "python" },
+      { "<leader>XR", "<cmd>IronRestart<cr>", desc = "Restart REPL", ft = "python" },
+      { "<leader>XH", "<cmd>IronHide<cr>", desc = "Hide REPL", ft = "python" },
     },
   },
 

@@ -60,11 +60,8 @@ return {
       silent_chdir = true,
       scope_chdir = "global",
     },
+    -- No keys: AstroNvim maps <leader>fp (projects) and <leader>fo (recent files).
     config = function(_, opts) require("project_nvim").setup(opts) end,
-    keys = {
-      { "<leader>fp", function() require("snacks").picker.projects() end, desc = "Find projects" },
-      { "<leader>fr", function() require("snacks").picker.recent() end, desc = "Recent files" },
-    },
   },
 
   -- oil.nvim - file manager as buffer

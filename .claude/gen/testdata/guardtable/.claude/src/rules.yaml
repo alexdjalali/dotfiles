@@ -1,0 +1,18 @@
+- id: no-verify
+  statement: Hooks are gates.
+  severity: must_fix
+  enforce: hook
+  hook: bash-guard
+  targets: [claude-md]
+  guard:
+    argv0: git
+    subcommands: [commit, push]
+    flags: {all: [--no-verify], commit: [-n]}
+    env: {LEFTHOOK: ["0"]}
+    reason: hooks are gates
+- id: edits
+  statement: Edit the source.
+  severity: must_fix
+  enforce: hook
+  hook: edit-guard
+  targets: [claude-md]

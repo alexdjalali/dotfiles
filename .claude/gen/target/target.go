@@ -72,6 +72,7 @@ func Default() *Registry {
 	r := NewRegistry()
 	r.Register(KindRules, func() Target { return RulesTarget{} })
 	r.Register(KindClaudeMd, func() Target { return ClaudeMdTarget{} })
+	r.Register(KindGuardTable, func() Target { return GuardTableTarget{} })
 	return r
 }
 

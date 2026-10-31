@@ -20,7 +20,7 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 - **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (e.g. a repo-local preflight, `just lint` + `just test`), else fast checks repo-wide + the full suite, 0 failures.
 - **Never rerun a costly step on unchanged input.** The full gate, reviews, `spec-review`, and live execution record the SHA (or clean tree) they passed on; later steps reuse it and re-run only what a change touched.
 - **Docs-only commits inherit the gate.** A commit touching only `docs/**` and `*.md` (e.g. closing stories) keeps the previous SHA's green full gate — record it as `green @ <sha> (+docs <sha2>)`; no rerun.
-- Never commit on a red fast check; never push on a red or unrun full gate. Never bypass hooks (`--no-verify`, `LEFTHOOK=0`) — a hook failure is a red fast check — fix, re-stage, retry.
+- Never commit on a red fast check; never push on a red or unrun full gate. Don't bypass hooks (`--no-verify`, `LEFTHOOK=0`); a hook failure is a red fast check — fix, re-stage, retry.
 
 Tools: Python `uv` `ruff` `basedpyright` · Go `gofumpt` `goimports` `golangci-lint` · TS `pnpm` `eslint` `tsc` `vitest`. Language standards auto-load by path from `rules/standards-*.md`.
 

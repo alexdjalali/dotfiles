@@ -3,11 +3,18 @@
 # behind it (hook | lint | review | prose). See ADR-0001.
 
 - id: no-verify
-  statement: Never bypass hooks (`--no-verify`, `LEFTHOOK=0`) — a hook failure is a red fast check — fix, re-stage, retry.
+  statement: Don't bypass hooks (`--no-verify`, `LEFTHOOK=0`); a hook failure is a red fast check — fix, re-stage, retry.
   category: git
   severity: must_fix
-  enforce: prose
+  enforce: hook
+  hook: bash-guard
   targets: [claude-md, rules/development-practices]
+  guard:
+    argv0: git
+    subcommands: [commit, push, merge, rebase, am]
+    flags: {all: [--no-verify], commit: [-n]}
+    env: {LEFTHOOK: ["0", "false"]}
+    reason: git hooks are gates; fix the failure instead of bypassing them
 
 - id: no-force-push-main
   statement: Don't force-push main or master.

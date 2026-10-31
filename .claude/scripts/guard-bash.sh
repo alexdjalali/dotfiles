@@ -5,7 +5,8 @@
 # bypassPermissions, so this is the only backstop against destructive commands.
 # It blocks:
 #   - force-pushes (or deletes) of main/master, including a bare `git push -f`
-#     while main is checked out; any `git push --mirror`; a forced --all
+#     while main is checked out; any `git push --mirror`; a forced --all or
+#     --branches (abbreviations included)
 #   - recursive rm of /, ~, $HOME, or an ancestor of $HOME, including relative
 #     targets such as `*` run from the home directory
 #   - git reset --hard, git checkout of paths (or -f), git switch

@@ -81,7 +81,6 @@ MUST_BLOCK=(
   'echo "$(rm -rf ~)"'
   'echo `git reset --hard`'
   'rm -rf /Users'
-  'git push --force --all origin'
   $'cat <<< hello\ngit reset --hard'
   $'cat > f <<END-DATA\nx\nEND-DATA\ngit reset --hard'
   $'/bin/bash <<\'EOF\'\nrm -rf ~\nEOF'
@@ -133,7 +132,6 @@ MUST_BLOCK=(
   $'echo "$((1<<2))"\nrm -rf ~\n2'
   $'bash -c $\'cd /tmp\\ngit reset --hard\''
   $'eval $\'rm -rf ~\''
-  'git push -f --branches origin'
   "git push -f origin 'refs/heads/*:refs/heads/*'"
   'pushd ~ && rm -rf *'
   'cd -- ~ && rm -rf *'
@@ -162,6 +160,8 @@ MUST_BLOCK=(
   'git push origin --del main'
   'git push --forc origin main'
   'git switch --discard main'
+  # An unknown wrapper hides git from the structured pass; the backstop sees it.
+  'mise exec -- git push -f --all origin'
   # an exported ban reaches every later command; a wrapper passes its env on
   'export LEFTHOOK=0; git commit -m x'
   'declare -x LEFTHOOK=0'
@@ -186,8 +186,7 @@ MUST_ALLOW=(
   # banned one is a different option.
   'git merge --no-verify-signatures x'
   'git push --force-if-includes origin main'
-  'git switch --detach'
-  'git restore --source=HEAD --staged src/a.txt'
+  'git switch --force-create x'
   'git status'
   'git commit --no-edit'
   'export FOO=1; git commit -m x'

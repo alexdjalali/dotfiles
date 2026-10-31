@@ -157,3 +157,27 @@ func TestRunCheckFailsWithNoTargets(t *testing.T) {
 		t.Fatalf("stderr does not name the missing targets: %q", errOut)
 	}
 }
+
+// TestRunCheckReportsOrphanWhenTargetRendersNothing tests an enabled target
+// with no sources left.
+//
+// Why this test is important:
+//   - Deleting a target's last template must surface its stale outputs as
+//     orphans, not be mistaken for "no targets enabled".
+//
+// What it tests:
+//   - After a write, removing rules/a.md.tmpl makes --check exit 1 naming
+//     .claude/rules/a.md as an orphan.
+func TestRunCheckReportsOrphanWhenTargetRendersNothing(t *testing.T) {
+	root := tree(t, "[]\n")
+	if code, errOut := runCLI("--root", root); code != 0 {
+		t.Fatalf("write exit %d: %s", code, errOut)
+	}
+	if err := os.Remove(filepath.Join(root, ".claude/src/rules/a.md.tmpl")); err != nil {
+		t.Fatal(err)
+	}
+	code, errOut := runCLI("--root", root, "--check")
+	if code != 1 || !strings.Contains(errOut, "orphan .claude/rules/a.md") {
+		t.Fatalf("exit %d: %q", code, errOut)
+	}
+}

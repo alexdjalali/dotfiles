@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # Tests for claude-gen (.claude/gen), the generator that renders the agent
-# config from .claude/src: its Go suite, and that the committed outputs match
-# a fresh render.
+# config from .claude/src: its Go suite, that templates reference the rule
+# catalog instead of repeating it, and that the generated skills validate.
+# Drift between the committed outputs and a fresh render is `just lint`'s
+# `claude-gen --check`.
 set -uo pipefail
 # shellcheck source=../lib/assert.sh
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"

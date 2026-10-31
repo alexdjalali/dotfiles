@@ -110,3 +110,20 @@ func TestLoadMalformedYamlNamesFile(t *testing.T) {
 		t.Fatalf("error = %v", err)
 	}
 }
+
+// TestLoadRejectsUnknownSkillKey tests strict decoding of source YAML.
+//
+// Why this test is important:
+//   - A stale or misspelled key (next:, a typo of when_to_use) used to be
+//     dropped silently, so the author's intent never reached the output.
+//
+// What it tests:
+//   - A skill with `next: [x]` fails Load with invalid_model naming the file.
+func TestLoadRejectsUnknownSkillKey(t *testing.T) {
+	root := t.TempDir()
+	writeFile(t, root, ".claude/src/skills/fix.yaml", "name: fix\nnext: [x]\n")
+	_, err := model.Load(root)
+	if err == nil || !strings.Contains(err.Error(), "fix.yaml") || !strings.Contains(err.Error(), "invalid_model") {
+		t.Fatalf("error = %v", err)
+	}
+}

@@ -39,12 +39,12 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if *root == "" {
 		*root = defaultRoot()
 	}
-	files, owned, err := render(*root, stderr)
+	files, owned, selected, err := render(*root, stderr)
 	if err != nil {
 		_, _ = fmt.Fprintln(stderr, err)
 		return 1
 	}
-	if *check && len(files) == 0 {
+	if *check && selected == 0 {
 		_, _ = fmt.Fprintf(stderr, "claude-gen: --check: nothing to check: %s lists no targets\n",
 			filepath.Join(*root, ".claude", "src", "gen.yaml"))
 		return 2
@@ -60,34 +60,36 @@ func run(args []string, stdout, stderr io.Writer) int {
 	return 0
 }
 
-// render loads and validates the model, then renders every selected target.
-// Validation errors are printed one per line before the error is returned.
-func render(root string, stderr io.Writer) ([]target.File, []string, error) {
+// render loads and validates the model, then renders every selected target,
+// returning the files, the directories the targets own, and how many targets
+// were selected. Validation errors are printed one per line before the error
+// is returned.
+func render(root string, stderr io.Writer) ([]target.File, []string, int, error) {
 	m, err := model.Load(root)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, 0, err
 	}
 	if errs := model.Validate(m); len(errs) > 0 {
 		for _, e := range errs {
 			_, _ = fmt.Fprintln(stderr, e.String())
 		}
-		return nil, nil, model.New(model.CodeInvalidModel, fmt.Sprintf("%d validation errors", len(errs)))
+		return nil, nil, 0, model.New(model.CodeInvalidModel, fmt.Sprintf("%d validation errors", len(errs)))
 	}
 	targets, err := target.Default().Select(m.Gen.Targets)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, 0, err
 	}
 	var files []target.File
 	var owned []string
 	for _, t := range targets {
 		fs, err := t.Render(m)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, 0, err
 		}
 		files = append(files, fs...)
 		owned = append(owned, target.Owned(t)...)
 	}
-	return files, owned, nil
+	return files, owned, len(targets), nil
 }
 
 // report prints each drift and returns 1 if there was any.

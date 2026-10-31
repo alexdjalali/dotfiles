@@ -156,6 +156,12 @@ MUST_BLOCK=(
   # git accepts any unambiguous prefix of a long option
   'git commit --no-veri -m x'
   'git push --no-verif'
+  # Structural checks honor abbreviations too (git accepts them).
+  'git reset --har'
+  'git push --mirr origin'
+  'git push origin --del main'
+  'git push --forc origin main'
+  'git switch --discard main'
   # an exported ban reaches every later command; a wrapper passes its env on
   'export LEFTHOOK=0; git commit -m x'
   'declare -x LEFTHOOK=0'

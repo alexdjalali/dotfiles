@@ -4,7 +4,7 @@ Core policy, always loaded. Writing or editing a test file also loads `testing-a
 
 ### TDD
 
-**⛔ Failing test before production code** — new functions, endpoints, business logic, behavior changes. **Bug fixes are the exception: reproduce, root-cause, fix — then write the reproducing test at the end** and prove it with the revert-test (fails with the fix reverted, passes re-applied). The test is still mandatory; only its timing moves.
+**Failing test before production code** — new functions, endpoints, business logic, behavior changes. **Bug fixes are the exception: reproduce, root-cause, fix — then write the reproducing test at the end** and prove it with the revert-test (fails with the fix reverted, passes re-applied). The test is still mandatory; only its timing moves.
 
 1. **RED** — one minimal behavior test; mocks for external deps only.
 2. **VERIFY RED** — fails because the behavior is missing, not a syntax/import error; passes immediately → rewrite it.
@@ -27,6 +27,6 @@ A violation is a `must_fix`.
 
 Unit tests mock HTTP, subprocess, file I/O, DB, and 3rd-party clients where imported, not where defined; a unit test > 1 s is likely unmocked I/O. When a function gains a dependency, update **all** its existing tests to mock it.
 
-### ⛔ Zero Tolerance
+### Zero Tolerance
 
 Fix every failure before work is done — "pre-existing" is no excuse. The full gate runs the FULL suite, once, after the last commit. Tests passing ≠ program working: run it too (`verification.md`).

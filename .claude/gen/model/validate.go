@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/santhosh-tekuri/jsonschema/v6"
@@ -44,6 +45,23 @@ func Validate(m *Model) []Error {
 	errs = append(errs, checkSchema("models.json", "models.yaml", m.Models)...)
 	errs = append(errs, checkSchema("rules.json", "rules.yaml", m.Rules)...)
 	errs = append(errs, checkRuleIDs(m.Rules)...)
+	errs = append(errs, checkEmphasis(m.Rules)...)
+	return errs
+}
+
+// emphasis matches the markers a machine-enforced rule may not use.
+var emphasis = regexp.MustCompile(`⛔|\bNEVER\b|\bMUST\b`)
+
+// checkEmphasis reports hook- and lint-enforced rules whose statement uses
+// emphasis: the check enforces them, so the prose states them plainly.
+func checkEmphasis(rules []Rule) []Error {
+	var errs []Error
+	for i, r := range rules {
+		if (r.Enforce == "hook" || r.Enforce == "lint") && emphasis.MatchString(r.Statement) {
+			msg := fmt.Sprintf("rule %q is enforced by %s; remove ⛔/NEVER/MUST", r.ID, r.Enforce)
+			errs = append(errs, Error{"rules.yaml", fmt.Sprintf("/%d/statement", i), msg})
+		}
+	}
 	return errs
 }
 

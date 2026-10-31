@@ -144,3 +144,55 @@ func TestValidateBadSeverity(t *testing.T) {
 		t.Fatalf("errors = %v", fields(errs))
 	}
 }
+
+// TestEmphasisRejectedForHookRule tests the emphasis constraint.
+//
+// Why this test is important:
+//   - A rule a hook enforces needs no ⛔/NEVER/MUST; emphasis makes current
+//     models over-apply it.
+//
+// What it tests:
+//   - A hook-enforced statement with ⛔, and a lint-enforced one with NEVER,
+//     each report /i/statement naming the rule.
+func TestEmphasisRejectedForHookRule(t *testing.T) {
+	hook, lint := validRule("hooked"), validRule("linted")
+	hook.Enforce, hook.Hook, hook.Statement = "hook", "edit-guard", "⛔ Do not edit generated files."
+	lint.Enforce, lint.Statement = "lint", "NEVER use fmt.Errorf."
+	errs := model.Validate(&model.Model{Rules: []model.Rule{hook, lint}})
+	if !hasField(errs, "rules.yaml", "/0/statement") || !hasField(errs, "rules.yaml", "/1/statement") {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+	if !strings.Contains(errs[0].Message, `"hooked"`) {
+		t.Fatalf("message = %q", errs[0].Message)
+	}
+}
+
+// TestEmphasisAllowedForProseRule tests that unenforced rules keep emphasis.
+//
+// Why this test is important:
+//   - Without a machine check, emphasis may still be the author's choice.
+//
+// What it tests:
+//   - A prose rule with MUST validates cleanly.
+func TestEmphasisAllowedForProseRule(t *testing.T) {
+	r := validRule("a")
+	r.Statement = "You MUST ask first."
+	if errs := model.Validate(&model.Model{Rules: []model.Rule{r}}); len(errs) != 0 {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+}
+
+// TestMustInsideWordIgnored tests whole-word matching.
+//
+// Why this test is important:
+//   - "MUSTACHE" or "NEVERTHELESS" are not emphasis.
+//
+// What it tests:
+//   - A hook rule whose statement contains MUSTACHE and NEVERTHELESS validates.
+func TestMustInsideWordIgnored(t *testing.T) {
+	r := validRule("a")
+	r.Enforce, r.Hook, r.Statement = "hook", "edit-guard", "MUSTACHE templates, NEVERTHELESS fine."
+	if errs := model.Validate(&model.Model{Rules: []model.Rule{r}}); len(errs) != 0 {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+}

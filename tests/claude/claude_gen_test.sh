@@ -44,7 +44,22 @@ test_templates_reference_catalog() {
   done < <(yq -r '.[].statement' "$REPO_ROOT/.claude/src/rules.yaml")
 }
 
+# Why this test is important:
+#   - Claude Code silently skips a skill whose frontmatter it cannot load, so a
+#     generator slip would drop a command without any error.
+# What it tests:
+#   - `claude plugin validate` accepts every generated skill with no warning
+#     (it exits 0 on warnings such as a missing description, so those fail
+#     here too); without the claude CLI the test fails rather than skipping.
+test_generated_skills_validate() {
+  command -v claude >/dev/null || _fail "claude CLI required"
+  local out
+  out=$(claude plugin validate "$REPO_ROOT/.claude/skills" 2>&1) || _fail "validate failed: $out"
+  assert_not_contains "$out" "warning" "validate warned"
+}
+
 run_test test_go_suite_passes
 run_test test_committed_outputs_match_render
 run_test test_templates_reference_catalog
+run_test test_generated_skills_validate
 finish

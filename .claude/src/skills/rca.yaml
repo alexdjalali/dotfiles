@@ -1,0 +1,5 @@
+name: "rca"
+description: "Diagnose the root cause of one or more bugs and record a diagnosis-only, file:line-cited report in docs/spec/rca/. Use when related bugs need a written diagnosis before fixing, or someone else will fix it."
+summary: "diagnose a root cause without fixing"
+role: "diagnose"
+next: ["fix", "spec"]

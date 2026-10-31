@@ -1,0 +1,6 @@
+name: "adr"
+description: "Write an Architecture Decision Record in docs/adr/, or accept / reject / supersede one. Use before an architectural change — new component or table, library swap, breaking API/schema change, or a pattern deviation."
+summary: "record an architecture decision"
+role: "diagnose"
+argument_hint: "[<decision title> | accept|reject|supersede <NNNN> [by <MMMM>]]"
+next: ["design-doc", "rfp", "spec"]

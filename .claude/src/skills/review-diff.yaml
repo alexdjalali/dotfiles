@@ -1,0 +1,9 @@
+name: "review-diff"
+description: "Review a diff (working tree, branch vs base, ref range, or PR number) for correctness, quality, and standards — one high-recall pass on Fable. Use when asked to review changes, a branch, a commit range, or a PR; the front door for every code review, including /spec verify."
+summary: "review a diff"
+role: "review"
+context: "fork"
+agent: "general-purpose"
+background: false
+argument_hint: "[deep] [<paths> | <branch> | <base>...<branch> | <PR number>]"
+inject: ["git status --short 2>/dev/null | head -40", "git diff --stat HEAD 2>/dev/null | tail -40"]

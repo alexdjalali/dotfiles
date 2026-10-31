@@ -196,3 +196,84 @@ func TestMustInsideWordIgnored(t *testing.T) {
 		t.Fatalf("errors = %v", fields(errs))
 	}
 }
+
+// validSkill returns a skill that passes validation.
+func validSkill(name string) model.Skill {
+	return model.Skill{Name: name, File: name, Description: "Does a thing. Use when asked.", Role: "review"}
+}
+
+// skillModel wraps skills in a model with the review role defined.
+func skillModel(skills ...model.Skill) *model.Model {
+	return &model.Model{
+		Models: map[string]model.ModelRole{"review": {Model: "opus"}},
+		Skills: skills,
+	}
+}
+
+// TestSkillNameMustMatchFile tests the command-name rule.
+//
+// Why this test is important:
+//   - Claude Code names a skill after its folder; a mismatched name field
+//     makes /name and the listing disagree.
+//
+// What it tests:
+//   - name "fixx" in fix.yaml reports skills/fix.yaml:/name.
+func TestSkillNameMustMatchFile(t *testing.T) {
+	s := validSkill("fix")
+	s.Name = "fixx"
+	if errs := model.Validate(skillModel(s)); !hasField(errs, "skills/fix.yaml", "/name") {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+}
+
+// TestDescriptionBudget tests the listing's 1,536-character cap.
+//
+// Why this test is important:
+//   - Text past the cap is cut from the listing, so trigger phrases there
+//     never reach the model.
+//
+// What it tests:
+//   - description + when_to_use of 1,537 characters reports /description;
+//     exactly 1,536 passes.
+func TestDescriptionBudget(t *testing.T) {
+	over, at := validSkill("a"), validSkill("b")
+	over.Description, over.WhenToUse = strings.Repeat("x", 1000), strings.Repeat("y", 537)
+	at.Description, at.WhenToUse = strings.Repeat("x", 1000), strings.Repeat("y", 536)
+	errs := model.Validate(skillModel(over, at))
+	if !hasField(errs, "skills/a.yaml", "/description") || hasField(errs, "skills/b.yaml", "/description") {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+}
+
+// TestRoleMustExist tests role resolution.
+//
+// Why this test is important:
+//   - A skill's model pin comes from its role; a missing role renders no pin
+//     and the skill silently inherits the session model.
+//
+// What it tests:
+//   - No role reports /role; an undefined role reports /role.
+func TestRoleMustExist(t *testing.T) {
+	none, bad := validSkill("a"), validSkill("b")
+	none.Role, bad.Role = "", "nope"
+	errs := model.Validate(skillModel(none, bad))
+	if !hasField(errs, "skills/a.yaml", "/role") || !hasField(errs, "skills/b.yaml", "/role") {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+}
+
+// TestNextEdgeMustExist tests chain edges.
+//
+// Why this test is important:
+//   - A Next Step naming a missing skill sends the user to a dead command.
+//
+// What it tests:
+//   - next: [ghost] reports /next/0; next: [b] with b defined passes.
+func TestNextEdgeMustExist(t *testing.T) {
+	a, b := validSkill("a"), validSkill("b")
+	a.Next = []string{"ghost", "b"}
+	errs := model.Validate(skillModel(a, b))
+	if !hasField(errs, "skills/a.yaml", "/next/0") || hasField(errs, "skills/a.yaml", "/next/1") {
+		t.Fatalf("errors = %v", fields(errs))
+	}
+}

@@ -1,0 +1,8 @@
+name: "spec"
+description: "Run the plan → implement → verify workflow — routes a description, epic, story, RCA, or existing plan file to the right phase by its Type and Status. Use to start or resume large multi-system work that needs a plan; user-typed only."
+summary: "plan, implement and verify (user-typed)"
+role: "mechanical"
+argument_hint: "[<plan file> | <epic/story/RCA file> | <description>]"
+disable_model_invocation: true
+next: ["spec-plan", "spec-implement", "spec-verify"]
+inject: ["ls docs/local/plans/ 2>/dev/null"]

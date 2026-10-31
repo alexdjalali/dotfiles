@@ -1,2 +1,2 @@
 # Targets claude-gen renders, in order. Kinds: see `target.Default()` in .claude/gen.
-targets: [rules, claude-md, guard-table]
+targets: [rules, claude-md, guard-table, skills]

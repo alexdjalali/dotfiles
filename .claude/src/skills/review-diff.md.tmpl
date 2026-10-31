@@ -1,0 +1,49 @@
+**Target:** `$ARGUMENTS` (empty → the working tree). One high-recall pass on Fable, in a forked context: you see only this skill and the target — resolve everything from the repo, and make your **final message the Output section verbatim**, nothing else, so the caller receives the findings intact. Surface **every real issue**; confidence decides a finding's tier, never whether it's reported. **Output:** one ranked findings list. This is the only review entry point — never a hand-spawned `changes-review` agent. **Each file is read once and reviewed once** — no re-sweeps.
+
+## 1 — Resolve the range
+
+| Args | Diff |
+|------|------|
+| none | `git diff HEAD` + untracked files |
+| paths | `git diff HEAD -- <paths>` |
+| a branch | `git fetch` if remote, then `git diff <base>...<head>` |
+| `<base>...<head>` | `git diff <base>...<head>` |
+| PR number | `gh pr view <n>`, `gh pr diff <n>` |
+| `plan=<path>` (extra token) | read that plan for intent and the `Trivial:` claims |
+
+Default base `main` (else `master`, else the default branch). Always three-dot. **Read-only** — fetch only; read head-ref files with `git show <head>:<path>`; never checkout, pull, commit, reset, or stash.
+
+## 2 — Intent and surface
+
+Read the goal (PR description / commit messages / plan) so deliberate choices aren't flagged, and apply the lineage test. List every changed file and symbol — your coverage checklist. Read each changed file in full at the head ref — except generated files (a `Code generated … DO NOT EDIT.` header or the project's generated paths): review their source (proto, schema, template, `wire.go`) instead, and flag a generated file changed without its source as hand-edited (`must_fix`). Read the changed symbols' callers (`codegraph_callers` / `codegraph_impact`) — bugs live in unchanged callers too.
+
+## 3 — Review each file once, against every lens
+
+{{lenses "review"}}
+- **Tests changed?** Read `~/.claude/rules/testing-authoring.md` first (it loads only when *editing* tests) and the project's `.claude/rules/testing-project.md` if present.
+
+File anything that *might* be an issue — "not sure" means `suggestion`, not silence. Before keeping a `must_fix`, try to refute it against the code; keep it only if it survives.
+
+## 4 — Close out
+
+One line per zero-finding file saying why it's clean — you can't write the line without having reviewed it. No second sweep.
+
+## `deep` (opt-in, costly)
+
+Only when args include `deep`: also run `Skill(skill='code-review', args='max <target>')` (a multi-agent adversarial pass; never `--fix`) and fold its findings in unculled. It runs in the background — never write the output without its findings, never fabricate them.
+
+## Output
+
+One list, most severe first, exact duplicates dropped; every finding has `file:line`; `must_fix` / `should_fix` carry a concrete failure scenario.
+
+```
+## Findings
+### must_fix — breaks correctness or security
+- [file:line] Issue — failure scenario (inputs/state → wrong result)
+### should_fix — maintainability, coverage, convention, documented standards
+- [file:line] Issue — why
+### suggestion — optional, or real but lower-confidence
+- [file:line] Improvement
+```
+
+Say so when a tier is empty. The caller decides what happens next: `spec-verify` turns `must_fix` / `should_fix` into one fix commit; a user who typed `/review-diff` is asked which findings to address.

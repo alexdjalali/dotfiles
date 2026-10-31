@@ -85,10 +85,11 @@ func TestRulesOrderedByCatalog(t *testing.T) {
 //   - review-diff's checklist is rendered from the catalog grouped by category.
 //
 // What it tests:
-//   - {{lenses "review"}} groups Quality (b, c) before Correctness (a), by first appearance.
+//   - {{lenses "review"}} groups Quality (b, c) before Correctness (a), by
+//     first appearance; a one-item group renders on one line.
 func TestLensesGroupsByCategory(t *testing.T) {
 	got, err := exec(t, `{{lenses "review"}}`)
-	want := "- **Quality:**\n  - B first.\n  - C elsewhere.\n- **Correctness:**\n  - A second."
+	want := "- **Quality:**\n  - B first.\n  - C elsewhere.\n- **Correctness:** A second."
 	if err != nil || got != want {
 		t.Fatalf("got %q\nwant %q, err %v", got, want, err)
 	}
@@ -109,5 +110,63 @@ func TestModelFormatsRole(t *testing.T) {
 	}
 	if _, err := exec(t, `{{model "nope"}}`); err == nil {
 		t.Fatal("unknown role rendered")
+	}
+}
+
+// TestReviewLensesCoverLegacyList tests the migrated review checklist.
+//
+// Why this test is important:
+//   - review-diff's lenses moved from hand-written prose into the catalog;
+//     a lens lost in the move silently narrows every review.
+//
+// What it tests:
+//   - The repository's catalog renders, through {{lenses "review"}} and
+//     {{lenses "audit"}}, every lens and category the hand-written skills had.
+func TestReviewLensesCoverLegacyList(t *testing.T) {
+	m, err := model.Load("../../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	run := func(text string) string {
+		tmpl := template.Must(template.New("t").Funcs(target.FuncMap(m)).Parse(text))
+		var buf bytes.Buffer
+		if err := tmpl.Execute(&buf, nil); err != nil {
+			t.Fatal(err)
+		}
+		return buf.String()
+	}
+	review, audit := run(`{{lenses "review"}}`), run(`{{lenses "audit"}}`)
+	for _, kw := range []string{
+		"edge cases", "error paths", "concurrency", "resource lifecycle", "contracts", "security",
+		"performance", "dead code", "consistency and DRY", "tests (", "standards", "design",
+		"codegen", "config", "resilience", "errors", "observability", "docs", "Correctness", "Quality",
+	} {
+		if !strings.Contains(review, kw) {
+			t.Errorf("review lenses lost %q", kw)
+		}
+	}
+	for _, kw := range []string{
+		"DRY", "coupling", "complexity", "anti-patterns", "dead code", "convention drift",
+		"test gaps", "One-Idea drift", "codegen gaps", "operability",
+	} {
+		if !strings.Contains(audit, "**"+kw+":**") {
+			t.Errorf("audit categories lost %q", kw)
+		}
+	}
+}
+
+// TestIndentNestsEveryLine tests the indent function.
+//
+// Why this test is important:
+//   - A list rendered inside a numbered step must be indented on every line,
+//     or Markdown ends the step.
+//
+// What it tests:
+//   - {{lenses "review" | indent 3}} prefixes each line with three spaces.
+func TestIndentNestsEveryLine(t *testing.T) {
+	got, err := exec(t, `{{lenses "review" | indent 3}}`)
+	want := "   - **Quality:**\n     - B first.\n     - C elsewhere.\n   - **Correctness:** A second."
+	if err != nil || got != want {
+		t.Fatalf("got %q, err %v", got, err)
 	}
 }

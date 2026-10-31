@@ -1,0 +1,45 @@
+---
+name: spec-implement
+description: /spec implementation — execute an approved plan task by task with TDD, one commit per story, then hand off to verify. Runs after plan approval or a verify loop-back.
+model: claude-opus-4-8
+effort: high
+---
+
+**Input:** a plan in `docs/local/plans/` with `Status: PENDING`, `Approved: Yes` (Feature or Bugfix — the plan is the interface). **Output:** every task done and ticked, one commit per story (plus one review-fix commit on a verify loop-back), `Status: COMPLETE`, and the hand-off to the verify phase.
+
+**Before the first commit** (`Base:` empty): `git status --short` — unrelated uncommitted changes → STOP and ask; clean → set `Base:` to `git rev-parse HEAD`. Approval authorizes the commits below and nothing else (`development-practices.md` *Git*).
+
+**Don't re-explore.** The plan's Context for Implementer and each task's Files are the map; look up only what a task needs that the plan doesn't say.
+
+## Per task — each unchecked task in order, including fix tasks a verify loop added
+
+1. **Read the task** — know exactly what its Definition of Done requires.
+2. **RED** (features) — one failing test for the task's behavior, tier and double per `testing.md` *Test Double Policy*, reusing existing fixtures. It must fail for the right reason (behavior missing — not a syntax or import error). Only a task whose `Trivial:` claim holds skips RED — run its named covering command instead. **Bugfix tasks skip RED:** fix first; the plan's last task writes the reproducing test, which `spec-verify` revert-proves.
+3. **GREEN** — the least code that passes, in the shape the plan specifies (`code-addition-checklist.md`: interface + `Kind` factory + config + constructor injection at the composition root + decorators + coded errors). Match the reference implementation the plan names; reuse the shared library before writing new. Contract-derived code: edit the source and run the generator through the project CLI — never hand-edit generated output. Anything the plan didn't cover (infra, CLI, config, a new dependency) is a Deviation, not a silent add.
+4. **Affected tests** — run the tests for the code this task touched; NEVER proceed past a failure. The full suite waits for the full gate.
+5. **Refactor** — tests stay green, no new behavior: remove duplication by pushing it into the shared shape, finish the doc comments, regenerate if a source changed.
+6. **Docs** — update every doc referencing the changed code, directly or indirectly (`documentation-sync.md`).
+7. **Tick it now** — `- [ ]` → `- [x]`, Progress Tracking Done +1, Left −1. NEVER batch-mark.
+
+**Red flags — stop and do the step:** "too simple to test" · "I'll write the test after" (features) · "it works, skip the test" (bugfixes) · "it passed immediately, fine" · "the plan didn't say, but I'll add it" · "I'll hard-code it for now" / "I'll inline the retry" · "I'll just edit the generated file" · "I'll batch the ticks". Each is how a verify loop-back starts.
+
+## After each story's last task — commit
+
+1. **Fast checks** (CLAUDE.md *Quality Gates*) on the story's changed files — all green. NEVER the full gate here.
+2. `git add` exactly the story's files (never `-f`), then `git commit -m "<the story's Commit: message>"`. One commit per story — never split a story across commits or batch two stories into one. A failing hook is a red fast check: fix, re-stage, retry — never `--no-verify`. Hooks that re-stage files (tidy, codegen) are fine. A plan from the older template (no `### Story` groups) is one story; its commit message is `<type>(<scope>): <plan title>`.
+3. Record the SHA on the story's `Commit:` line and tick it in Progress Tracking.
+
+**Verify loop-back:** the fix tasks verify added are one group — fast checks, then one `fix(<scope>): address review findings` commit.
+
+## Deviations
+
+Record every one in the plan's `## Deviations` section.
+
+- **Bug / missing critical / blocking** (errors, missing validation, broken imports) → fix inline (+ tests if applicable) and document; don't expand scope.
+- **Architectural surprise** (new table, library swap, breaking API change) → **STOP**, document it, and ask via `AskUserQuestion` before continuing.
+
+## After the last task
+
+1. Every story (and fix group) is committed; `git status --short` shows none of the plan's files uncommitted.
+2. Set `Status: COMPLETE`.
+3. In the same turn, call `Skill(skill='spec-verify')`. Don't stop for the user.

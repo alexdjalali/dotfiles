@@ -31,3 +31,175 @@
   enforce: hook
   hook: edit-guard
   targets: [rules/development-practices, rules/standards-golang]
+
+# Review lenses: rendered into review-diff's checklist by {{lenses "review"}}.
+- id: review-edge-cases
+  statement: "edge cases (empty/zero/boundaries/unicode/large/first-run)"
+  category: Correctness
+  severity: must_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-error-paths
+  statement: "error paths (unchecked returns, swallowed exceptions, partial failure without rollback)"
+  category: Correctness
+  severity: must_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-concurrency-and-shared-state
+  statement: "concurrency and shared state"
+  category: Correctness
+  severity: must_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-resource-lifecycle
+  statement: "resource lifecycle (leaks, cleanup skipped on early return)"
+  category: Correctness
+  severity: must_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-contracts
+  statement: "contracts (changed signatures with stale callers, breaking persisted/wire formats, migration order)"
+  category: Correctness
+  severity: must_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-security
+  statement: "security (injection, authn/z, secrets, unvalidated boundary input, SSRF/path traversal)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-performance
+  statement: "performance (uncached hot paths, N+1, redundant work)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-dead-code
+  statement: "dead code (confirm \"unused\" with a caller search)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-consistency-and-dry
+  statement: "consistency and DRY (MUST cite the existing pattern/implementation `file:line`)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-tests
+  statement: "tests (`testing.md`: behavior assertions a one-character bug would fail, tier-correct doubles — a violation is `must_fix` — parsimony, new deps mocked in all existing tests)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-standards
+  statement: "standards (file > 800 excluding generated files, function > 50, nesting > 4, untyped `any`, bare `except:`, hardcoded config)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-design
+  statement: "design (`code-addition-checklist.md`: the One Idea — a concrete type where a core interface belongs, impl selection by `if`/import instead of a `Kind` factory, a factory with no stub default or a silent fallback on an unknown kind, construction or I/O outside the composition root, globals/singletons, coupling, leaking layers)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-codegen
+  statement: "codegen (hand-written code a project generator should own, a hand-edited generated file, a source change without regenerated output, a repeated shape that should be a template)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-config
+  statement: "config (env read outside the config layer, a field with no fail-safe `base` default or no doc, a hard-coded value that belongs in config)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-resilience
+  statement: "resilience (an external call without a timeout, retry/breaker/logging inlined instead of a decorator, retry on a permanent error, a doubled-up retry over an SDK that already retries)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-errors
+  statement: "errors (code-less errors, internal detail leaked past the transport edge)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-observability
+  statement: "observability (silent failure branches, context-free errors, a new path with no log/metric/span, missing trace correlation)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-docs
+  statement: "docs (`documentation-sync.md`)"
+  category: Quality
+  severity: should_fix
+  enforce: review
+  targets: [review-lenses]
+
+# Audit categories: rendered into audit's quick sweep by {{lenses "audit"}}.
+- id: audit-dry
+  statement: "duplicated logic with slight variations"
+  category: DRY
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-coupling
+  statement: "imports across too many layers, cycles"
+  category: coupling
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-complexity
+  statement: "functions > 50 lines, nesting > 4"
+  category: complexity
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-anti-patterns
+  statement: "god objects, feature envy, shotgun surgery"
+  category: anti-patterns
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-dead-code
+  statement: "exported symbols with no callers, commented-out blocks > 10 lines"
+  category: dead code
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-convention-drift
+  statement: "a reinvented helper, a divergent idiom — cite the established one"
+  category: convention drift
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-test-gaps
+  statement: "public logic untested, structure-not-behavior assertions, fakes where `testing.md` forbids them"
+  category: test gaps
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-one-idea-drift
+  statement: "`code-addition-checklist.md`: concrete dependencies where a core interface belongs, impl chosen by `if`/import instead of a `Kind` factory, globals/singletons, inlined retry/logging, code-less errors, env reads outside the config layer"
+  category: One-Idea drift
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-codegen-gaps
+  statement: "hand-written code a generator should own, hand-edited generated files, repeated shapes with no template"
+  category: codegen gaps
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-operability
+  statement: "external calls without timeouts, failure paths with no log/metric/span"
+  category: operability
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]

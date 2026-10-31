@@ -1,0 +1,6 @@
+name: "design-doc"
+description: "Write an implementable technical design (TL;DR, diagrams, state model, alternatives) in docs/spec/design/, or with `arch` just the architecture diagrams (context / container / component) in docs/spec/arch/. Use when a change is too large or subtle to go straight from an ADR to /spec, or to diagram how a system fits together."
+summary: "write the detailed design or architecture diagrams"
+role: "diagnose"
+argument_hint: "[arch] <subsystem or feature | ADR>"
+next: ["rfp", "spec"]

@@ -1,0 +1,6 @@
+name: beta
+description: Ship the work. User-typed only.
+summary: ship it
+role: mechanical
+effort: medium
+disable_model_invocation: true

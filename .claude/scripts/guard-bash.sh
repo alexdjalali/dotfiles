@@ -24,14 +24,16 @@
 # Known unhandled spellings: a banned value exported in two steps
 # (`LEFTHOOK=0; export LEFTHOOK`), core.hooksPath set through exported
 # GIT_CONFIG_* or GIT_CONFIG_PARAMETERS, character-class or brace globs
-# (`rm -rf ~/[a-z]*`, `~/{*,.*}`), home paths spelled through `..` or odd casing beyond simple case folding, `env -S` with
-# its string attached (`-S'…'`, `--split-string=…`), an escaped backslash before
-# a line break (`\\` + newline), a `$(...)` inside double quotes after a `cd`
-# in the same command (checked against the starting directory), and a heredoc
-# fed to a quoted shell name (`"$SHELL" <<EOF`, `ssh host 'bash -s' <<EOF`).
+# (`rm -rf ~/[a-z]*`, `~/{*,.*}`), home paths spelled through `..` or odd
+# casing beyond simple case folding, `env -S` with its string attached
+# (`-S'…'`, `--split-string=…`), an escaped backslash before a line break
+# (`\\` + newline), a `$(...)` inside double quotes after a `cd` in the same
+# command (checked against the starting directory), and a heredoc fed to a
+# quoted shell name (`"$SHELL" <<EOF`, `ssh host 'bash -s' <<EOF`).
 #
-# The rules and the shell-aware parsing live in guard_bash.py, run by the first
-# python3 on PATH (3.9 or newer). This launcher exists so the hook fails closed:
+# The structural rules and the shell-aware parsing live in guard_bash.py (the
+# table rows in guard_rows.py), run by the first python3 on PATH (3.9 or
+# newer). This launcher exists so the hook fails closed:
 # Claude Code blocks only on exit 2, so any other failure (python3 missing, a
 # broken pyenv shim, a too-old interpreter, a crash) would otherwise let every
 # command through. It therefore maps every non-zero status to 2, and the hook

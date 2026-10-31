@@ -182,6 +182,12 @@ MUST_BLOCK=(
 # false positive for catching wrappers the structured pass doesn't know.
 # shellcheck disable=SC2016  # literal $ rows, as the model would type them
 MUST_ALLOW=(
+  # Prefix matching runs one way: a longer option that merely starts with a
+  # banned one is a different option.
+  'git merge --no-verify-signatures x'
+  'git push --force-if-includes origin main'
+  'git switch --detach'
+  'git restore --source=HEAD --staged src/a.txt'
   'git status'
   'git commit --no-edit'
   'export FOO=1; git commit -m x'
@@ -317,6 +323,21 @@ test_force_push_of_current_branch() {
 }
 
 # Why this test is important:
+#   - A forced --all/--branches push rewrites every branch, main included, even
+#     from a feature branch, where the current-branch check alone passes it.
+# What it tests:
+#   - `git push -f` with --all, --branches or an abbreviation of either is
+#     blocked from a repo on a feature branch.
+test_force_push_of_every_branch() {
+  local c
+  for c in 'git push -f --all origin' 'git push -f --branches origin' \
+    'git push -f --al origin' 'git push -f --branch origin'; do
+    assert_eq 2 "$(push_status_on_branch feature "$c")" "[$c] on feature"
+    command rm -rf "$T/repo"
+  done
+}
+
+# Why this test is important:
 #   - `rm -rf *` or `rm -rf .` typed from the home directory wipes it just as
 #     surely as `rm -rf ~`.
 # What it tests:
@@ -417,6 +438,7 @@ test_fails_closed_on_bad_table() {
 run_test test_blocks_destructive_commands
 run_test test_allows_everyday_commands
 run_test test_force_push_of_current_branch
+run_test test_force_push_of_every_branch
 run_test test_relative_rm_resolved_against_cwd
 run_test test_checkout_of_existing_path
 run_test test_block_reports_reason

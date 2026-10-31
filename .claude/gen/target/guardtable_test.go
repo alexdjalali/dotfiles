@@ -9,7 +9,7 @@ import (
 // TestGuardTableGolden tests the guard-table target against its golden file.
 //
 // Why this test is important:
-//   - guard_bash.py blocks commands from this table; a wrong key lets a
+//   - guard_rows.py blocks commands from this table; a wrong key lets a
 //     hook bypass through.
 //
 // What it tests:

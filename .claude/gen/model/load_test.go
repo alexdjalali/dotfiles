@@ -127,3 +127,25 @@ func TestLoadRejectsUnknownSkillKey(t *testing.T) {
 		t.Fatalf("error = %v", err)
 	}
 }
+
+// TestLoadEmptyFilesLoadAsEmpty tests that an empty source file is not an error.
+//
+// Why this test is important:
+//   - A strict decoder reports io.EOF on an empty document; an empty gen.yaml
+//     or skill stub must load as empty, like a missing one.
+//
+// What it tests:
+//   - Load succeeds with empty gen.yaml and skills/x.yaml: no targets, one
+//     skill with no fields set.
+func TestLoadEmptyFilesLoadAsEmpty(t *testing.T) {
+	root := t.TempDir()
+	writeFile(t, root, ".claude/src/gen.yaml", "")
+	writeFile(t, root, ".claude/src/skills/x.yaml", "")
+	m, err := model.Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(m.Gen.Targets) != 0 || len(m.Skills) != 1 || m.Skills[0].Name != "" {
+		t.Fatalf("model = %+v", m)
+	}
+}

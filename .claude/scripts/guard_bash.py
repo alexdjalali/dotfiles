@@ -415,7 +415,7 @@ def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
     delete = has_flag(args, "d", "--delete")
     if uses_flag(args, "--mirror"):
         raise Blocked("git push --mirror rewrites and deletes remote branches")
-    if force and any(a in ("--all", "--branches") for a in args):
+    if force and (uses_flag(args, "--all") or uses_flag(args, "--branches")):
         raise Blocked("force-push of every branch (--all/--branches)")
     if not (force or delete or any(r.startswith(":") for r in refspecs)):
         return
@@ -538,10 +538,10 @@ def backstop(code: str, cwd: str) -> None:
                 r.lstrip("+").rpartition(":")[2].removeprefix("refs/heads/")
                 for r in rest
             }
-            if "reset" in rest and "--hard" in rest:
+            if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
             if "push" in rest and (
-                "--mirror" in rest
+                uses_flag(rest, "--mirror")
                 or (
                     has_flag(rest, "f", "--force") and push_targets & PROTECTED_BRANCHES
                 )

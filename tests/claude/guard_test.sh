@@ -184,6 +184,9 @@ MUST_BLOCK=(
   'mise exec -- git -c core.hooksPath=/dev/null commit -m x'
   'LEFTHOOK=0 mise exec -- git commit -m x'
   'mise exec -- git push -f --all origin'
+  # A git word that is not git running its rm (a user, a path) leaves rm a program.
+  'ssh -l git host rm -rf ~'
+  'find ~/git -exec rm -rf ~ \;'
   'mise exec -- git push -f --branch origin'
   'mise exec -- git push --force-with-lease --all origin'
   'mise exec -- git push origin +main'
@@ -335,6 +338,13 @@ push_status_on_branch() {
   echo $?
 }
 
+# Guard exit status for command $2 run from directory $1, with HOME=$T.
+status_with_home() {
+  jq -cn --arg c "$2" --arg d "$1" '{cwd: $d, tool_input: {command: $c}}' |
+    HOME="$T" bash "$GUARD" >/dev/null 2>&1
+  echo $?
+}
+
 # Why this test is important:
 #   - The most natural force-push forms name no branch, so they push whatever
 #     is checked out: on main they rewrite origin/main.
@@ -361,10 +371,7 @@ test_force_push_of_current_branch() {
     want=0
     [[ $branch == main ]] && want=2
     git -c init.defaultBranch="$branch" init -q "$T/repo"
-    jq -cn --arg d "$T" '{cwd: $d, tool_input: {command: "git -C ~/repo push -f"}}' |
-      HOME="$T" bash "$GUARD" >/dev/null 2>&1
-    rc=$?
-    assert_eq "$want" "$rc" "[git -C ~/repo push -f] on $branch"
+    assert_eq "$want" "$(status_with_home "$T" 'git -C ~/repo push -f')" "[git -C ~/repo push -f] on $branch"
     command rm -rf "$T/repo"
   done
 }
@@ -406,36 +413,19 @@ test_push_main_outside_refspec() {
 #   - Relative recursive removals are resolved against the hook's cwd, also
 #     behind an unknown wrapper: blocked from $HOME, allowed from a project
 #     directory, and blocked after a `cd -P ~` earlier in the same command;
-#     `git rm -r --cached .` from $HOME is git's rm and allowed.
+#     git's own rm (`git rm -r --cached .` from $HOME, the same behind an
+#     unknown wrapper, or with a `~` operand) is not a recursive rm and allowed.
 test_relative_rm_resolved_against_cwd() {
   local c rc
   mkdir -p "$T/project"
   for c in 'rm -rf *' 'rm -rf .' 'rm -rf ./*' '2>/dev/null rm -rf *' 'mise exec -- rm -rf *'; do
-    jq -cn --arg c "$c" --arg d "$T" '{cwd: $d, tool_input: {command: $c}}' |
-      HOME="$T" bash "$GUARD" >/dev/null 2>&1
-    rc=$?
-    assert_eq 2 "$rc" "[$c] from \$HOME"
-    jq -cn --arg c "$c" --arg d "$T/project" '{cwd: $d, tool_input: {command: $c}}' |
-      HOME="$T" bash "$GUARD" >/dev/null 2>&1
-    rc=$?
-    assert_eq 0 "$rc" "[$c] from a project directory"
+    assert_eq 2 "$(status_with_home "$T" "$c")" "[$c] from \$HOME"
+    assert_eq 0 "$(status_with_home "$T/project" "$c")" "[$c] from a project directory"
   done
-  jq -cn --arg d "$T/project" '{cwd: $d, tool_input: {command: "cd -P ~ && rm -rf *"}}' |
-    HOME="$T" bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "[cd -P ~ && rm -rf *] from a project directory"
-  jq -cn --arg d "$T" '{cwd: $d, tool_input: {command: "git rm -r --cached ."}}' |
-    HOME="$T" bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 0 "$rc" "[git rm -r --cached .] from \$HOME"
-  jq -cn --arg d "$T" '{cwd: $d, tool_input: {command: "mise exec -- git rm -r --cached ."}}' |
-    HOME="$T" bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 0 "$rc" "[mise exec -- git rm -r --cached .] from \$HOME"
-  jq -cn --arg d "$T/project" '{cwd: $d, tool_input: {command: "git rm -r --cached ~"}}' |
-    HOME="$T" bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 0 "$rc" "[git rm -r --cached ~]"
+  assert_eq 2 "$(status_with_home "$T/project" 'cd -P ~ && rm -rf *')" "[cd -P ~ && rm -rf *] from a project directory"
+  assert_eq 0 "$(status_with_home "$T" 'git rm -r --cached .')" "[git rm -r --cached .] from \$HOME"
+  assert_eq 0 "$(status_with_home "$T" 'mise exec -- git rm -r --cached .')" "[mise exec -- git rm -r --cached .] from \$HOME"
+  assert_eq 0 "$(status_with_home "$T/project" 'git rm -r --cached ~')" "[git rm -r --cached ~]"
 }
 
 # Why this test is important:

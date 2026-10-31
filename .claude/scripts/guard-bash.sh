@@ -35,8 +35,10 @@
 # casing beyond simple case folding, `env -S` with its string attached
 # (`-S'…'`, `--split-string=…`), an escaped backslash before a line break
 # (`\\` + newline), a `$(...)` inside double quotes after a `cd` in the same
-# command (checked against the starting directory), and a heredoc fed to a
-# quoted shell name (`"$SHELL" <<EOF`, `ssh host 'bash -s' <<EOF`).
+# command (checked against the starting directory), a heredoc fed to a
+# quoted shell name (`"$SHELL" <<EOF`, `ssh host 'bash -s' <<EOF`), and rm
+# run as a user named git through a wrapper the parser does not know
+# (`gosu git rm -rf /` reads as `git rm`).
 #
 # The structural rules and the shell-aware parsing live in guard_bash.py (the
 # table rows in guard_rows.py), run by the first python3 on PATH (3.9 or

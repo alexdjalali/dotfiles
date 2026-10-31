@@ -414,7 +414,8 @@ test_push_main_outside_refspec() {
 #     behind an unknown wrapper: blocked from $HOME, allowed from a project
 #     directory, and blocked after a `cd -P ~` earlier in the same command;
 #     git's own rm (`git rm -r --cached .` from $HOME, the same behind an
-#     unknown wrapper, or with a `~` operand) is not a recursive rm and allowed.
+#     unknown wrapper, or with a `~` operand, also as `/usr/bin/git` or past a
+#     global option) is not a recursive rm and allowed.
 test_relative_rm_resolved_against_cwd() {
   local c
   mkdir -p "$T/project"

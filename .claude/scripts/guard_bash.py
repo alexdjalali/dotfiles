@@ -519,15 +519,17 @@ def wipes_home_or_root(path: str) -> bool:
 def rm_operands(names: list[str], words: list[str]) -> list[str] | None:
     """The words after the first `rm`, or None when there is no `rm` or it is
     git's `rm` subcommand: an earlier word `git` (or a `…/bin/git` path) whose
-    git subcommand, past global options, is `rm`. Narrower than the basename
-    test that decides what to judge as git, so it fails closed: `~/git` or
-    `ssh -l git` leaves rm a program; `gosu git rm` does not (guard-bash.sh
-    lists it as unhandled), nor does a git under a shim or libexec path."""
+    git subcommand, past global options, is `rm`. Only the words `git` and
+    `…/bin/git` count, narrower than the basename test that decides what to
+    judge as git, so it fails closed: `~/git`, `ssh -l git`, and a git under a
+    shim or libexec path leave rm a program (and get the rm check); only
+    `gosu git rm`-style spellings fail open (guard-bash.sh lists them)."""
     if "rm" not in names:
         return None
     i = names.index("rm")
     for g in range(i):
         is_git = words[g] == "git" or words[g].endswith("/bin/git")
+        # only the subcommand is used, so -C expansion needs no cwd
         if is_git and split_git(words[g + 1 :], "")[1] == "rm":
             return None
     return words[i + 1 :]

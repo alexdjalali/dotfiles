@@ -170,10 +170,15 @@ MUST_BLOCK=(
   'mise exec -- git push -f origin heads/main'
   'mise exec -- git push -f origin :'
   'git push origin +:'
-  # The backstop runs check_push on a wrapped push: same rules as unwrapped.
+  # The backstop runs check_git on git behind an unknown wrapper: same rules
+  # as unwrapped.
   'mise exec -- git push -f origin refs/heads/*:refs/heads/*'
   'mise exec -- git push origin :main'
   'mise exec -- git push -f'
+  'mise exec -- git push origin +:'
+  'mise exec -- git switch --discard-changes main'
+  'mise exec -- git checkout -f main'
+  'mise exec -- git restore src/a.txt'
   # An unknown wrapper hides git from the structured pass; the backstop sees it.
   'mise exec -- git push -f --all origin'
   'mise exec -- git push -f --branch origin'
@@ -209,7 +214,7 @@ MUST_ALLOW=(
   # An unforced matching push only fast-forwards.
   'git push origin :'
   # refs/main is a one-level ref, not the main branch.
-  'git push origin HEAD:refs/main'
+  'git push -f origin HEAD:refs/main'
   # An option sharing a prefix with the one a check looks for
   # (--discard-changes).
   'git switch --detach'
@@ -336,7 +341,8 @@ push_status_on_branch() {
 test_force_push_of_current_branch() {
   local c branch want rc
   for c in 'git push -f' 'git push --force origin' 'git push origin HEAD --force' \
-    'git push -o ci.skip --force origin' 'git push -f origin @' 'git push --force origin 2>&1'; do
+    'git push -o ci.skip --force origin' 'git push -f origin @' 'git push --force origin 2>&1' \
+    'git -c "user.name=A B" push -f' 'git push -f && cd /tmp'; do
     assert_eq 2 "$(push_status_on_branch main "$c")" "[$c] on main"
     command rm -rf "$T/repo"
     assert_eq 0 "$(push_status_on_branch feature "$c")" "[$c] on feature"

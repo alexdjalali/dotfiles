@@ -11,7 +11,9 @@ Two layers:
      splits commands on ; & | ( ) ` and newlines outside quotes, and keywords
      (if, do, !, ...) and wrappers (sudo, env, rtk, timeout, ...) are peeled
      off. `bash -c`, `eval` and here-strings fed to a shell are evaluated
-     recursively, and each command is checked against the rules: the
+     recursively. git or rm behind a wrapper it does not know (`mise exec --
+     git …`) is judged as if run directly. Each command is checked against the
+     rules: the
      structural checks coded here, and the flag / env-value / config-key bans
      read from guard_rules.json by guard_rows (generated from the rule catalog
      by claude-gen).
@@ -553,7 +555,11 @@ def backstop(code: str, cwd: str) -> None:
             rest = words[names.index("git") + 1 :]
             # Coarse, cwd-free rules for git the structured pass could not
             # parse at all; git it parsed, wrapped or not, it already judged.
-            push_targets = {dest_branch(r.lstrip("+").rpartition(":")[2]) for r in rest}
+            after_push = rest[rest.index("push") + 1 :] if "push" in rest else []
+            push_targets = {
+                dest_branch(r.lstrip("+").rpartition(":")[2])
+                for r in positionals(after_push, PUSH_OPTS_WITH_VALUE)[1:]
+            }
             if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
             if "push" in rest and (
@@ -596,23 +602,23 @@ def evaluate(text: str, cwd: str, depth: int = 0) -> None:
     backstop(code_only(scan), cwd)
 
 
-def check_wrapped_git(
-    program: str, args: list[str], env: dict[str, str], cwd: str
-) -> None:
-    """Judge git behind a wrapper peel does not know (`mise exec -- git …`) as
-    if run directly: the catalog rows (with assignments before git added to
-    env) and the structural checks, on the real tokens and this command's cwd.
+def check_wrapped(program: str, args: list[str], env: dict[str, str], cwd: str) -> None:
+    """Judge git or rm behind a wrapper peel does not know (`mise exec -- git
+    …`) as if run directly, on the real tokens and this command's cwd: for git
+    the catalog rows (with assignments before it added to env) and the
+    structural checks; for rm the relative-target check the backstop lacks.
     """
     names = [PurePosixPath(a).name for a in args]
-    if program == "git" or "git" not in names:
-        return
-    i = names.index("git")
-    env = dict(env)
-    for arg in args[:i]:
-        record_assignment(arg, env)
-    split = split_git(args[i + 1 :], cwd)
-    check_rows(env, "git", *split)
-    check_git(*split, cwd)
+    if program != "git" and "git" in names:
+        i = names.index("git")
+        git_env = dict(env)
+        for arg in args[:i]:
+            record_assignment(arg, git_env)
+        split = split_git(args[i + 1 :], cwd)
+        check_rows(git_env, "git", *split)
+        check_git(*split, cwd)
+    if program != "rm" and "rm" in names:
+        check_rm(args[names.index("rm") + 1 :], cwd)
 
 
 def check_command(cmd: Command, cwd: str, depth: int) -> str:
@@ -627,7 +633,7 @@ def check_command(cmd: Command, cwd: str, depth: int) -> str:
     )
     check_rows(env, program, *split)
     check_exports(program, args)
-    check_wrapped_git(program, args, env, cwd)
+    check_wrapped(program, args, env, cwd)
     if program in ("cd", "pushd"):
         dirs = [a for a in args if a == "-" or not a.startswith("-")]
         if not dirs:

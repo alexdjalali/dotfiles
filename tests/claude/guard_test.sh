@@ -204,15 +204,15 @@ MUST_BLOCK=(
 )
 
 # Destructive text is allowed only when quoted: an unquoted mention such as
-# `echo rm -rf ~` is blocked by the backstop by design, which trades that rare
-# false positive for catching wrappers the structured pass doesn't know.
+# `echo rm -rf ~` or `echo git push -f origin main` is judged as a command by
+# design (git and rm behind a wrapper the parser does not know are judged on
+# their own tokens), trading that rare false positive for catching wrappers.
 # shellcheck disable=SC2016  # literal $ rows, as the model would type them
 MUST_ALLOW=(
   # Wrapped git that is safe unwrapped stays allowed.
   'mise exec -- git push -f origin feature/x'
   'mise exec -- git push --all origin'
   'mise exec -- git restore --staged src/a.txt'
-  'mise exec -- git checkout main > out.txt'
   # A push option is not a refspec, even when it starts with +.
   'git push -o +ci.skip origin main'
   # An unforced matching push only fast-forwards.
@@ -385,6 +385,23 @@ test_force_push_of_every_branch() {
 }
 
 # Why this test is important:
+#   - A remote or a `-C` directory named main is not the main branch; reading
+#     it as one blocks routine feature-branch pushes.
+# What it tests:
+#   - From a repo on a feature branch, `git push -f main feature/x` and
+#     `git -C main push -f origin feature/x` (main/ a subdirectory) exit 0.
+test_push_main_outside_refspec() {
+  local c
+  for c in 'git push -f main feature/x' 'git -C main push -f origin feature/x'; do
+    git -c init.defaultBranch=feature init -q "$T/repo"
+    mkdir -p "$T/repo/main"
+    assert_eq 0 "$(jq -cn --arg c "$c" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' |
+      bash "$GUARD" >/dev/null 2>&1; echo $?)" "[$c] on feature"
+    command rm -rf "$T/repo"
+  done
+}
+
+# Why this test is important:
 #   - `rm -rf *` or `rm -rf .` typed from the home directory wipes it just as
 #     surely as `rm -rf ~`.
 # What it tests:
@@ -394,7 +411,7 @@ test_force_push_of_every_branch() {
 test_relative_rm_resolved_against_cwd() {
   local c rc
   mkdir -p "$T/project"
-  for c in 'rm -rf *' 'rm -rf .' 'rm -rf ./*' '2>/dev/null rm -rf *'; do
+  for c in 'rm -rf *' 'rm -rf .' 'rm -rf ./*' '2>/dev/null rm -rf *' 'mise exec -- rm -rf *'; do
     jq -cn --arg c "$c" --arg d "$T" '{cwd: $d, tool_input: {command: $c}}' |
       HOME="$T" bash "$GUARD" >/dev/null 2>&1
     rc=$?
@@ -427,9 +444,12 @@ test_checkout_of_existing_path() {
     rc=$?
     assert_eq 2 "$rc" "[$c]"
   done
-  jq -cn --arg d "$T/repo" '{cwd: $d, tool_input: {command: "git checkout main"}}' | bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 0 "$rc" "[git checkout main]"
+  # A redirection target is not a checkout path, wrapped or not.
+  for c in 'git checkout main' 'git checkout main > README.md' 'mise exec -- git checkout main > README.md'; do
+    jq -cn --arg c "$c" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' | bash "$GUARD" >/dev/null 2>&1
+    rc=$?
+    assert_eq 0 "$rc" "[$c]"
+  done
 }
 
 # Why this test is important:
@@ -486,6 +506,7 @@ run_test test_blocks_destructive_commands
 run_test test_allows_everyday_commands
 run_test test_force_push_of_current_branch
 run_test test_force_push_of_every_branch
+run_test test_push_main_outside_refspec
 run_test test_relative_rm_resolved_against_cwd
 run_test test_checkout_of_existing_path
 run_test test_block_reports_reason

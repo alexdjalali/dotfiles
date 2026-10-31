@@ -1,0 +1,94 @@
+---
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.mjs"
+  - "**/*.mts"
+---
+
+## TypeScript Development Standards
+
+**Standards:** Detect package manager (prefer pnpm greenfield) | Strict types | No `any` | Self-documenting code
+
+### Package Manager - DETECT FIRST
+
+**Detect and use the project's existing package manager. Never mix.**
+
+- `bun.lockb` → **bun** | `pnpm-lock.yaml` → **pnpm** | `yarn.lock` → **yarn** | `package-lock.json` → **npm**
+
+No lock file? Check `packageManager` in `package.json`, or default to **pnpm** (preferred for greenfield).
+
+### Type Safety
+
+- **Explicit return types** on all exported functions
+- **Interfaces** for objects, **types** for unions
+- **Never use `any`** — use `unknown`, a specific type, or a generic instead
+
+### Code Style
+
+- **Docs:** a one-line JSDoc on every export (`/** Calculate discounted price. */`); TSDoc `@param`/`@returns` for library packages; inline comments only for non-obvious logic. Tracker IDs and link rules: `documentation-sync.md`.
+- **Imports:** Node built-ins (`node:`) → external → internal via the project's path alias (`@/…`) → relative siblings; no deep `../../` chains.
+- **File names:** follow the project. Default: kebab-case modules (`user-service.ts`), PascalCase React component files (`UserCard.tsx`, `standards-frontend.md`).
+- `const` assertions for literal types: `const ROLES = ['admin', 'user'] as const`. Guard clauses over nesting.
+
+### Architecture (services, CLIs, shared packages)
+
+- **The One Idea** (`CLAUDE.md` *Architecture*): a contract `interface` in the core package; a `kind` + `Config` + `fromConfig(config)` factory that returns the interface, defaults to a stub/noop, and throws on an unknown kind (an exhaustive `switch` over a string-literal union with a `never` check).
+- Constructor injection wired in one composition root per entrypoint — no module-level singletons or side-effecting imports. Resilience and observability are wrapper decorators applied there.
+- **Config:** parsed and validated once at startup (a schema validator such as zod), typed, documented; `process.env` / `import.meta.env` read only in the config module.
+- **Errors** carry a code (a typed error class with a `code` field); don't swallow — wrap with a code or re-throw.
+- **Codegen:** API clients and types come from the contract (OpenAPI / proto / GraphQL) via the project's generator; output committed, lint-excluded, never hand-edited; CI fails on drift.
+
+### Testing - Minimal Output
+
+`vitest` is the modern default (`vitest run`, `vitest run --coverage`); the flags below also work with any Jest-compatible runner. (React/component specifics live in `standards-frontend.md`.)
+
+```bash
+npm test -- --silent         # Suppress console.log
+npm test -- --reporters=dot  # Minimal reporter
+npm test -- --bail           # Stop on first failure
+bun test                     # Bun projects (bun.lockb)
+```
+
+### Integration tests (testcontainers)
+
+Node/TS integration tests that need a backing service run it in a **real Docker container** via `@testcontainers/postgresql` (or core `testcontainers` `GenericContainer` for services without a module) — never a mock or in-memory substitute. Keep them in a separate suite (e.g. `*.integration.test.ts` / a dedicated vitest project) so the unit run stays fast. Unit tests mock the boundary (`vi.mock` / `vi.fn`); a hand-rolled fake standing in for a real service is a `must_fix`.
+
+```bash
+pnpm add -D @testcontainers/postgresql   # or: testcontainers (GenericContainer)
+```
+
+```ts
+import { PostgreSqlContainer } from "@testcontainers/postgresql";
+
+// Why: real SQL/driver behavior is invisible to a mock. What: rows persist and read back.
+const pg = await new PostgreSqlContainer("postgres:16").start();
+const uri = pg.getConnectionUri();
+// … connect with `uri`, run assertions against the live DB …
+await pg.stop();
+```
+
+A *frontend's* "integration" is usually Playwright browser E2E (`browser-automation.md`) — that containerizes nothing, which is expected.
+
+### Verification Checklist
+
+Check `package.json` scripts first — projects often have custom configurations.
+
+- [ ] `tsc --noEmit` — no type errors
+- [ ] Lint clean (eslint flat config / biome)
+- [ ] Tests pass
+- [ ] Explicit return types on exports
+- [ ] No `any` types
+- [ ] Correct lock file committed
+- [ ] Generated clients/types in sync with their contract
+- [ ] Production files ideally under 800 lines (generated files exempt)
+
+### Quick Reference
+
+| Task | pnpm | bun | npm | yarn |
+|------|------|-----|-----|------|
+| Install | `pnpm install` | `bun install` | `npm install` | `yarn` |
+| Add pkg | `pnpm add pkg` | `bun add pkg` | `npm install pkg` | `yarn add pkg` |
+| Run script | `pnpm x` | `bun x` | `npm run x` | `yarn x` |

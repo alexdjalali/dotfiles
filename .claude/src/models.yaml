@@ -1,0 +1,6 @@
+# Role → model and effort; skills name a role (and may override either field).
+review: {model: claude-fable-5-1, effort: xhigh}
+plan: {model: opus, effort: xhigh}
+diagnose: {model: opus}
+execute: {model: claude-opus-4-8, effort: high}
+mechanical: {model: sonnet, effort: low}

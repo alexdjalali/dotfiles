@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "rules.yaml",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "statement", "severity", "enforce", "targets"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+      "statement": {"type": "string", "minLength": 1},
+      "summary": {"type": "string", "minLength": 1},
+      "category": {"type": "string"},
+      "severity": {"enum": ["must_fix", "should_fix", "suggestion"]},
+      "enforce": {"enum": ["hook", "lint", "review", "prose"]},
+      "hook": {"enum": ["bash-guard", "edit-guard"]},
+      "paths": {"type": "array", "items": {"type": "string"}},
+      "targets": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+      "guard": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["argv0", "subcommands", "reason"],
+        "properties": {
+          "argv0": {"type": "string", "minLength": 1},
+          "subcommands": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "flags": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+          "env": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "allOf": [
+      {
+        "if": {"required": ["enforce"], "properties": {"enforce": {"const": "hook"}}},
+        "then": {"required": ["hook"]}
+      },
+      {
+        "if": {"required": ["hook"], "properties": {"hook": {"const": "bash-guard"}}},
+        "then": {"required": ["guard"]}
+      }
+    ]
+  }
+}

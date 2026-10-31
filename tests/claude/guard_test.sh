@@ -184,13 +184,13 @@ MUST_BLOCK=(
   'mise exec -- git -c core.hooksPath=/dev/null commit -m x'
   'LEFTHOOK=0 mise exec -- git commit -m x'
   'mise exec -- git push -f --all origin'
-  # A git word that is not git running its rm (a user, a path) leaves rm a program.
-  'ssh -l git host rm -rf ~'
-  'find ~/git -exec rm -rf ~ \;'
   'mise exec -- git push -f --branch origin'
   'mise exec -- git push --force-with-lease --all origin'
   'mise exec -- git push origin +main'
   'mise exec -- git push -o ci.skip origin +main'
+  # A git word that is not git running its rm (a user, a path) leaves rm a program.
+  'ssh -l git host rm -rf ~'
+  'find ~/git -exec rm -rf ~ \;'
   # an exported ban reaches every later command; a wrapper passes its env on
   'export LEFTHOOK=0; git commit -m x'
   'declare -x LEFTHOOK=0'
@@ -356,7 +356,7 @@ status_with_home() {
 #     front, an unknown wrapper, or a later `cd` (each judged on the real
 #     tokens and the directory the push runs in).
 test_force_push_of_current_branch() {
-  local c branch want rc
+  local c branch want
   for c in 'git push -f' 'git push --force origin' 'git push origin HEAD --force' \
     'git push -o ci.skip --force origin' 'git push -f origin @' 'git push --force origin 2>&1' \
     'git -c "user.name=A B" push -f' 'git push -f && cd /tmp' \
@@ -416,7 +416,7 @@ test_push_main_outside_refspec() {
 #     git's own rm (`git rm -r --cached .` from $HOME, the same behind an
 #     unknown wrapper, or with a `~` operand) is not a recursive rm and allowed.
 test_relative_rm_resolved_against_cwd() {
-  local c rc
+  local c
   mkdir -p "$T/project"
   for c in 'rm -rf *' 'rm -rf .' 'rm -rf ./*' '2>/dev/null rm -rf *' 'mise exec -- rm -rf *'; do
     assert_eq 2 "$(status_with_home "$T" "$c")" "[$c] from \$HOME"
@@ -425,7 +425,9 @@ test_relative_rm_resolved_against_cwd() {
   assert_eq 2 "$(status_with_home "$T/project" 'cd -P ~ && rm -rf *')" "[cd -P ~ && rm -rf *] from a project directory"
   assert_eq 0 "$(status_with_home "$T" 'git rm -r --cached .')" "[git rm -r --cached .] from \$HOME"
   assert_eq 0 "$(status_with_home "$T" 'mise exec -- git rm -r --cached .')" "[mise exec -- git rm -r --cached .] from \$HOME"
-  assert_eq 0 "$(status_with_home "$T/project" 'git rm -r --cached ~')" "[git rm -r --cached ~]"
+  for c in 'git rm -r --cached ~' '/usr/bin/git rm -r --cached ~' 'git -c core.quotepath=off rm -r --cached ~'; do
+    assert_eq 0 "$(status_with_home "$T/project" "$c")" "[$c]"
+  done
 }
 
 # Why this test is important:

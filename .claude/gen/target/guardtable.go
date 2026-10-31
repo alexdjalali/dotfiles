@@ -9,7 +9,7 @@ import (
 // KindGuardTable renders the Bash guard's rows to .claude/scripts/guard_rules.json.
 const KindGuardTable = "guard-table"
 
-// GuardTableTarget renders one row per bash-guard rule for guard_bash.py.
+// GuardTableTarget renders one row per bash-guard rule for guard_rows.py.
 type GuardTableTarget struct{}
 
 // guardRow is one row of guard_rules.json: the rule id and its guard block.

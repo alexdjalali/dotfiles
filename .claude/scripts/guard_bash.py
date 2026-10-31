@@ -551,18 +551,23 @@ def backstop(code: str, cwd: str) -> None:
         names = [PurePosixPath(w).name for w in words]
         if "git" in names:
             rest = words[names.index("git") + 1 :]
+            # Coarse, cwd-free rules for git the structured pass could not
+            # parse at all; git it parsed, wrapped or not, it already judged.
+            push_targets = {dest_branch(r.lstrip("+").rpartition(":")[2]) for r in rest}
             if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
-            peeled = peel(words)
-            if not peeled or PurePosixPath(peeled[0]).name != "git":
-                # git behind a wrapper the structured pass cannot peel
-                # (`mise exec -- git …`): apply the same rules here. git the
-                # structured pass saw is not re-checked: this text has its
-                # quoted spans replaced and only the command's final cwd.
-                try:
-                    check_git(*split_git(rest, cwd), cwd)
-                except Blocked as reason:
-                    raise Blocked(f"{reason} (backstop)") from None
+            if "push" in rest and (
+                uses_flag(rest, "--mirror")
+                or (
+                    forced(rest, positionals(rest, PUSH_OPTS_WITH_VALUE))
+                    and (
+                        push_targets & PROTECTED_BRANCHES
+                        or uses_flag(rest, "--all")
+                        or uses_flag(rest, "--branches")
+                    )
+                )
+            ):
+                raise Blocked("force-push to main/master or every branch (backstop)")
             if "clean" in rest and has_flag(rest, "f", "--force"):
                 raise Blocked("git clean -f deletes untracked files (backstop)")
             after = rest[rest.index("checkout") + 1 :] if "checkout" in rest else []
@@ -591,6 +596,25 @@ def evaluate(text: str, cwd: str, depth: int = 0) -> None:
     backstop(code_only(scan), cwd)
 
 
+def check_wrapped_git(
+    program: str, args: list[str], env: dict[str, str], cwd: str
+) -> None:
+    """Judge git behind a wrapper peel does not know (`mise exec -- git …`) as
+    if run directly: the catalog rows (with assignments before git added to
+    env) and the structural checks, on the real tokens and this command's cwd.
+    """
+    names = [PurePosixPath(a).name for a in args]
+    if program == "git" or "git" not in names:
+        return
+    i = names.index("git")
+    env = dict(env)
+    for arg in args[:i]:
+        record_assignment(arg, env)
+    split = split_git(args[i + 1 :], cwd)
+    check_rows(env, "git", *split)
+    check_git(*split, cwd)
+
+
 def check_command(cmd: Command, cwd: str, depth: int) -> str:
     """Check one simple command; return the cwd after it (for `cd`)."""
     env: dict[str, str] = {}
@@ -603,6 +627,7 @@ def check_command(cmd: Command, cwd: str, depth: int) -> str:
     )
     check_rows(env, program, *split)
     check_exports(program, args)
+    check_wrapped_git(program, args, env, cwd)
     if program in ("cd", "pushd"):
         dirs = [a for a in args if a == "-" or not a.startswith("-")]
         if not dirs:

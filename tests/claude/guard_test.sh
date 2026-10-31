@@ -170,16 +170,19 @@ MUST_BLOCK=(
   'mise exec -- git push -f origin heads/main'
   'mise exec -- git push -f origin :'
   'git push origin +:'
-  # The backstop runs check_git on git behind an unknown wrapper: same rules
-  # as unwrapped.
+  # git behind a wrapper peel does not know (mise exec --) gets every git
+  # rule, catalog bans included, as if run directly.
   'mise exec -- git push -f origin refs/heads/*:refs/heads/*'
   'mise exec -- git push origin :main'
   'mise exec -- git push -f'
   'mise exec -- git push origin +:'
+  'mise exec -- git push -f origin "main"'
   'mise exec -- git switch --discard-changes main'
   'mise exec -- git checkout -f main'
   'mise exec -- git restore src/a.txt'
-  # An unknown wrapper hides git from the structured pass; the backstop sees it.
+  'mise exec -- git commit --no-verify -m x'
+  'mise exec -- git -c core.hooksPath=/dev/null commit -m x'
+  'LEFTHOOK=0 mise exec -- git commit -m x'
   'mise exec -- git push -f --all origin'
   'mise exec -- git push -f --branch origin'
   'mise exec -- git push --force-with-lease --all origin'
@@ -205,10 +208,11 @@ MUST_BLOCK=(
 # false positive for catching wrappers the structured pass doesn't know.
 # shellcheck disable=SC2016  # literal $ rows, as the model would type them
 MUST_ALLOW=(
-  # The backstop's negative space: a wrapped push that is not a forced
-  # push of main/master or of every branch.
+  # Wrapped git that is safe unwrapped stays allowed.
   'mise exec -- git push -f origin feature/x'
   'mise exec -- git push --all origin'
+  'mise exec -- git restore --staged src/a.txt'
+  'mise exec -- git checkout main > out.txt'
   # A push option is not a refspec, even when it starts with +.
   'git push -o +ci.skip origin main'
   # An unforced matching push only fast-forwards.
@@ -337,12 +341,17 @@ push_status_on_branch() {
 # What it tests:
 #   - `git push -f`, `git push --force origin` and `git push origin HEAD --force`
 #     are blocked from a repo on main and allowed from a repo on a feature branch,
-#     also through `git -C ~/repo` (git gets the `~` unexpanded).
+#     also through `git -C ~/repo` (git gets the `~` unexpanded); the verdict
+#     holds with a quoted global option, a quoted assignment or redirection in
+#     front, an unknown wrapper, or a later `cd` (each judged on the real
+#     tokens and the directory the push runs in).
 test_force_push_of_current_branch() {
   local c branch want rc
   for c in 'git push -f' 'git push --force origin' 'git push origin HEAD --force' \
     'git push -o ci.skip --force origin' 'git push -f origin @' 'git push --force origin 2>&1' \
-    'git -c "user.name=A B" push -f' 'git push -f && cd /tmp'; do
+    'git -c "user.name=A B" push -f' 'git push -f && cd /tmp' \
+    'GIT_SSH_COMMAND="ssh -i key" git push -f && cd /tmp' \
+    '2>/dev/null git -c "a.b=c d" push -f' 'mise exec -- git -c "a.b=c d" push -f'; do
     assert_eq 2 "$(push_status_on_branch main "$c")" "[$c] on main"
     command rm -rf "$T/repo"
     assert_eq 0 "$(push_status_on_branch feature "$c")" "[$c] on feature"

@@ -553,9 +553,16 @@ def backstop(code: str, cwd: str) -> None:
             rest = words[names.index("git") + 1 :]
             if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
-            git_opts, sub, push_args = split_git(rest, cwd)
-            if sub == "push":
-                check_push(push_args, cwd, git_opts)  # one rule set for both layers
+            peeled = peel(words)
+            if not peeled or PurePosixPath(peeled[0]).name != "git":
+                # git behind a wrapper the structured pass cannot peel
+                # (`mise exec -- git …`): apply the same rules here. git the
+                # structured pass saw is not re-checked: this text has its
+                # quoted spans replaced and only the command's final cwd.
+                try:
+                    check_git(*split_git(rest, cwd), cwd)
+                except Blocked as reason:
+                    raise Blocked(f"{reason} (backstop)") from None
             if "clean" in rest and has_flag(rest, "f", "--force"):
                 raise Blocked("git clean -f deletes untracked files (backstop)")
             after = rest[rest.index("checkout") + 1 :] if "checkout" in rest else []

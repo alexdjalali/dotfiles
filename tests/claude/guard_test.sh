@@ -141,6 +141,18 @@ MUST_BLOCK=(
   'rm -rf /*/'
   "rm -rf ~${USER}"
   "rm -rf $(printf '%s' "$HOME" | tr '[:upper:]' '[:lower:]')"
+  # git hook bypasses (guard_rules.json, generated from the rule catalog)
+  'git commit --no-verify -m x'
+  'git am --no-verify x.patch'
+  'git commit -n -m x'
+  'git commit -m x -n'
+  'git push --no-verify'
+  'git merge --no-verify x'
+  'git rebase --no-verify main'
+  'LEFTHOOK=0 git commit -m x'
+  'env LEFTHOOK=0 git push'
+  'LEFTHOOK=false git merge x'
+  "bash -c 'git commit --no-verify -m x'"
 )
 
 # Destructive text is allowed only when quoted: an unquoted mention such as
@@ -202,6 +214,11 @@ MUST_ALLOW=(
   $'gh pr create --title "fix(zsh): guard" --body-file - <<\'EOF\'\ngac doesn\'t stage deletions\nEOF'
   $'gh issue create --title "source maps broken" --body-file - <<\'EOF\'\nit\'s broken\nEOF'
   $'docker exec -i db psql <<\'EOF\'\n-- don\'t touch prod\nSELECT 1;\nEOF'
+  # hook-bypass look-alikes
+  'git commit -m "mention --no-verify"'
+  'git log -n 5'
+  'LEFTHOOK=1 git commit -m x'
+  'git push -n'
 )
 
 # Why this test is important:
@@ -348,6 +365,25 @@ test_fails_closed() {
   assert_eq 2 "$rc" "exit status for a malformed payload"
 }
 
+# Why this test is important:
+#   - The hook-bypass bans live in guard_rules.json; a missing or corrupt
+#     table must block, not silently drop the bans.
+# What it tests:
+#   - With the table deleted, not JSON, or a row missing fields, `git status`
+#     exits 2 and stderr names the guard table.
+test_fails_closed_on_bad_table() {
+  local table err rc
+  command cp -R "$REPO_ROOT/.claude/scripts" "$T/scripts"
+  table="$T/scripts/guard_rules.json"
+  for bad in missing 'not json' '{"rows":[{"id":1}]}'; do
+    if [[ $bad == missing ]]; then command rm -f "$table"; else printf '%s' "$bad" > "$table"; fi
+    err=$(jq -cn '{tool_input: {command: "git status"}}' | bash "$T/scripts/guard-bash.sh" 2>&1 >/dev/null)
+    rc=$?
+    assert_eq 2 "$rc" "exit with a $bad table"
+    assert_contains "$err" "guard table" "stderr with a $bad table"
+  done
+}
+
 run_test test_blocks_destructive_commands
 run_test test_allows_everyday_commands
 run_test test_force_push_of_current_branch
@@ -355,4 +391,5 @@ run_test test_relative_rm_resolved_against_cwd
 run_test test_checkout_of_existing_path
 run_test test_block_reports_reason
 run_test test_fails_closed
+run_test test_fails_closed_on_bad_table
 finish

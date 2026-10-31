@@ -516,6 +516,15 @@ def wipes_home_or_root(path: str) -> bool:
     return path == "/" or path == home or home.startswith(path + "/")
 
 
+def rm_operands(names: list[str], words: list[str]) -> list[str] | None:
+    """The words after the first `rm` that is a program, not git's `rm`
+    subcommand (any `git` before it); None when there is none."""
+    if "rm" not in names:
+        return None
+    i = names.index("rm")
+    return None if "git" in names[:i] else words[i + 1 :]
+
+
 def check_rm(args: list[str], cwd: str, relative: bool = True) -> None:
     if not any(a == "--recursive" or set(short_flags(a)) & {"r", "R"} for a in args):
         return
@@ -562,13 +571,13 @@ def backstop(code: str, cwd: str) -> None:
             if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
             if "push" in rest and (
-                uses_flag(rest, "--mirror")
+                uses_flag(after_push, "--mirror")
                 or (
                     forced(after_push, refspecs)
                     and (
                         push_targets & PROTECTED_BRANCHES
-                        or uses_flag(rest, "--all")
-                        or uses_flag(rest, "--branches")
+                        or uses_flag(after_push, "--all")
+                        or uses_flag(after_push, "--branches")
                     )
                 )
             ):
@@ -580,8 +589,8 @@ def backstop(code: str, cwd: str) -> None:
                 raise Blocked(
                     "git checkout . / -- <path> discards uncommitted work (backstop)"
                 )
-        if "rm" in names:
-            check_rm(words[names.index("rm") + 1 :], cwd, relative=False)
+        if (rm_args := rm_operands(names, words)) is not None:
+            check_rm(rm_args, cwd, relative=False)
 
 
 def evaluate(text: str, cwd: str, depth: int = 0) -> None:
@@ -616,8 +625,11 @@ def check_wrapped(program: str, args: list[str], env: dict[str, str], cwd: str) 
         split = split_git(args[i + 1 :], cwd)
         check_rows(git_env, "git", *split)
         check_git(*split, cwd)
-    if program not in ("rm", "git") and "rm" in names:  # `git rm` is git's
-        check_rm(args[names.index("rm") + 1 :], cwd)
+    if (
+        program not in ("rm", "git")
+        and (rm_args := rm_operands(names, args)) is not None
+    ):
+        check_rm(rm_args, cwd)
 
 
 def check_command(cmd: Command, cwd: str, depth: int) -> str:

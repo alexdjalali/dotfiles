@@ -428,6 +428,14 @@ test_relative_rm_resolved_against_cwd() {
     HOME="$T" bash "$GUARD" >/dev/null 2>&1
   rc=$?
   assert_eq 0 "$rc" "[git rm -r --cached .] from \$HOME"
+  jq -cn --arg d "$T" '{cwd: $d, tool_input: {command: "mise exec -- git rm -r --cached ."}}' |
+    HOME="$T" bash "$GUARD" >/dev/null 2>&1
+  rc=$?
+  assert_eq 0 "$rc" "[mise exec -- git rm -r --cached .] from \$HOME"
+  jq -cn --arg d "$T/project" '{cwd: $d, tool_input: {command: "git rm -r --cached ~"}}' |
+    HOME="$T" bash "$GUARD" >/dev/null 2>&1
+  rc=$?
+  assert_eq 0 "$rc" "[git rm -r --cached ~]"
 }
 
 # Why this test is important:

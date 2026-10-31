@@ -162,6 +162,9 @@ MUST_BLOCK=(
   'git switch --discard main'
   # An unknown wrapper hides git from the structured pass; the backstop sees it.
   'mise exec -- git push -f --all origin'
+  'mise exec -- git push -f --branch origin'
+  'mise exec -- git push --force-with-lease --all origin'
+  'mise exec -- git push origin +main'
   # an exported ban reaches every later command; a wrapper passes its env on
   'export LEFTHOOK=0; git commit -m x'
   'declare -x LEFTHOOK=0'
@@ -182,6 +185,12 @@ MUST_BLOCK=(
 # false positive for catching wrappers the structured pass doesn't know.
 # shellcheck disable=SC2016  # literal $ rows, as the model would type them
 MUST_ALLOW=(
+  # The backstop's negative space: a wrapped push that is not a forced
+  # push of main/master or of every branch.
+  'mise exec -- git push -f origin feature/x'
+  'mise exec -- git push --all origin'
+  'git switch --detach'
+  'git restore --source=HEAD --staged src/a.txt'
   # Prefix matching runs one way: a longer option that merely starts with a
   # banned one is a different option.
   'git merge --no-verify-signatures x'

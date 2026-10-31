@@ -87,6 +87,26 @@ GIT_OPTS_WITH_VALUE = {
     "--super-prefix",
     "--config-env",
 }
+# `git config` options that take a value, and its read-only and writing flags.
+CONFIG_OPTS_WITH_VALUE = {
+    "-f",
+    "--file",
+    "--blob",
+    "--type",
+    "--default",
+    "--comment",
+    "--value",
+}
+CONFIG_READ_FLAGS = {
+    "--get",
+    "--get-all",
+    "--get-regexp",
+    "--get-urlmatch",
+    "-l",
+    "--list",
+}
+CONFIG_WRITE_FLAGS = {"--unset", "--unset-all", "--add", "--replace-all"}
+CONFIG_READ_SUBCOMMANDS = {"get", "list", "edit", "rename-section", "remove-section"}
 PUSH_OPTS_WITH_VALUE = {"-o", "--push-option", "--repo", "--receive-pack", "--exec"}
 
 HEREDOC_START = re.compile(r"<<(-?)\s*(['\"]?)([\w.\-]+)\2")
@@ -348,11 +368,15 @@ def commands(text: str) -> Iterator[Command]:
         yield cmd
 
 
-def peel(tokens: list[str]) -> list[str]:
-    """Remove leading keywords, VAR=value assignments and wrapper commands."""
+def peel(tokens: list[str], env: dict[str, str] | None = None) -> list[str]:
+    """Remove leading keywords, VAR=value assignments and wrapper commands.
+
+    Assignments, including those passed through `env` or `sudo`, go into env.
+    """
     while tokens:
         head = PurePosixPath(tokens[0]).name
         if tokens[0] in KEYWORDS or re.fullmatch(r"[A-Za-z_]\w*=.*", tokens[0]):
+            record_assignment(tokens[0], env)
             tokens = tokens[1:]
         elif head == "rtk":
             tokens = tokens[2:] if tokens[1:2] == ["proxy"] else tokens[1:]
@@ -368,6 +392,7 @@ def peel(tokens: list[str]) -> list[str]:
             while i < len(tokens) and (
                 tokens[i].startswith("-") or (head == "env" and "=" in tokens[i])
             ):
+                record_assignment(tokens[i], env)
                 i += 2 if tokens[i] in WRAPPERS[head] else 1
             if head in TAKES_DURATION and i < len(tokens):
                 i += 1
@@ -377,15 +402,21 @@ def peel(tokens: list[str]) -> list[str]:
     return tokens
 
 
+def record_assignment(token: str, env: dict[str, str] | None) -> None:
+    """Store a VAR=value token in env (when given); other tokens are ignored."""
+    if env is not None and re.fullmatch(r"[A-Za-z_]\w*=.*", token):
+        name, _, value = token.partition("=")
+        env[name] = value
+
+
 def short_flags(token: str) -> str:
     """The letters of a single-dash option cluster (`-fdx` -> `fdx`), else ''."""
     return token[1:] if re.fullmatch(r"-[A-Za-z]+", token) else ""
 
 
 def has_flag(args: list[str], letter: str, long: str) -> bool:
-    return any(
-        a == long or a.startswith(long + "=") or letter in short_flags(a) for a in args
-    )
+    """Whether args carry `-<letter>` (in a short cluster) or `long`."""
+    return uses_flag(args, long) or (bool(letter) and uses_flag(args, "-" + letter))
 
 
 def positionals(args: list[str], with_value: set[str]) -> list[str]:
@@ -443,19 +474,24 @@ def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
                 raise Blocked(f"force-push or delete of {dst}")
 
 
-def check_git(args: list[str], cwd: str) -> None:
-    git_opts: list[str] = []
+def split_git(args: list[str], cwd: str) -> tuple[list[str], str, list[str]]:
+    """git's global options (`-C` paths expanded), the subcommand, and its args."""
+    opts: list[str] = []
     i = 0
     while i < len(args) and args[i].startswith("-"):
         step = 2 if args[i] in GIT_OPTS_WITH_VALUE else 1
-        opts = args[i : i + step]
-        if opts[0] == "-C" and len(opts) == 2:
-            opts = ["-C", expand_path(opts[1], cwd)]  # no shell expands its ~ for git
-        git_opts += opts
+        chunk = args[i : i + step]
+        if chunk[0] == "-C" and len(chunk) == 2:
+            chunk = ["-C", expand_path(chunk[1], cwd)]  # no shell expands its ~ for git
+        opts += chunk
         i += step
-    if i >= len(args):
+    return (opts, args[i], args[i + 1 :]) if i < len(args) else (opts, "", [])
+
+
+def check_git(args: list[str], cwd: str) -> None:
+    git_opts, sub, rest = split_git(args, cwd)
+    if not sub:
         return
-    sub, rest = args[i], args[i + 1 :]
     if sub == "push":
         check_push(rest, cwd, git_opts)
     elif sub == "reset" and "--hard" in rest:
@@ -586,13 +622,18 @@ def evaluate(text: str, cwd: str, depth: int = 0) -> None:
 
 @dataclass(frozen=True)
 class Row:
-    """One guard_rules.json row: a flag or env value banned for a subcommand."""
+    """One guard_rules.json row: a flag or env value banned for a subcommand.
+
+    Rows parse their program's arguments as git does (global options, then a
+    subcommand), so every row today names `git`.
+    """
 
     id: str
     argv0: str
     subcommands: frozenset[str]
     flags: dict[str, list[str]]
     env: dict[str, list[str]]
+    config: frozenset[str]  # lower-cased git config keys the row bans overriding
     reason: str
 
 
@@ -625,6 +666,7 @@ def load_rows() -> list[Row]:
                 subcommands=frozenset(str_list(r["subcommands"])),
                 flags=str_lists(r.get("flags")),
                 env=str_lists(r.get("env")),
+                config=frozenset(k.lower() for k in str_list(r.get("config", []))),
                 reason=str(r["reason"]),
             )
             for r in rows
@@ -635,38 +677,52 @@ def load_rows() -> list[Row]:
         ) from error
 
 
-def assignments(args: list[str]) -> dict[str, str]:
-    """VAR=value words ahead of the program, including `env` operands."""
-    found: dict[str, str] = {}
-    for token in args:
-        if re.fullmatch(r"[A-Za-z_]\w*=.*", token):
-            name, _, value = token.partition("=")
-            found[name] = value
-        elif not (token.startswith("-") or PurePosixPath(token).name == "env"):
-            break
-    return found
-
-
-def subcommand(args: list[str]) -> tuple[str, list[str]]:
-    """The subcommand after git-style global options, and the args after it."""
-    i = 0
-    while i < len(args) and args[i].startswith("-"):
-        i += 2 if args[i] in GIT_OPTS_WITH_VALUE else 1
-    return (args[i], args[i + 1 :]) if i < len(args) else ("", [])
-
-
 def uses_flag(args: list[str], flag: str) -> bool:
-    """Whether args carry flag: `-n` in a short cluster, or `--x` / `--x=…`."""
+    """Whether args carry flag: `-n` in a short cluster, or `--x` / `--x=…`.
+
+    A long flag also matches any prefix of it (`--no-veri`): git accepts an
+    unambiguous abbreviation, and an ambiguous one fails anyway.
+    """
     if re.fullmatch(r"-[A-Za-z]", flag):
         return any(flag[1] in short_flags(a) for a in args)
-    return any(a == flag or a.startswith(flag + "=") for a in args)
+    names = (a.partition("=")[0] for a in args if a.startswith("--") and len(a) > 2)
+    return any(flag.startswith(name) for name in names)
 
 
-def check_rows(env: dict[str, str], program: str, args: list[str]) -> None:
+def overridden_key(opts: list[str], env: dict[str, str]) -> str:
+    """The lower-cased keys one git command overrides via -c, --config-env
+    or GIT_CONFIG_KEY_<n>, joined by spaces."""
+    values = [v for o, v in zip(opts, opts[1:]) if o in ("-c", "--config-env")]
+    values += [o.partition("=")[2] for o in opts if o.startswith("--config-env=")]
+    values += [v for n, v in env.items() if re.fullmatch(r"GIT_CONFIG_KEY_\d+", n)]
+    return " ".join(v.partition("=")[0].lower() for v in values)
+
+
+def written_key(rest: list[str]) -> str:
+    """The lower-cased key a `git config` call sets or unsets, else ''."""
+    words = positionals(rest, CONFIG_OPTS_WITH_VALUE)
+    if words[:1] in (["set"], ["unset"]):
+        return words[1].lower() if len(words) > 1 else ""
+    if (words[:1] and words[0] in CONFIG_READ_SUBCOMMANDS) or any(
+        a in CONFIG_READ_FLAGS for a in rest
+    ):
+        return ""
+    if words and (len(words) >= 2 or any(a in CONFIG_WRITE_FLAGS for a in rest)):
+        return words[0].lower()
+    return ""
+
+
+def check_rows(env: dict[str, str], program: str, args: list[str], cwd: str) -> None:
     """Raise Blocked when a guard_rules.json row bans this invocation."""
+    opts, sub, rest = split_git(args, cwd)
+    overridden = set(overridden_key(opts, env).split())
+    written = written_key(rest) if sub == "config" else ""
     for row in load_rows():
-        sub, rest = subcommand(args)
-        if program != row.argv0 or sub not in row.subcommands:
+        if program != row.argv0:
+            continue
+        if written in row.config:
+            raise Blocked(f"{row.reason} (git config {written})")
+        if sub not in row.subcommands:
             continue
         for flag in row.flags.get("all", []) + row.flags.get(sub, []):
             if uses_flag(rest, flag):
@@ -674,16 +730,36 @@ def check_rows(env: dict[str, str], program: str, args: list[str]) -> None:
         for name, values in row.env.items():
             if env.get(name) in values:
                 raise Blocked(f"{row.reason} ({name}={env[name]})")
+        if banned := overridden & row.config:
+            raise Blocked(f"{row.reason} (override of {', '.join(sorted(banned))})")
+
+
+def check_exports(program: str, args: list[str]) -> None:
+    """Block `export` / `declare -x` / `typeset -x` of a value any row bans:
+    it reaches every later command, not just one."""
+    exported = program == "export" or (
+        program in ("declare", "typeset") and any("x" in short_flags(a) for a in args)
+    )
+    if not exported:
+        return
+    env: dict[str, str] = {}
+    for arg in args:
+        record_assignment(arg, env)
+    for row in load_rows():
+        for name, values in row.env.items():
+            if env.get(name) in values:
+                raise Blocked(f"{row.reason} (export {name}={env[name]})")
 
 
 def check_command(cmd: Command, cwd: str, depth: int) -> str:
     """Check one simple command; return the cwd after it (for `cd`)."""
-    env = assignments(cmd.args)
-    tokens = peel(cmd.args)
+    env: dict[str, str] = {}
+    tokens = peel(cmd.args, env)
     if not tokens:
         return cwd
     program, args = PurePosixPath(tokens[0]).name, tokens[1:]
-    check_rows(env, program, args)
+    check_rows(env, program, args, cwd)
+    check_exports(program, args)
     if program in ("cd", "pushd"):
         dirs = [a for a in args if a == "-" or not a.startswith("-")]
         if not dirs:

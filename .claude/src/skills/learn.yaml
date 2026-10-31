@@ -1,4 +1,3 @@
 name: "learn"
 description: "Capture a non-obvious, reusable lesson from this session as a project skill (.claude/skills/<slug>/SKILL.md). Use after a hard-won debugging insight, workaround, or repeatable workflow."
-summary: "capture a lesson as a project skill"
 role: "execute"

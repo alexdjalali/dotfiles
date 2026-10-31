@@ -3,4 +3,6 @@
 
 ## Alpha
 
+The sections below apply by file type.
+
 Read freely. Never bypass hooks (`--no-verify`) — fix, re-stage, retry.

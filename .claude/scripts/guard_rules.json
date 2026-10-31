@@ -25,6 +25,9 @@
           "false"
         ]
       },
+      "config": [
+        "core.hooksPath"
+      ],
       "reason": "git hooks are gates; fix the failure instead of bypassing them"
     }
   ]

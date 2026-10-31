@@ -13,20 +13,16 @@ import (
 //
 //	rule ID        the rule's statement
 //	summary ID     the rule's condensed summary, for mirrors
-//	rules TARGET   "- statement" lines for every rule listing TARGET, catalog order
 //	lenses GROUP   rules listing GROUP-lenses, as bullets grouped by category
 //	model ROLE     "model (effort)" or "model" for a models.yaml role
-//	next SKILL     "- `/name` — summary" lines for the skill's next edges
 //	indent N TEXT  TEXT with N spaces before every line (use in a pipeline)
-//	mirror NAME    the Cursor rule NAME's body: frontmatter and trailing newlines stripped
+//	mirror NAME    the Cursor rule NAME's body for Codex: frontmatter and trailing newlines stripped
 func FuncMap(m *model.Model) template.FuncMap {
 	return template.FuncMap{
 		"rule":    func(id string) (string, error) { return ruleStatement(m, id) },
 		"summary": func(id string) (string, error) { return ruleSummary(m, id) },
-		"rules":   func(target string) string { return ruleList(m, target) },
 		"lenses":  func(group string) string { return lensList(m, group+"-lenses") },
 		"model":   func(role string) (string, error) { return roleModel(m, role) },
-		"next":    func(skill string) (string, error) { return nextList(m, skill) },
 		"indent":  indent,
 		"mirror":  func(name string) (string, error) { return mirrorBody(m, name) },
 	}
@@ -67,16 +63,6 @@ func rulesFor(m *model.Model, target string) []model.Rule {
 	return out
 }
 
-// ruleList renders the statements for target as Markdown bullets.
-func ruleList(m *model.Model, target string) string {
-	rules := rulesFor(m, target)
-	lines := make([]string, 0, len(rules))
-	for _, r := range rules {
-		lines = append(lines, "- "+r.Statement)
-	}
-	return strings.Join(lines, "\n")
-}
-
 // lensList renders the statements for target grouped under their category,
 // categories in order of first appearance; a one-statement category renders
 // on one line.
@@ -115,33 +101,16 @@ func roleModel(m *model.Model, role string) (string, error) {
 	return r.Model + " (" + r.Effort + ")", nil
 }
 
-// nextList renders a skill's next edges as "- `/name` — summary" lines.
-func nextList(m *model.Model, name string) (string, error) {
-	byName := map[string]model.Skill{}
-	for _, sk := range m.Skills {
-		byName[sk.Name] = sk
-	}
-	sk, ok := byName[name]
-	if !ok {
-		return "", model.New(model.CodeInvalidModel, fmt.Sprintf("unknown skill %q", name))
-	}
-	lines := make([]string, 0, len(sk.Next))
-	for _, n := range sk.Next {
-		lines = append(lines, "- `/"+n+"` — "+byName[n].Summary)
-	}
-	return strings.Join(lines, "\n"), nil
-}
-
 // indent prefixes every line of text with n spaces.
 func indent(n int, text string) string {
 	pad := strings.Repeat(" ", n)
 	return pad + strings.ReplaceAll(text, "\n", "\n"+pad)
 }
 
-// mirrorBody renders the Cursor template name and strips its frontmatter and
+// mirrorBody renders the Cursor template name for ReaderCodex and strips its frontmatter and
 // trailing newlines, so other targets compose it without a second copy.
 func mirrorBody(m *model.Model, name string) (string, error) {
-	body, err := execFile(m, srcPath(m, "mirrors/cursor/"+name+".mdc.tmpl"), m)
+	body, err := execFile(m, srcPath(m, "mirrors/cursor/"+name+".mdc.tmpl"), MirrorData{Model: m, Reader: ReaderCodex})
 	if err != nil {
 		return "", err
 	}

@@ -1,5 +1,3 @@
 name: "spec-implement"
 description: "/spec implementation — execute an approved plan task by task with TDD, one commit per story, then hand off to verify. Runs after plan approval or a verify loop-back."
-summary: "implement an approved plan"
 role: "execute"
-next: ["spec-verify"]

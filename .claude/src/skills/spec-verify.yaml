@@ -1,5 +1,3 @@
 name: "spec-verify"
 description: "/spec verification, Feature or Bugfix — one review-diff over the chain's commits, plan/contract audits, revert-test proof (bugfix), the full gate once, live execution; marks VERIFIED or loops back to implement. Runs after spec-implement."
-summary: "verify the implemented plan"
 role: "plan"
-next: ["spec-implement", "github"]

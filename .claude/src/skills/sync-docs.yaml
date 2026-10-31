@@ -1,5 +1,3 @@
 name: "sync-docs"
 description: "Repo-wide sweep of a project's docs and rules (.claude/rules/, docs/, CLAUDE.md, READMEs, docstrings) against the current code, fixing what is stale. Use when docs have drifted across the repo or after a large refactor; per-change doc updates happen inline instead."
-summary: "sweep a repo's docs for drift"
 role: "execute"
-next: ["github"]

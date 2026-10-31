@@ -8,7 +8,6 @@
     "name": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 64},
     "description": {"type": "string", "minLength": 1},
     "when_to_use": {"type": "string"},
-    "summary": {"type": "string"},
     "role": {"type": "string", "minLength": 1},
     "model": {"type": "string", "minLength": 1},
     "effort": {"enum": ["low", "medium", "high", "xhigh", "max"]},
@@ -18,7 +17,6 @@
     "argument_hint": {"type": "string"},
     "disable_model_invocation": {"type": "boolean"},
     "user_invocable": {"type": "boolean"},
-    "next": {"type": "array", "items": {"type": "string"}},
     "inject": {"type": "array", "items": {"type": "string", "minLength": 1}}
   }
 }

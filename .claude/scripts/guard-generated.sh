@@ -24,7 +24,7 @@ fi
 
 pattern='Code generated .* DO NOT EDIT'
 n=0
-while ((n < 5)) && IFS= read -r line; do
+while ((n < 5)) && { IFS= read -r line || [[ -n $line ]]; }; do  # || keeps an unterminated last line
   n=$((n + 1))
   if [[ $line =~ $pattern ]]; then
     echo "BLOCKED: generated file — edit its source and regenerate ($path)" >&2

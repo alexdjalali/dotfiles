@@ -1,6 +1,4 @@
 name: "audit"
 description: "Audit code for structural problems — a quick chat sweep (DRY, coupling, complexity, dead code, convention drift, test gaps, One-Idea drift, codegen gaps, operability), a persisted file:line-cited audit against a named standard (charter, ADR, budget) in docs/spec/audits/, or `repo` for layout compliance. Reports, never fixes. Use when asked to audit, sweep, or assess code quality, conformance, or repo structure."
-summary: "audit code for structural problems"
 role: "diagnose"
 argument_hint: "[<standard, e.g. philosophy-conformance | go-optimization | security> | repo] [<path>]"
-next: ["fix", "rfp", "spec"]

@@ -17,6 +17,24 @@ const KindCursor = "cursor"
 // KindKilocode renders the Cursor rules, reshaped, to kilocode/rules/<name>.md.
 const KindKilocode = "kilocode"
 
+// MirrorData is what a mirror template executes with: the model plus the
+// tool that reads the output, so one template can phrase tool-specific
+// sentences (for example, how language rules load) for each reader.
+type MirrorData struct {
+	*model.Model
+
+	// Reader names the consuming tool: ReaderCursor or ReaderCodex.
+	Reader string
+}
+
+const (
+	// ReaderCursor renders for Cursor, and for Kilocode, which reshapes it.
+	ReaderCursor = "cursor"
+
+	// ReaderCodex renders for Codex's AGENTS.md, where every body is inlined.
+	ReaderCodex = "codex"
+)
+
 // CursorTarget renders the condensed rules Cursor loads.
 type CursorTarget struct{}
 
@@ -29,7 +47,7 @@ func (CursorTarget) Owns() []string { return []string{"cursor/rules"} }
 // Render executes every Cursor template; the marker goes inside the
 // frontmatter.
 func (CursorTarget) Render(m *model.Model) ([]File, error) {
-	files, err := renderCursor(m)
+	files, err := renderCursor(m, ReaderCursor)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +70,7 @@ func (KilocodeTarget) Owns() []string { return []string{"kilocode/rules"} }
 // Render reshapes the Cursor rules itself, so it works with or without the
 // cursor target selected.
 func (KilocodeTarget) Render(m *model.Model) ([]File, error) {
-	cursor, err := renderCursor(m)
+	cursor, err := renderCursor(m, ReaderCursor)
 	if err != nil {
 		return nil, err
 	}
@@ -68,9 +86,9 @@ func (KilocodeTarget) Render(m *model.Model) ([]File, error) {
 	return files, nil
 }
 
-// renderCursor executes the Cursor templates in file-name order, without
-// markers; both mirror targets build on it.
-func renderCursor(m *model.Model) ([]File, error) {
+// renderCursor executes the Cursor templates for reader in file-name order,
+// without markers; both mirror targets build on it.
+func renderCursor(m *model.Model, reader string) ([]File, error) {
 	paths, err := filepath.Glob(srcPath(m, "mirrors/cursor/*.mdc.tmpl"))
 	if err != nil {
 		return nil, model.Wrap(err, model.CodeIO, "mirrors/cursor")
@@ -78,7 +96,7 @@ func renderCursor(m *model.Model) ([]File, error) {
 	sort.Strings(paths)
 	files := make([]File, 0, len(paths))
 	for _, p := range paths {
-		body, err := execFile(m, p, m)
+		body, err := execFile(m, p, MirrorData{Model: m, Reader: reader})
 		if err != nil {
 			return nil, err
 		}

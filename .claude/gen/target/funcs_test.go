@@ -65,20 +65,6 @@ func TestRuleUnknownIDErrors(t *testing.T) {
 	}
 }
 
-// TestRulesOrderedByCatalog tests the rules list function.
-//
-// Why this test is important:
-//   - Rule order in rules.yaml is the authored reading order.
-//
-// What it tests:
-//   - {{rules "claude-md"}} renders b-rule then a-rule as bullets, omitting c-rule.
-func TestRulesOrderedByCatalog(t *testing.T) {
-	got, err := exec(t, `{{rules "claude-md"}}`)
-	if err != nil || got != "- B first.\n- A second." {
-		t.Fatalf("got %q, err %v", got, err)
-	}
-}
-
 // TestLensesGroupsByCategory tests the review-lens list.
 //
 // Why this test is important:

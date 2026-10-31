@@ -51,6 +51,6 @@ When compacting, keep verbatim: the active plan path and its header (`Type`, `St
 
 ## Anti-Patterns
 
-Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · config/env read outside the config layer · hand-edited generated code · globals/singletons/service locators · impl selected by `if`/import instead of a `Kind` factory · retry/logging/tracing inlined instead of a decorator · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior.
+Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · config/env read outside the config layer · hand-edited generated code (the `guard-generated.sh` PreToolUse hook blocks Edit/Write on it; edit the source and regenerate) · globals/singletons/service locators · impl selected by `if`/import instead of a `Kind` factory · retry/logging/tracing inlined instead of a decorator · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior.
 
 @RTK.md

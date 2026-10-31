@@ -191,6 +191,9 @@ MUST_BLOCK=(
   # A git word that is not git running its rm (a user, a path) leaves rm a program.
   'ssh -l git host rm -rf ~'
   'find ~/git -exec rm -rf ~ \;'
+  # Only git and .../bin/git count as git; a libexec or shim git still gets
+  # the rm check.
+  '/usr/libexec/git-core/git rm -rf ~'
   # an exported ban reaches every later command; a wrapper passes its env on
   'export LEFTHOOK=0; git commit -m x'
   'declare -x LEFTHOOK=0'

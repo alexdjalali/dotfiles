@@ -1,0 +1,29 @@
+**Input:** a finding (`$ARGUMENTS`: its text or `file:line`). **Output:** one new machine check with its test, the rule's `enforce` moved rightward, and a report: rule id, check, test. Prose asks the model to comply; a check makes the violation impossible or loud — promote only what a check can decide without judgment.
+
+`enforce` runs `prose` → `review` → `lint` → `hook`. A rule moves rightward only; moving it leftward (weakening a check) needs an ADR.
+
+## Steps
+
+1. **Find the rule** the finding violates: `.claude/src/rules.yaml` (in `~/dotfiles`), else the project's lint config (`.golangci.yml`, `pyproject.toml` `[tool.ruff]`, `.semgrep/`, `eslint.config.*`). No rule yet → add one to the catalog with `enforce: prose` first, so the promotion is a visible diff.
+2. **Classify the shape** — it decides the check:
+
+   | Shape | Check |
+   |---|---|
+   | a command or flag (`git push --force`, `LEFTHOOK=0`) | a `bash-guard` rule: a `guard` block (`argv0`, `subcommands`, `flags`, `env`, `reason`) rendered into `guard_rules.json` |
+   | edits to a class of file | the edit guard (`guard-generated.sh`) or a new `edit-guard` path |
+   | a code pattern | the project's linter: `golangci-lint` `forbidigo` / `depguard`, a `ruff` rule, a `semgrep` rule, an ESLint rule |
+   | a doc or config pattern | generator validation (`claude-gen` `model.Validate`, or the project's schema check) |
+   | needs judgment (naming, design fit) | stays `review` — say so and stop |
+
+3. **Write the failing test first:** a `MUST_BLOCK` entry in `tests/claude/guard_test.sh`, linter testdata that must be flagged, or a `Validate` test. Run it; it fails because the check is missing.
+4. **Add the check**, in the source the shape names — never in generated output.
+5. **Move `enforce` rightward** and reduce the statement to plain prose: no ⛔/NEVER/MUST (validation rejects emphasis on a `hook` or `lint` rule).
+6. **Regenerate and gate:** `go -C .claude/gen run . --root "$PWD"`, then the project's gate (`just test && just lint` in `~/dotfiles`).
+7. **Report** the rule id, the check (file and what it matches), and the test that pins it.
+
+Already enforced at `hook` or `lint` → report that and change nothing.
+
+## Next Step
+
+- **The check would weaken or replace a stronger one** → `/adr` first.
+- **The finding is a one-off bug, not a pattern** → `/fix` it instead.

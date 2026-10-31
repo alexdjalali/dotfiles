@@ -95,11 +95,16 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
+    -- Operator-style API: each function sets 'operatorfunc' and returns "g@",
+    -- so the keys are expr mappings that take a motion (normal) or the
+    -- selection (visual). <leader>rr is Refactor This (Ctrl+T).
     keys = {
-      { "<leader>re", function() require("refactoring").refactor("Extract Function") end, mode = "x", desc = "Extract function" },
-      { "<leader>rf", function() require("refactoring").refactor("Extract Function To File") end, mode = "x", desc = "Extract to file" },
-      { "<leader>rv", function() require("refactoring").refactor("Extract Variable") end, mode = "x", desc = "Extract variable" },
-      { "<leader>ri", function() require("refactoring").refactor("Inline Variable") end, mode = { "n", "x" }, desc = "Inline variable" },
+      { "<leader>rr", function() require("refactoring").select_refactor() end, mode = { "n", "x" }, desc = "Refactor This" },
+      { "<leader>re", function() return require("refactoring").extract_func() end, mode = { "n", "x" }, expr = true, desc = "Extract function" },
+      { "<leader>rf", function() return require("refactoring").extract_func_to_file() end, mode = { "n", "x" }, expr = true, desc = "Extract to file" },
+      { "<leader>rv", function() return require("refactoring").extract_var() end, mode = { "n", "x" }, expr = true, desc = "Extract variable" },
+      { "<leader>ri", function() return require("refactoring").inline_var() end, mode = { "n", "x" }, expr = true, desc = "Inline variable" },
+      { "<leader>rI", function() return require("refactoring").inline_func() end, mode = { "n", "x" }, expr = true, desc = "Inline function" },
     },
     opts = {},
   },

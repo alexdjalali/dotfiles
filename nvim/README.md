@@ -395,6 +395,19 @@ vr
 nvim-update
 ```
 
+### GoLand / PyCharm Equivalents
+
+| JetBrains | Here |
+|---|---|
+| Search Everywhere (Shift Shift) | `<leader><leader>` |
+| Find Action (Cmd+Shift+A) | `<leader>fA` (commands), `<leader>fk` (keymaps) |
+| Run current file (Ctrl+Shift+R) | `<leader>Mf` — `go run .`, `uv run <file>` or `python3 <file>` |
+| Run configurations | `<leader>Mr` (overseer: justfile, Makefile, npm, go, `.vscode/tasks.json`), `<leader>Mt` task list |
+| Refactor This (Ctrl+T) | `<leader>rr`; extract/inline: `<leader>re` `rf` `rv` `ri` `rI` |
+| Optimize Imports (Ctrl+Alt+O) | `<leader>lo` (gopls, ruff) |
+| Structure (Cmd+F12) | `<leader>lS` (aerial), `<leader>ls` (symbols picker) |
+| Parameter hints | on by default; `<leader>uH` toggles |
+
 ### Recommended Workflow
 
 1. **File Navigation:** Use `<leader>ff` (snacks picker) or `<leader>e` (Neo-tree)

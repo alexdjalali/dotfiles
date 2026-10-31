@@ -10,7 +10,8 @@
 #     cannot be determined; any `git push --mirror`; a forced --all or
 #     --branches (abbreviations included)
 #   - recursive rm of /, ~, $HOME, or an ancestor of $HOME, including relative
-#     targets such as `*` run from the home directory
+#     targets such as `*` run from the home directory, also behind a wrapper
+#     the parser does not know (`mise exec -- rm -rf *`)
 #   - git reset --hard, git checkout of paths (or -f), git switch
 #     --discard-changes / -f, git restore of the working tree, git clean -f
 #   - git hook bypasses: `--no-verify` on commit/push/merge/rebase/am, `-n` on

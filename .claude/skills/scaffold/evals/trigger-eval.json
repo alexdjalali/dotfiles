@@ -1,0 +1,8 @@
+[
+  {"query": "add a new reindex CLI command to this project using its generators", "should_trigger": true},
+  {"query": "I need a new Postgres client backend for the store interface; scaffold it the way this repo generates things", "should_trigger": true},
+  {"query": "add a GET /v1/documents endpoint — generate the handler and mocks with the project's codegen rather than writing them by hand", "should_trigger": true},
+  {"query": "write an ADR for moving from SQS to Kafka", "should_trigger": false},
+  {"query": "the login endpoint returns 500 when the email has a plus sign in it, fix that", "should_trigger": false},
+  {"query": "break the auth epic into stories", "should_trigger": false}
+]

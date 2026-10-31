@@ -1,0 +1,6 @@
+name: "scaffold"
+description: "Add an artifact through the project's own generators — find the generator that owns it (CLI --help, justfile/Makefile, package.json, the manuals CLAUDE.md names), run it, and hand-write only the residue it cannot emit. Use when adding a command, endpoint, client backend, mock, migration or config key to a project that has generators."
+summary: "add an artifact through the project's generators"
+role: "execute"
+argument_hint: "<artifact to add>"
+next: ["rfp", "spec"]

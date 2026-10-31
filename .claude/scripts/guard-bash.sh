@@ -21,9 +21,9 @@
 #     (.claude/src/rules.yaml) and read by guard_rows.py; a missing or corrupt
 #     table blocks every command.
 # Long options match git's unambiguous abbreviations (`--har`, `--no-veri`).
-# git behind a wrapper the parser cannot peel (`mise exec -- git …`) gets the
-# same git rules from the backstop, judged against the command's final
-# directory and with quoted arguments unread, so it errs toward blocking.
+# git behind a wrapper the parser does not know (`mise exec -- git …`) is
+# judged as if run directly: every git rule, catalog bans included. An
+# unquoted mention (`echo git push -f origin main`) is judged the same way.
 #
 # Scope: this catches *accidental* destructive commands, the ones a model or a
 # tired human actually types. It is not a sandbox against deliberate evasion.

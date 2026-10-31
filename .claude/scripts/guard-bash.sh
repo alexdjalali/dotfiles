@@ -37,12 +37,13 @@
 # (`-S'…'`, `--split-string=…`), an escaped backslash before a line break
 # (`\\` + newline), a `$(...)` inside double quotes after a `cd` in the same
 # command (checked against the starting directory), a heredoc fed to a
-# quoted shell name (`"$SHELL" <<EOF`, `ssh host 'bash -s' <<EOF`), and rm
-# run as a user named git through a wrapper the parser does not know, or
-# with a dash-option between the git word and rm (`gosu git rm -rf /`,
-# `runuser -u git -- rm …`, `ssh -l git -C host rm …` read as `git rm`), and
-# `git rm -f` without `--cached`, which drops uncommitted edits to the files
-# it removes (git's rm is exempt from the rm check and has no rule of its own).
+# quoted shell name (`"$SHELL" <<EOF`, `ssh host 'bash -s' <<EOF`), a
+# command passed to `su -c` (not evaluated like `bash -c`), rm run as a user
+# named git through a wrapper the parser does not know, or with a dash-option
+# between the git word and rm (`gosu git rm -rf /`, `runuser -u git -- rm …`,
+# `ssh -l git -C host rm …` read as `git rm`), and `git rm -f` without
+# `--cached`, which drops uncommitted edits to the files it removes (git's rm
+# is exempt from the rm check and has no rule of its own).
 #
 # The structural rules and the shell-aware parsing live in guard_bash.py (the
 # table rows in guard_rows.py), run by the first python3 on PATH (3.9 or

@@ -415,6 +415,8 @@ def forced(args: list[str], refspecs: list[str]) -> bool:
 
 
 def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
+    """Block --mirror, forced --all/--branches, and force-pushes or deletes of
+    main/master (a branchless push counts as the checked-out branch)."""
     refspecs = positionals(args, PUSH_OPTS_WITH_VALUE)[1:]
     force = forced(args, refspecs)
     delete = has_flag(args, "d", "--delete")
@@ -548,7 +550,7 @@ def backstop(code: str, cwd: str) -> None:
             if "push" in rest and (
                 uses_flag(rest, "--mirror")
                 or (
-                    forced(rest, [w for w in rest if not w.startswith("-")])
+                    forced(rest, positionals(rest, PUSH_OPTS_WITH_VALUE))
                     and (
                         push_targets & PROTECTED_BRANCHES
                         or uses_flag(rest, "--all")

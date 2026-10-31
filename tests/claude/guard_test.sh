@@ -189,6 +189,9 @@ MUST_ALLOW=(
   # push of main/master or of every branch.
   'mise exec -- git push -f origin feature/x'
   'mise exec -- git push --all origin'
+  # A push option is not a refspec, even when it starts with +.
+  'git push -o +ci.skip origin main'
+  # Options that share a prefix with a banned one (--discard-changes, --staged).
   'git switch --detach'
   'git restore --source=HEAD --staged src/a.txt'
   # Prefix matching runs one way: a longer option that merely starts with a
@@ -285,7 +288,9 @@ test_blocks_destructive_commands() {
 # What it tests:
 #   - Everyday commands, and look-alikes (branch names containing main/force,
 #     --track/--detach checkouts, staged-only restore, dry-run clean,
-#     destructive text inside a commit message), exit 0.
+#     destructive text inside a commit message, options extending or sharing a
+#     prefix with a banned one, wrapped non-forced or feature-branch pushes, a
+#     push option starting with +), exit 0.
 test_allows_everyday_commands() {
   local c blocked=()
   for c in "${MUST_ALLOW[@]}"; do

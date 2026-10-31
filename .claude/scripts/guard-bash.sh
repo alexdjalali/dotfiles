@@ -11,7 +11,8 @@
 #     --branches (abbreviations included)
 #   - recursive rm of /, ~, $HOME, or an ancestor of $HOME, including relative
 #     targets such as `*` run from the home directory, also behind a wrapper
-#     the parser does not know (`mise exec -- rm -rf *`)
+#     the parser does not know (`mise exec -- rm -rf *`); git's own `rm`
+#     subcommand is not an rm
 #   - git reset --hard, git checkout of paths (or -f), git switch
 #     --discard-changes / -f, git restore of the working tree, git clean -f
 #   - git hook bypasses: `--no-verify` on commit/push/merge/rebase/am, `-n` on
@@ -37,8 +38,9 @@
 # (`\\` + newline), a `$(...)` inside double quotes after a `cd` in the same
 # command (checked against the starting directory), a heredoc fed to a
 # quoted shell name (`"$SHELL" <<EOF`, `ssh host 'bash -s' <<EOF`), and rm
-# run as a user named git through a wrapper the parser does not know
-# (`gosu git rm -rf /` reads as `git rm`).
+# run as a user named git through a wrapper the parser does not know, or
+# with a dash-option between the git word and rm (`gosu git rm -rf /`,
+# `runuser -u git -- rm …`, `ssh -l git -C host rm …` read as `git rm`).
 #
 # The structural rules and the shell-aware parsing live in guard_bash.py (the
 # table rows in guard_rows.py), run by the first python3 on PATH (3.9 or

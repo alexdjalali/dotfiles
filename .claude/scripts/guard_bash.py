@@ -519,7 +519,10 @@ def wipes_home_or_root(path: str) -> bool:
 def rm_operands(names: list[str], words: list[str]) -> list[str] | None:
     """The words after the first `rm`, or None when there is no `rm` or it is
     git's `rm` subcommand: an earlier word `git` (or a `…/bin/git` path) whose
-    git subcommand is `rm`. A user or path named git leaves rm a program."""
+    git subcommand, past global options, is `rm`. Narrower than the basename
+    test that decides what to judge as git, so it fails closed: `~/git` or
+    `ssh -l git` leaves rm a program; `gosu git rm` does not (guard-bash.sh
+    lists it as unhandled), nor does a git under a shim or libexec path."""
     if "rm" not in names:
         return None
     i = names.index("rm")

@@ -8,7 +8,8 @@
   severity: must_fix
   enforce: hook
   hook: bash-guard
-  targets: [claude-md, rules/development-practices]
+  summary: "Never bypass hooks (`--no-verify`) — a failing hook is a red fast check: fix, re-stage, retry."
+  targets: [claude-md, rules/development-practices, cursor/development-practices, cursor/global-standards]
   guard:
     argv0: git
     subcommands: [commit, push, merge, rebase, am]
@@ -22,7 +23,8 @@
   severity: must_fix
   enforce: hook
   hook: bash-guard-builtin
-  targets: [claude-md, rules/development-practices]
+  summary: never force-push main/master
+  targets: [claude-md, rules/development-practices, cursor/development-practices, cursor/global-standards]
 
 - id: generated-code-not-hand-edited
   statement: Change generated code at its source (proto, schema, template, `wire.go`) and regenerate through the project's CLI instead of editing the output; commit the output; CI fails on drift.
@@ -30,7 +32,8 @@
   severity: must_fix
   enforce: hook
   hook: edit-guard
-  targets: [rules/development-practices, rules/standards-golang]
+  summary: "never hand-edit — change the source and regenerate through the project's CLI; commit the output; CI fails on drift."
+  targets: [rules/development-practices, rules/standards-golang, cursor/development-practices]
 
 # Review lenses: rendered into review-diff's checklist by {{lenses "review"}}.
 - id: review-edge-cases

@@ -74,6 +74,9 @@ func Default() *Registry {
 	r.Register(KindClaudeMd, func() Target { return ClaudeMdTarget{} })
 	r.Register(KindGuardTable, func() Target { return GuardTableTarget{} })
 	r.Register(KindSkills, func() Target { return SkillsTarget{} })
+	r.Register(KindCursor, func() Target { return CursorTarget{} })
+	r.Register(KindKilocode, func() Target { return KilocodeTarget{} })
+	r.Register(KindAgentsMd, func() Target { return AgentsMdTarget{} })
 	return r
 }
 

@@ -414,10 +414,17 @@ def forced(args: list[str], refspecs: list[str]) -> bool:
     )
 
 
+def dest_branch(dst: str) -> str:
+    """A push destination as a branch name: `refs/heads/main` and `heads/main`
+    are both `main`."""
+    return dst.removeprefix("refs/").removeprefix("heads/")
+
+
 def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
     """Block --mirror, forced --all/--branches, and force-pushes or deletes of
-    main/master or a wildcard destination; a push naming no branch counts as
-    the checked-out branch, and is blocked when that cannot be determined."""
+    main/master, a wildcard destination or every matching branch (`:`); a
+    push naming no branch counts as the checked-out branch, and is blocked
+    when that cannot be determined."""
     refspecs = positionals(args, PUSH_OPTS_WITH_VALUE)[1:]
     force = forced(args, refspecs)
     delete = has_flag(args, "d", "--delete")
@@ -428,8 +435,10 @@ def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
     if not (force or delete or any(r.startswith(":") for r in refspecs)):
         return
     for ref in refspecs or ["HEAD"]:
+        if force and ref.lstrip("+") == ":":
+            raise Blocked("force-push of every matching branch (`:` refspec)")
         src, _, dst = ref.lstrip("+").rpartition(":")
-        dst = dst.removeprefix("refs/heads/")
+        dst = dest_branch(dst)
         if dst in ("HEAD", "@"):
             dst = current_branch(cwd, git_opts) or "(unknown branch)"
         if dst in PROTECTED_BRANCHES or dst == "(unknown branch)" or "*" in dst:
@@ -542,10 +551,7 @@ def backstop(code: str, cwd: str) -> None:
         names = [PurePosixPath(w).name for w in words]
         if "git" in names:
             rest = words[names.index("git") + 1 :]
-            push_targets = {
-                r.lstrip("+").rpartition(":")[2].removeprefix("refs/heads/")
-                for r in rest
-            }
+            push_targets = {dest_branch(r.lstrip("+").rpartition(":")[2]) for r in rest}
             if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
             if "push" in rest and (

@@ -146,6 +146,15 @@
             "command": "rtk hook claude"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-generated.sh\" || exit 2"
+          }
+        ]
       }
     ],
     "PostToolUse": [

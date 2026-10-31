@@ -43,4 +43,7 @@ type Skill struct {
 
 	// File is the source file the skill was loaded from (set by Load).
 	File string `yaml:"-"`
+
+	// HasTemplate reports whether skills/<File>.md.tmpl exists (set by Load).
+	HasTemplate bool `yaml:"-"`
 }

@@ -23,7 +23,8 @@ type Drift struct {
 	// Path is the repo-relative file.
 	Path string
 
-	// Kind is "differs", "missing" or "orphan".
+	// Kind is "differs", "missing", "orphan" or "unreadable" (Path then holds
+	// the read error).
 	Kind string
 }
 

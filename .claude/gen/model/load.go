@@ -51,6 +51,9 @@ func loadSkills(dir string) ([]Skill, error) {
 			return nil, err
 		}
 		s.File = strings.TrimSuffix(filepath.Base(p), ".yaml")
+		if _, err := os.Stat(filepath.Join(dir, s.File+".md.tmpl")); err == nil {
+			s.HasTemplate = true
+		}
 		skills = append(skills, s)
 	}
 	return skills, nil

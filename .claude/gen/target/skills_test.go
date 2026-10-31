@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"gopkg.in/yaml.v3"
 )
 
 // TestSkillsGolden tests the skills target against golden SKILL.md files.
@@ -67,5 +69,39 @@ func TestFrontmatterKeyOrder(t *testing.T) {
 		if lines[i] != w {
 			t.Fatalf("line %d = %q, want %q", i, lines[i], w)
 		}
+	}
+}
+
+// TestFrontmatterKeepsStringsStrings tests that string values stay strings.
+//
+// Why this test is important:
+//   - An argument hint of null or 123 written plain re-parses as YAML null
+//     or a number, so Claude Code would read a different value than the source.
+//
+// What it tests:
+//   - argument_hint "null" and description "123" re-parse from the rendered
+//     frontmatter as the strings "null" and "123".
+func TestFrontmatterKeepsStringsStrings(t *testing.T) {
+	root := t.TempDir()
+	for rel, content := range map[string]string{
+		".claude/src/skills/gamma.yaml":    "name: gamma\ndescription: \"123\"\nargument_hint: \"null\"\n",
+		".claude/src/skills/gamma.md.tmpl": "Body.\n",
+	} {
+		p := filepath.Join(root, rel)
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	files := renderLoaded(t, "skills", root)
+	parts := strings.SplitN(string(files[0].Data), "---\n", 3)
+	var fm map[string]any
+	if err := yaml.Unmarshal([]byte(parts[1]), &fm); err != nil {
+		t.Fatal(err)
+	}
+	if fm["description"] != "123" || fm["argument-hint"] != "null" {
+		t.Fatalf("frontmatter = %#v", fm)
 	}
 }

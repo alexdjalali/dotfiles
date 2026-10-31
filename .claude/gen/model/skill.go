@@ -11,9 +11,6 @@ type Skill struct {
 	// WhenToUse adds trigger phrases to the skill listing.
 	WhenToUse string `yaml:"when_to_use,omitempty"`
 
-	// Summary is the one-line text other skills' Next Step lists show.
-	Summary string `yaml:"summary,omitempty"`
-
 	// Role names the models.yaml role supplying model and effort.
 	Role string `yaml:"role,omitempty"`
 
@@ -40,9 +37,6 @@ type Skill struct {
 
 	// UserInvocable false hides the skill from the / menu.
 	UserInvocable *bool `yaml:"user_invocable,omitempty"`
-
-	// Next lists the skills the Next Step block offers.
-	Next []string `yaml:"next,omitempty"`
 
 	// Inject lists shell commands rendered as !`cmd` lines before the body.
 	Inject []string `yaml:"inject,omitempty"`

@@ -16,7 +16,7 @@ import (
 // What it tests:
 //   - Each src/skills/<name>.yaml + .md.tmpl renders to
 //     .claude/skills/<name>/SKILL.md exactly as its golden file: role
-//     resolved, overrides applied, injected lines, and the Next Step list.
+//     resolved, overrides applied, and injected lines.
 func TestSkillsGolden(t *testing.T) {
 	files := renderLoaded(t, "skills", "../testdata/skills")
 	if len(files) != 2 {

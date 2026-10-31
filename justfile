@@ -30,6 +30,6 @@ lint:
     ruff format --check .claude/scripts
     ruff check .claude/scripts
     basedpyright .claude/scripts
-    test -z "$(gofumpt -l .claude/gen)"
+    out=$(gofumpt -l .claude/gen) && test -z "$out"
     go -C .claude/gen vet ./...
     go -C .claude/gen run . --root "$PWD" --check

@@ -106,7 +106,7 @@ const descriptionBudget = 1536
 
 // checkSkill validates one skill against skill.json and its cross-references:
 // name equals the file stem, the description fits the listing budget, the
-// role exists, and every next edge names a skill.
+// and the role exists.
 func checkSkill(m *Model, sk Skill) []Error {
 	path := "skills/" + sk.File + ".yaml"
 	errs := checkSchema("skill.json", path, sk)
@@ -118,15 +118,6 @@ func checkSkill(m *Model, sk Skill) []Error {
 	}
 	if _, ok := m.Models[sk.Role]; sk.Role != "" && !ok {
 		errs = append(errs, Error{path, "/role", fmt.Sprintf("role %q is not in models.yaml", sk.Role)})
-	}
-	names := map[string]bool{}
-	for _, other := range m.Skills {
-		names[other.Name] = true
-	}
-	for i, next := range sk.Next {
-		if !names[next] {
-			errs = append(errs, Error{path, fmt.Sprintf("/next/%d", i), fmt.Sprintf("next names unknown skill %q", next)})
-		}
 	}
 	return errs
 }

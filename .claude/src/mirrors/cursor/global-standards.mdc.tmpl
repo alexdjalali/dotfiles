@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Global Engineering Standards
 
-Companion rules: `testing`, `verification`, `development-practices`, `code-review-reception`, `documentation-sync`; language rules load by file type (`python.mdc` (`.py` files), `go.mdc` (`.go` files), `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)). A project's constitution (`docs/constitution.md`) and its own rules override these.
+{{if eq .Reader "codex"}}The sections below cover testing, verification, development practices, receiving code review and documentation sync; the Go, Python and TypeScript/React sections apply to `.go`, `.py` and `.ts`/`.tsx`/`.js`/`.jsx` files.{{else}}Companion rules: `testing`, `verification`, `development-practices`, `code-review-reception`, `documentation-sync`; language rules load by file type (`python.mdc` (`.py` files), `go.mdc` (`.go` files), `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)).{{end}} A project's constitution (`docs/constitution.md`) and its own rules override these.
 
 ## Process
 

@@ -14,7 +14,7 @@ import (
 //
 // What it tests:
 //   - A bash-guard rule renders as one row in .claude/scripts/guard_rules.json,
-//     with the marker under "_generated".
+//     config keys included, with the marker under "_generated".
 func TestGuardTableGolden(t *testing.T) {
 	files := renderLoaded(t, "guard-table", "../testdata/guardtable")
 	want, err := os.ReadFile("../testdata/guardtable/golden.json")

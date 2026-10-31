@@ -21,6 +21,9 @@
           "0"
         ]
       },
+      "config": [
+        "core.hooksPath"
+      ],
       "reason": "hooks are gates"
     }
   ]

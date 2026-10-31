@@ -6,4 +6,6 @@ alwaysApply: true
 
 ## Alpha
 
+Rules load by file type.
+
 Read freely. Never bypass hooks (`--no-verify`) — fix, re-stage, retry.

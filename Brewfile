@@ -63,6 +63,7 @@ brew "entr"                # File watcher (re-run commands on change)
 # Languages & Package Managers
 # =============================================================================
 brew "go"
+brew "gofumpt"             # Stricter gofmt; `just lint` checks .claude/gen with it
 brew "python@3.13"
 brew "uv"                  # Fast Python package manager
 brew "pipx"                # Install Python CLI tools in isolation

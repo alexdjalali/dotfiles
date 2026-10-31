@@ -153,6 +153,22 @@ MUST_BLOCK=(
   'env LEFTHOOK=0 git push'
   'LEFTHOOK=false git merge x'
   "bash -c 'git commit --no-verify -m x'"
+  # git accepts any unambiguous prefix of a long option
+  'git commit --no-veri -m x'
+  'git push --no-verif'
+  # an exported ban reaches every later command; a wrapper passes its env on
+  'export LEFTHOOK=0; git commit -m x'
+  'declare -x LEFTHOOK=0'
+  'sudo LEFTHOOK=0 git commit -m x'
+  # pointing core.hooksPath elsewhere (or unsetting it) runs no hooks at all
+  'git -c core.hooksPath=/dev/null commit -m x'
+  'git -c core.hookspath=/dev/null push'
+  'X=/dev/null git --config-env=core.hooksPath=X commit -m x'
+  'GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null git commit -m x'
+  'git config core.hooksPath /dev/null'
+  'git config --global core.hooksPath /dev/null'
+  'git config set core.hooksPath /dev/null'
+  'git config --unset core.hooksPath'
 )
 
 # Destructive text is allowed only when quoted: an unquoted mention such as
@@ -161,6 +177,14 @@ MUST_BLOCK=(
 # shellcheck disable=SC2016  # literal $ rows, as the model would type them
 MUST_ALLOW=(
   'git status'
+  'git commit --no-edit'
+  'export FOO=1; git commit -m x'
+  'declare LEFTHOOK=0'
+  'git config --get core.hooksPath'
+  'git config core.hooksPath'
+  'git config get core.hooksPath'
+  'git config user.name x'
+  'git -c color.ui=never commit -m x'
   'git push origin feature/x'
   'git push --force origin feature/x'
   'git push origin main'

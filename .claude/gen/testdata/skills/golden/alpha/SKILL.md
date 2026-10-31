@@ -14,7 +14,3 @@ argument-hint: '[<paths> | <PR number>]'
 !`git diff --stat HEAD`
 
 **Target:** `$ARGUMENTS`.
-
-## Next Step
-
-- `/beta` — ship it

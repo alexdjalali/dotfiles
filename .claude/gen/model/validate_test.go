@@ -262,22 +262,6 @@ func TestRoleMustExist(t *testing.T) {
 	}
 }
 
-// TestNextEdgeMustExist tests chain edges.
-//
-// Why this test is important:
-//   - A Next Step naming a missing skill sends the user to a dead command.
-//
-// What it tests:
-//   - next: [ghost] reports /next/0; next: [b] with b defined passes.
-func TestNextEdgeMustExist(t *testing.T) {
-	a, b := validSkill("a"), validSkill("b")
-	a.Next = []string{"ghost", "b"}
-	errs := model.Validate(skillModel(a, b))
-	if !hasField(errs, "skills/a.yaml", "/next/0") || hasField(errs, "skills/a.yaml", "/next/1") {
-		t.Fatalf("errors = %v", fields(errs))
-	}
-}
-
 // TestMirrorRuleNeedsSummary tests the summary requirement for mirrors.
 //
 // Why this test is important:

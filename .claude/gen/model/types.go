@@ -82,6 +82,11 @@ type Guard struct {
 	// Env maps an environment variable to the values it bans.
 	Env map[string][]string `yaml:"env" json:"env"`
 
+	// Config lists git config keys the row bans overriding: per command
+	// (-c, --config-env, GIT_CONFIG_KEY_n) on a listed subcommand, and
+	// written or unset with `git config`.
+	Config []string `yaml:"config,omitempty" json:"config,omitempty"`
+
 	// Reason is printed when the row blocks a command.
 	Reason string `yaml:"reason" json:"reason"`
 }

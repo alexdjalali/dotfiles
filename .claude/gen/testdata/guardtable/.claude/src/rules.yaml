@@ -9,6 +9,7 @@
     subcommands: [commit, push]
     flags: {all: [--no-verify], commit: [-n]}
     env: {LEFTHOOK: ["0"]}
+    config: [core.hooksPath]
     reason: hooks are gates
 - id: edits
   statement: Edit the source.

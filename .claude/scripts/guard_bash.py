@@ -13,10 +13,9 @@ Two layers:
      off. `bash -c`, `eval` and here-strings fed to a shell are evaluated
      recursively. git or rm behind a wrapper it does not know (`mise exec --
      git …`) is judged as if run directly. Each command is checked against the
-     rules: the
-     structural checks coded here, and the flag / env-value / config-key bans
-     read from guard_rules.json by guard_rows (generated from the rule catalog
-     by claude-gen).
+     rules: the structural checks coded here, and the flag / env-value /
+     config-key bans read from guard_rules.json by guard_rows (generated from
+     the rule catalog by claude-gen).
   2. A backstop that re-checks the code-only text (quoted strings, comments
      and data heredocs removed) word by word, so a construct the structured
      pass misses still blocks instead of being silently allowed.
@@ -556,16 +555,16 @@ def backstop(code: str, cwd: str) -> None:
             # Coarse, cwd-free rules for git the structured pass could not
             # parse at all; git it parsed, wrapped or not, it already judged.
             after_push = rest[rest.index("push") + 1 :] if "push" in rest else []
+            refspecs = positionals(after_push, PUSH_OPTS_WITH_VALUE)[1:]
             push_targets = {
-                dest_branch(r.lstrip("+").rpartition(":")[2])
-                for r in positionals(after_push, PUSH_OPTS_WITH_VALUE)[1:]
+                dest_branch(r.lstrip("+").rpartition(":")[2]) for r in refspecs
             }
             if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
             if "push" in rest and (
                 uses_flag(rest, "--mirror")
                 or (
-                    forced(rest, positionals(rest, PUSH_OPTS_WITH_VALUE))
+                    forced(after_push, refspecs)
                     and (
                         push_targets & PROTECTED_BRANCHES
                         or uses_flag(rest, "--all")
@@ -617,7 +616,7 @@ def check_wrapped(program: str, args: list[str], env: dict[str, str], cwd: str) 
         split = split_git(args[i + 1 :], cwd)
         check_rows(git_env, "git", *split)
         check_git(*split, cwd)
-    if program != "rm" and "rm" in names:
+    if program not in ("rm", "git") and "rm" in names:  # `git rm` is git's
         check_rm(args[names.index("rm") + 1 :], cwd)
 
 

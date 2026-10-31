@@ -393,10 +393,8 @@ test_force_push_of_every_branch() {
 test_push_main_outside_refspec() {
   local c
   for c in 'git push -f main feature/x' 'git -C main push -f origin feature/x'; do
-    git -c init.defaultBranch=feature init -q "$T/repo"
     mkdir -p "$T/repo/main"
-    assert_eq 0 "$(jq -cn --arg c "$c" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' |
-      bash "$GUARD" >/dev/null 2>&1; echo $?)" "[$c] on feature"
+    assert_eq 0 "$(push_status_on_branch feature "$c")" "[$c] on feature"
     command rm -rf "$T/repo"
   done
 }
@@ -405,9 +403,10 @@ test_push_main_outside_refspec() {
 #   - `rm -rf *` or `rm -rf .` typed from the home directory wipes it just as
 #     surely as `rm -rf ~`.
 # What it tests:
-#   - Relative recursive removals are resolved against the hook's cwd: blocked
-#     from $HOME, allowed from a project directory, and blocked after a
-#     `cd -P ~` earlier in the same command.
+#   - Relative recursive removals are resolved against the hook's cwd, also
+#     behind an unknown wrapper: blocked from $HOME, allowed from a project
+#     directory, and blocked after a `cd -P ~` earlier in the same command;
+#     `git rm -r --cached .` from $HOME is git's rm and allowed.
 test_relative_rm_resolved_against_cwd() {
   local c rc
   mkdir -p "$T/project"
@@ -425,6 +424,10 @@ test_relative_rm_resolved_against_cwd() {
     HOME="$T" bash "$GUARD" >/dev/null 2>&1
   rc=$?
   assert_eq 2 "$rc" "[cd -P ~ && rm -rf *] from a project directory"
+  jq -cn --arg d "$T" '{cwd: $d, tool_input: {command: "git rm -r --cached ."}}' |
+    HOME="$T" bash "$GUARD" >/dev/null 2>&1
+  rc=$?
+  assert_eq 0 "$rc" "[git rm -r --cached .] from \$HOME"
 }
 
 # Why this test is important:
@@ -432,7 +435,8 @@ test_relative_rm_resolved_against_cwd() {
 #     blocked `git checkout -- <path>`; only the working tree says it's a path.
 # What it tests:
 #   - From a repo, checking out an existing file or directory (also with
-#     --ours) is blocked and checking out a branch name (not a path) is allowed.
+#     --ours) is blocked; checking out a branch name (not a path) is allowed,
+#     also with a redirection to an existing file, wrapped or not.
 test_checkout_of_existing_path() {
   local c rc
   git -c init.defaultBranch=main init -q "$T/repo"

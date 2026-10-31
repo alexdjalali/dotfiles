@@ -105,8 +105,8 @@ func mirrorTarget(target string) bool {
 const descriptionBudget = 1536
 
 // checkSkill validates one skill against skill.json and its cross-references:
-// name equals the file stem, the description fits the listing budget, the
-// and the role exists.
+// its skills/<name>.md.tmpl body exists, name equals the file stem, the
+// description fits the listing budget, and the role exists.
 func checkSkill(m *Model, sk Skill) []Error {
 	path := "skills/" + sk.File + ".yaml"
 	errs := checkSchema("skill.json", path, sk)

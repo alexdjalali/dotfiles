@@ -1,7 +1,9 @@
 package model
 
 import (
+	"bytes"
 	"errors"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -59,7 +61,9 @@ func loadSkills(dir string) ([]Skill, error) {
 	return skills, nil
 }
 
-// readYAML decodes path into out; a missing file leaves out unchanged.
+// readYAML decodes path into out; a missing or empty file leaves out
+// unchanged. Decoding is strict: a key out has no field for is an error, so a
+// stale or misspelled key is not dropped silently.
 func readYAML(path string, out any) error {
 	data, err := os.ReadFile(path)
 	if errors.Is(err, fs.ErrNotExist) {
@@ -68,7 +72,9 @@ func readYAML(path string, out any) error {
 	if err != nil {
 		return Wrap(err, CodeIO, path)
 	}
-	if err := yaml.Unmarshal(data, out); err != nil {
+	dec := yaml.NewDecoder(bytes.NewReader(data))
+	dec.KnownFields(true)
+	if err := dec.Decode(out); err != nil && !errors.Is(err, io.EOF) {
 		return Wrap(err, CodeInvalidModel, path)
 	}
 	return nil

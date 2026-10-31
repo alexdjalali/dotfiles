@@ -55,32 +55,32 @@ func (SkillsTarget) Render(m *model.Model) ([]File, error) {
 }
 
 // frontmatter renders a skill's YAML keys in a fixed order, resolving model
-// and effort from its role and omitting unset keys.
+// and effort from its role and omitting unset keys. Each value carries its
+// YAML tag, so text like null or 123 stays a string.
 func frontmatter(m *model.Model, sk model.Skill) ([]byte, error) {
 	role := m.Models[sk.Role]
-	pairs := [][2]string{
-		{"name", sk.Name},
-		{"model", firstSet(sk.Model, role.Model)},
-		{"effort", firstSet(sk.Effort, role.Effort)},
-		{"context", sk.Context},
-		{"agent", sk.Agent},
-		{"background", boolText(sk.Background)},
-		{"description", sk.Description},
-		{"when_to_use", sk.WhenToUse},
-		{"argument-hint", sk.ArgumentHint},
-		{"disable-model-invocation", boolText(sk.DisableModelInvocation)},
-		{"user-invocable", boolText(sk.UserInvocable)},
+	const str, boolean = "!!str", "!!bool"
+	pairs := [][3]string{
+		{"name", sk.Name, str},
+		{"model", firstSet(sk.Model, role.Model), str},
+		{"effort", firstSet(sk.Effort, role.Effort), str},
+		{"context", sk.Context, str},
+		{"agent", sk.Agent, str},
+		{"background", boolText(sk.Background), boolean},
+		{"description", sk.Description, str},
+		{"when_to_use", sk.WhenToUse, str},
+		{"argument-hint", sk.ArgumentHint, str},
+		{"disable-model-invocation", boolText(sk.DisableModelInvocation), boolean},
+		{"user-invocable", boolText(sk.UserInvocable), boolean},
 	}
 	doc := &yaml.Node{Kind: yaml.MappingNode}
 	for _, p := range pairs {
 		if p[1] == "" {
 			continue
 		}
-		val := &yaml.Node{Kind: yaml.ScalarNode, Tag: "!!str", Value: p[1]}
-		if isBool[p[0]] {
-			val.Tag = "!!bool"
-		}
-		doc.Content = append(doc.Content, &yaml.Node{Kind: yaml.ScalarNode, Value: p[0]}, val)
+		doc.Content = append(doc.Content,
+			&yaml.Node{Kind: yaml.ScalarNode, Value: p[0]},
+			&yaml.Node{Kind: yaml.ScalarNode, Tag: p[2], Value: p[1]})
 	}
 	out, err := yaml.Marshal(doc)
 	if err != nil {
@@ -88,10 +88,6 @@ func frontmatter(m *model.Model, sk model.Skill) ([]byte, error) {
 	}
 	return out, nil
 }
-
-// isBool names the frontmatter keys rendered by boolText; every other value
-// is tagged !!str so text like null or 123 is quoted instead of re-parsed.
-var isBool = map[string]bool{"background": true, "disable-model-invocation": true, "user-invocable": true}
 
 // firstSet returns the first non-empty value.
 func firstSet(values ...string) string {

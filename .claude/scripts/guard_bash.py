@@ -417,7 +417,7 @@ def forced(args: list[str], refspecs: list[str]) -> bool:
 def dest_branch(dst: str) -> str:
     """A push destination as a branch name: `refs/heads/main` and `heads/main`
     are both `main`."""
-    return dst.removeprefix("refs/").removeprefix("heads/")
+    return re.sub(r"^(refs/)?heads/", "", dst)
 
 
 def check_push(args: list[str], cwd: str, git_opts: list[str]) -> None:
@@ -551,21 +551,11 @@ def backstop(code: str, cwd: str) -> None:
         names = [PurePosixPath(w).name for w in words]
         if "git" in names:
             rest = words[names.index("git") + 1 :]
-            push_targets = {dest_branch(r.lstrip("+").rpartition(":")[2]) for r in rest}
             if "reset" in rest and uses_flag(rest, "--hard"):
                 raise Blocked("git reset --hard discards uncommitted work (backstop)")
-            if "push" in rest and (
-                uses_flag(rest, "--mirror")
-                or (
-                    forced(rest, positionals(rest, PUSH_OPTS_WITH_VALUE))
-                    and (
-                        push_targets & PROTECTED_BRANCHES
-                        or uses_flag(rest, "--all")
-                        or uses_flag(rest, "--branches")
-                    )
-                )
-            ):
-                raise Blocked("force-push to main/master or every branch (backstop)")
+            git_opts, sub, push_args = split_git(rest, cwd)
+            if sub == "push":
+                check_push(push_args, cwd, git_opts)  # one rule set for both layers
             if "clean" in rest and has_flag(rest, "f", "--force"):
                 raise Blocked("git clean -f deletes untracked files (backstop)")
             after = rest[rest.index("checkout") + 1 :] if "checkout" in rest else []

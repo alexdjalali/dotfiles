@@ -168,6 +168,12 @@ MUST_BLOCK=(
   'git push -f origin :'
   'git push -f origin heads/main'
   'mise exec -- git push -f origin heads/main'
+  'mise exec -- git push -f origin :'
+  'git push origin +:'
+  # The backstop runs check_push on a wrapped push: same rules as unwrapped.
+  'mise exec -- git push -f origin refs/heads/*:refs/heads/*'
+  'mise exec -- git push origin :main'
+  'mise exec -- git push -f'
   # An unknown wrapper hides git from the structured pass; the backstop sees it.
   'mise exec -- git push -f --all origin'
   'mise exec -- git push -f --branch origin'
@@ -202,6 +208,8 @@ MUST_ALLOW=(
   'git push -o +ci.skip origin main'
   # An unforced matching push only fast-forwards.
   'git push origin :'
+  # refs/main is a one-level ref, not the main branch.
+  'git push origin HEAD:refs/main'
   # An option sharing a prefix with the one a check looks for
   # (--discard-changes).
   'git switch --detach'

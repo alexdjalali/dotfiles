@@ -61,6 +61,24 @@ test_iterm_profiles_exist() {
 }
 
 # Why this test is important:
+#   - Web links iTerm opens go to the default browser profile; pointing it at a
+#     terminal profile turned that terminal profile into a browser.
+# What it tests:
+#   - The plist's default browser profile is a tracked dynamic profile (under
+#     iterm/DynamicProfiles/) whose type is Browser.
+test_iterm_default_browser_profile_is_browser() {
+  local out
+  out=$(python3 - "$PLIST" "$REPO_ROOT"/iterm/DynamicProfiles/*.json <<'PY'
+import json, plistlib, sys
+guid = plistlib.load(open(sys.argv[1], "rb")).get("Default Browser Profile Guid")
+types = {p["Guid"]: p.get("Custom Command") for f in sys.argv[2:] for p in json.load(open(f))["Profiles"]}
+print(f"{guid}={types.get(guid, 'untracked')}")
+PY
+  ) || _fail "could not read the browser profile"
+  assert_contains "$out" "=Browser" "default browser profile"
+}
+
+# Why this test is important:
 #   - Substring globs painted ~/code/products red ("prod") and */latest blue
 #     ("test"), so the colour stopped meaning anything.
 # What it tests:
@@ -126,6 +144,7 @@ test_nvim_bootstrap_reports_editor_errors() {
 run_test test_gitconfig_local_overrides_and_settings
 run_test test_iterm_plist_valid
 run_test test_iterm_profiles_exist
+run_test test_iterm_default_browser_profile_is_browser
 run_test test_tab_color_globs_anchored
 run_test test_lazy_lock_tracked_and_complete
 run_test test_nvim_bootstrap_reports_editor_errors

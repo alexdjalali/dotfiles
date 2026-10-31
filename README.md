@@ -11,7 +11,7 @@ Personal dev environment for macOS. Catppuccin Mocha theme throughout.
 | `nvim/` | Neovim (AstroNvim-based) with LSP, DAP, and 30+ plugin configs |
 | `latex/` | LaTeX config (latexmkrc with build optimizations) |
 | `git/` | Git config with delta, GPG signing, LFS |
-| `iterm/` | iTerm2 preferences and Catppuccin color scheme |
+| `iterm/` | iTerm2 preferences, Catppuccin color scheme and a Web browser profile |
 | `raycast/` | 28 Raycast script commands for dev workflows |
 | `neomutt/` | Neomutt for Gmail (password in the macOS Keychain) |
 | `Brewfile` | Homebrew packages, casks and fonts (annotated; commented entries are optional) |
@@ -112,6 +112,6 @@ Neovim has 59 LuaSnip snippets for LaTeX across TikZ, Beamer, and packages
 1. **Secrets** -- edit `~/.zshrc.local` and fill in your API keys/tokens.
 2. **GPG key** -- import your existing key (`gpg --import key.asc`) or generate a new one (`gpg --full-generate-key`). If the ID differs, set `[user] signingkey` in `~/.gitconfig.local` (included last by `git/.gitconfig`), not in the tracked file.
 3. **Neomutt** -- copy the example account file and add credentials. See `neomutt/.neomutt/QUICKSTART.md`.
-4. **iTerm2** -- set custom preferences folder to `~/dotfiles/iterm` in iTerm > Settings > General > Preferences.
+4. **iTerm2** -- set custom preferences folder to `~/dotfiles/iterm` in iTerm > Settings > General > Preferences. For the built-in browser (the `Web` profile), move the [browser plugin](https://iterm2.com/browser-plugin.html) to `/Applications`.
 5. **iTerm2 font** -- the tracked profile uses JetBrainsMono Nerd Font Mono. For another profile, pick one of the Brewfile's Nerd Fonts (JetBrainsMono or MesloLGS) in iTerm > Settings > Profiles > Text > Font.
 6. **Raycast** -- add `~/.local/scripts/raycast` as a Script Command directory in Raycast preferences.

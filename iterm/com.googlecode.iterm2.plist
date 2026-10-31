@@ -1391,7 +1391,7 @@
 	<key>Default Bookmark Guid</key>
 	<string>77CC0BB2-689F-47A6-B5B0-B93D64054E7C</string>
 	<key>Default Browser Profile Guid</key>
-	<string>devops-nord-profile</string>
+	<string>dotfiles-web-browser</string>
 	<key>EnableAPIServer</key>
 	<true/>
 	<key>FocusFollowsMouse</key>

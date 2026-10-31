@@ -6,7 +6,7 @@ return {
   opts = {
     features = {
       codelens = true,
-      inlay_hints = false,
+      inlay_hints = true, -- parameter and type hints, as in GoLand/PyCharm (<leader>uH toggles)
       semantic_tokens = true,
     },
     formatting = {
@@ -85,6 +85,14 @@ return {
     },
     mappings = {
       n = {
+        -- Optimize Imports (Ctrl+Alt+O): gopls and ruff both offer it.
+        ["<Leader>lo"] = {
+          function()
+            vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" }, diagnostics = {} }, apply = true })
+          end,
+          desc = "Organize imports",
+          cond = "textDocument/codeAction",
+        },
         gD = {
           function() vim.lsp.buf.declaration() end,
           desc = "Declaration of current symbol",

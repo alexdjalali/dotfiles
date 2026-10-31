@@ -18,4 +18,7 @@ return {
   { import = "astrocommunity.editing-support.todo-comments-nvim" },
   { import = "astrocommunity.pack.tailwindcss" },
   { import = "astrocommunity.pack.helm" },
+  -- Run configurations (GoLand run widget): tasks from justfile, Makefile, npm,
+  -- go and .vscode/tasks.json under <leader>M
+  { import = "astrocommunity.code-runner.overseer-nvim" },
 }

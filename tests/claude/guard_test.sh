@@ -165,6 +165,7 @@ MUST_BLOCK=(
   'mise exec -- git push -f --branch origin'
   'mise exec -- git push --force-with-lease --all origin'
   'mise exec -- git push origin +main'
+  'mise exec -- git push -o ci.skip origin +main'
   # an exported ban reaches every later command; a wrapper passes its env on
   'export LEFTHOOK=0; git commit -m x'
   'declare -x LEFTHOOK=0'
@@ -191,7 +192,8 @@ MUST_ALLOW=(
   'mise exec -- git push --all origin'
   # A push option is not a refspec, even when it starts with +.
   'git push -o +ci.skip origin main'
-  # Options that share a prefix with a banned one (--discard-changes, --staged).
+  # Options sharing a prefix with the one a check looks for (--discard-changes,
+  # --staged).
   'git switch --detach'
   'git restore --source=HEAD --staged src/a.txt'
   # Prefix matching runs one way: a longer option that merely starts with a

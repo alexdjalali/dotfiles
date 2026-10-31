@@ -517,12 +517,17 @@ def wipes_home_or_root(path: str) -> bool:
 
 
 def rm_operands(names: list[str], words: list[str]) -> list[str] | None:
-    """The words after the first `rm` that is a program, not git's `rm`
-    subcommand (any `git` before it); None when there is none."""
+    """The words after the first `rm`, or None when there is no `rm` or it is
+    git's `rm` subcommand: an earlier word `git` (or a `…/bin/git` path) whose
+    git subcommand is `rm`. A user or path named git leaves rm a program."""
     if "rm" not in names:
         return None
     i = names.index("rm")
-    return None if "git" in names[:i] else words[i + 1 :]
+    for g in range(i):
+        is_git = words[g] == "git" or words[g].endswith("/bin/git")
+        if is_git and split_git(words[g + 1 :], "")[1] == "rm":
+            return None
+    return words[i + 1 :]
 
 
 def check_rm(args: list[str], cwd: str, relative: bool = True) -> None:

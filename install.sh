@@ -174,6 +174,10 @@ link_dotfiles() {
     backup_and_link "$DOTFILES/neomutt/.neomutt"    "$HOME/.neomutt"
     backup_and_link "$DOTFILES/raycast"             "$HOME/.local/scripts/raycast"
 
+    # iTerm2 dynamic profiles (the Web browser profile; iTerm reloads the folder live)
+    backup_and_link "$DOTFILES/iterm/DynamicProfiles/web.json" \
+        "$HOME/Library/Application Support/iTerm2/DynamicProfiles/web.json"
+
     # Ensure Raycast scripts are executable
     chmod +x "$DOTFILES/raycast/"*.sh 2>/dev/null || true
 

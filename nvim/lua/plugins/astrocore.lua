@@ -20,6 +20,7 @@ return {
         spell = false,
         signcolumn = "yes",
         wrap = false,
+        textwidth = 90, -- global default; FileType autocmd below enforces it everywhere
         scrolloff = 8,
         cursorline = true,
         tabstop = 2,
@@ -29,6 +30,18 @@ return {
         sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions",
         -- Load a project's .nvim.lua once trusted (:trust), for project-only helpers.
         exrc = true,
+      },
+    },
+    autocmds = {
+      -- Force textwidth = 90 for every filetype, overriding runtime ftplugins
+      -- that set their own (e.g. gitcommit = 72) so `gq` wraps at 90 across the board.
+      textwidth_everywhere = {
+        {
+          event = "FileType",
+          pattern = "*",
+          desc = "Enforce textwidth = 90 for all filetypes",
+          callback = function() vim.opt_local.textwidth = 90 end,
+        },
       },
     },
     mappings = {

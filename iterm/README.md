@@ -11,6 +11,10 @@ by the shell, tmux and Neovim.
 - `catppuccin-mocha.itermcolors`: the colour preset on its own, to import into
   another profile (Settings > Profiles > Colors > Color Presets > Import).
 - `Nord.itermcolors`: an alternative preset.
+- `DynamicProfiles/web.json`: a `Web` profile of type Web Browser, inheriting
+  from `Default`. `install.sh` links it into
+  `~/Library/Application Support/iTerm2/DynamicProfiles/`, and the plist makes it
+  the default browser profile, so web links iTerm opens land in it.
 
 The zsh side (`zsh/conf.d/08-iterm.zsh`) adds shell integration, badges
 (directory, git branch, tool versions), directory-based tab colours and window
@@ -23,6 +27,15 @@ titles. `install.sh` downloads the shell integration script.
 2. Set **Save changes** to *Automatically*, or to *Manually* and use
    **Save Now**, so changes made in iTerm land back in this folder.
 3. Restart iTerm.
+
+## Web browser
+
+iTerm2 3.6+ can run browser sessions in tabs and splits next to terminals
+(<https://iterm2.com/documentation-web.html>). Full functionality needs the
+separately signed browser plugin: download it from
+<https://iterm2.com/browser-plugin.html>, unzip it and move
+`iTermBrowserPlugin.app` to `/Applications`. iTerm finds it there on its own.
+Then open a browser with **Profiles > Web**.
 
 ## Regenerate the file
 

@@ -18,7 +18,6 @@
     "CLAUDE_CODE_ENABLE_TASKS": "true",
     "CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS": "true",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "true",
-    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "true",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-5-5",
     "ENABLE_TOOL_SEARCH": "true"
   },
@@ -207,7 +206,7 @@
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
-  "autoCompactWindow": 200000,
+  "autoCompactWindow": 500000,
   "prefersReducedMotion": true,
   "autoDreamEnabled": false,
   "showThinkingSummaries": true,
@@ -215,6 +214,7 @@
   "theme": "auto",
   "verbose": true,
   "preferredNotifChannel": "auto",
+  "autoCompactEnabled": true,
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
   "showThinkingHint": true

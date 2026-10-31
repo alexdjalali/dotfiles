@@ -1,0 +1,11 @@
+{
+  "Profiles": [
+    {
+      "Name": "Web",
+      "Guid": "dotfiles-web-browser",
+      "Dynamic Profile Parent Name": "Default",
+      "Custom Command": "Browser",
+      "Tags": ["browser", "dotfiles"]
+    }
+  ]
+}

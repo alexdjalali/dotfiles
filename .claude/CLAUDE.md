@@ -7,6 +7,7 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 - **ADR first** for architectural changes and for any deviation from an established pattern.
 - **Plan before code** for non-trivial work: `/spec` → gitignored `docs/local/plans/` (`~/.claude/templates/plan.md`).
 - **TDD mandatory** (`testing.md`). **Verify before done** (`verification.md`).
+- **Own what you find.** Fix a problem when it comes up — a failing test, a broken config, a gap in a module, a stale local file — instead of deferring it, routing around it, or attributing it elsewhere ("pre-existing", "the user's config", "a later story"). Only what you can't do yourself (missing credentials, a destructive or outward-facing step) goes back to the user, with the exact command.
 
 **`/spec` chain** (user-typed; phases hand off via `Skill()` in the same turn): `spec-plan` → **[plan approval — the only gate]** → `spec-implement` → `spec-verify`, looping verify → implement until `Status: VERIFIED`. **1 story = 1 commit:** each story commits on fast checks; verify reviews all the chain's commits once with `/review-diff`, commits the fixes, runs the full gate once, then suggests `/github pr`.
 
@@ -46,7 +47,7 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 
 ## Compact instructions
 
-When compacting, keep verbatim: the active plan path and its header (`Type`, `Status`, `Approved`, `Iteration`, `Base`, `Reviewed`, `Full gate`); the current phase and the task in progress; each story's commit SHA; open review findings by tier; user decisions and approvals; the last gate/test result with its exit code; files changed but not yet committed. Drop tool output bodies, file contents already committed, and exploration transcripts — the plan's *Context for Implementer* carries the map. Auto-compaction runs at 200K tokens (`autoCompactWindow`); the `compact-anchor` hook re-injects the plan header afterwards.
+When compacting, keep verbatim: the active plan path and its header (`Type`, `Status`, `Approved`, `Iteration`, `Base`, `Reviewed`, `Full gate`); the current phase and the task in progress; each story's commit SHA; open review findings by tier; user decisions and approvals; the last gate/test result with its exit code; files changed but not yet committed. Drop tool output bodies, file contents already committed, and exploration transcripts — the plan's *Context for Implementer* carries the map. Auto-compaction runs at ~95% of `autoCompactWindow` (500K); the `compact-anchor` hook re-injects the plan header afterwards.
 
 ## Anti-Patterns
 

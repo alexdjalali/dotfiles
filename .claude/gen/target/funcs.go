@@ -38,15 +38,20 @@ func ruleStatement(m *model.Model, id string) (string, error) {
 	return "", model.New(model.CodeInvalidModel, fmt.Sprintf("unknown rule %q", id))
 }
 
-// ruleSummary returns the summary of the rule with id; a rule without one is
-// an error, since a mirror would render an empty sentence.
+// ruleSummary returns the summary of the rule with id. An unknown id and a
+// rule without a summary are distinct errors, since a mirror would otherwise
+// render an empty sentence.
 func ruleSummary(m *model.Model, id string) (string, error) {
 	for _, r := range m.Rules {
-		if r.ID == id && r.Summary != "" {
-			return r.Summary, nil
+		if r.ID != id {
+			continue
 		}
+		if r.Summary == "" {
+			return "", model.New(model.CodeInvalidModel, fmt.Sprintf("rule %q has no summary", id))
+		}
+		return r.Summary, nil
 	}
-	return "", model.New(model.CodeInvalidModel, fmt.Sprintf("rule %q has no summary", id))
+	return "", model.New(model.CodeInvalidModel, fmt.Sprintf("unknown rule %q", id))
 }
 
 // rulesFor returns the rules whose targets include target, in catalog order.

@@ -110,6 +110,9 @@ const descriptionBudget = 1536
 func checkSkill(m *Model, sk Skill) []Error {
 	path := "skills/" + sk.File + ".yaml"
 	errs := checkSchema("skill.json", path, sk)
+	if !sk.HasTemplate {
+		errs = append(errs, Error{"skills/" + sk.File + ".md.tmpl", "", "missing: every skill needs a body template"})
+	}
 	if sk.Name != "" && sk.Name != sk.File {
 		errs = append(errs, Error{path, "/name", fmt.Sprintf("name %q must equal the file name %q", sk.Name, sk.File)})
 	}

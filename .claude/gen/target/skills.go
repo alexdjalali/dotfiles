@@ -76,8 +76,8 @@ func frontmatter(m *model.Model, sk model.Skill) ([]byte, error) {
 		if p[1] == "" {
 			continue
 		}
-		val := &yaml.Node{Kind: yaml.ScalarNode, Value: p[1]}
-		if p[1] == "true" || p[1] == "false" {
+		val := &yaml.Node{Kind: yaml.ScalarNode, Tag: "!!str", Value: p[1]}
+		if isBool[p[0]] {
 			val.Tag = "!!bool"
 		}
 		doc.Content = append(doc.Content, &yaml.Node{Kind: yaml.ScalarNode, Value: p[0]}, val)
@@ -88,6 +88,10 @@ func frontmatter(m *model.Model, sk model.Skill) ([]byte, error) {
 	}
 	return out, nil
 }
+
+// isBool names the frontmatter keys rendered by boolText; every other value
+// is tagged !!str so text like null or 123 is quoted instead of re-parsed.
+var isBool = map[string]bool{"background": true, "disable-model-invocation": true, "user-invocable": true}
 
 // firstSet returns the first non-empty value.
 func firstSet(values ...string) string {

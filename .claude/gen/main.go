@@ -26,7 +26,8 @@ func main() {
 
 // run parses args, renders every selected target and writes or checks the
 // result. It returns 0 on success, 1 on an invalid model, unknown kind or
-// drift, and 2 on a usage error.
+// drift, and 2 on a usage error, including --check with no target enabled
+// (a vacuous pass would hide a wrong --root).
 func run(args []string, stdout, stderr io.Writer) int {
 	fl := flag.NewFlagSet("claude-gen", flag.ContinueOnError)
 	fl.SetOutput(stderr)
@@ -42,6 +43,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if err != nil {
 		_, _ = fmt.Fprintln(stderr, err)
 		return 1
+	}
+	if *check && len(files) == 0 {
+		_, _ = fmt.Fprintf(stderr, "claude-gen: --check: nothing to check: %s lists no targets\n",
+			filepath.Join(*root, ".claude", "src", "gen.yaml"))
+		return 2
 	}
 	if *check {
 		return report(writer.Check(*root, files, owned), stdout, stderr)

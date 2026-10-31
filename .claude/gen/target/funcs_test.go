@@ -156,3 +156,21 @@ func TestIndentNestsEveryLine(t *testing.T) {
 		t.Fatalf("got %q, err %v", got, err)
 	}
 }
+
+// TestSummaryErrorsNameTheCause tests summary's two failure messages.
+//
+// Why this test is important:
+//   - "has no summary" for a misspelled id sends the author to add a summary
+//     to a rule that does not exist.
+//
+// What it tests:
+//   - {{summary "nope"}} fails with unknown rule; {{summary "a-rule"}} (no
+//     summary) fails with has no summary.
+func TestSummaryErrorsNameTheCause(t *testing.T) {
+	if _, err := exec(t, `{{summary "nope"}}`); err == nil || !strings.Contains(err.Error(), `unknown rule "nope"`) {
+		t.Fatalf("unknown id: err = %v", err)
+	}
+	if _, err := exec(t, `{{summary "a-rule"}}`); err == nil || !strings.Contains(err.Error(), `rule "a-rule" has no summary`) {
+		t.Fatalf("missing summary: err = %v", err)
+	}
+}

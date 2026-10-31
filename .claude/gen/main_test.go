@@ -139,3 +139,21 @@ func TestRunLeavesMarkedFilesOutsideOwnedDirs(t *testing.T) {
 		t.Fatalf("marked fixture outside owned dirs was deleted: %v", err)
 	}
 }
+
+// TestRunCheckFailsWithNoTargets tests that --check refuses a vacuous pass.
+//
+// Why this test is important:
+//   - A wrong --root (no .claude/src) used to report "no drift" and exit 0,
+//     so a misconfigured just lint passed while checking nothing.
+//
+// What it tests:
+//   - A root without .claude/src exits 2 and stderr names gen.yaml targets.
+func TestRunCheckFailsWithNoTargets(t *testing.T) {
+	code, errOut := runCLI("--root", t.TempDir(), "--check")
+	if code != 2 {
+		t.Fatalf("exit %d, want 2: %s", code, errOut)
+	}
+	if !strings.Contains(errOut, "gen.yaml") || !strings.Contains(errOut, "targets") {
+		t.Fatalf("stderr does not name the missing targets: %q", errOut)
+	}
+}

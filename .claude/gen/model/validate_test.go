@@ -199,7 +199,7 @@ func TestMustInsideWordIgnored(t *testing.T) {
 
 // validSkill returns a skill that passes validation.
 func validSkill(name string) model.Skill {
-	return model.Skill{Name: name, File: name, Description: "Does a thing. Use when asked.", Role: "review"}
+	return model.Skill{Name: name, File: name, Description: "Does a thing. Use when asked.", Role: "review", HasTemplate: true}
 }
 
 // skillModel wraps skills in a model with the review role defined.
@@ -280,5 +280,21 @@ func TestMirrorRuleNeedsSummary(t *testing.T) {
 	}
 	if want := `rule "a" targets cursor/go but has no summary`; !strings.Contains(errs[0].Message, want) {
 		t.Fatalf("message = %q, want %q", errs[0].Message, want)
+	}
+}
+
+// TestSkillTemplateMustExist tests that a skill without a body is invalid.
+//
+// Why this test is important:
+//   - A missing skills/<name>.md.tmpl used to surface only at render, as an
+//     I/O error, after validation had passed.
+//
+// What it tests:
+//   - A skill whose template is absent reports skills/fix.md.tmpl.
+func TestSkillTemplateMustExist(t *testing.T) {
+	s := validSkill("fix")
+	s.HasTemplate = false
+	if errs := model.Validate(skillModel(s)); !hasField(errs, "skills/fix.md.tmpl", "") {
+		t.Fatalf("errors = %v", fields(errs))
 	}
 }

@@ -2,7 +2,6 @@ package target
 
 import (
 	"fmt"
-	"path/filepath"
 	"sort"
 	"strings"
 
@@ -72,6 +71,7 @@ func (r *Registry) Select(kinds []string) ([]Target, error) {
 func Default() *Registry {
 	r := NewRegistry()
 	r.Register(KindRules, func() Target { return RulesTarget{} })
+	r.Register(KindClaudeMd, func() Target { return ClaudeMdTarget{} })
 	return r
 }
 
@@ -82,20 +82,12 @@ type Owner interface {
 	Owns() []string
 }
 
-// Owned returns the directories t owns: its Owns() when it is an Owner,
-// else the distinct directories of the files it rendered.
-func Owned(t Target, files []File) []string {
+// Owned returns the directories t owns for orphan cleanup: its Owns() when
+// it is an Owner, else none. A target that renders single files never claims
+// their directory, which may hold other generated files.
+func Owned(t Target) []string {
 	if o, ok := t.(Owner); ok {
 		return o.Owns()
 	}
-	seen := map[string]bool{}
-	var dirs []string
-	for _, f := range files {
-		d := filepath.Dir(f.Path)
-		if !seen[d] {
-			seen[d] = true
-			dirs = append(dirs, d)
-		}
-	}
-	return dirs
+	return nil
 }

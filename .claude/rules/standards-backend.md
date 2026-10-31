@@ -60,7 +60,7 @@ paths:
 
 ## Queries
 
-- **⛔ SQL injection prevention:** NEVER concatenate user input. Always parameterized queries or ORM methods.
+- **SQL injection prevention:** never concatenate user input. Always parameterized queries or ORM methods.
 - **N+1 prevention:** `joinedload` for one-to-one, `selectinload` for large collections
 - **Performance:** Select only required columns, filter in DB not app, avoid leading wildcards
 - **Query timeouts:** Simple 1-2s, reports 10-30s, background 60s+
@@ -69,7 +69,7 @@ paths:
 
 ## Migrations
 
-- **Reversible:** Every migration MUST have a working rollback
+- **Reversible:** Every migration has a working rollback
 - **One change per migration.** Never modify deployed migrations.
 - **Naming:** Timestamps + descriptive: `20241118120000_add_email_to_users.py`
 - **NOT NULL columns:** Always specify `server_default`

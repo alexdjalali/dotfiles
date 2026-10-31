@@ -79,7 +79,7 @@ func render(root string, stderr io.Writer) ([]target.File, []string, error) {
 			return nil, nil, err
 		}
 		files = append(files, fs...)
-		owned = append(owned, target.Owned(t, fs)...)
+		owned = append(owned, target.Owned(t)...)
 	}
 	return files, owned, nil
 }

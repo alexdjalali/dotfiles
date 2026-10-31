@@ -53,7 +53,9 @@ type Rule struct {
 	// Enforce is how the rule is enforced: hook, lint, review or prose.
 	Enforce string `yaml:"enforce,omitempty"`
 
-	// Hook names the hook enforcing the rule (bash-guard, edit-guard) when Enforce is hook.
+	// Hook names the hook enforcing the rule when Enforce is hook: bash-guard
+	// (a guard_rules.json row), bash-guard-builtin (a check coded in
+	// guard_bash.py) or edit-guard (guard-generated.sh).
 	Hook string `yaml:"hook,omitempty"`
 
 	// Paths are globs limiting where the rule applies; empty means everywhere.

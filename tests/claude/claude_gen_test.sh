@@ -29,6 +29,22 @@ test_committed_outputs_match_render() {
   out=$(go -C "$GEN" run . --root "$REPO_ROOT" --check 2>&1) || _fail "drift: $out"
 }
 
+# Why this test is important:
+#   - The catalog exists so each rule is written once; a statement pasted into
+#     a template drifts from the catalog on the next edit.
+# What it tests:
+#   - No rule statement from .claude/src/rules.yaml appears verbatim in any
+#     .claude/src template (they use {{rule "id"}} instead).
+test_templates_reference_catalog() {
+  local statement hits
+  while IFS= read -r statement; do
+    [[ -n $statement ]] || continue
+    hits=$(grep -rlF --include='*.tmpl' -- "$statement" "$REPO_ROOT/.claude/src")
+    assert_eq "" "$hits" "templates repeating: $statement"
+  done < <(yq -r '.[].statement' "$REPO_ROOT/.claude/src/rules.yaml")
+}
+
 run_test test_go_suite_passes
 run_test test_committed_outputs_match_render
+run_test test_templates_reference_catalog
 finish

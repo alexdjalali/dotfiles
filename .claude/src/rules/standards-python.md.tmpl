@@ -39,7 +39,7 @@ basedpyright src                                    # Type check (adapt to your 
 
 **Mandatory mocking in unit tests** (mock at module level — where imported, not where defined; a test > 1 s is likely unmocked I/O):
 
-| Call | MUST mock | Example |
+| Call | Mock it | Example |
 |------|-----------|---------|
 | HTTP/network | `httpx`, `requests` | `@patch("module.httpx.Client")` |
 | Subprocess | `subprocess.run` | `@patch("module.subprocess.run")` |

@@ -10,11 +10,11 @@ paths:
 
 ## Browser Automation for E2E Testing
 
-**⛔ A UI change needs browser verification**, in `/spec` and quick mode alike. Unit tests and typechecks are not enough. Stale bundles, undeployed code, CSS layout, and elements that are in the DOM but hidden all pass tests. "Small CSS change" and "tests cover it" are not excuses. Tool tables, per-tool notes, session isolation and the E2E checklist are in `~/.claude/templates/browser-tools.md`; read it when you drive a tool.
+**A UI change needs browser verification**, in `/spec` and quick mode alike. Unit tests and typechecks are not enough. Stale bundles, undeployed code, CSS layout, and elements that are in the DOM but hidden all pass tests. "Small CSS change" and "tests cover it" are not excuses. Tool tables, per-tool notes, session isolation and the E2E checklist are in `~/.claude/templates/browser-tools.md`; read it when you drive a tool.
 
 **Procedure:** resolve a live target (the probe below) → pick a tool → open the affected page and interact with the changed UI → report what you saw. "UI works" needs browser evidence.
 
-### ⛔ Live-target probe, required before any "I can't run live E2E" claim
+### Live-target probe, required before any "I can't run live E2E" claim
 
 Never conclude "unit-verified is sufficient" without trying a live target. Run the tiers in order and record each one's outcome: the command, its exit status, and any error.
 
@@ -31,7 +31,7 @@ Never conclude "unit-verified is sufficient" without trying a live target. Run t
 
 Claude Code Chrome (`mcp__claude-in-chrome__*`) → Chrome DevTools MCP (`mcp__plugin_chrome-devtools-mcp_*`; use it for Lighthouse and traces) → `playwright-cli` (complex flows, auth, mocking, multi-tab) → `agent-browser` (lightweight checks). Detect the MCP tools in your tool list, and the CLIs with `which`. In `/spec` or any parallel run, pass `--session "${BROWSER_SESSION_ID:-default}"` to the CLIs (`-s=` for playwright-cli).
 
-### ⛔ E2E hard rules
+### E2E hard rules
 
 1. **A tool error moves you to the next tool in the chain. Period.** Never substitute a non-browser tool. If all four tools fail, stop and tell the user; do not claim E2E. These prove only what's in parentheses, never user behavior: `web-fetch` / `curl` (the SSR HTML ships) · reading source (the code exists) · API 200s (the backend works) · typecheck or unit tests (the code's shape) · no console errors on load (the page parsed).
 2. **E2E means interaction, not a page load.** For every user-facing path the change touches: snapshot → **click the primary action** → re-snapshot → confirm the new state.

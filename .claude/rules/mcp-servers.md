@@ -3,7 +3,7 @@
 
 Load a deferred tool with `ToolSearch` (`"select:<name>"` or keywords) before calling it.
 
-**Code search — CodeGraph (structure) + Semble (intent), before Grep/Glob** (those only verify or find exact text in a known file). **⛔ Never pass `projectPath` to CodeGraph for the current project** — it defaults correctly; the param is only for a different codebase.
+**Code search — CodeGraph (structure) + Semble (intent), before Grep/Glob** (those only verify or find exact text in a known file). **Never pass `projectPath` to CodeGraph for the current project** — it defaults correctly; the param is only for a different codebase.
 
 | Need | Tool |
 |---|---|

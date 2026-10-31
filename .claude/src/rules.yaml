@@ -1,2 +1,26 @@
 # The rule catalog: each rule stated once, with how it is enforced.
-[]
+# Templates reference a rule with {{rule "id"}}; enforce says what stands
+# behind it (hook | lint | review | prose). See ADR-0001.
+
+- id: no-verify
+  statement: Never bypass hooks (`--no-verify`, `LEFTHOOK=0`) — a hook failure is a red fast check — fix, re-stage, retry.
+  category: git
+  severity: must_fix
+  enforce: prose
+  targets: [claude-md, rules/development-practices]
+
+- id: no-force-push-main
+  statement: Don't force-push main or master.
+  category: git
+  severity: must_fix
+  enforce: hook
+  hook: bash-guard-builtin
+  targets: [claude-md, rules/development-practices]
+
+- id: generated-code-not-hand-edited
+  statement: Change generated code at its source (proto, schema, template, `wire.go`) and regenerate through the project's CLI instead of editing the output; commit the output; CI fails on drift.
+  category: codegen
+  severity: must_fix
+  enforce: hook
+  hook: edit-guard
+  targets: [rules/development-practices, rules/standards-golang]

@@ -1,12 +1,16 @@
+-- Toys, all under <leader>F ("Fun"): <leader>f is AstroNvim's Find group, and
+-- <leader>ut (tabline) is AstroNvim's, so transparency is <leader>uO ("opacity").
 ---@type LazySpec
 return {
+  { "AstroNvim/astrocore", opts = { mappings = { n = { ["<Leader>F"] = { desc = "Fun" } } } } },
+
   -- cellular-automaton.nvim - code animations
   {
     "eandrju/cellular-automaton.nvim",
     cmd = "CellularAutomaton",
     keys = {
-      { "<leader>fml", "<cmd>CellularAutomaton make_it_rain<cr>", desc = "Make it rain" },
-      { "<leader>fmg", "<cmd>CellularAutomaton game_of_life<cr>", desc = "Game of life" },
+      { "<leader>Fr", "<cmd>CellularAutomaton make_it_rain<cr>", desc = "Make it rain" },
+      { "<leader>Fg", "<cmd>CellularAutomaton game_of_life<cr>", desc = "Game of life" },
     },
   },
 
@@ -73,7 +77,7 @@ return {
       require("transparent").clear_prefix("lualine")
     end,
     keys = {
-      { "<leader>ut", "<cmd>TransparentToggle<cr>", desc = "Toggle transparency" },
+      { "<leader>uO", "<cmd>TransparentToggle<cr>", desc = "Toggle transparency" },
     },
   },
 
@@ -98,19 +102,18 @@ return {
     end,
   },
 
-  -- duck.nvim - virtual pet duck that walks around your code (<leader>fd*;
-  -- <leader>D is the database UI)
+  -- duck.nvim - virtual pet duck that walks around your code (<leader>Fd*)
   {
     "tamton-aquib/duck.nvim",
     keys = {
-      { "<leader>fdd", function() require("duck").hatch("🦆", 10) end, desc = "Hatch a duck" },
-      { "<leader>fdk", function() require("duck").cook() end, desc = "Cook a duck" },
-      { "<leader>fda", function() require("duck").cook_all() end, desc = "Cook all ducks" },
+      { "<leader>Fdd", function() require("duck").hatch("🦆", 10) end, desc = "Hatch a duck" },
+      { "<leader>Fdk", function() require("duck").cook() end, desc = "Cook a duck" },
+      { "<leader>Fda", function() require("duck").cook_all() end, desc = "Cook all ducks" },
       -- More animals!
-      { "<leader>fdc", function() require("duck").hatch("🐱", 8) end, desc = "Hatch a cat" },
-      { "<leader>fdg", function() require("duck").hatch("🐶", 6) end, desc = "Hatch a dog" },
-      { "<leader>fdr", function() require("duck").hatch("🦀", 12) end, desc = "Hatch a crab" },
-      { "<leader>fds", function() require("duck").hatch("🐍", 4) end, desc = "Hatch a snake" },
+      { "<leader>Fdc", function() require("duck").hatch("🐱", 8) end, desc = "Hatch a cat" },
+      { "<leader>Fdg", function() require("duck").hatch("🐶", 6) end, desc = "Hatch a dog" },
+      { "<leader>Fdr", function() require("duck").hatch("🦀", 12) end, desc = "Hatch a crab" },
+      { "<leader>Fds", function() require("duck").hatch("🐍", 4) end, desc = "Hatch a snake" },
     },
   },
 
@@ -119,7 +122,7 @@ return {
     "ThePrimeagen/vim-be-good",
     cmd = "VimBeGood",
     keys = {
-      { "<leader>fv", "<cmd>VimBeGood<cr>", desc = "Vim Be Good (game)" },
+      { "<leader>Fv", "<cmd>VimBeGood<cr>", desc = "Vim Be Good (game)" },
     },
   },
 
@@ -139,7 +142,7 @@ return {
       lang = "python3",
     },
     keys = {
-      { "<leader>fl", "<cmd>Leet<cr>", desc = "LeetCode" },
+      { "<leader>Fl", "<cmd>Leet<cr>", desc = "LeetCode" },
     },
   },
 }

@@ -25,14 +25,12 @@ return {
 
         -- Go
         "gopls", -- LSP
-        "gofumpt", -- Formatter (stricter gofmt)
         "golangci-lint", -- Meta-linter (runs 50+ linters)
         "gomodifytags", -- Struct tag modifier
         "gotests", -- Test generator
         "impl", -- Interface implementation generator
         "delve", -- Debugger
         "goimports", -- Import management
-        "golines", -- Long line formatter
 
         -- TypeScript/JavaScript
         "typescript-language-server",

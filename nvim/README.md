@@ -22,7 +22,7 @@
 ## 📦 What's Included
 
 ### Core Framework
-- **AstroNvim v5** - Modern Neovim distribution
+- **AstroNvim v6** - Modern Neovim distribution
 - **Lazy.nvim** - Plugin manager
 - **Nord Theme** - Consistent color scheme
 
@@ -58,8 +58,7 @@
 - **Todo comments** - Highlight TODO, FIXME, etc.
 - **Trouble** - Better diagnostics UI
 - **Noice** - Enhanced UI for messages and cmdline
-- **Barbecue** - VS Code-like breadcrumbs
-- **Incline** - Floating filenames
+- **Heirline winbar** - Breadcrumbs (AstroNvim)
 
 ### Productivity
 - **Flash** - Quick navigation
@@ -70,24 +69,22 @@
 
 ### AI & Code Assistance
 - **Copilot** - GitHub Copilot integration
-- **CopilotChat** - Chat with Copilot
 - **Avante** - AI-powered code assistant
-- **CodeCompanion** - Additional AI features
+- **Claude Code** - claudecode.nvim and the `:Pilot` split
 
 ### HTTP & API Testing
 - **Kulala** - HTTP client for .http files
-- **Rest.nvim** - Alternative REST client
 
 ### Editing Enhancements
-- **Mini.surround** - Surround text objects
+- **nvim-surround** - Surround text objects
 - **Vim-visual-multi** - Multiple cursors
 - **Treesitter-context** - Sticky function headers
-- **Illuminate** - Highlight word under cursor
+- **Snacks words** - Highlight references to the word under cursor (AstroNvim)
 
 ### Documentation & Notes
 - **Markdown preview** - Live markdown rendering
 - **Render-markdown** - Beautiful markdown in buffer
-- **Obsidian** - Note-taking integration
+- **Neorg** - Notes and tasks
 
 ## 🚀 Installation
 
@@ -402,7 +399,7 @@ nvim-update
 
 1. **File Navigation:** Use `<leader>ff` (snacks picker) or `<leader>e` (Neo-tree)
 2. **Code Search:** Use `<leader>fg` (live grep)
-3. **Git Changes:** Use `<leader>gd` (diffview)
+3. **Git Changes:** Use `<leader>gD` (Diffview; `<leader>gd` is the gitsigns hunk diff)
 4. **Testing:** Use `<leader>tr` (run nearest test)
 5. **Debugging:** Set breakpoints with `<leader>db`, then `<leader>dc` to start
 

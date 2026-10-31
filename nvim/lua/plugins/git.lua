@@ -20,11 +20,14 @@ return {
       "nvim-tree/nvim-web-devicons",
     },
     keys = {
-      { "<leader>go", "<cmd>Octo<cr>", desc = "Octo (GitHub)" },
-      { "<leader>gpl", "<cmd>Octo pr list<cr>", desc = "PR list" },
-      { "<leader>gpc", "<cmd>Octo pr create<cr>", desc = "PR create" },
-      { "<leader>gil", "<cmd>Octo issue list<cr>", desc = "Issue list" },
-      { "<leader>gic", "<cmd>Octo issue create<cr>", desc = "Issue create" },
+      -- <leader>gO ("Octo"): AstroNvim owns <leader>go (git browse) and gitsigns
+      -- <leader>gp (preview hunk) in every git buffer.
+      { "<leader>gO", nil, desc = "Octo (GitHub)" },
+      { "<leader>gOo", "<cmd>Octo<cr>", desc = "Octo actions" },
+      { "<leader>gOp", "<cmd>Octo pr list<cr>", desc = "PR list" },
+      { "<leader>gOP", "<cmd>Octo pr create<cr>", desc = "PR create" },
+      { "<leader>gOi", "<cmd>Octo issue list<cr>", desc = "Issue list" },
+      { "<leader>gOI", "<cmd>Octo issue create<cr>", desc = "Issue create" },
     },
     opts = {
       enable_builtin = true,
@@ -43,7 +46,8 @@ return {
       message_template = "  <author> • <date> • <summary>",
     },
     keys = {
-      { "<leader>gb", "<cmd>GitBlameToggle<cr>", desc = "Toggle git blame" },
+      -- <leader>gb is AstroNvim's git branches picker.
+      { "<leader>gB", "<cmd>GitBlameToggle<cr>", desc = "Toggle git blame" },
     },
   },
 
@@ -62,13 +66,15 @@ return {
       },
     },
     keys = {
-      { "<leader>gco", "<cmd>GitConflictChooseOurs<cr>", desc = "Choose ours" },
-      { "<leader>gct", "<cmd>GitConflictChooseTheirs<cr>", desc = "Choose theirs" },
-      { "<leader>gcb", "<cmd>GitConflictChooseBoth<cr>", desc = "Choose both" },
-      { "<leader>gc0", "<cmd>GitConflictChooseNone<cr>", desc = "Choose none" },
+      -- <leader>gx ("conflict"): <leader>gc is AstroNvim's git commits picker.
+      { "<leader>gx", nil, desc = "Git conflict" },
+      { "<leader>gxo", "<cmd>GitConflictChooseOurs<cr>", desc = "Choose ours" },
+      { "<leader>gxt", "<cmd>GitConflictChooseTheirs<cr>", desc = "Choose theirs" },
+      { "<leader>gxb", "<cmd>GitConflictChooseBoth<cr>", desc = "Choose both" },
+      { "<leader>gx0", "<cmd>GitConflictChooseNone<cr>", desc = "Choose none" },
       { "]x", "<cmd>GitConflictNextConflict<cr>", desc = "Next conflict" },
       { "[x", "<cmd>GitConflictPrevConflict<cr>", desc = "Previous conflict" },
-      { "<leader>gcl", "<cmd>GitConflictListQf<cr>", desc = "List conflicts" },
+      { "<leader>gxl", "<cmd>GitConflictListQf<cr>", desc = "List conflicts" },
     },
   },
 }

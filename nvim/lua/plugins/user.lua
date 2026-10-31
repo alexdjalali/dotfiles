@@ -69,13 +69,6 @@ end
 
 ---@type LazySpec
 return {
-  -- lazygit.nvim
-  {
-    "kdheepak/lazygit.nvim",
-    cmd = "LazyGit",
-    dependencies = { "nvim-lua/plenary.nvim" },
-  },
-
   -- toggleterm.nvim: the terminal, the full-screen TUI tools and Pilot
   {
     "akinsho/toggleterm.nvim",

@@ -14,7 +14,8 @@ return {
     },
     keys = {
       { "<leader>tr", function() require("neotest").run.run() end, desc = "Run nearest test" },
-      { "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run test file" },
+      -- <leader>tf is AstroNvim's floating terminal.
+      { "<leader>tF", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run test file" },
       { "<leader>td", function() require("neotest").run.run({ strategy = "dap" }) end, desc = "Debug test" },
       { "<leader>ts", function() require("neotest").summary.toggle() end, desc = "Toggle test summary" },
       { "<leader>to", function() require("neotest").output.open({ enter = true }) end, desc = "Show test output" },
@@ -32,17 +33,14 @@ return {
     end,
   },
 
-  -- The python pack builds its neotest-python adapter from these opts.
+  -- The python pack builds its neotest-python adapter from these opts. No
+  -- `python` override: the adapter's own lookup finds the venv from the test
+  -- root ($VIRTUAL_ENV, then any */pyvenv.cfg under the root).
   {
     "nvim-neotest/neotest-python",
     opts = {
       dap = { justMyCode = false },
       runner = "pytest",
-      python = function()
-        local venv = vim.fn.getcwd() .. "/.venv/bin/python"
-        if vim.fn.executable(venv) == 1 then return venv end
-        return "python"
-      end,
     },
   },
 
@@ -71,6 +69,9 @@ return {
   -- kulala.nvim - HTTP/REST client (<leader>H*; <leader>r* is refactoring)
   {
     "mistweaverco/kulala.nvim",
+    -- Pinned in the spec, not just the lockfile, so :Lazy sync can't move it to
+    -- the releases that prompt for a license token when an HTTP buffer opens.
+    commit = "dcad056448773ae5b54cadbfdbd188a599cfebd3",
     ft = "http",
     keys = {
       { "<leader>Hr", function() require("kulala").run() end, desc = "Run HTTP request", ft = "http" },

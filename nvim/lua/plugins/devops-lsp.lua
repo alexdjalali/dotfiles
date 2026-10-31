@@ -6,7 +6,7 @@ return {
     ft = { "terraform", "tf", "hcl" },
     config = function()
       vim.g.terraform_align = 1
-      vim.g.terraform_fmt_on_save = 1
+      -- No terraform_fmt_on_save: terraform-ls formats on save (AstroLSP).
     end,
   },
 

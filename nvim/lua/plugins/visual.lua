@@ -13,7 +13,7 @@ return {
       trim_scope = "outer",
     },
     keys = {
-      { "<leader>uc", "<cmd>TSContextToggle<cr>", desc = "Toggle treesitter context" },
+      { "<leader>ux", "<cmd>TSContextToggle<cr>", desc = "Toggle treesitter context" },
     },
   },
 
@@ -55,6 +55,9 @@ return {
   -- nvim-scrollbar - scrollbar with diagnostics (Catppuccin Mocha)
   {
     "petertriho/nvim-scrollbar",
+    -- main becomes v2 on 2026-11-16, which rejects these v1 options (and warns at
+    -- startup until then); v1 is the maintained branch for this config.
+    branch = "v1",
     event = "BufReadPost",
     opts = function()
       local c = require("catppuccin.palettes").get_palette("mocha")
@@ -92,11 +95,7 @@ return {
         TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
       },
     },
-    keys = {
-      { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
-      { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
-      { "<leader>ft", function() require("snacks").picker.todo_comments() end, desc = "Find todos" },
-    },
+    -- Keys (]T, [T, <leader>xt/xT) come from the todo-comments and trouble packs.
   },
 
   -- trouble.nvim - better diagnostics UI
@@ -105,29 +104,10 @@ return {
     cmd = "Trouble",
     opts = {},
     keys = {
-      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
-      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer diagnostics (Trouble)" },
+      -- <leader>xx/xX/xL/xQ come from the trouble pack (community.lua).
       { "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
-      { "<leader>xl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP references (Trouble)" },
-      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location list (Trouble)" },
-      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix list (Trouble)" },
+      { "<leader>xr", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP references (Trouble)" },
     },
-  },
-
-  -- illuminate.nvim - highlight word under cursor
-  {
-    "RRethy/vim-illuminate",
-    event = "BufReadPost",
-    opts = {
-      delay = 200,
-      large_file_cutoff = 2000,
-      large_file_overrides = {
-        providers = { "lsp" },
-      },
-    },
-    config = function(_, opts)
-      require("illuminate").configure(opts)
-    end,
   },
 
   -- nvim-ufo - better folding
@@ -172,71 +152,6 @@ return {
     },
   },
 
-  -- barbecue.nvim - VS Code-like breadcrumbs
-  {
-    "utilyre/barbecue.nvim",
-    event = "LspAttach",
-    dependencies = {
-      "SmiteshP/nvim-navic",
-      "nvim-tree/nvim-web-devicons",
-    },
-    opts = {
-      theme = "auto",
-      show_dirname = true,
-      show_basename = true,
-      show_modified = true,
-      symbols = {
-        separator = "",
-      },
-      kinds = {
-        File = "",
-        Module = "",
-        Namespace = "",
-        Package = "",
-        Class = "",
-        Method = "",
-        Property = "",
-        Field = "",
-        Constructor = "",
-        Enum = "",
-        Interface = "",
-        Function = "",
-        Variable = "",
-        Constant = "",
-        String = "",
-        Number = "",
-        Boolean = "",
-        Array = "",
-        Object = "",
-        Key = "",
-        Null = "",
-        EnumMember = "",
-        Struct = "",
-        Event = "",
-        Operator = "",
-        TypeParameter = "",
-      },
-    },
-  },
-
-  -- incline.nvim - floating filenames
-  {
-    "b0o/incline.nvim",
-    event = "BufReadPost",
-    opts = {
-      window = {
-        padding = 0,
-        margin = { horizontal = 0, vertical = 0 },
-      },
-      render = function(props)
-        local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":t")
-        local icon, color = require("nvim-web-devicons").get_icon_color(filename)
-        return {
-          { icon, guifg = color },
-          { " " },
-          { filename },
-        }
-      end,
-    },
-  },
+  -- Breadcrumbs: AstroNvim's heirline winbar (one owner of 'winbar').
+  -- Reference highlighting: snacks.words (AstroNvim default).
 }

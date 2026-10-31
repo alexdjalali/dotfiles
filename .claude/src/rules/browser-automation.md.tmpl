@@ -1,0 +1,37 @@
+---
+paths:
+  - "**/*.{ts,tsx,js,jsx,mjs,cjs,html,css,scss,vue,svelte,astro}"
+  - "**/*.{spec,test}.{ts,tsx,js,jsx}"
+  - "**/{e2e,playwright,cypress,__tests__}/**"
+  - "**/playwright.config.*"
+  - "**/cypress.config.*"
+---
+
+## Browser Automation for E2E Testing
+
+**⛔ A UI change needs browser verification**, in `/spec` and quick mode alike. Unit tests and typechecks are not enough. Stale bundles, undeployed code, CSS layout, and elements that are in the DOM but hidden all pass tests. "Small CSS change" and "tests cover it" are not excuses. Tool tables, per-tool notes, session isolation and the E2E checklist are in `~/.claude/templates/browser-tools.md`; read it when you drive a tool.
+
+**Procedure:** resolve a live target (the probe below) → pick a tool → open the affected page and interact with the changed UI → report what you saw. "UI works" needs browser evidence.
+
+### ⛔ Live-target probe, required before any "I can't run live E2E" claim
+
+Never conclude "unit-verified is sufficient" without trying a live target. Run the tiers in order and record each one's outcome: the command, its exit status, and any error.
+
+| Tier | What | Skip only when |
+|---|---|---|
+| 1 | Reuse a running local server (health-check the plan's or repo's port) | nothing is listening and there is no health endpoint |
+| 2 | Start the dev server in the background and poll its health for up to 60 s | there is no documented start command (plan / `package.json` / `pyproject.toml` / `Makefile`) |
+| 3 | Detect a deploy backend from repo markers (Vercel, Fly, Netlify, Wrangler, Render, AWS, Heroku, a GH-Actions deploy), run its auth check, and attempt a preview deploy | every detected backend's auth check says "not logged in" (quote the command and output) |
+| 4 | Unit-only fallback: report `UNIT_VERIFIED`, not `LIVE_PASS` | only after tiers 1–3 failed with documented reasons |
+
+"No marker files for any backend" is the only allowed no-attempt skip for tier 3. If a marker exists, run that backend's auth check. Clean up a preview deploy made only for verification, or note it in the report. `spec-verify` Phase 3 runs this probe for UI changes.
+
+### Tools, in fallback order
+
+Claude Code Chrome (`mcp__claude-in-chrome__*`) → Chrome DevTools MCP (`mcp__plugin_chrome-devtools-mcp_*`; use it for Lighthouse and traces) → `playwright-cli` (complex flows, auth, mocking, multi-tab) → `agent-browser` (lightweight checks). Detect the MCP tools in your tool list, and the CLIs with `which`. In `/spec` or any parallel run, pass `--session "${BROWSER_SESSION_ID:-default}"` to the CLIs (`-s=` for playwright-cli).
+
+### ⛔ E2E hard rules
+
+1. **A tool error moves you to the next tool in the chain. Period.** Never substitute a non-browser tool. If all four tools fail, stop and tell the user; do not claim E2E. These prove only what's in parentheses, never user behavior: `web-fetch` / `curl` (the SSR HTML ships) · reading source (the code exists) · API 200s (the backend works) · typecheck or unit tests (the code's shape) · no console errors on load (the page parsed).
+2. **E2E means interaction, not a page load.** For every user-facing path the change touches: snapshot → **click the primary action** → re-snapshot → confirm the new state.
+3. **Before you say "verified", "works" or "done":** did you name the tool you used, click the thing the change affects, and see the expected state on a re-snapshot? Any "no" means it isn't verified; say so.

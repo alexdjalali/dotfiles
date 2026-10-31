@@ -23,9 +23,13 @@ test:
     exit "$status"
 
 # Lint every shell script with shellcheck (following the sourced test libraries),
-# and format-check, lint and type-check the Python hook scripts.
+# format-check, lint and type-check the Python hook scripts, vet the claude-gen
+# generator, and fail when a generated file differs from a fresh render.
 lint:
     shellcheck -x -P SCRIPTDIR install.sh raycast/*.sh .claude/scripts/*.sh tests/lib/*.sh tests/*/*_test.sh zsh/libexec/*/*
     ruff format --check .claude/scripts
     ruff check .claude/scripts
     basedpyright .claude/scripts
+    test -z "$(gofumpt -l .claude/gen)"
+    go -C .claude/gen vet ./...
+    go -C .claude/gen run . --root "$PWD" --check

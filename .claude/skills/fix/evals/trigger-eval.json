@@ -1,0 +1,8 @@
+[
+  {"query": "TestParseConfig started failing after my last change with a nil pointer panic, can you find out why and fix it", "should_trigger": true},
+  {"query": "the login endpoint returns 500 when the email has a plus sign in it, fix that", "should_trigger": true},
+  {"query": "this integration test is flaky, passes locally and fails in CI about a third of the time. sort it out", "should_trigger": true},
+  {"query": "three different bugs in the billing module look related; write up a diagnosis for the team before anyone touches code", "should_trigger": false},
+  {"query": "add a --json flag to the export command", "should_trigger": false},
+  {"query": "review my branch before I open the PR", "should_trigger": false}
+]

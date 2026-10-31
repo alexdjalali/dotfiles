@@ -1,0 +1,7 @@
+name: "fix"
+description: "Fix one contained bug, cause known or not — reproduce, root-cause with the scientific method, minimal fix, then the reproducing test with revert-test proof, no plan. Use for errors, failing or flaky tests, unexpected behavior. Escalate to /spec when the fix crosses layers or needs a schema/API change."
+summary: "fix one contained bug"
+role: "diagnose"
+effort: "high"
+argument_hint: "<bug description | file:line | RCA slug or docs/spec/rca/ path>"
+next: ["github", "rca", "adr", "spec"]

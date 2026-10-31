@@ -15,12 +15,16 @@ import (
 //	rules TARGET   "- statement" lines for every rule listing TARGET, catalog order
 //	lenses GROUP   rules listing GROUP-lenses, as bullets grouped by category
 //	model ROLE     "model (effort)" or "model" for a models.yaml role
+//	next SKILL     "- `/name` — summary" lines for the skill's next edges
+//	indent N TEXT  TEXT with N spaces before every line (use in a pipeline)
 func FuncMap(m *model.Model) template.FuncMap {
 	return template.FuncMap{
 		"rule":   func(id string) (string, error) { return ruleStatement(m, id) },
 		"rules":  func(target string) string { return ruleList(m, target) },
 		"lenses": func(group string) string { return lensList(m, group+"-lenses") },
 		"model":  func(role string) (string, error) { return roleModel(m, role) },
+		"next":   func(skill string) (string, error) { return nextList(m, skill) },
+		"indent": indent,
 	}
 }
 
@@ -59,7 +63,8 @@ func ruleList(m *model.Model, target string) string {
 }
 
 // lensList renders the statements for target grouped under their category,
-// categories in order of first appearance.
+// categories in order of first appearance; a one-statement category renders
+// on one line.
 func lensList(m *model.Model, target string) string {
 	var order []string
 	groups := map[string][]string{}
@@ -71,6 +76,10 @@ func lensList(m *model.Model, target string) string {
 	}
 	var lines []string
 	for _, c := range order {
+		if len(groups[c]) == 1 {
+			lines = append(lines, "- **"+c+":** "+groups[c][0])
+			continue
+		}
 		lines = append(lines, "- **"+c+":**")
 		for _, s := range groups[c] {
 			lines = append(lines, "  - "+s)
@@ -89,4 +98,27 @@ func roleModel(m *model.Model, role string) (string, error) {
 		return r.Model, nil
 	}
 	return r.Model + " (" + r.Effort + ")", nil
+}
+
+// nextList renders a skill's next edges as "- `/name` — summary" lines.
+func nextList(m *model.Model, name string) (string, error) {
+	byName := map[string]model.Skill{}
+	for _, sk := range m.Skills {
+		byName[sk.Name] = sk
+	}
+	sk, ok := byName[name]
+	if !ok {
+		return "", model.New(model.CodeInvalidModel, fmt.Sprintf("unknown skill %q", name))
+	}
+	lines := make([]string, 0, len(sk.Next))
+	for _, n := range sk.Next {
+		lines = append(lines, "- `/"+n+"` — "+byName[n].Summary)
+	}
+	return strings.Join(lines, "\n"), nil
+}
+
+// indent prefixes every line of text with n spaces.
+func indent(n int, text string) string {
+	pad := strings.Repeat(" ", n)
+	return pad + strings.ReplaceAll(text, "\n", "\n"+pad)
 }

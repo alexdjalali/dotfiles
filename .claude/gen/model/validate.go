@@ -46,6 +46,9 @@ func Validate(m *Model) []Error {
 	errs = append(errs, checkSchema("rules.json", "rules.yaml", m.Rules)...)
 	errs = append(errs, checkRuleIDs(m.Rules)...)
 	errs = append(errs, checkEmphasis(m.Rules)...)
+	for _, sk := range m.Skills {
+		errs = append(errs, checkSkill(m, sk)...)
+	}
 	return errs
 }
 
@@ -60,6 +63,36 @@ func checkEmphasis(rules []Rule) []Error {
 		if (r.Enforce == "hook" || r.Enforce == "lint") && emphasis.MatchString(r.Statement) {
 			msg := fmt.Sprintf("rule %q is enforced by %s; remove ⛔/NEVER/MUST", r.ID, r.Enforce)
 			errs = append(errs, Error{"rules.yaml", fmt.Sprintf("/%d/statement", i), msg})
+		}
+	}
+	return errs
+}
+
+// descriptionBudget is the skill-listing cap on description + when_to_use.
+const descriptionBudget = 1536
+
+// checkSkill validates one skill against skill.json and its cross-references:
+// name equals the file stem, the description fits the listing budget, the
+// role exists, and every next edge names a skill.
+func checkSkill(m *Model, sk Skill) []Error {
+	path := "skills/" + sk.File + ".yaml"
+	errs := checkSchema("skill.json", path, sk)
+	if sk.Name != "" && sk.Name != sk.File {
+		errs = append(errs, Error{path, "/name", fmt.Sprintf("name %q must equal the file name %q", sk.Name, sk.File)})
+	}
+	if n := len([]rune(sk.Description)) + len([]rune(sk.WhenToUse)); n > descriptionBudget {
+		errs = append(errs, Error{path, "/description", fmt.Sprintf("description + when_to_use is %d characters; the listing cuts at %d", n, descriptionBudget)})
+	}
+	if _, ok := m.Models[sk.Role]; sk.Role != "" && !ok {
+		errs = append(errs, Error{path, "/role", fmt.Sprintf("role %q is not in models.yaml", sk.Role)})
+	}
+	names := map[string]bool{}
+	for _, other := range m.Skills {
+		names[other.Name] = true
+	}
+	for i, next := range sk.Next {
+		if !names[next] {
+			errs = append(errs, Error{path, fmt.Sprintf("/next/%d", i), fmt.Sprintf("next names unknown skill %q", next)})
 		}
 	}
 	return errs

@@ -1,0 +1,2 @@
+review: {model: claude-fable-5-1, effort: xhigh}
+mechanical: {model: sonnet, effort: low}

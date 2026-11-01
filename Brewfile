@@ -167,7 +167,7 @@ brew "cowsay"              # ASCII cow with message
 # =============================================================================
 # Casks — Core
 # =============================================================================
-cask "docker"              # Container runtime
+cask "docker-desktop"      # Container runtime (Docker Desktop)
 cask "iterm2"              # Feature-rich terminal
 cask "raycast"             # Spotlight replacement
 cask "rectangle"           # Window manager (keyboard-driven tiling)

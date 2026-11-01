@@ -5,6 +5,9 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     opts = {
+      -- Mark every line of a file git doesn't track yet as added. Upstream
+      -- defaults this to false, which leaves new files with an empty gutter.
+      attach_to_untracked = true,
       current_line_blame = false,
       current_line_blame_opts = { delay = 200 },
     },

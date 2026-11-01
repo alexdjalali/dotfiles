@@ -7,7 +7,7 @@ Personal dev environment for macOS. Catppuccin Mocha theme throughout.
 | Directory | Description |
 |-----------|-------------|
 | `zsh/` | Zsh config with Powerlevel10k prompt, aliases, functions |
-| `tmux/` | tmux config with Catppuccin colors and vim-style keybindings |
+| `tmux/` | tmux config with Catppuccin colors, vim-style keybindings, and Ctrl-h/j/k/l shared with Neovim splits |
 | `nvim/` | Neovim (AstroNvim-based) with LSP, DAP, and 30+ plugin configs |
 | `latex/` | LaTeX config (latexmkrc with build optimizations) |
 | `git/` | Git config with delta, GPG signing, LFS |

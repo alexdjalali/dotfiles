@@ -80,7 +80,7 @@ return {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
         },
-        hover = { enabled = true },
+        hover = { enabled = true, silent = true }, -- no "No information available"
         -- noice renders signature help; AstroLSP's lsp_auto_signature_help
         -- autocmd opens it, so noice's own auto-open would trigger it twice.
         signature = { enabled = true, auto_open = { enabled = false } },

@@ -16,6 +16,11 @@ return {
       disabled = { "jsonls", "cssls", "html", "bashls" },
       timeout_ms = 1000,
     },
+    -- noice.nvim renders hover and signature help (plugins/ui.lua). AstroLSP's
+    -- defaults wrap vim.lsp.buf.hover/signature_help; when noice loads first
+    -- (nvim started without a file) that wrapper replaces noice's, and noice
+    -- warns at every startup. noice's lsp.hover.silent keeps `silent = true`.
+    defaults = { hover = false, signature_help = false },
     ---@diagnostic disable: missing-fields
     config = {
       -- ruff LSP: launch the project-local ruff (<root>/.venv/bin/ruff) when it

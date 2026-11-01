@@ -309,4 +309,65 @@ spec.it("gopls_has_no_global_build_tags", function()
   spec.eq(nil, vim.tbl_get(opts, "config", "gopls", "settings", "gopls", "buildFlags"), "gopls buildFlags")
 end)
 
+-- Why this test is important:
+--   - Started without a file, nvim loads noice (VeryLazy) before AstroLSP;
+--     AstroLSP's per-call defaults then wrapped noice's hover and signature
+--     help, and noice popped an "overwritten by another plugin" warning.
+-- What it tests:
+--   - Whatever owns vim.lsp.buf.hover and signature_help before AstroLSP loads
+--     (noice, in a UI session; noice stays inactive headless, so stand-ins here)
+--     still owns them after AstroLSP loads.
+spec.it("astrolsp_keeps_existing_hover_and_signature", function()
+  local hover, signature = function() end, function() end
+  vim.lsp.buf.hover, vim.lsp.buf.signature_help = hover, signature
+  require("lazy").load({ plugins = { "astrolsp" } })
+  spec.eq(
+    { hover = true, signature_help = true },
+    { hover = vim.lsp.buf.hover == hover, signature_help = vim.lsp.buf.signature_help == signature },
+    "vim.lsp.buf functions left untouched by AstroLSP"
+  )
+end)
+
+-- Why this test is important:
+--   - The parser list sat in nvim-treesitter's opts, which its main branch
+--     ignores, so javascript, css, regex, diff, gitcommit and git_rebase were
+--     never installed and those files had no treesitter highlighting.
+-- What it tests:
+--   - AstroCore's live treesitter.ensure_installed (what AstroNvim installs
+--     from) carries this config's parsers.
+spec.it("treesitter_parsers_reach_astrocore", function()
+  local list = require("astrocore").config.treesitter.ensure_installed
+  local missing = {}
+  for _, lang in ipairs({ "javascript", "css", "regex", "diff", "gitcommit", "git_rebase" }) do
+    if not vim.tbl_contains(list, lang) then table.insert(missing, lang) end
+  end
+  spec.eq({}, missing, "parsers absent from astrocore treesitter.ensure_installed")
+end)
+
+-- Why this test is important:
+--   - gitsigns ignores files git doesn't track yet by default, so a new file
+--     shows an empty gutter instead of marking its lines as added.
+-- What it tests:
+--   - Opening an untracked file in a git repo attaches gitsigns and places a
+--     gutter sign on its lines.
+spec.it("gitsigns_marks_untracked_files", function()
+  local repo = vim.fn.tempname()
+  vim.fn.mkdir(repo, "p")
+  vim.fn.system({ "git", "-C", repo, "init", "-q" })
+  local file = repo .. "/new.txt"
+  vim.fn.writefile({ "one", "two" }, file)
+  vim.cmd.edit(file)
+  local buf = vim.api.nvim_get_current_buf()
+  local ns = vim.api.nvim_get_namespaces()["gitsigns_signs_"]
+  local function signs()
+    if not ns then ns = vim.api.nvim_get_namespaces()["gitsigns_signs_"] end
+    return ns and #vim.api.nvim_buf_get_extmarks(buf, ns, 0, -1, {}) or 0
+  end
+  vim.wait(5000, function() return signs() > 0 end, 50)
+  local got = signs()
+  vim.cmd("bwipeout!")
+  vim.fn.delete(repo, "rf")
+  spec.eq(true, got > 0, "gitsigns signs on an untracked file")
+end)
+
 spec.finish()

@@ -79,7 +79,7 @@ Failing test before production code (new behavior, endpoints): RED (one behavior
 
 - **Parsimony:** reuse existing tests first; ≤ 1 unit + 1 functional test class per new public class; no per-method classes, redundant same-path tests, or coverage padding. Tests track behavior — a behavior-preserving refactor must not break them.
 - **Black-box**, public surface; never export a symbol or add a test-only method for testability.
-- Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`. Every test has a comment on why it matters and what it asserts.
+- Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`. The name is the documentation — one comment line only when the why isn't in it. One behavior at one tier; no tests of config defaults, plain constructors, or `Kind` tables.
 - Property-based tests (`hypothesis`, `fast-check`, `go test -fuzz`) for parsers, serializers, invariants, roundtrips.
 - **Assertion check:** would a one-character bug still pass? right field? expected value derived independently? asserts behavior, not calls?
 
@@ -155,7 +155,7 @@ Read it all → restate → verify against the code → respond → implement on
 - Table-driven tests with `t.Run()` subtests
 - `t.Parallel()` where safe (no shared mutable state)
 - Test naming: `TestFunctionName_Scenario` (e.g., `TestParseConfig_EmptyInput`)
-- Every test has a comment: **Why important** + **What it tests**
+- The test name is the documentation; one comment line only when the why isn't in it
 - `testify` assertions where appropriate (`assert`, `require`)
 - Test file pattern: `<file>_test.go` in an external `<pkg>_test` package (black-box, public surface); a same-package `*_internal_test.go` only as a last resort, with a comment saying why
 - `rapid` for property-based testing (pure functions, roundtrips, invariants)
@@ -164,7 +164,7 @@ Read it all → restate → verify against the code → respond → implement on
 ## Documentation Requirements
 
 - Exactly one package doc per package (`doc.go`)
-- Doc comment on every symbol — exported and unexported types, functions, methods, constants, struct fields, enum values — starting with the name (trivially obvious fields exempt)
+- Doc comment on every exported symbol, starting with the name — one or two lines; longer only for a non-obvious why. Unexported symbols and fields only when the name and type don't say it
 - Inline comments for non-obvious logic only
 - No comments that restate the code
 - No issue-tracker IDs in comments; link only committed in-repo docs under `docs/`
@@ -209,7 +209,7 @@ Read it all → restate → verify against the code → respond → implement on
 ## Testing Requirements
 
 - Class-based test organization with descriptive method names
-- Every test has a docstring: **Why important** + **What it tests**
+- The test name is the documentation; a one-line docstring only when the why isn't in the name
 - `conftest.py` fixtures: global at `tests/unit/conftest.py`, per-service in subdirectories
 - `hypothesis` for property-based testing (pure functions, roundtrips, invariants)
 - `pytest` markers per layer: `@pytest.mark.unit`, `@pytest.mark.integration`, `@pytest.mark.e2e`
@@ -280,7 +280,7 @@ Run all: `uv run pre-commit run --all-files`
 ## Testing Requirements
 
 - `describe`/`it` blocks with descriptive names (reads as a specification)
-- Every test has a comment: **Why important** + **What it tests**
+- The test name is the documentation; one comment line only when the why isn't in it
 - React Testing Library for component tests (test behavior, not implementation)
 - **Test doubles (two tiers):** unit mocks the boundary (`vi.mock` / `vi.fn`). A Node/service integration test that needs a backing service runs it in a Docker container via `@testcontainers/postgresql` (or core `testcontainers` `GenericContainer`) — never a hand-rolled fake or in-memory substitute (`must_fix`). A frontend integration test may mock the HTTP boundary with **MSW** (Mock Service Worker); browser E2E is Playwright.
 - Test file pattern: `<file>.test.ts` or `<file>.spec.ts` colocated with source

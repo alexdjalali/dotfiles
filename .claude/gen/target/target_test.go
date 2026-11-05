@@ -7,14 +7,7 @@ import (
 	"claudegen/target"
 )
 
-// TestSelectUnknownKindFails tests the loud failure on an unknown kind.
-//
-// Why this test is important:
-//   - A typo in gen.yaml must not silently skip a target.
-//
-// What it tests:
-//   - Selecting "c" from the built-in registry fails with unknown_kind and
-//     lists the known kinds sorted.
+// A typo in gen.yaml must not silently skip a target.
 func TestSelectUnknownKindFails(t *testing.T) {
 	_, err := target.Default().Select([]string{"rules", "c"})
 	if err == nil {
@@ -26,13 +19,7 @@ func TestSelectUnknownKindFails(t *testing.T) {
 	}
 }
 
-// TestSelectPreservesOrder tests that targets come back in gen.yaml order.
-//
-// Why this test is important:
-//   - Later targets may rely on earlier ones' output order in reports.
-//
-// What it tests:
-//   - Selecting [skills, rules] returns kinds skills then rules.
+// Later targets may rely on earlier ones' output order in reports.
 func TestSelectPreservesOrder(t *testing.T) {
 	ts, err := target.Default().Select([]string{"skills", "rules"})
 	if err != nil {
@@ -43,13 +30,7 @@ func TestSelectPreservesOrder(t *testing.T) {
 	}
 }
 
-// TestNoTargetsSelectsNothing tests the fail-safe empty default.
-//
-// Why this test is important:
-//   - A missing gen.yaml must render nothing rather than everything.
-//
-// What it tests:
-//   - Selecting nil returns no targets and no error.
+// A missing gen.yaml must render nothing rather than everything.
 func TestNoTargetsSelectsNothing(t *testing.T) {
 	ts, err := target.Default().Select(nil)
 	if err != nil || len(ts) != 0 {

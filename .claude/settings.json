@@ -153,6 +153,10 @@
           {
             "type": "command",
             "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-generated.sh\" || exit 2"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-suppressions.sh\" || exit 2"
           }
         ]
       },

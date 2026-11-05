@@ -55,6 +55,8 @@ Read the goal (PR description / commit messages / plan) so deliberate choices ar
   - errors (code-less errors, internal detail leaked past the transport edge)
   - observability (silent failure branches, context-free errors, a new path with no log/metric/span, missing trace correlation)
   - docs (`documentation-sync.md`)
+  - suppressions (a new `nolint`/`noqa`/`type: ignore`/`eslint-disable`/`ts-ignore`, exemption or baseline entry, raised ratchet ceiling, or skipped/xfailed test the user didn't approve — `must_fix`: revert it and fix the code)
+  - bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a comment block restating the code, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library — name the lines that can go)
 - **Tests changed?** Read `~/.claude/rules/testing-authoring.md` first (it loads only when *editing* tests) and the project's `.claude/rules/testing-project.md` if present.
 
 File anything that *might* be an issue — "not sure" means `suggestion`, not silence. Before keeping a `must_fix`, try to refute it against the code; keep it only if it survives.

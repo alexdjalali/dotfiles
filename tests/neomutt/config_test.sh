@@ -22,12 +22,7 @@ make_home() {
   : > "$T/.neomutt/aliases"
 }
 
-# Why this test is important:
-#   - The IMAP cache holds real email; inside ~/.neomutt it lived in the git
-#     working tree, one `git add -f` away from being committed.
-# What it tests:
-#   - The rc and the example account parse with no errors, and header_cache,
-#     message_cache_dir and tmp_dir resolve under ~/.cache/neomutt.
+# The IMAP cache holds real email; inside ~/.neomutt it lived in the git working tree, one `git add -f` away from being committed.
 test_cache_paths_outside_repo() {
   make_home
   mock_cmd security "dummy-password"
@@ -39,12 +34,7 @@ test_cache_paths_outside_repo() {
   assert_contains "$out" 'tmp_dir = "~/.cache/neomutt/tmp"' "neomutt -Q"
 }
 
-# Why this test is important:
-#   - Folder names are the account's business: the global rc must stay
-#     account-agnostic so an account can be added without editing it.
-# What it tests:
-#   - The global rc names no Gmail folder, and the Gmail account example
-#     defines every folder macro (gi gs gd gt ga A).
+# Folder names are the account's business: the global rc must stay account-agnostic so an account can be added without editing it.
 test_folder_macros_live_in_the_account() {
   assert_eq 0 "$(grep -c '\[Gmail\]' "$NEOMUTT/.neomuttrc")" "[Gmail] mentions in .neomuttrc"
   local key
@@ -53,12 +43,7 @@ test_folder_macros_live_in_the_account() {
   done
 }
 
-# Why this test is important:
-#   - The Georgia Tech account was removed; leftover switch macros or OAuth
-#     tooling would point at files that no longer exist.
-# What it tests:
-#   - No GT account, authorizer, OAuth helper or multi-account guide remains,
-#     and the rc neither switches accounts nor mentions GT.
+# The Georgia Tech account was removed; leftover switch macros or OAuth tooling would point at files that no longer exist.
 test_single_gmail_account() {
   local f
   for f in account.gatech.example .neomutt/authorize_gatech.sh .neomutt/mutt_oauth2.py .neomutt/MULTI-ACCOUNT.md; do
@@ -67,11 +52,7 @@ test_single_gmail_account() {
   assert_eq 0 "$(grep -ciE 'gatech|georgia|office ?365|<f3>' "$NEOMUTT/.neomuttrc")" "GT mentions in .neomuttrc"
 }
 
-# Why this test is important:
-#   - A plaintext password file under ~/.neomutt sat inside the repo tree,
-#     guarded only by .gitignore.
-# What it tests:
-#   - The Gmail example reads its password from the macOS Keychain.
+# A plaintext password file under ~/.neomutt sat inside the repo tree, guarded only by .gitignore.
 test_secrets_outside_repo() {
   local gmail
   gmail=$(grep -E '^set (imap|smtp)_pass' "$NEOMUTT/account.gmail.example")

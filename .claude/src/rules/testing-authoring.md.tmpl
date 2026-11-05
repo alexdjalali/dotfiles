@@ -24,17 +24,11 @@ Loaded when editing test files; the core policy (TDD, Test Double Policy) is `te
 - **Tier gate:** Go `//go:build integration`, Python `@pytest.mark.integration` / `@pytest.mark.unit`, TS a separate integration suite. Each test passes alone.
 - **Black-box:** external test package, public surface, observable behavior. White-box (Go `*_internal_test.go`) only when unreachable otherwise, saying why. **Never export a symbol or add a test-only method for testability.**
 - **Naming:** Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`.
-- **Doc comment on every test** — why it matters and what behavior it asserts:
-
-```go
-// TestX tests <summary>.
-//
-// Why this test is important:
-//   - <reason>
-//
-// What it tests:
-//   - <observable behavior>
-```
+- **The name is the documentation.** A test whose name says the scenario and expectation gets no comment. Add **one line** only when the *why* isn't in the name (a regression it pins, a non-obvious invariant). No "Why this test is important / What it tests" block — at ~9 lines per test it was a tenth of every repo.
+- **One behavior, one tier.** Test a behavior at the lowest tier that can observe it; a handler test doesn't re-assert what the service test already pins, and an integration test covers what a mock can't (real SQL, real wire), not the same branches again.
+- **No structure tests.** Don't test config defaults field by field, a constructor that only assigns, a `String()` on an enum, or a `Kind` table — the schema validator, the type checker, and the one wiring test (the graph boots on stub kinds) cover them.
+- **Assertion density.** Setup should be a fixture or table row, not prose: aim for ≥ 1 assertion per ~8 test lines. A test that is mostly mock wiring is testing the wiring — push the setup into a shared fixture or test at a lower tier.
+- **Delete test helpers nothing calls** (`deadcode -test`, `vulture`).
 
 ### Property-based tests
 

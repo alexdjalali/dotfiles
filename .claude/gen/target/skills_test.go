@@ -9,16 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// TestSkillsGolden tests the skills target against golden SKILL.md files.
-//
-// Why this test is important:
-//   - Skill frontmatter decides model, effort, context and invocation; a
-//     rendering slip changes how every skill runs.
-//
-// What it tests:
-//   - Each src/skills/<name>.yaml + .md.tmpl renders to
-//     .claude/skills/<name>/SKILL.md exactly as its golden file: role
-//     resolved, overrides applied, and injected lines.
+// Skill frontmatter decides model, effort, context and invocation; a rendering slip changes how every skill runs.
 func TestSkillsGolden(t *testing.T) {
 	files := renderLoaded(t, "skills", "../testdata/skills")
 	if len(files) != 2 {
@@ -36,14 +27,7 @@ func TestSkillsGolden(t *testing.T) {
 	}
 }
 
-// TestInjectRendersBangLines tests dynamic-context injection.
-//
-// Why this test is important:
-//   - Claude Code runs a !`cmd` line before the skill loads; anything else
-//     reaches the model as literal text.
-//
-// What it tests:
-//   - alpha's two inject commands render as !`...` lines right after the frontmatter.
+// Claude Code runs a !`cmd` line before the skill loads; anything else reaches the model as literal text.
 func TestInjectRendersBangLines(t *testing.T) {
 	files := renderLoaded(t, "skills", "../testdata/skills")
 	body := string(files[0].Data)
@@ -52,15 +36,7 @@ func TestInjectRendersBangLines(t *testing.T) {
 	}
 }
 
-// TestFrontmatterKeyOrder tests frontmatter layout.
-//
-// Why this test is important:
-//   - Frontmatter must start on line 1 and keep a stable key order, so
-//     regenerating never churns every file.
-//
-// What it tests:
-//   - beta's frontmatter opens with ---, the marker, then name, model,
-//     effort, in that order.
+// Frontmatter must start on line 1 and keep a stable key order, so regenerating never churns every file.
 func TestFrontmatterKeyOrder(t *testing.T) {
 	files := renderLoaded(t, "skills", "../testdata/skills")
 	lines := strings.Split(string(files[1].Data), "\n")
@@ -72,15 +48,7 @@ func TestFrontmatterKeyOrder(t *testing.T) {
 	}
 }
 
-// TestFrontmatterKeepsStringsStrings tests that string values stay strings.
-//
-// Why this test is important:
-//   - An argument hint of null or 123 written plain re-parses as YAML null
-//     or a number, so Claude Code would read a different value than the source.
-//
-// What it tests:
-//   - argument_hint "null" and description "123" re-parse from the rendered
-//     frontmatter as the strings "null" and "123".
+// An argument hint of null or 123 written plain re-parses as YAML null or a number, so Claude Code would read a different value than the source.
 func TestFrontmatterKeepsStringsStrings(t *testing.T) {
 	root := t.TempDir()
 	for rel, content := range map[string]string{

@@ -22,7 +22,7 @@ Failing test before production code (new behavior, endpoints): RED (one behavior
 
 - **Parsimony:** reuse existing tests first; ≤ 1 unit + 1 functional test class per new public class; no per-method classes, redundant same-path tests, or coverage padding. Tests track behavior — a behavior-preserving refactor must not break them.
 - **Black-box**, public surface; never export a symbol or add a test-only method for testability.
-- Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`. Every test has a comment on why it matters and what it asserts.
+- Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`. The name is the documentation — one comment line only when the why isn't in it. One behavior at one tier; no tests of config defaults, plain constructors, or `Kind` tables.
 - Property-based tests (`hypothesis`, `fast-check`, `go test -fuzz`) for parsers, serializers, invariants, roundtrips.
 - **Assertion check:** would a one-character bug still pass? right field? expected value derived independently? asserts behavior, not calls?
 

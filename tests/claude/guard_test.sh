@@ -302,13 +302,7 @@ MUST_ALLOW=(
   'git push -n'
 )
 
-# Why this test is important:
-#   - With bypassPermissions on, this hook is the only thing standing between a
-#     mistaken command and a wiped home directory or a rewritten main branch.
-# What it tests:
-#   - Every destructive form (force-push variants, recursive rm of / ~ $HOME,
-#     reset --hard, checkout discards, worktree restore, clean -f), including
-#     compound and nested commands, exits 2.
+# With bypassPermissions on, this hook is the only thing standing between a mistaken command and a wiped home directory or a rewritten main branch.
 test_blocks_destructive_commands() {
   local c let_through=()
   for c in "${MUST_BLOCK[@]}"; do
@@ -317,14 +311,7 @@ test_blocks_destructive_commands() {
   assert_eq "" "${let_through[*]-}" "commands the guard let through"
 }
 
-# Why this test is important:
-#   - An over-broad guard blocks routine git and file work mid-session.
-# What it tests:
-#   - Everyday commands, and look-alikes (branch names containing main/force,
-#     --track/--detach checkouts, staged-only restore, dry-run clean,
-#     destructive text inside a commit message, options extending or sharing a
-#     prefix with a banned one, wrapped non-forced or feature-branch pushes, a
-#     push option starting with +), exit 0.
+# An over-broad guard blocks routine git and file work mid-session.
 test_allows_everyday_commands() {
   local c blocked=()
   for c in "${MUST_ALLOW[@]}"; do
@@ -348,16 +335,7 @@ status_with_home() {
   echo $?
 }
 
-# Why this test is important:
-#   - The most natural force-push forms name no branch, so they push whatever
-#     is checked out: on main they rewrite origin/main.
-# What it tests:
-#   - `git push -f`, `git push --force origin` and `git push origin HEAD --force`
-#     are blocked from a repo on main and allowed from a repo on a feature branch,
-#     also through `git -C ~/repo` (git gets the `~` unexpanded); the verdict
-#     holds with a quoted global option, a quoted assignment or redirection in
-#     front, an unknown wrapper, or a later `cd` (each judged on the real
-#     tokens and the directory the push runs in).
+# The most natural force-push forms name no branch, so they push whatever is checked out: on main they rewrite origin/main.
 test_force_push_of_current_branch() {
   local c branch want
   for c in 'git push -f' 'git push --force origin' 'git push origin HEAD --force' \
@@ -379,12 +357,7 @@ test_force_push_of_current_branch() {
   done
 }
 
-# Why this test is important:
-#   - A forced --all/--branches push rewrites every branch, main included, even
-#     from a feature branch, where the current-branch check alone passes it.
-# What it tests:
-#   - `git push -f` with --all, --branches or an abbreviation of either is
-#     blocked from a repo on a feature branch.
+# A forced --all/--branches push rewrites every branch, main included, even from a feature branch, where the current-branch check alone passes it.
 test_force_push_of_every_branch() {
   local c
   for c in 'git push -f --all origin' 'git push -f --branches origin' \
@@ -394,12 +367,7 @@ test_force_push_of_every_branch() {
   done
 }
 
-# Why this test is important:
-#   - A remote or a `-C` directory named main is not the main branch; reading
-#     it as one blocks routine feature-branch pushes.
-# What it tests:
-#   - From a repo on a feature branch, `git push -f main feature/x` and
-#     `git -C main push -f origin feature/x` (main/ a subdirectory) exit 0.
+# A remote or a `-C` directory named main is not the main branch; reading it as one blocks routine feature-branch pushes.
 test_push_main_outside_refspec() {
   local c
   for c in 'git push -f main feature/x' 'git -C main push -f origin feature/x'; do
@@ -409,16 +377,7 @@ test_push_main_outside_refspec() {
   done
 }
 
-# Why this test is important:
-#   - `rm -rf *` or `rm -rf .` typed from the home directory wipes it just as
-#     surely as `rm -rf ~`.
-# What it tests:
-#   - Relative recursive removals are resolved against the hook's cwd, also
-#     behind an unknown wrapper: blocked from $HOME, allowed from a project
-#     directory, and blocked after a `cd -P ~` earlier in the same command;
-#     git's own rm (`git rm -r --cached .` from $HOME, the same behind an
-#     unknown wrapper, or with a `~` operand, also as `/usr/bin/git` or past a
-#     global option) is not a recursive rm and allowed.
+# `rm -rf *` or `rm -rf .` typed from the home directory wipes it just as surely as `rm -rf ~`.
 test_relative_rm_resolved_against_cwd() {
   local c
   mkdir -p "$T/project"
@@ -434,13 +393,7 @@ test_relative_rm_resolved_against_cwd() {
   done
 }
 
-# Why this test is important:
-#   - `git checkout <path>` throws away uncommitted edits exactly like the
-#     blocked `git checkout -- <path>`; only the working tree says it's a path.
-# What it tests:
-#   - From a repo, checking out an existing file or directory (also with
-#     --ours) is blocked; checking out a branch name (not a path) is allowed,
-#     also with a redirection to an existing file, wrapped or not.
+# `git checkout <path>` throws away uncommitted edits exactly like the blocked `git checkout -- <path>`; only the working tree says it's a path.
 test_checkout_of_existing_path() {
   local c rc
   git -c init.defaultBranch=main init -q "$T/repo"
@@ -460,22 +413,14 @@ test_checkout_of_existing_path() {
   done
 }
 
-# Why this test is important:
-#   - Claude Code shows the hook's stderr; without a reason the block is opaque.
-# What it tests:
-#   - A blocked command prints a "BLOCKED:" reason on stderr.
+# Claude Code shows the hook's stderr; without a reason the block is opaque.
 test_block_reports_reason() {
   local err
   err=$(jq -cn '{tool_input: {command: "git reset --hard"}}' | bash "$GUARD" 2>&1 >/dev/null)
   assert_contains "$err" "BLOCKED:" "stderr of a blocked command"
 }
 
-# Why this test is important:
-#   - A guard that silently allows everything when its runtime is missing or
-#     its input is unreadable is worse than none; it must fail closed.
-# What it tests:
-#   - Without python3 on PATH, with a python3 that fails to run (a broken
-#     pyenv shim exits 127), and for a malformed payload, the guard exits 2.
+# A guard that silently allows everything when its runtime is missing or its input is unreadable is worse than none; it must fail closed.
 test_fails_closed() {
   local rc
   printf '{"tool_input":{"command":"git status"}}' | env PATH="$T/empty" /bin/bash "$GUARD" >/dev/null 2>&1
@@ -491,12 +436,7 @@ test_fails_closed() {
   assert_eq 2 "$rc" "exit status for a malformed payload"
 }
 
-# Why this test is important:
-#   - The hook-bypass bans live in guard_rules.json; a missing or corrupt
-#     table must block, not silently drop the bans.
-# What it tests:
-#   - With the table deleted, not JSON, or a row missing fields, `git status`
-#     exits 2 and stderr names the guard table.
+# The hook-bypass bans live in guard_rules.json; a missing or corrupt table must block, not silently drop the bans.
 test_fails_closed_on_bad_table() {
   local table err rc
   command cp -R "$REPO_ROOT/.claude/scripts" "$T/scripts"

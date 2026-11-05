@@ -7,7 +7,9 @@ test:
     status=0
     for t in tests/*/*_test.sh; do
         echo "== $t"
-        bash "$t" || status=1
+        # stdin closed: command mocks record stdin with `cat`, which blocks
+        # forever when the suite runs from a non-terminal with stdin open.
+        bash "$t" </dev/null || status=1
     done
     # Load this checkout's nvim/ as the config (not whatever ~/.config/nvim
     # points at); plugins still come from the usual data dir.

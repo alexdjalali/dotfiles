@@ -5,14 +5,23 @@
 
 - **Ambiguous request →** state assumptions and ask before coding.
 - **Lineage test:** every changed line traces to the request; otherwise revert it. The interface, factory, config, decorators, tests, and docs that put the requested behavior in the project's shape (`code-addition-checklist.md`) *are* the request — not scope creep. Unrelated refactors are. Remove what *your* change orphaned; mention (don't delete) pre-existing dead code.
-- **Least hand-maintained code:** generate > generalize > hand-write. Derive code from a contract with the project's generator; otherwise build the general shape (interface + `Kind` + config + DI + decorators) once and configure it; hand-write only the residue. Shorter is better *within* that shape — if 200 lines could be 50, rewrite.
+- **Least hand-maintained code:** generate > generalize > hand-write. Derive code from a contract with the project's generator; at a seam (external boundary, or two real backends) emit the general shape (interface + `Kind` + config + DI + decorators) from its declaration; an internal collaborator with one implementation stays concrete. Hand-write only the residue. Shorter is better *within* that shape — if 200 lines could be 50, rewrite.
 - **Generated code:** Change generated code at its source (proto, schema, template, `wire.go`) and regenerate through the project's CLI instead of editing the output; commit the output; CI fails on drift.
+- **Checks:** Satisfy a check; don't silence it. An agent adds no inline suppression (`//nolint`, `#nosec`, `nosemgrep`, `# noqa`, `type: ignore`, `eslint-disable`, `@ts-ignore` / `@ts-expect-error`), no exemption / baseline / allowlist entry, no raised ratchet ceiling, and no skipped test to get green. A rule that is wrong is changed by an ADR the user approves; an exception is added by the user. The `guard-suppressions.sh` PreToolUse hook blocks the inline markers and growing exemption files.
 - **⛔ Never invent values** — paths, env vars, keys, IDs, URLs, ports, hosts, versions, service names, unverified functions or library signatures. Confirm by reading the code, running the command, or asking.
 - **Before modifying a shared function**, trace `codegraph_callers` / `codegraph_callees` (then Grep for dynamic callers).
 - Fix obvious mistakes in code you're writing; report — don't auto-fix — code the user edited.
 - Hot paths (render loops, handlers, polling) cache/memoize. Formatters own style. Backward compatibility only when required. Split a file > 1000 lines only when it's the task's focus.
 - **Debugging:** no fix without a root cause; 3+ failed fixes = wrong approach, stop. Method: `/fix`.
 - **Code search:** CodeGraph + Semble first (`mcp-servers.md`). **Prefer a tool's CLI** (`--help`, `Makefile`, `justfile`, `package.json`) over raw API calls or reimplementing it.
+
+### Network and the sandbox
+
+The Bash sandbox lets traffic out only through its HTTP(S) proxy. SSH (`git@github.com:` remotes, port 22) never reaches it, so `git fetch/pull/push` over SSH fails with `Could not resolve hostname github.com` while `gh` and `curl` work — that's the sandbox, not a flaky network.
+
+- **Classify the first failure, don't retry it.** A DNS/connect error from SSH or a non-HTTP tool inside the sandbox → rerun that one command with the sandbox disabled, or use the HTTPS path (`gh`, `git -c url."https://github.com/".insteadOf=git@github.com: …`). No `for i in 1..N` retry loops, no `ping`/`dig` diagnosis.
+- **Go modules you own** (the KE, the products): `GOPRIVATE=github.com/gt-tech-ai/*,github.com/example-org/*` so `go` fetches them directly and a fresh tag never waits out `proxy.golang.org`'s cached 404 (up to 30 min).
+- **Never work around a blocked fetch** by vendoring, copying the dependency's code, adding a `replace` to a local path in a committed `go.mod`, or pinning an older version. Missing access → give the user the exact command.
 
 ### Git — ⛔ writes need explicit permission
 

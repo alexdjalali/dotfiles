@@ -28,6 +28,10 @@
 
 Already enforced at `hook` or `lint` → report that and change nothing.
 
+**Declarative first.** Pick the cheapest check that decides it: a config line in a stock linter (`depguard`, `forbidigo`, a `ruff` rule, a `semgrep` YAML rule) → a row in the project's existing guard engine → a generator template. A new hand-written analyzer or guard package (Go/Python code plus its own tests) needs a stated reason no stock rule can express the shape. A guard engine is code too, and a bespoke one per rule is how a repo's guards grew to thousands of lines.
+
+**No exceptions at birth.** A new check lands with the code already passing it: fix the violations in the same change, or ship it as a ratchet whose ceiling is today's count and only goes down. NEVER an exemption list, a baseline file, a `report-only` mode left on, or `//nolint` / `# noqa` on the existing violations (`no-suppressions`; `guard-suppressions.sh` blocks the inline ones). An agent never raises a ceiling or adds an exemption; a rule that is wrong goes back to the user as an ADR.
+
 ## Next Step
 
 - **The check would weaken or replace a stronger one** → `/adr` first.

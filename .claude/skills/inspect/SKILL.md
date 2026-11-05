@@ -9,7 +9,7 @@ argument-hint: <finding | file:line>
 
 **Input:** a finding (`$ARGUMENTS`: its text or `file:line`). **Output:** one new machine check with its test, the rule's `enforce` moved rightward, and a report: rule id, check, test. Prose asks the model to comply; a check makes the violation impossible or loud — promote only what a check can decide without judgment.
 
-`enforce` runs `prose` → `review` → `lint` → `hook`. A rule moves rightward only; moving it leftward (weakening a check) needs an ADR.
+`enforce` runs `prose` → `review` → `lint` → `hook`. A rule moves rightward only; moving it leftward (weakening a check) needs an ADR. An unenforced rule is a suggestion — the agent will report conformance to it with full confidence; the only reliable check runs without the model. Skills graduate into guards: a step that can be checked belongs here, not in prose.
 
 ## Steps
 
@@ -22,6 +22,11 @@ argument-hint: <finding | file:line>
    | edits to a class of file | the edit guard (`guard-generated.sh`) or a new `edit-guard` path |
    | a code pattern | the project's linter: `golangci-lint` `forbidigo` / `depguard`, a `ruff` rule, a `semgrep` rule, an ESLint rule |
    | a doc or config pattern | generator validation (`claude-gen` `model.Validate`, or the project's schema check) |
+   | an import or layer direction | an import guard generated from the layer model (`depguard`, `import-linter`) — never hand-listed |
+   | a cross-file or cross-language invariant (every endpoint has a doc + e2e case, Go and Python error codes agree, a chart pinned in its lock file) | a repository-model guard — a declarative row (text match, CEL, AST query) over the parsed repo, in the project's guard engine |
+   | two files that must agree | generate one from the other (`/scaffold`); a guard comparing them only when generation is impossible |
+   | a count that can't reach zero in one commit (line budget, exemptions, direct I/O outside the client tier) | a ratchet: the recorded ceiling fails any commit that raises it; lowered by fixing code, NEVER raised to pass |
+   | a shape that must be right at birth | a generator — the scaffold *is* the convention |
    | needs judgment (naming, design fit) | stays `review` — say so and stop |
 
 3. **Write the failing test first:** a `MUST_BLOCK` entry in `tests/claude/guard_test.sh`, linter testdata that must be flagged, or a `Validate` test. Run it; it fails because the check is missing.

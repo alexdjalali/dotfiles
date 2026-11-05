@@ -1,6 +1,17 @@
+---
+# OKF frontmatter: keep only when .claude/docs-layout.yaml says `frontmatter: true` (docs-layout.md).
+type: Epic
+title: Epic <N> — <Title>
+description: <one sentence: what the epic achieves>
+status: draft
+tags: [epic-<N>]
+generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
+---
+
 # Epic <N> — <Title>
 
-**Status**: Planning **Stories**: -- **Points**: --
+**Status**: Planning **Stories**: -- **Class**: <highest story class> **Initiative**: <ADR-NNNN, … — or none>
+**Design doc**: <`<design>/<slug>.md` — one per epic> **Merged**: -- **Stable**: -- (done = stable in staging, not merged — `~/.claude/templates/estimate.md`)
 
 ## Summary
 
@@ -29,6 +40,12 @@ graph TD
 ## Dependencies
 
 - <Other epics or external requirements>
+
+## Soak (Gate-and-soak epics, or any story with Operational surface ≥ 2)
+
+- [ ] Every new cloud call has its permission/grant deployed (IAM, CI token, trust policy)
+- [ ] Generated artifacts, lock files, and pinned versions agree across modules and environments
+- [ ] Ran in staging with real data for <window> with no follow-up fix → set **Stable**
 
 ## Risks
 

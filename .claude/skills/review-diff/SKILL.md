@@ -13,7 +13,7 @@ argument-hint: '[deep] [<paths> | <branch> | <base>...<branch> | <PR number>]'
 !`git status --short 2>/dev/null | head -40`
 !`git diff --stat HEAD 2>/dev/null | tail -40`
 
-**Target:** `$ARGUMENTS` (empty → the working tree). One high-recall pass on Fable, in a forked context: you see only this skill and the target — resolve everything from the repo, and make your **final message the Output section verbatim**, nothing else, so the caller receives the findings intact. Surface **every real issue**; confidence decides a finding's tier, never whether it's reported. **Output:** one ranked findings list. This is the only review entry point — never a hand-spawned `changes-review` agent. **Each file is read once and reviewed once** — no re-sweeps.
+**Target:** `$ARGUMENTS` (empty → the working tree). One high-recall pass on Fable, in a forked context: you see only this skill and the target — resolve everything from the repo, and make your **final message the Output section verbatim**, nothing else, so the caller receives the findings intact. Surface **every real issue**; confidence decides a finding's tier, never whether it's reported. **Output:** one ranked findings list. This is the only review entry point — never a hand-spawned `changes-review` agent. **Each file is read once and reviewed once** — no re-sweeps. One pass per change set: a workflow never re-runs this skill on its own fix commits.
 
 ## 1 — Resolve the range
 
@@ -40,6 +40,7 @@ Read the goal (PR description / commit messages / plan) so deliberate choices ar
   - concurrency and shared state
   - resource lifecycle (leaks, cleanup skipped on early return)
   - contracts (changed signatures with stale callers, breaking persisted/wire formats, migration order)
+  - infrastructure (a new cloud/queue/storage call without its permission grant in the same change, a CI workflow missing a token permission, two files that must agree — source and generated output, a lock file, an image pinned per environment — neither generated nor guarded)
 - **Quality:**
   - security (injection, authn/z, secrets, unvalidated boundary input, SSRF/path traversal)
   - performance (uncached hot paths, N+1, redundant work)
@@ -78,6 +79,8 @@ One list, most severe first, exact duplicates dropped; every finding has `file:l
 - [file:line] Issue — why
 ### suggestion — optional, or real but lower-confidence
 - [file:line] Improvement
+## Human review — read in full; the rest is sampled
+- [file] auth / permissions / migration / public contract / infrastructure / first instance of a new pattern
 ```
 
 Say so when a tier is empty. The caller decides what happens next: `spec-verify` turns `must_fix` / `should_fix` into one fix commit; a user who typed `/review-diff` is asked which findings to address.

@@ -3,10 +3,19 @@
 name: learn
 model: claude-opus-4-8
 effort: high
-description: Capture a non-obvious, reusable lesson from this session as a project skill (.claude/skills/<slug>/SKILL.md). Use after a hard-won debugging insight, workaround, or repeatable workflow.
+description: Turn a lesson from this session (a retro) into a committed artifact on the right rung — a guard via /inspect, a project rule line, a global skill step, or a project skill (.claude/skills/<slug>/SKILL.md). Use after a hard-won debugging insight, workaround, repeatable workflow, or anything that went wrong and should not recur.
 ---
 
-**Input:** the current session. **Output:** one new `.claude/skills/<slug>/SKILL.md` in the project, with its path reported. One insight per skill; one-off snippets aren't worth a skill — skip them.
+**Input:** the current session (a retro). **Output:** one committed artifact on the right rung — usually a new `.claude/skills/<slug>/SKILL.md` in the project — with its path reported. A retro's output is a change that every later session enforces, never an action item. One insight per artifact; one-off snippets aren't worth one — skip them.
+
+## Pick the rung first
+
+| The lesson is… | It lands as |
+|---|---|
+| checkable without judgment | a guard, lint rule, or ratchet → `/inspect` instead; stop here |
+| a fact about this codebase's theory (a tier boundary, a reference module, a noun) | one line in the project's `.claude/rules/` — theory is local |
+| a missing step in a global workflow (`/spec`, `/fix`, `/rfp`, …) | a step in `~/dotfiles/.claude/src/skills/<name>.md.tmpl`, regenerated — process is global; propose the diff, the user applies it |
+| a reusable, non-checkable workflow or debugging insight | a project skill (below) |
 
 ## When to extract
 

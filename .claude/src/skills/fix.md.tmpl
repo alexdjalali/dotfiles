@@ -1,4 +1,4 @@
-**Input:** a symptom (error, failing/flaky test, unexpected behavior), a `file:line`, or an RCA slug / `docs/spec/rca/<slug>.md`. **Output:** a root-cause fix pinned by a reproducing test with revert-test proof, fast checks green, ready for `/github` (which commits, then runs the full gate once). No plan file.
+**Input:** a symptom (error, failing/flaky test, unexpected behavior), a `file:line`, or an RCA slug / `<rca>/<slug>.md` (the `rca` layout path, `~/.claude/templates/docs-layout.md`). **Output:** a root-cause fix pinned by a reproducing test with revert-test proof, fast checks green, ready for `/github` (which commits; the full gate runs once, at `/github pr`). No plan file.
 
 ## Steps
 
@@ -8,7 +8,7 @@
 4. **Minimal fix** — the smallest change that resolves the root cause; confirm on the original trigger. No refactors, no scope creep.
 5. **Reproducing test, at the end** — one test that fails *because the bug existed*, tier and double per `testing.md`. NEVER skip it: it is the regression guarantee.
 6. **Revert-test proof** (NEVER skip) — revert the fix with Edit (restore the pre-fix lines) and run the test: it must fail (not a syntax/import error). Re-apply with Edit: it must pass. A test that passes with the fix reverted isn't pinning the bug — rewrite it. Never `git stash` / `git checkout` for this.
-7. **Verify** — fast checks green (CLAUDE.md *Quality Gates*; reproducing + affected tests), then run the real program on the original trigger. The full gate runs once, in `/github` after the commit.
+7. **Verify** — fast checks green (CLAUDE.md *Quality Gates*; reproducing + affected tests), then run the real program on the original trigger. The full gate runs once, at `/github pr` — never here.
 
 ## Debugging discipline
 
@@ -16,6 +16,7 @@
 - **Revert-first** when a change breaks something: revert it; consider deleting the broken thing; then a one-line targeted fix; else stop and reconsider.
 - **Flaky / async:** replace `sleep` with polling for the actual condition (short interval, a timeout, a clear error, the getter called inside the loop) — except when testing real timing (debounce, throttle; say why).
 - **Defense in depth:** once fixed, validate where the bad data enters (entry point → business logic → environment guards) so the bug is impossible, not just patched.
+- **Classify the fix** — app logic · cloud & deploy · permissions & identity · drift & generated code · CI & toolchain — and name it in the commit body. Most fixes are not app logic: infrastructure has no compiler, and its invariants span files the agent can't see at once (a call here, its grant in a Terraform module there). If two things had to agree and didn't, the lasting fix is to generate one from the other or guard the pair.
 - **Rationalizations → STOP:** "it's simple, skip the process" · "emergency, no time" (thrashing is slower) · "it works, skip the test" · "I see the problem" (a symptom isn't a cause) · "one more try" after two failures.
 - **No root cause found?** Truly environmental, timing, or external: document what you ruled out, add handling (retry/timeout/clear error) and logging at the boundary — but most "no root cause" is an unfinished investigation.
 - **Blocked by a constraint?** Classify it — hard (contracts, security), soft (convention; negotiable with the trade-off stated), or ghost (no current requirement behind it — the highest-value find).
@@ -29,4 +30,5 @@ STOP and tell the user to use `/spec` (bugfix lane) if the fix would touch many 
 - **Fixed, revert-proven, fast checks green** → suggest `/github` to ship (the user types it).
 - **Several related bugs, or someone else will fix it** → record the diagnosis with `/rca` instead.
 - **Fix needs a design change** → `/adr` first.
+- **The bug class can recur** (drift, a missing grant, unsynced generated code, a pattern violation) → `/inspect` to make it a check.
 - **Outgrew the quick lane** → stop; suggest `/spec` for the user to type.

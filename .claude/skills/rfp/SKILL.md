@@ -3,39 +3,43 @@
 name: rfp
 model: claude-opus-5-5
 effort: high
-description: Decompose an epic into independently testable stories (docs/spec/epics/ + docs/spec/stories/), or report per-epic story progress with `status`. Use when an epic needs breaking into implementable stories.
+description: Decompose an epic into independently testable, scored stories (decisions, novelty, operational surface, blast radius, context cost — never story points) in the epic and story folders of the docs layout, or report per-epic progress to stable with `status`. Use when an epic needs breaking into implementable stories or estimating.
 argument-hint: '[status | <epic name or file>]'
 ---
 
-`/rfp` breaks an epic into stories. **Input:** `status`, or an epic name/file. **Output:** the story files plus the epic's updated stories table — or a progress table.
+`/rfp` breaks an epic into stories. **Input:** `status`, or an epic name/file. **Output:** the story files plus the epic's updated stories table — or a progress table. Folders are **layout paths** (`~/.claude/templates/docs-layout.md`): `<epic>` and `<story>` are those paths from `.claude/docs-layout.yaml`, else `docs/spec/epics` and `docs/spec/stories`; `{epic}` in a story path is the epic's directory name.
 
 ## `status`
 
-Scan `docs/spec/epics/` and `docs/spec/stories/`; per epic, count stories by `**Status**` (Todo / In Progress / Complete) and print:
+Scan `<epic>/` and `<story>/`; per epic, count stories by `**Status**` (Todo / In Progress / Complete), read its `**Merged**` / `**Stable**` dates, and print:
 
 ```
-| #  | Epic                   | Total | Done | Left | Progress        |
-|----|------------------------|-------|------|------|-----------------|
-| 1  | Auth Overhaul          |   7   |   5  |  2   | ########--  71% |
+| #  | Epic                   | Class         | Total | Done | Left | Progress        | Stable     |
+|----|------------------------|---------------|-------|------|------|-----------------|------------|
+| 1  | Auth Overhaul          | Gate and soak |   7   |   5  |  2   | ########--  71% | --         |
 ```
+
+An epic with every story Complete but no `Stable` date is **in the tail**, not done — list those last, with days since `Merged`. Then list open decisions: `Proposed` ADRs the open stories depend on — they are the capacity limit, not the story count.
 
 ## Decompose an epic
 
-1. Read `docs/spec/epics/epic-NN-<slug>.md` — create it from `~/.claude/templates/epic.md` first if missing.
+1. Read the epic (`<epic>/epic-NN-<slug>.md`, or `<epic>/epic-NN-<slug>/epic.md` where epics are directories) — create it from `~/.claude/templates/epic.md` first if missing.
 2. Break it into **3–10 stories**. Each story:
-   - has concrete, testable acceptance criteria, at least one checkable at the unit level — NEVER a story testable only end-to-end;
+   - has acceptance criteria precise enough for a machine to check — Given / When / Then, each one a test case; at least one checkable at the unit level — NEVER a story testable only end-to-end, NEVER "users can manage X";
    - is implementable without an unfinished sibling — NEVER depend on one;
    - **fits one commit** — `/spec` makes exactly one commit per story, so each story leaves the tree green on its own and is small enough to review as a unit (≤ 12 plan tasks);
    - answers the **code-addition checklist** (`~/.claude/templates/code-addition-checklist.md`), so the *how* is scoped, not just the *what*;
+   - names its **reference implementation** (`file:line`) — or says it sets a new pattern, which needs an ADR and is reviewed as a pattern once;
+   - is **scored** on the five axes of `~/.claude/templates/estimate.md` — never story points. A Spike-class story (13–15) is split or turned into a timeboxed spike, never written as one story; a Design-first story names the ADR it waits on;
    - **creates new files → includes a Proposed Repository Structure** (the story template's section): a tree of new/changed paths consistent with the current layout (inspect it first — `codegraph_files` / `ls`). NEVER finalize a story whose layout deviates from the current structure without the user's confirmation.
-3. Write each story to `docs/spec/stories/<N>.<M>-<slug>.md` from `~/.claude/templates/story.md` — numbered from the epic (epic 5 → 5.1, 5.2, …), titled with a verb phrase ("Add user authentication", not "User authentication"). Prose follows `~/.claude/templates/prose-style.md`.
-4. Update the epic's stories table with relative links and status `Todo`.
+3. Write each story to `<story>/<N>.<M>-<slug>.md` from `~/.claude/templates/story.md` — numbered from the epic (epic 5 → 5.1, 5.2, …), titled with a verb phrase ("Add user authentication", not "User authentication"). Prose follows `~/.claude/templates/prose-style.md`. When the layout says `frontmatter: true`, keep the template's OKF frontmatter block; otherwise drop it.
+4. Update the epic's stories table with relative links and status `Todo`, and its `**Class**` (the highest story class). Any story with Operational surface ≥ 2 → fill the epic's *Soak* checklist.
 
 ## Next Step
 
 Ask:
 
-> Stories written. Start one?
+> Stories written (classes: <n> Delegate · <n> Design first · <n> Gate and soak). Open decisions first: <Proposed ADRs, or none>. Start one?
 > - `/spec <epic-file>` — plan and implement every open story, one commit each, reviewed and gated once at the end
 > - `/spec <story-file>` — plan and implement just one
 > - Done — stories only

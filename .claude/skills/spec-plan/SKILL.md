@@ -11,12 +11,13 @@ description: /spec planning, Feature or Bugfix — explore (or reproduce + root-
 ## Phase 1 — Explore
 
 1. **Requirements source** — cite every one under References.
-   - **Epic** (`docs/spec/epics/…`) → read it and every open story it lists, in order; each story becomes one story group (one commit).
+   - **Epic** (under the `epic` layout folder, `~/.claude/templates/docs-layout.md`) → read it and every open story it lists, in order; each story becomes one story group (one commit).
    - **Story** → its **acceptance criteria are the requirements**; its code-addition answers and Proposed Repository Structure seed the design.
    - **RCA** → its root cause (`file:line`) and fix sketch are the starting point — re-confirm both against the current code, don't re-derive.
 2. Ambiguous request → ask one clarifying question before continuing.
 3. With CodeGraph + Semble: every file the change touches, similar features and their patterns, and the call chains up- and downstream. Record what you found in the plan's **Context for Implementer** (patterns `file:line`, key files, gotchas) — it is the map later phases use instead of re-exploring.
-4. **Bugfix only:** reproduce consistently (trigger, inputs, observed vs expected); trace to the **root cause, not the symptom**, including every parallel implementation sharing the flaw; specify the reproducing test — path, name, tier/double (`testing.md` *Test Double Policy*), and the exact assertion that fails *because the bug exists* and passes after the fix.
+4. **Theory check** — name the reference implementation each touched tier follows. None exists → the work sets a new pattern: an Accepted ADR (or design doc naming the domain's nouns) must exist first — STOP and suggest `/adr`; agents amplify the theory they're given, and without one they produce N locally reasonable shapes for the same work.
+5. **Bugfix only:** reproduce consistently (trigger, inputs, observed vs expected); trace to the **root cause, not the symptom**, including every parallel implementation sharing the flaw; specify the reproducing test — path, name, tier/double (`testing.md` *Test Double Policy*), and the exact assertion that fails *because the bug exists* and passes after the fix.
 
 ## Phase 2 — Design
 
@@ -24,6 +25,9 @@ description: /spec planning, Feature or Bugfix — explore (or reproduce + root-
 - Each task: independently testable, one focused TDD cycle, no circular dependencies, reusing the repo's helpers and conventions. NEVER a task that doesn't trace to the request or acceptance criteria. Fold setup, config, and docs into the task whose deliverable needs them.
 - **Interfaces:** a task that others build on names what it produces (exact function/type names, signatures); a task that uses them names what it consumes.
 - **No placeholders** — each is a plan failure: "TBD", "add error handling", "handle edge cases", "similar to Task N", tests without their assertion, or a name no task defines.
+- **Score** the plan on the five axes of `~/.claude/templates/estimate.md` (a story's score is the starting point). **Spike** (13–15) → STOP: suggest splitting or a timeboxed spike. **Design first** with no Accepted ADR → STOP: `/adr` first. **Gate and soak** → the tasks that add the guards for the new invariants come before the code they guard.
+- **Enforce what you write** — every new invariant or convention the plan introduces gets a check (lint rule, repository guard, ratchet, or generator) in a task, or is marked "needs judgment — review only". An unenforced rule is a suggestion, and agents report on suggestions as facts.
+- **Infrastructure** — for every new cloud call, queue, or CI step, the permission/grant it needs is in the same story. Two files that must agree (source ↔ generated, a lock file, a pinned image across environments) → generate one from the other, else a task adds the guard comparing them. Fill *Must agree*.
 - **Code-addition checklist** — answer every question in `~/.claude/templates/code-addition-checklist.md` before tasks are final (a repo's `.claude/rules/code-addition-checklist.md`, when present, supplies concrete answers and may add questions; answer its full list); a "yes" to infra/CLI/config/codegen is its own task, and the answers fill the plan's *Shape*, *Config*, *Codegen*, and *Operability* lines.
 - **Bugfix:** the Behavior Contract — Given <trigger>, the code **did** <bug>; it **must** <correct behavior> — plus every parallel implementation, fixed together or with a stated reason. The fix tasks come first; the **last task writes the reproducing test** (at the end, per `testing.md`) — `spec-verify` proves it with the revert-test.
 
@@ -45,7 +49,7 @@ NEVER skip it. Launch `Agent(subagent_type='spec-review')` with `plan_file`, `us
 
 ## Phase 5 — Approval
 
-> Plan ready. Approve to begin implementation?
+> Plan ready — <Class> (<total>); human review: <the plan's Human review files, or "sampled">. Approve to begin implementation?
 > - Approve — start implementing
 > - Revise — [specify changes]
 > - Cancel — stop here

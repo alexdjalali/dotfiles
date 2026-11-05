@@ -1,3 +1,11 @@
+---
+# OKF frontmatter: keep only when .claude/docs-layout.yaml says `frontmatter: true` (docs-layout.md).
+type: Audit
+title: <Scope> Audit — against <standard / dimension>
+description: <one sentence: the verdict>
+generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
+---
+
 # <Scope> Audit — against <standard / dimension>
 
 > **Date:** <YYYY-MM-DD>

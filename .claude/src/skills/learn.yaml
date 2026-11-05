@@ -1,3 +1,3 @@
 name: "learn"
-description: "Capture a non-obvious, reusable lesson from this session as a project skill (.claude/skills/<slug>/SKILL.md). Use after a hard-won debugging insight, workaround, or repeatable workflow."
+description: "Turn a lesson from this session (a retro) into a committed artifact on the right rung — a guard via /inspect, a project rule line, a global skill step, or a project skill (.claude/skills/<slug>/SKILL.md). Use after a hard-won debugging insight, workaround, repeatable workflow, or anything that went wrong and should not recur."
 role: "execute"

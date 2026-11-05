@@ -1,3 +1,3 @@
 name: "rca"
-description: "Diagnose the root cause of one or more bugs and record a diagnosis-only, file:line-cited report in docs/spec/rca/. Use when related bugs need a written diagnosis before fixing, or someone else will fix it."
+description: "Diagnose the root cause of one or more bugs and record a diagnosis-only, file:line-cited report in the RCA folder (docs/spec/rca/ by default). Use when related bugs need a written diagnosis before fixing, or someone else will fix it."
 role: "diagnose"

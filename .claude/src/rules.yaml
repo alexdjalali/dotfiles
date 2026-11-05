@@ -139,6 +139,12 @@
   severity: should_fix
   enforce: review
   targets: [review-lenses]
+- id: review-infra
+  statement: "infrastructure (a new cloud/queue/storage call without its permission grant in the same change, a CI workflow missing a token permission, two files that must agree — source and generated output, a lock file, an image pinned per environment — neither generated nor guarded)"
+  category: Correctness
+  severity: must_fix
+  enforce: review
+  targets: [review-lenses]
 - id: review-docs
   statement: "docs (`documentation-sync.md`)"
   category: Quality
@@ -198,6 +204,18 @@
 - id: audit-codegen-gaps
   statement: "hand-written code a generator should own, hand-edited generated files, repeated shapes with no template"
   category: codegen gaps
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-theory-gaps
+  statement: "one kind of work implemented many ways (a long `switch` dispatching it, N packages declaring the same struct) — name the missing noun and its single shape; a component with no reference implementation"
+  category: theory gaps
+  severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-infra-drift
+  statement: "pairs that must agree but are neither generated nor guarded: a call and its IAM grant, generated clients across modules, lock files, versions or digests pinned per environment"
+  category: infra drift
   severity: should_fix
   enforce: review
   targets: [audit-lenses]

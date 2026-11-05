@@ -35,6 +35,6 @@ doc, not a ticket.
   - Spike: no diagram — its *output* lands in a `/design-doc` or `/rca` doc; link it
 
 **Beta types** (`architecture`, `packet`, `xychart`, `sankey`, `block`, `radar`) depend on Linear's
-Mermaid version — verify once, or fall back to `flowchart`/`C4`. No `docs/spec/` pipeline? Inline the
+Mermaid version — verify once, or fall back to `flowchart`/`C4`. No docs folders (`docs-layout.md`)? Inline the
 diagram in the ticket; if the repo keeps design docs, author durable diagrams there and link/embed
 them (the ticket isn't their source of truth).

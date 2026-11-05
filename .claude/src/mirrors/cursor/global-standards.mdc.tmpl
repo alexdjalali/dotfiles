@@ -13,12 +13,12 @@ Structural change: ADR (`docs/adr/`) → design / architecture diagrams (`docs/s
 
 - **ADR first** for architectural changes and any deviation from an established pattern.
 - **TDD mandatory**; **verify before done**.
-- **1 story = 1 commit** — commit each story on fast checks, review the whole commit range once, commit the fixes, then run the full gate once.
+- **1 story = 1 commit** — commit each story on fast checks, review the whole commit range once, fix every finding (all tiers) in one commit that is never re-reviewed, then run the full gate once, last.
 
 ## Quality Gates
 
 - **Fast checks** — per story, before each commit, on changed files: format → lint → type check → affected tests → docs updated.
-- **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (e.g. a repo-local preflight, `just lint` + `just test`), else the fast checks repo-wide + the full suite, 0 failures.
+- **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (named in its rules), else the fast checks repo-wide + the full suite, 0 failures. Never mid-cycle — not per commit, not to check a fix; a red gate → re-run only the failing step until green, then the full gate once more.
 - **Never rerun a costly step on unchanged input** — record the commit it passed on and reuse it. A docs-only commit (`docs/**`, `*.md`) inherits the previous green full gate.
 - {{summary "no-verify"}}
 

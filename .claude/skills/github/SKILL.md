@@ -3,7 +3,7 @@
 name: github
 model: sonnet
 effort: low
-description: Ship the current work — commit, create a branch, push and open or update a PR, or merge — fast checks before a commit, the full gate once after it, confirming every git write. User-typed only.
+description: Ship the current work — commit, create a branch, push and open or update a PR, or merge — fast checks before a commit, the full gate once before the push, confirming every git write. User-typed only.
 argument-hint: '[commit | branch <type>/<desc> | pr | merge]'
 disable-model-invocation: true
 ---
@@ -16,7 +16,7 @@ The manual ship step: user-typed only (other skills suggest it, never run it). *
 2. Draft a conventional commit message from `~/.claude/templates/commit.md` — `<type>(<scope>): <description>`, scope optional; the body follows `~/.claude/templates/prose-style.md`.
 3. Show the files to stage (`git status --short`) and the message; confirm.
 4. Stage them (never `git add -f` a gitignored file) and commit everything staged as-is.
-5. **Then** run the full gate once at the new HEAD — commit first, gate second (a project gate may require a clean tree, so commit everything first). A docs-only commit (`docs/**`, `*.md`) inherits the previous green gate — no run. Red → fix, and commit the fix (confirmed) before re-running it; never push on red.
+5. **No full gate here.** Committing never runs it — it runs once, at push time (*PR* step 1), after every commit and review fix is in.
 
 ## Branch
 
@@ -24,8 +24,8 @@ Create `<type>/<short-description>`, the type a conventional-commit type (feat, 
 
 ## PR
 
-1. The full gate must be green at HEAD: skip it when a `/spec` plan's `Full gate:` or an earlier run this session recorded green at this SHA — or at an ancestor with only docs-only commits since (`green @ <sha> (+docs <sha2>)`); otherwise run it once now (the tree must be clean first).
-2. Draft the description from `~/.claude/templates/pr.md` — summary, changes by area, test plan, linked ADR / story / plan (plans are local-only: name them, don't link). Prose follows `~/.claude/templates/prose-style.md`.
+1. The full gate must be green at HEAD: skip it when a `/spec` plan's `Full gate:` or an earlier run this session recorded green at this SHA — or at an ancestor with only docs-only commits since (`green @ <sha> (+docs <sha2>)`); otherwise run it once now (the tree must be clean first). Red → re-run only the failing step's own command until green, commit the fix (confirmed), then the full gate once more; never push on red.
+2. Draft the description from `~/.claude/templates/pr.md` — summary, changes by area, **review focus** (the risk-weighted files a human must read: auth, permissions, migrations, public contracts, infrastructure, the first instance of a new pattern — from the plan's *Human review* when there is one), test plan, linked ADR / story / plan (plans are local-only: name them, don't link). Prose follows `~/.claude/templates/prose-style.md`.
 3. Show the title, description, and push target; get approval.
 4. Push (`git push -u origin <branch>`), write the approved description to a temp file, and create the PR from it:
    ```

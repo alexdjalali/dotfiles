@@ -1,3 +1,11 @@
+---
+# OKF frontmatter: keep only when .claude/docs-layout.yaml says `frontmatter: true` (docs-layout.md).
+type: RCA
+title: <Area> — Root-Cause Analysis
+description: <one sentence: the mechanism found>
+generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
+---
+
 # <Area> — Root-Cause Analysis
 
 _Date: <YYYY-MM-DD> · Area: <subsystem(s) touched>_

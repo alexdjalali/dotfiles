@@ -1,5 +1,5 @@
 name: "rfp"
-description: "Decompose an epic into independently testable stories (docs/spec/epics/ + docs/spec/stories/), or report per-epic story progress with `status`. Use when an epic needs breaking into implementable stories."
+description: "Decompose an epic into independently testable, scored stories (decisions, novelty, operational surface, blast radius, context cost — never story points) in the epic and story folders of the docs layout, or report per-epic progress to stable with `status`. Use when an epic needs breaking into implementable stories or estimating."
 role: "plan"
 model: "claude-opus-5-5"
 effort: "high"

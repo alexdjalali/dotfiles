@@ -9,12 +9,12 @@ Structural change: ADR (`docs/adr/`) → design / architecture diagrams (`docs/s
 
 - **ADR first** for architectural changes and any deviation from an established pattern.
 - **TDD mandatory**; **verify before done**.
-- **1 story = 1 commit** — commit each story on fast checks, review the whole commit range once, commit the fixes, then run the full gate once.
+- **1 story = 1 commit** — commit each story on fast checks, review the whole commit range once, fix every finding (all tiers) in one commit that is never re-reviewed, then run the full gate once, last.
 
 ## Quality Gates
 
 - **Fast checks** — per story, before each commit, on changed files: format → lint → type check → affected tests → docs updated.
-- **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (e.g. a repo-local preflight, `just lint` + `just test`), else the fast checks repo-wide + the full suite, 0 failures.
+- **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (named in its rules), else the fast checks repo-wide + the full suite, 0 failures. Never mid-cycle — not per commit, not to check a fix; a red gate → re-run only the failing step until green, then the full gate once more.
 - **Never rerun a costly step on unchanged input** — record the commit it passed on and reuse it. A docs-only commit (`docs/**`, `*.md`) inherits the previous green full gate.
 - Never bypass hooks (`--no-verify`) — a failing hook is a red fast check: fix, re-stage, retry.
 
@@ -103,7 +103,7 @@ Fix every failing test before done — "pre-existing" is no excuse. Tests passin
 Read it all → restate → verify against the code → respond → implement one item at a time, testing each. Unclear items → ask about all of them before implementing any.
 
 - **User feedback:** trusted — implement once understood.
-- **Workflow / automated reviews:** must-fix and should-fix → fix; suggestions → if quick.
+- **Workflow / automated reviews:** fix every tier by default — must-fix, should-fix, and suggestions; skip one only when it's wrong for this codebase, with the reason stated.
 - **External reviewers:** verify first — correct for this codebase? breaks something? a reason for the current code? conflicts with the user's decisions → discuss first.
 - **Shape, not size:** judge a suggestion against the One Idea (behind an interface, selected by config, injected explicitly, wrapped by decorators), not line count. Moving code toward that shape or onto a generator is in scope; collapsing it into a hard-coded concrete call is a regression — push back. Keeping a symbol nothing calls → check for real callers; none → "unused — remove it?".
 - Order: clarify → blocking → simple → complex. Push back with technical reasons when warranted; if wrong, correct factually. No performative agreement — "Fixed. <what changed>".

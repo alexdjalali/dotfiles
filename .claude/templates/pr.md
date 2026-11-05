@@ -33,9 +33,19 @@ Same types as conventional commits. Max 72 chars.
      name the plan for traceability, but don't link it as if reviewers can open it. -->
 
 - Plan (local-only, not in the repo): `YYYY-MM-DD-<slug>`
-- Story: `docs/spec/stories/N.M-<slug>.md`
-- Epic: `docs/spec/epics/epic-NN-<slug>.md`
-- ADR: `docs/adr/NNNN-<title>.md`
+- Story: `<story>/N.M-<slug>.md`
+- Epic: `<epic>/epic-NN-<slug>.md`
+- ADR: `<adr>/NNNN-<title>.md`
+
+(`<story>`, `<epic>`, `<adr>`: the layout paths, `~/.claude/templates/docs-layout.md`.)
+
+## Review Focus
+
+<!-- Humans review every plan, machines review every line, humans sample the code — weighted by risk.
+     List the files to read in full: auth, permissions, migrations, public contracts, infrastructure,
+     and the first instance of a new pattern. Everything else is held by guardrails and sampled. -->
+
+- `path` — why
 
 ## Test Plan
 

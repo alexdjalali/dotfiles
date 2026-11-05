@@ -1,8 +1,17 @@
+---
+# OKF frontmatter: keep only when .claude/docs-layout.yaml says `frontmatter: true` (docs-layout.md).
+type: Design
+title: <Feature / Subsystem> — Design
+description: <one sentence: what the design covers>
+status: draft
+generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
+---
+
 # <Feature / Subsystem> — Design
 
 > **Scope:** <what this design covers, and explicit non-goals>.
 > **Reflects:** the code as of <YYYY-MM-DD> (<relevant epics/stories>).
-> **Governing:** ADR-<NNNN> (the decision), `docs/spec/arch/<slug>.md` (diagrams).
+> **Governing:** ADR-<NNNN> (the decision), `<arch>/<slug>.md` (diagrams; the `arch` layout path, docs-layout.md).
 
 ## TL;DR
 
@@ -65,4 +74,4 @@ pending ─▶ processing ─▶ indexed / failed>
 
 ## References
 
-- ADRs: <ADR-NNNN …> · Arch: `docs/spec/arch/<slug>.md` · Stories: <…>
+- ADRs: <ADR-NNNN …> · Arch: `<arch>/<slug>.md` · Stories: <…>

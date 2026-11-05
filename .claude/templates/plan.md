@@ -6,7 +6,7 @@ Approved: No
 Iteration: 1
 Created: [Date]
 Base: [spec-implement: `git rev-parse HEAD` before the first story commit]
-Reviewed: [spec-verify: SHA the last review covered]
+Reviewed: [spec-verify: SHA the one review-diff pass covered — set once, never re-reviewed]
 Full gate: [spec-verify: `green @ <sha>`]
 
 > Written by `spec-plan` to `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored). Status PENDING → COMPLETE → VERIFIED; implementation needs `Approved: Yes`; verify increments Iteration on each loop-back. **1 story = 1 commit.** Delete every section that doesn't apply — the plan is re-read by every phase, so keep it tight.
@@ -14,6 +14,8 @@ Full gate: [spec-verify: `green @ <sha>`]
 ## Summary
 
 **Goal:** [one sentence] · **Approach:** [2–3 sentences] · **Stack:** [key tech]
+
+**Score:** D[n] N[n] O[n] B[n] C[n] = [total] · [Delegate | Design first | Gate and soak] (`~/.claude/templates/estimate.md`) · **Human review:** [the files a human must read — auth, permissions, migrations, public contracts, infrastructure, the first instance of a new pattern; or "sampled"]
 
 ## Goal Verification
 
@@ -49,6 +51,9 @@ The map later phases use instead of re-exploring:
 - **Config:** [owning slice; new fields + fail-safe `base` default; env overlay / secrets entries]
 - **Codegen:** [source → generator command → generated paths; or "none"]
 - **Operability:** [timeouts; logs/metrics/spans added; health/readiness/shutdown impact]
+- **Reference:** [`file:line` of the implementation this mirrors — or "sets a new pattern: ADR-NNNN"]
+- **Guards:** [each new invariant or convention → the check that enforces it (lint rule, repo guard, ratchet, generator) and the task that adds it; or "needs judgment — review only"]
+- **Must agree:** [pairs that must stay in sync — a cloud call and its permission grant, a source and its generated output, a pinned version across environments — each generated from the other or guarded; or "none"]
 
 ## Progress Tracking
 
@@ -60,7 +65,7 @@ The map later phases use instead of re-exploring:
 
 ## Implementation Tasks
 
-### Story 1: [title] — [`docs/spec/stories/<file>` or the request]
+### Story 1: [title] — [`<story>/<file>` (the `story` layout path) or the request]
 
 **Commit:** `<type>(<scope>): <description>` · **SHA:** [filled at commit]
 
@@ -87,6 +92,10 @@ The map later phases use instead of re-exploring:
 ## Open Questions
 
 - [for the user, or deferred]
+
+## Review Findings
+
+[spec-verify: every `review-diff` finding, all tiers — `- [ ] <tier> [file:line] issue` — ticked when fixed, or `skip: <reason>`. The fix check works from this list.]
 
 ## Deviations
 

@@ -10,15 +10,16 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 - **TDD mandatory** (`testing.md`). **Verify before done** (`verification.md`).
 - **Own what you find.** Fix a problem when it comes up — a failing test, a broken config, a gap in a module, a stale local file — instead of deferring it, routing around it, or attributing it elsewhere ("pre-existing", "the user's config", "a later story"). Only what you can't do yourself (missing credentials, a destructive or outward-facing step) goes back to the user, with the exact command.
 
-**`/spec` chain** (user-typed; phases hand off via `Skill()` in the same turn): `spec-plan` → **[plan approval — the only gate]** → `spec-implement` → `spec-verify`, looping verify → implement until `Status: VERIFIED`. **1 story = 1 commit:** each story commits on fast checks; verify reviews all the chain's commits once with `/review-diff`, commits the fixes, runs the full gate once, then suggests `/github pr`.
+**`/spec` chain** (user-typed; phases hand off via `Skill()` in the same turn): `spec-plan` → **[plan approval — the only gate]** → `spec-implement` → `spec-verify`, looping verify → implement until `Status: VERIFIED`. **1 story = 1 commit:** each story commits on fast checks; verify reviews all the chain's commits once with `/review-diff`, fixes every finding (all tiers) in one commit that is checked against the findings — never re-reviewed — executes, runs the full gate once, last, then suggests `/github pr`.
 
 **Models:** skills pin `model:` / `effort:` in frontmatter (applies typed or chained), by role from `.claude/src/models.yaml` — review claude-fable-5-1 (xhigh) · planning and verification opus (xhigh) · diagnosis opus · execution claude-opus-4-8 (high) · mechanical steps sonnet (low).
 
 ## Quality Gates
 
 - **Fast checks** — per story, before each commit, scoped to changed files: format → lint → type check → affected tests → docs updated (`documentation-sync.md`).
-- **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (e.g. a repo-local preflight, `just lint` + `just test`), else fast checks repo-wide + the full suite, 0 failures.
+- **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (named in its `.claude/rules/`), else fast checks repo-wide + the full suite, 0 failures.
 - **Never rerun a costly step on unchanged input.** The full gate, reviews, `spec-review`, and live execution record the SHA (or clean tree) they passed on; later steps reuse it and re-run only what a change touched.
+- **The full gate never runs mid-cycle** — not per commit, not after `/github commit`, not to check a fix. A red gate → re-run only the failing step's own command until green, then the full gate once more.
 - **Docs-only commits inherit the gate.** A commit touching only `docs/**` and `*.md` (e.g. closing stories) keeps the previous SHA's green full gate — record it as `green @ <sha> (+docs <sha2>)`; no rerun.
 - Never commit on a red fast check; never push on a red or unrun full gate. Don't bypass hooks (`--no-verify`, `LEFTHOOK=0`, overriding `core.hooksPath`); a hook failure is a red fast check — fix, re-stage, retry.
 

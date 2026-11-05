@@ -1,8 +1,20 @@
-[Back to Epic](../epics/epic-NN-<title>.md)
+---
+# OKF frontmatter: keep only when .claude/docs-layout.yaml says `frontmatter: true` (docs-layout.md).
+type: Story
+title: Story <N.M> — <Title>
+description: <one sentence: what the story delivers>
+status: draft
+tags: [epic-<N>]
+generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
+---
+
+[Back to Epic](<relative link to the epic>)
 
 # Story <N.M> — <Title>
 
-**Epic**: <N> — <Epic Title> **Points**: <1-5> **Status**: Todo
+**Epic**: <N> — <Epic Title> **Status**: Todo
+**Score**: D<n> N<n> O<n> B<n> C<n> = <total> · <Delegate | Design first | Gate and soak | Spike> (`~/.claude/templates/estimate.md`)
+**Reference**: <`file:line` of the reference implementation this story follows — or "sets a new pattern: ADR-NNNN">
 
 ---
 
@@ -12,9 +24,11 @@
 
 **Acceptance Criteria**:
 
-- <Concrete, testable criterion>
-- <Concrete, testable criterion>
-- <Concrete, testable criterion>
+Precise enough for a machine to check — an agent won't ask what a vague criterion means, it will guess. Each one reads as a test case:
+
+- Given <state>, when <action>, then <observable result>
+- Given <state>, when <action>, then <observable result>
+- Given <state>, when <action>, then <observable result>
 
 **Testing**: cover critical-path behavior (coverage is a diagnostic, not a quota — see testing.md). Declare the **tier + double** per behavior — unit mocks the boundary; integration runs the real dependency in a Docker container via testcontainers (name the image), never a fake / in-memory substitute. Tests:
 

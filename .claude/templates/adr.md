@@ -1,3 +1,12 @@
+---
+# OKF frontmatter: keep only when .claude/docs-layout.yaml says `frontmatter: true` (docs-layout.md).
+type: ADR
+title: "ADR-NNNN: <Title>"
+description: <one sentence: the decision>
+status: draft
+generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
+---
+
 # ADR-NNNN: <Title>
 
 **Date**: <today>
@@ -32,6 +41,12 @@ graph TD
 ```
 
 > Diagram should show: (1) components affected by this decision, (2) new components introduced, (3) data flow between them, (4) external dependencies. Use C4 conventions: `graph TD` for structure, `sequenceDiagram` for interactions.
+
+## Enforcement
+
+An unenforced decision is a suggestion. Name the check that makes a violation a build failure — an import guard generated from the layer model, a repository-model guard, a ratchet, a generator — or state that it needs human judgment and where it is reviewed.
+
+- <rule> → <check> (`/inspect` to add it)
 
 ## Consequences
 

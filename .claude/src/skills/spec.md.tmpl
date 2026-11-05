@@ -3,7 +3,7 @@ Thin router: find (or start) the plan, read its `Type:` and `Status:` header, in
 ## 1. Find the plan
 
 - **A plan file** (under `docs/local/plans/`, or has a `Status:` header) → use it.
-- **A non-plan path** (a `docs/spec/epics/` epic, a `docs/spec/stories/` story, a `docs/spec/rca/` RCA, a design doc) → it is the **request**: an epic or story → Feature (an epic plans every open story, 1 story = 1 commit), an RCA → Bugfix. Pass the path to the plan phase, which reads it as its requirements source.
+- **A non-plan path** (an epic, a story, an RCA or a design doc under its layout folder — `~/.claude/templates/docs-layout.md`) → it is the **request**: an epic or story → Feature (an epic plans every open story, 1 story = 1 commit), an RCA → Bugfix. Pass the path to the plan phase, which reads it as its requirements source.
 - **A description** → match it by name or title against the plan listing injected above (re-run `ls docs/local/plans/` only if it is missing); no match → a new request.
 - **New request** → infer Type: a defect / regression / error report → Bugfix; a new capability → Feature. Ask once only if genuinely ambiguous.
 

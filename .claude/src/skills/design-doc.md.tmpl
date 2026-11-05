@@ -1,4 +1,4 @@
-The "how it works / how we'll build it" **between an ADR (the decision) and a plan (the tasks)**. **Input:** a subsystem, feature, or governing ADR. **Output:** `docs/spec/design/<slug>.md` from `~/.claude/templates/design.md` — or, with `arch`, a new file in `docs/spec/arch/` following the folder's existing naming scheme (next number in it — e.g. `NN-<slug>.md`; `ARCH-NNN-<slug>.md` only when the folder is empty). The name is what stories link to.
+The "how it works / how we'll build it" **between an ADR (the decision) and a plan (the tasks)**. **Input:** a subsystem, feature, or governing ADR. **Output:** `<design>/<slug>.md` from `~/.claude/templates/design.md` — or, with `arch`, a new file in `<arch>/` following the folder's existing naming scheme (next number in it — e.g. `NN-<slug>.md`; `ARCH-NNN-<slug>.md` only when the folder is empty). The name is what stories link to. Folders are **layout paths** (`~/.claude/templates/docs-layout.md`): `<design>` and `<arch>` are those paths from `.claude/docs-layout.yaml`, else `docs/spec/design` and `docs/spec/arch`. When the layout says `frontmatter: true`, keep the template's OKF frontmatter block; otherwise drop it.
 
 ## Steps
 
@@ -6,12 +6,13 @@ The "how it works / how we'll build it" **between an ADR (the decision) and a pl
 2. **Ground it in real code** (CodeGraph + Semble + Read) — for greenfield, the patterns it must match. NEVER design or diagram imagined code.
 3. **Diagrams** — Mermaid only, one per concern, every external system showing its protocol: **context** (actors, boundaries) · **container** (services, stores, queues) · **component** (the changed subsystem's internals) · sequence / state where behavior needs it.
 4. **`arch` stops here** — write the diagrams with a brief narrative and the source ADR in the header.
-5. **Design only:** a **TL;DR** (end state in 3–6 steps), a **state/data model** when stateful, then **each stage** — what drives it, its seams and interfaces, what's config-selected (`Kind` + factory), built-in resiliency, what's deferred. Then **alternatives considered** and **open questions**. Write the file.
+5. **Design only:** a **TL;DR** (end state in 3–6 steps), the **theory** — the subsystem's nouns (the few kinds of work it does, each with one shape and one reference module per tier), a **state/data model** when stateful, then **each stage** — what drives it, its seams and interfaces, what's config-selected (`Kind` + factory), built-in resiliency, what's deferred. Then **guardrails** (each invariant → the lint, guard, ratchet, or generator that enforces it; every pair that must agree → generated or guarded), **alternatives considered**, and **open questions** — each a decision to clear before `/spec`. Write the file.
 
 ## Rules
 
 - The DECISION belongs in an ADR — cross-reference it, don't duplicate it.
-- Implementable, not aspirational — a reader can plan tasks from it.
+- Implementable, not aspirational — a reader can plan tasks from it. One design doc per epic.
+- Write the theory before the first agent session builds it — a component grown by accretion with no nouns ends up with one kind of work implemented many ways.
 - Prose follows `~/.claude/templates/prose-style.md`; run its self-check before writing the file.
 
 ## Next Step

@@ -8,7 +8,7 @@ alwaysApply: true
 Read it all → restate → verify against the code → respond → implement one item at a time, testing each. Unclear items → ask about all of them before implementing any.
 
 - **User feedback:** trusted — implement once understood.
-- **Workflow / automated reviews:** must-fix and should-fix → fix; suggestions → if quick.
+- **Workflow / automated reviews:** fix every tier by default — must-fix, should-fix, and suggestions; skip one only when it's wrong for this codebase, with the reason stated.
 - **External reviewers:** verify first — correct for this codebase? breaks something? a reason for the current code? conflicts with the user's decisions → discuss first.
 - **Shape, not size:** judge a suggestion against the One Idea (behind an interface, selected by config, injected explicitly, wrapped by decorators), not line count. Moving code toward that shape or onto a generator is in scope; collapsing it into a hard-coded concrete call is a regression — push back. Keeping a symbol nothing calls → check for real callers; none → "unused — remove it?".
 - Order: clarify → blocking → simple → complex. Push back with technical reasons when warranted; if wrong, correct factually. No performative agreement — "Fixed. <what changed>".

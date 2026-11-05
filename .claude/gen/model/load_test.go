@@ -22,14 +22,7 @@ func writeFile(t *testing.T, root, path, content string) {
 	}
 }
 
-// TestLoadMissingGenYamlEnablesNothing tests that an empty source tree loads.
-//
-// Why this test is important:
-//   - The fail-safe default must be "render nothing", so a fresh checkout
-//     never overwrites hand-written files.
-//
-// What it tests:
-//   - Load on a root without .claude/src/gen.yaml returns no targets and no error.
+// The fail-safe default must be "render nothing", so a fresh checkout never overwrites hand-written files.
 func TestLoadMissingGenYamlEnablesNothing(t *testing.T) {
 	root := t.TempDir()
 	m, err := model.Load(root)
@@ -44,13 +37,7 @@ func TestLoadMissingGenYamlEnablesNothing(t *testing.T) {
 	}
 }
 
-// TestLoadParsesRules tests that rules.yaml, models.yaml and gen.yaml load.
-//
-// Why this test is important:
-//   - Every target reads the typed model; a dropped field silently renders wrong.
-//
-// What it tests:
-//   - Targets, model roles, and every rule field (including the guard block) parse.
+// Every target reads the typed model; a dropped field silently renders wrong.
 func TestLoadParsesRules(t *testing.T) {
 	root := t.TempDir()
 	writeFile(t, root, ".claude/src/gen.yaml", "targets: [rules]\n")
@@ -93,13 +80,7 @@ func TestLoadParsesRules(t *testing.T) {
 	}
 }
 
-// TestLoadMalformedYamlNamesFile tests the error for unparseable YAML.
-//
-// Why this test is important:
-//   - A YAML typo must point at the file to fix, not fail anonymously.
-//
-// What it tests:
-//   - Load returns an invalid_model error whose message names rules.yaml.
+// A YAML typo must point at the file to fix, not fail anonymously.
 func TestLoadMalformedYamlNamesFile(t *testing.T) {
 	root := t.TempDir()
 	writeFile(t, root, ".claude/src/rules.yaml", "- id: [unclosed\n")
@@ -112,14 +93,7 @@ func TestLoadMalformedYamlNamesFile(t *testing.T) {
 	}
 }
 
-// TestLoadRejectsUnknownSkillKey tests strict decoding of source YAML.
-//
-// Why this test is important:
-//   - A stale or misspelled key (next:, a typo of when_to_use) used to be
-//     dropped silently, so the author's intent never reached the output.
-//
-// What it tests:
-//   - A skill with `next: [x]` fails Load with invalid_model naming the file.
+// A stale or misspelled key (next:, a typo of when_to_use) used to be dropped silently, so the author's intent never reached the output.
 func TestLoadRejectsUnknownSkillKey(t *testing.T) {
 	root := t.TempDir()
 	writeFile(t, root, ".claude/src/skills/fix.yaml", "name: fix\nnext: [x]\n")
@@ -129,15 +103,7 @@ func TestLoadRejectsUnknownSkillKey(t *testing.T) {
 	}
 }
 
-// TestLoadEmptyFilesLoadAsEmpty tests that an empty source file is not an error.
-//
-// Why this test is important:
-//   - A strict decoder reports io.EOF on an empty document; an empty gen.yaml
-//     or skill stub must load as empty, like a missing one.
-//
-// What it tests:
-//   - Load succeeds with empty gen.yaml and skills/x.yaml: no targets, and
-//     one skill built from x.yaml whose YAML fields are all unset.
+// A strict decoder reports io.EOF on an empty document; an empty gen.yaml or skill stub must load as empty, like a missing one.
 func TestLoadEmptyFilesLoadAsEmpty(t *testing.T) {
 	root := t.TempDir()
 	writeFile(t, root, ".claude/src/gen.yaml", "")

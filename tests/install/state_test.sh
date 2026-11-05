@@ -20,12 +20,7 @@ home_with_gitconfig() {
   ln -s "$T/gitconfig" "$HOME/.gitconfig"
 }
 
-# Why this test is important:
-#   - Identity and signing keys differ per machine; editing the tracked file for
-#     them leaves the repo permanently dirty.
-# What it tests:
-#   - A ~/.gitconfig.local value overrides the tracked one; conflicts use zdiff3;
-#     the gh credential helper is found on PATH, not at a Homebrew path.
+# Identity and signing keys differ per machine; editing the tracked file for them leaves the repo permanently dirty.
 test_gitconfig_local_overrides_and_settings() {
   home_with_gitconfig
   printf '[user]\n\temail = local@example.com\n' > "$HOME/.gitconfig.local"
@@ -36,20 +31,12 @@ test_gitconfig_local_overrides_and_settings() {
   assert_not_contains "$(git config --get-all credential.https://github.com.helper)" "/opt/homebrew" "gh credential helper"
 }
 
-# Why this test is important:
-#   - iTerm loads its prefs from iterm/ when pointed at the folder; a file that
-#     isn't a plist loads nothing.
-# What it tests:
-#   - The tracked prefs file passes `plutil -lint`.
+# iTerm loads its prefs from iterm/ when pointed at the folder; a file that isn't a plist loads nothing.
 test_iterm_plist_valid() {
   plutil -lint "$PLIST" >/dev/null || _fail "$(plutil -lint "$PLIST")"
 }
 
-# Why this test is important:
-#   - Switching to a profile that doesn't exist silently does nothing.
-# What it tests:
-#   - Every literal profile name 08-iterm.zsh switches to is a profile in the
-#     tracked prefs (the generic `iterm-profile $1` helper is skipped).
+# Switching to a profile that doesn't exist silently does nothing.
 test_iterm_profiles_exist() {
   local names missing
   names=$(python3 -c 'import plistlib, sys; print("\n".join(b["Name"] for b in plistlib.load(open(sys.argv[1], "rb"))["New Bookmarks"]))' "$PLIST") ||
@@ -60,12 +47,7 @@ test_iterm_profiles_exist() {
   assert_eq "" "$missing" "profiles 08-iterm.zsh names that the plist lacks"
 }
 
-# Why this test is important:
-#   - Web links iTerm opens go to the default browser profile; pointing it at a
-#     terminal profile turned that terminal profile into a browser.
-# What it tests:
-#   - The plist's default browser profile is a tracked dynamic profile (under
-#     iterm/DynamicProfiles/) whose type is Browser.
+# Web links iTerm opens go to the default browser profile; pointing it at a terminal profile turned that terminal profile into a browser.
 test_iterm_default_browser_profile_is_browser() {
   local out
   out=$(python3 - "$PLIST" "$REPO_ROOT"/iterm/DynamicProfiles/*.json <<'PY'
@@ -78,11 +60,7 @@ PY
   assert_contains "$out" "=Browser" "default browser profile"
 }
 
-# Why this test is important:
-#   - Substring globs painted ~/code/products red ("prod") and */latest blue
-#     ("test"), so the colour stopped meaning anything.
-# What it tests:
-#   - The tab colour (r,g,b) follows whole path segments only.
+# Substring globs painted ~/code/products red ("prod") and */latest blue ("test"), so the colour stopped meaning anything.
 test_tab_color_globs_anchored() {
   local out
   out=$(ITERM_SESSION_ID=spec zsh_with '
@@ -100,12 +78,7 @@ stg/x=220,165,0
 test=50,50,220" "$out" "tab colours by directory"
 }
 
-# Why this test is important:
-#   - An untracked lockfile lets every fresh machine install whatever plugin
-#     commits are newest that day, so two machines never match.
-# What it tests:
-#   - git doesn't ignore nvim/lazy-lock.json, and its entries are exactly the
-#     plugins in the lazy spec (read headlessly from this checkout's config).
+# An untracked lockfile lets every fresh machine install whatever plugin commits are newest that day, so two machines never match.
 test_lazy_lock_tracked_and_complete() {
   git -C "$REPO_ROOT" check-ignore -q nvim/lazy-lock.json && _fail "nvim/lazy-lock.json is gitignored"
   mkdir -p "$T/config"
@@ -124,13 +97,7 @@ test_lazy_lock_tracked_and_complete() {
   assert_eq "" "$out" "lockfile vs lazy spec"
 }
 
-# Why this test is important:
-#   - Headless nvim exits 0 even when a -c command fails (E492, a Lua error),
-#     so an exit-status check alone still printed "ok" for a bootstrap that
-#     never ran (the Treesitter step called a command that no longer exists).
-# What it tests:
-#   - With the real nvim and an empty config (no lazy.nvim, so :Lazy doesn't
-#     exist), install.sh's Neovim bootstrap warns instead of reporting success.
+# Headless nvim exits 0 even when a -c command fails (E492, a Lua error), so an exit-status check alone still printed "ok" for a bootstrap that never ran (the Treesitter step called a command that no longer exists).
 test_nvim_bootstrap_reports_editor_errors() {
   export HOME="$T/home" XDG_CONFIG_HOME="$T/config" XDG_DATA_HOME="$T/data" XDG_STATE_HOME="$T/state" XDG_CACHE_HOME="$T/cache"
   mkdir -p "$HOME" "$XDG_CONFIG_HOME/nvim"

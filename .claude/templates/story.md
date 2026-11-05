@@ -15,6 +15,7 @@ generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
 **Epic**: <N> — <Epic Title> **Status**: Todo
 **Score**: D<n> N<n> O<n> B<n> C<n> = <total> · <Delegate | Design first | Gate and soak | Spike> (`~/.claude/templates/estimate.md`)
 **Reference**: <`file:line` of the reference implementation this story follows — or "sets a new pattern: ADR-NNNN">
+**Budget**: <~N hand-written lines · deletes <what> · generated <what>> (`code-addition-checklist.md` 10)
 
 ---
 
@@ -112,7 +113,7 @@ src/
 - [ ] Critical-path behavior covered (no numeric quota — see testing.md)
 - [ ] Right double per tier: unit mocks the boundary; integration uses testcontainers (real dep in Docker) — no fakes / in-memory substitutes
 - [ ] Organized test structure with descriptive names
-- [ ] Every test documents: **Why important** + **What it tests**
+- [ ] Test names state scenario + expectation; a comment only where the why isn't in the name
 - [ ] Shared test fixtures and helpers (see language standards)
 - [ ] Edge cases covered and documented
 

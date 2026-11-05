@@ -69,8 +69,6 @@ def pg_url() -> str:
 
 @pytest.mark.integration
 def test_store_crud_persists_against_real_postgres(pg_url: str) -> None:
-    # Why: real SQL + constraints are invisible to a mock.
-    # What: create → read round-trips through a live database.
     ...
 ```
 

@@ -36,13 +36,7 @@ func runCLI(args ...string) (int, string) {
 	return code, errOut.String()
 }
 
-// TestRunWritesThenCheckClean tests the write-then-check round trip.
-//
-// Why this test is important:
-//   - just lint runs --check right after a regenerate; they must agree.
-//
-// What it tests:
-//   - A write exits 0 and creates .claude/rules/a.md; --check then exits 0.
+// just lint runs --check right after a regenerate; they must agree.
 func TestRunWritesThenCheckClean(t *testing.T) {
 	root := tree(t, "[]\n")
 	if code, errOut := runCLI("--root", root); code != 0 {
@@ -56,13 +50,7 @@ func TestRunWritesThenCheckClean(t *testing.T) {
 	}
 }
 
-// TestRunCheckExits1OnDrift tests that a hand edit fails the check.
-//
-// Why this test is important:
-//   - This is the gate that stops hand-edited generated files from landing.
-//
-// What it tests:
-//   - After editing a.md, --check exits 1 and names the file.
+// This is the gate that stops hand-edited generated files from landing.
 func TestRunCheckExits1OnDrift(t *testing.T) {
 	root := tree(t, "[]\n")
 	runCLI("--root", root)
@@ -75,13 +63,7 @@ func TestRunCheckExits1OnDrift(t *testing.T) {
 	}
 }
 
-// TestRunInvalidModelWritesNothing tests that validation precedes writing.
-//
-// Why this test is important:
-//   - A half-applied render from a broken model leaves the config inconsistent.
-//
-// What it tests:
-//   - A rule with a bad severity exits 1, prints the field, and writes no file.
+// A half-applied render from a broken model leaves the config inconsistent.
 func TestRunInvalidModelWritesNothing(t *testing.T) {
 	root := tree(t, "- {id: a, statement: s, severity: fatal, enforce: prose, targets: [x]}\n")
 	code, errOut := runCLI("--root", root)
@@ -93,29 +75,14 @@ func TestRunInvalidModelWritesNothing(t *testing.T) {
 	}
 }
 
-// TestRunBadFlagExits2 tests usage errors.
-//
-// Why this test is important:
-//   - Scripts distinguish a usage mistake (2) from drift (1).
-//
-// What it tests:
-//   - An unknown flag exits 2.
+// Scripts distinguish a usage mistake (2) from drift (1).
 func TestRunBadFlagExits2(t *testing.T) {
 	if code, _ := runCLI("--nope"); code != 2 {
 		t.Fatalf("exit %d, want 2", code)
 	}
 }
 
-// TestRunLeavesMarkedFilesOutsideOwnedDirs tests orphan cleanup's reach.
-//
-// Why this test is important:
-//   - A target that renders one file (CLAUDE.md) must not treat every
-//     generated file in that file's directory as its orphan; that once
-//     deleted the generator's own golden fixtures.
-//
-// What it tests:
-//   - With claude-md enabled, a marked file elsewhere under .claude survives
-//     a write.
+// A target that renders one file (CLAUDE.md) must not treat every generated file in that file's directory as its orphan; that once deleted the generator's own golden fixtures.
 func TestRunLeavesMarkedFilesOutsideOwnedDirs(t *testing.T) {
 	root := tree(t, "[]\n")
 	extra := map[string]string{
@@ -140,14 +107,7 @@ func TestRunLeavesMarkedFilesOutsideOwnedDirs(t *testing.T) {
 	}
 }
 
-// TestRunCheckFailsWithNoTargets tests that --check refuses a vacuous pass.
-//
-// Why this test is important:
-//   - A wrong --root (no .claude/src) used to report "no drift" and exit 0,
-//     so a misconfigured just lint passed while checking nothing.
-//
-// What it tests:
-//   - A root without .claude/src exits 2 and stderr names gen.yaml targets.
+// A wrong --root (no .claude/src) used to report "no drift" and exit 0, so a misconfigured just lint passed while checking nothing.
 func TestRunCheckFailsWithNoTargets(t *testing.T) {
 	code, errOut := runCLI("--root", t.TempDir(), "--check")
 	if code != 2 {
@@ -158,16 +118,7 @@ func TestRunCheckFailsWithNoTargets(t *testing.T) {
 	}
 }
 
-// TestRunCheckReportsOrphanWhenTargetRendersNothing tests an enabled target
-// with no sources left.
-//
-// Why this test is important:
-//   - Deleting a target's last template must surface its stale outputs as
-//     orphans, not be mistaken for "no targets enabled".
-//
-// What it tests:
-//   - After a write, removing rules/a.md.tmpl makes --check exit 1 naming
-//     .claude/rules/a.md as an orphan.
+// Deleting a target's last template must surface its stale outputs as orphans, not be mistaken for "no targets enabled".
 func TestRunCheckReportsOrphanWhenTargetRendersNothing(t *testing.T) {
 	root := tree(t, "[]\n")
 	if code, errOut := runCLI("--root", root); code != 0 {

@@ -22,6 +22,7 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 - **The full gate never runs mid-cycle** — not per commit, not after `/github commit`, not to check a fix. A red gate → re-run only the failing step's own command until green, then the full gate once more.
 - **Docs-only commits inherit the gate.** A commit touching only `docs/**` and `*.md` (e.g. closing stories) keeps the previous SHA's green full gate — record it as `green @ <sha> (+docs <sha2>)`; no rerun.
 - Never commit on a red fast check; never push on a red or unrun full gate. Don't bypass hooks (`--no-verify`, `LEFTHOOK=0`, overriding `core.hooksPath`); a hook failure is a red fast check — fix, re-stage, retry.
+- Satisfy a check; don't silence it. An agent adds no inline suppression (`//nolint`, `#nosec`, `nosemgrep`, `# noqa`, `type: ignore`, `eslint-disable`, `@ts-ignore` / `@ts-expect-error`), no exemption / baseline / allowlist entry, no raised ratchet ceiling, and no skipped test to get green. A rule that is wrong is changed by an ADR the user approves; an exception is added by the user. The `guard-suppressions.sh` PreToolUse hook blocks the inline markers and growing exemption files.
 
 Tools: Python `uv` `ruff` `basedpyright` · Go `gofumpt` `goimports` `golangci-lint` · TS `pnpm` `eslint` `tsc` `vitest`. Language standards auto-load by path from `rules/standards-*.md`.
 
@@ -35,9 +36,12 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 
 ## Architecture
 
-**The One Idea:** everything is an implementation detail behind an interface, selected by configuration, injected explicitly, and wrapped by decorators. General by default; the checklist is `~/.claude/templates/code-addition-checklist.md`.
+**The One Idea:** everything is an implementation detail behind an interface, selected by configuration, injected explicitly, and wrapped by decorators. It applies at **seams** — an external boundary (DB, HTTP, queue, cloud, clock, LLM) or a component with two real backends; an internal collaborator with one implementation stays a concrete type until a second appears. The checklist is `~/.claude/templates/code-addition-checklist.md`.
 
 - **Generate > generalize > hand-write.** Code derived from a contract (proto, OpenAPI, schema, DI graph, mocks) comes from the project's generator via its CLI; output is committed, never hand-edited, and CI fails on drift. A repeated shape becomes a template/scaffold.
+- **Metaprogramming is the default for ceremony.** The shape around a seam — `Kind` + `Config` + factory + stub + decorator wiring + mock + config schema/docs — is declared once (a schema, a YAML row, a struct tag) and **emitted by a generator**, not typed per component. Generators and guards are themselves declarative (a template + schema; a semgrep / depguard / forbidigo / ruff rule or a row in the existing guard engine); a bespoke analyzer or a new engine is the exception, sized and justified in its ADR.
+- **Shared library first.** A capability that isn't product-specific is built in the shared library (KE) from day one — never grown in the product and extracted later.
+- **Code budget.** Hand-maintained lines are the cost: prefer deleting to adding, a stock tool to a wrapper, and one test at the right tier to three. Comments say *why*, briefly.
 - Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code. DRY = push logic down into the shared library, inject product strategy up.
 - **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + frozen `Config` + `*_from_config` / `NewFromConfig`) that returns the interface, defaults to a stub/noop so the graph boots with zero infra, and fails loudly on an unknown kind.
 - **DI:** constructor injection, wired at one composition root per deployable (Go: Wire; Python: `deps.py`); no I/O during construction, no globals/singletons, teardown in reverse order. Repository pattern for data; separate persistence models, domain entities, DTOs; early returns.
@@ -53,6 +57,6 @@ When compacting, keep verbatim: the active plan path and its header (`Type`, `St
 
 ## Anti-Patterns
 
-Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · config/env read outside the config layer · hand-edited generated code (the `guard-generated.sh` PreToolUse hook blocks Edit/Write on it; edit the source and regenerate) · globals/singletons/service locators · impl selected by `if`/import instead of a `Kind` factory · retry/logging/tracing inlined instead of a decorator · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior.
+Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · config/env read outside the config layer · hand-edited generated code (the `guard-generated.sh` PreToolUse hook blocks Edit/Write on it; edit the source and regenerate) · globals/singletons/service locators · impl selected by `if`/import instead of a `Kind` factory · retry/logging/tracing inlined instead of a decorator · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior · an interface + `Kind` + factory for an internal collaborator with one implementation · hand-written ceremony a generator could emit · comment blocks that restate the code · per-test "Why this test is important" blocks · a dev-CLI command that only wraps a stock tool · a suppression, exemption, or raised ratchet (the `guard-suppressions.sh` hook blocks the inline ones).
 
 @RTK.md

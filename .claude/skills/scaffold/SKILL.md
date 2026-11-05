@@ -12,7 +12,7 @@ argument-hint: <artifact to add>
 ## Steps
 
 1. **Inventory the generators.** Read what the project exposes: its CLI's `--help` (and `<cli> gen --help`), `justfile` / `Makefile` recipes, `package.json` scripts, `//go:generate` lines, `buf.gen.yaml`, and the how-to manuals the project's `CLAUDE.md` names. Examples of what this finds: `search gen command <name>`, `buf generate`, `go generate ./...`, `wire`, `mockgen`.
-2. **Pick the owner** — the generator whose output is this artifact. None covers it → say so, stop, and suggest a generator story (`/rfp`); NEVER hand-write a shape the project repeats.
+2. **Pick the owner** — the generator whose output is this artifact. None covers it → say so, stop, and suggest a generator story (`/rfp`); NEVER hand-write a shape the project repeats. A new generator is declarative: a schema or YAML row in, a `text/template` / Jinja template out, so the convention lives in one template rather than in N hand-typed copies and their tests.
 3. **Run it** through the project's CLI with the artifact's name and options; read `--help` for the flags instead of guessing them. Contract-first generators (proto, OpenAPI, schema) → edit the contract, then generate.
 4. **Fill the residue** — the business logic inside the generated shape. List each hand-written part with the reason no generator covers it.
 5. **Fast checks** on the changed files (`CLAUDE.md` *Quality Gates*); generated output is committed with its source.

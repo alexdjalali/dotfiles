@@ -42,7 +42,7 @@ alwaysApply: false
 - Table-driven tests with `t.Run()` subtests
 - `t.Parallel()` where safe (no shared mutable state)
 - Test naming: `TestFunctionName_Scenario` (e.g., `TestParseConfig_EmptyInput`)
-- Every test has a comment: **Why important** + **What it tests**
+- The test name is the documentation; one comment line only when the why isn't in it
 - `testify` assertions where appropriate (`assert`, `require`)
 - Test file pattern: `<file>_test.go` in an external `<pkg>_test` package (black-box, public surface); a same-package `*_internal_test.go` only as a last resort, with a comment saying why
 - `rapid` for property-based testing (pure functions, roundtrips, invariants)
@@ -51,7 +51,7 @@ alwaysApply: false
 ## Documentation Requirements
 
 - Exactly one package doc per package (`doc.go`)
-- Doc comment on every symbol — exported and unexported types, functions, methods, constants, struct fields, enum values — starting with the name (trivially obvious fields exempt)
+- Doc comment on every exported symbol, starting with the name — one or two lines; longer only for a non-obvious why. Unexported symbols and fields only when the name and type don't say it
 - Inline comments for non-obvious logic only
 - No comments that restate the code
 - No issue-tracker IDs in comments; link only committed in-repo docs under `docs/`

@@ -27,14 +27,7 @@ func renderLoaded(t *testing.T, kind, root string) []target.File {
 	return files
 }
 
-// TestClaudeMdGolden tests the claude-md target against its golden file.
-//
-// Why this test is important:
-//   - CLAUDE.md loads into every session; it must render exactly.
-//
-// What it tests:
-//   - src/claude.md.tmpl renders to .claude/CLAUDE.md with the marker on
-//     line 1 and {{model}} resolved from models.yaml.
+// CLAUDE.md loads into every session; it must render exactly.
 func TestClaudeMdGolden(t *testing.T) {
 	files := renderLoaded(t, "claude-md", "../testdata/claudemd")
 	want, err := os.ReadFile("../testdata/claudemd/golden.md")
@@ -46,14 +39,7 @@ func TestClaudeMdGolden(t *testing.T) {
 	}
 }
 
-// TestClaudeMdKeepsImportLine tests the @import line survives rendering.
-//
-// Why this test is important:
-//   - CLAUDE.md pulls in RTK.md with @RTK.md; a template that mangled it
-//     would drop those instructions.
-//
-// What it tests:
-//   - The rendered file's last line is exactly @RTK.md.
+// CLAUDE.md pulls in RTK.md with @RTK.md; a template that mangled it would drop those instructions.
 func TestClaudeMdKeepsImportLine(t *testing.T) {
 	files := renderLoaded(t, "claude-md", "../testdata/claudemd")
 	lines := strings.Split(strings.TrimRight(string(files[0].Data), "\n"), "\n")

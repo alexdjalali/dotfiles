@@ -8,12 +8,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
 # shellcheck source=../lib/zsh.sh
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/zsh.sh"
 
-# Why this test is important:
-#   - `gca` crashed on the first repo it inspected (zsh's $status is read-only),
-#     so the uncommitted-work check silently never worked.
-# What it tests:
-#   - git-check-all lists every dirty repo under all PROJECT_ROOTS, skips clean
-#     ones and missing roots, and writes nothing to stderr.
+# `gca` crashed on the first repo it inspected (zsh's $status is read-only), so the uncommitted-work check silently never worked.
 test_git_check_all_reports_dirty_repos() {
   local out err
   make_repo "$T/r1/alpha" dirty
@@ -27,10 +22,7 @@ test_git_check_all_reports_dirty_repos() {
   assert_eq "" "$err" "git-check-all stderr"
 }
 
-# Why this test is important:
-#   - The project switcher must search the same roots as everything else.
-# What it tests:
-#   - proj passes every existing PROJECT_ROOTS directory (and no missing one) to fd.
+# The project switcher must search the same roots as everything else.
 test_proj_searches_project_roots() {
   mkdir -p "$T/r1" "$T/r2"
   mock_cmd fd
@@ -43,11 +35,7 @@ test_proj_searches_project_roots() {
   assert_not_contains "$calls" "$T/missing" "fd search paths"
 }
 
-# Why this test is important:
-#   - With no root present, fd searched the current directory and proj offered
-#     unrelated folders instead of saying what was wrong.
-# What it tests:
-#   - proj reports the missing roots, returns 1, and never calls fd.
+# With no root present, fd searched the current directory and proj offered unrelated folders instead of saying what was wrong.
 test_proj_reports_missing_roots() {
   mock_cmd fd
   mock_cmd fzf
@@ -59,12 +47,7 @@ test_proj_reports_missing_roots() {
   assert_eq "" "$(mock_calls fd)" "fd calls"
 }
 
-# Why this test is important:
-#   - nvim-restore ran `rm -rf` over the git-tracked nvim config; vs/vl/vw saved
-#     empty sessions; _make_targets replaced zsh's better built-in completion.
-# What it tests:
-#   - None of these helpers is defined after loading the completion and
-#     function modules.
+# nvim-restore ran `rm -rf` over the git-tracked nvim config; vs/vl/vw saved empty sessions; _make_targets replaced zsh's better built-in completion.
 test_removed_helpers_absent() {
   local out
   out=$(zsh_with 'for f in nvim-backup nvim-restore vs vl vw _make_targets; do whence -w $f; done' \
@@ -75,12 +58,7 @@ test_removed_helpers_absent() {
   done
 }
 
-# Why this test is important:
-#   - With `exec bash || exec sh` as two commands, leaving a bash session with a
-#     non-zero status silently opened a second shell.
-# What it tests:
-#   - dexec runs exactly one `docker exec`, which picks bash or sh inside the
-#     container, even when the session exits non-zero.
+# With `exec bash || exec sh` as two commands, leaving a bash session with a non-zero status silently opened a second shell.
 test_dexec_runs_one_exec() {
   mock_cmd docker "" 1
   zsh_with 'dexec web' 05-functions.zsh >/dev/null 2>&1
@@ -90,10 +68,7 @@ test_dexec_runs_one_exec() {
   assert_contains "$calls" "exec -it web sh -c" "docker call"
 }
 
-# Why this test is important:
-#   - Same double-shell bug as dexec, for pods.
-# What it tests:
-#   - kexec runs exactly one `kubectl exec`, which picks bash or sh in the pod.
+# Same double-shell bug as dexec, for pods.
 test_kexec_runs_one_exec() {
   mock_cmd kubectl "" 1
   zsh_with 'kexec api-0' 05-functions.zsh >/dev/null 2>&1
@@ -103,14 +78,7 @@ test_kexec_runs_one_exec() {
   assert_contains "$calls" "exec -it api-0 -- sh -c" "kubectl call"
 }
 
-# Why this test is important:
-#   - helpme is the searchable index of every alias and function; entries it
-#     misses are effectively undiscoverable.
-# What it tests:
-#   - The list handed to fzf includes functions declared with the `function`
-#     keyword (rainbow_sep in 07-visual.zsh), aliases defined inside an
-#     if-block (the eza `ls` alias in 04-aliases.zsh), and the machine-only
-#     aliases in ~/.zshrc.local.
+# helpme is the searchable index of every alias and function; entries it misses are effectively undiscoverable.
 test_helpme_lists_function_keyword_and_indented_aliases() {
   mock_cmd fzf
   printf "alias localonly='echo hi'\n" > "$T/.zshrc.local"
@@ -122,12 +90,7 @@ test_helpme_lists_function_keyword_and_indented_aliases() {
   grep -qE '^localonly +.*echo hi' <<<"$listed" || _fail "helpme entries: no ~/.zshrc.local alias in [$listed]"
 }
 
-# Why this test is important:
-#   - The search helpers only turned spaces into +, so an apostrophe, & or #
-#     produced a broken or truncated search (same bug as the Raycast scripts).
-# What it tests:
-#   - search-github, search-so, search-go and search-pypi open URLs with the
-#     query form-encoded.
+# The search helpers only turned spaces into +, so an apostrophe, & or # produced a broken or truncated search (same bug as the Raycast scripts).
 test_search_functions_encode_query() {
   mock_cmd open
   zsh_with 'search-github "don'"'"'t panic"; search-so "a&b"; search-go "x#y"; search-pypi "c++"' 05-functions.zsh

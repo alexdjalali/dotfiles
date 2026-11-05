@@ -6,7 +6,7 @@ local spec = dofile(root .. "/tests/lib/spec.lua")
 
 spec.boot()
 
-local page_keys = { "<leader>Ws", "<leader>Wd", "<leader>Wt" }
+local page_keys = { "<leader>Ws", "<leader>Wd", "<leader>Wt", "<leader>Wi" }
 
 -- The lines of the guide a mapping opens (opened like a user would, then closed).
 local function page_lines(lhs)
@@ -18,14 +18,38 @@ local function page_lines(lhs)
   return lines
 end
 
--- Whether `lhs` is mapped in normal mode, directly or as a prefix of mappings.
-local function resolves(lhs)
-  local key = vim.keycode(lhs)
-  if vim.fn.maparg(key, "n") ~= "" then return true end
-  for _, m in ipairs(vim.api.nvim_get_keymap("n")) do
+-- Whether `maps` (nvim_get_keymap / nvim_buf_get_keymap entries) map `key`
+-- directly or as a prefix of a mapping.
+local function in_maps(maps, key)
+  for _, m in ipairs(maps) do
     if vim.keycode(m.lhs):sub(1, #key) == key then return true end
   end
   return false
+end
+
+-- Normal-mode maps that exist only in some buffers: lazy.nvim's
+-- filetype-scoped keys (Go and Python buffers) and astrolsp's LSP keys, which
+-- AstroNvim sets per buffer once a server attaches (none does headless).
+local scoped = (function()
+  local maps = {}
+  for _, ft in ipairs({ "go", "python" }) do
+    local buf = vim.api.nvim_create_buf(true, true)
+    vim.api.nvim_set_current_buf(buf)
+    vim.bo[buf].filetype = ft
+    vim.list_extend(maps, vim.api.nvim_buf_get_keymap(buf, "n"))
+    vim.api.nvim_buf_delete(buf, { force = true })
+  end
+  local lsp = require("lazy.core.plugin").values(require("lazy.core.config").plugins["astrolsp"], "opts", false)
+  for lhs in pairs((lsp.mappings or {}).n or {}) do table.insert(maps, { lhs = (lhs:gsub("<[Ll]eader>", " ")) }) end
+  return maps
+end)()
+
+-- Whether `lhs` is mapped in normal mode, directly or as a prefix of mappings,
+-- globally or in the buffers above.
+local function resolves(lhs)
+  local key = vim.keycode(lhs)
+  if vim.fn.maparg(key, "n") ~= "" then return true end
+  return in_maps(vim.api.nvim_get_keymap("n"), key) or in_maps(scoped, key)
 end
 
 -- Why this test is important:
@@ -33,7 +57,8 @@ end
 --     <leader>nf); a guide that lies is worse than none.
 -- What it tests:
 --   - Every <leader> key named on each guide page is a mapping (or a prefix of
---     mappings) after startup.
+--     mappings) after startup, globally, in a Go or Python buffer, or as an
+--     astrolsp LSP mapping.
 spec.it("documented_keys_resolve", function()
   local missing = {}
   for _, lhs in ipairs(page_keys) do

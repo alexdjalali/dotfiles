@@ -18,7 +18,7 @@ local pages = {
         "1 story = 1 commit; one review + one full gate at the end",
       } },
       { "Bugs", {
-        "/fix                   reproduce, root-cause, test first, small fix",
+        "/fix                   reproduce, root-cause, minimal fix, then the test (revert-proven)",
         "/rca                   diagnosis only, file:line cited",
       } },
       { "Review and ship", {
@@ -27,7 +27,10 @@ local pages = {
         "/github                commit, branch, PR, merge (each git write confirmed)",
       } },
       { "Artifacts and upkeep", {
+        "/rfp status            story progress per epic",
         "/audit [standard|repo] quick sweep, standard audit, or layout check",
+        "/inspect               turn a recurring finding into a hook or lint rule",
+        "/scaffold              add code through the project's own generators",
         "/sync-docs  /learn     repo-wide doc sweep; keep a reusable skill",
         "docs/adr, docs/spec/{arch,design,epics,stories,rca,audits}",
         "docs/local/plans       plans (gitignored)",
@@ -59,6 +62,40 @@ local pages = {
       { "Neo4j (Cypher)", {
         "MATCH (n) RETURN labels(n), count(*);",
         ":help   :quit",
+      } },
+    },
+  },
+  ide = {
+    title = "Go and Python (GoLand/PyCharm keys)",
+    sections = {
+      { "Find", {
+        "<leader><leader>  search everywhere    <leader>fA  find action    <leader>fk  keymaps",
+        "gd gr gi gy       definitions, references, implementations, type (Glance)",
+        "<leader>lS        structure (aerial)    <leader>ls  symbols picker",
+      } },
+      { "Run and test", {
+        "<leader>Mf  run current file (go run . / uv run / python3)",
+        "<leader>Mr  run a task (justfile, Makefile, npm, go)   <leader>Mt  task list",
+        "<leader>tr  nearest test   <leader>tF  test file   <leader>td  debug test",
+        "<leader>ts  summary   <leader>to  output   <leader>tw  watch   <leader>tc  coverage",
+      } },
+      { "Debug (F-keys as in VS Code)", {
+        "F5 start/continue   F9 breakpoint   F10 over   F11 into   Shift-F11 out",
+        "<leader>db  breakpoint   <leader>dl  run last   <leader>du  debugger UI",
+      } },
+      { "Edit", {
+        "<leader>rr  Refactor This   <leader>re rf rv ri rI  extract/inline (motion or selection)",
+        "<leader>lr  rename   <leader>la  code action   <leader>lo  organize imports",
+        "<leader>uH  inlay hints   format on save: gopls+goimports, ruff",
+        "<leader>xx  diagnostics (Trouble); golangci-lint reports on save",
+      } },
+      { "Go buffers", {
+        "<leader>Gt  json tags   <leader>Gi  implement interface   <leader>Ge  if err",
+        "<leader>Ga  test for func   <leader>Gm  go mod tidy",
+      } },
+      { "Python buffers", {
+        "<leader>pv  select venv   <leader>Xr  open REPL   <leader>XR  restart REPL",
+        "<leader>Xs  send motion/selection   <leader>Xl  line   <leader>Xf  file",
       } },
     },
   },
@@ -147,5 +184,6 @@ return {
     maps["<leader>Ws"] = { function() show(pages.spec) end, desc = "Spec pipeline guide" }
     maps["<leader>Wd"] = { function() show(pages.data) end, desc = "Data and infrastructure guide" }
     maps["<leader>Wt"] = { function() show(pages.latex) end, desc = "LaTeX guide" }
+    maps["<leader>Wi"] = { function() show(pages.ide) end, desc = "Go and Python IDE guide" }
   end,
 }

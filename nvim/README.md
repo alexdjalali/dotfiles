@@ -162,6 +162,7 @@ can't cover:
 | `<leader>Ws` | Spec pipeline (the Claude Code skills) |
 | `<leader>Wd` | Data and infrastructure tools (dadbod, the `<leader>L` TUIs) |
 | `<leader>Wt` | LaTeX (VimTeX, texlab, snippets, latexmk) |
+| `<leader>Wi` | Go and Python: run, test, debug, refactor, GoLand/PyCharm keys |
 
 ## 🎨 Customization
 

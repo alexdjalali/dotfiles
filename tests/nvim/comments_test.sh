@@ -7,21 +7,31 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
 
 NVIM_LUA="$REPO_ROOT/nvim/lua"
 
-# "4k+ stars" comments go stale and say nothing about why a plugin is here.
+# Why this test is important:
+#   - "4k+ stars" comments go stale and say nothing about why a plugin is here.
+# What it tests:
+#   - No comment in nvim/lua carries a GitHub star count.
 test_no_star_count_comments() {
   local hits
   hits=$(grep -rnE -- '--.*[0-9.]+k?\+? stars' "$NVIM_LUA" | sed "s#$REPO_ROOT/##")
   assert_eq "" "$hits" "star-count comments"
 }
 
-# A disabled or commented-out plugin spec is dead weight that reads as live.
+# Why this test is important:
+#   - A disabled or commented-out plugin spec is dead weight that reads as live.
+# What it tests:
+#   - The disabled drop.nvim spec and the commented-out wakatime block are gone.
 test_no_dead_specs() {
   local hits
   hits=$(grep -rnE 'drop\.nvim|wakatime' "$NVIM_LUA" | sed "s#$REPO_ROOT/##")
   assert_eq "" "$hits" "dead plugin specs"
 }
 
-# Hex values copied from the Catppuccin palette drift from the theme when the flavour or palette changes.
+# Why this test is important:
+#   - Hex values copied from the Catppuccin palette drift from the theme when
+#     the flavour or palette changes.
+# What it tests:
+#   - plugins/visual.lua has no hardcoded hex colours (it reads the palette API).
 test_visual_has_no_hex_colours() {
   local hits
   hits=$(grep -nE '#[0-9a-fA-F]{6}' "$NVIM_LUA/plugins/visual.lua")

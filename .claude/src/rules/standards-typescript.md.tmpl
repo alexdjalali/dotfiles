@@ -63,7 +63,7 @@ pnpm add -D @testcontainers/postgresql   # or: testcontainers (GenericContainer)
 ```ts
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 
-// Real SQL/driver behavior is invisible to a mock.
+// Why: real SQL/driver behavior is invisible to a mock. What: rows persist and read back.
 const pg = await new PostgreSqlContainer("postgres:16").start();
 const uri = pg.getConnectionUri();
 // … connect with `uri`, run assertions against the live DB …

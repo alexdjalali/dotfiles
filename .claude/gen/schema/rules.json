@@ -13,7 +13,7 @@
       "category": {"type": "string"},
       "severity": {"enum": ["must_fix", "should_fix", "suggestion"]},
       "enforce": {"enum": ["hook", "lint", "review", "prose"]},
-      "hook": {"enum": ["bash-guard", "bash-guard-builtin", "edit-guard"]},
+      "hook": {"enum": ["bash-guard", "bash-guard-builtin", "edit-guard", "commit-guard"]},
       "paths": {"type": "array", "items": {"type": "string"}},
       "targets": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
       "guard": {

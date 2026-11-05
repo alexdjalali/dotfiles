@@ -79,7 +79,7 @@ Failing test before production code (new behavior, endpoints): RED (one behavior
 
 - **Parsimony:** reuse existing tests first; ≤ 1 unit + 1 functional test class per new public class; no per-method classes, redundant same-path tests, or coverage padding. Tests track behavior — a behavior-preserving refactor must not break them.
 - **Black-box**, public surface; never export a symbol or add a test-only method for testability.
-- Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`. The name is the documentation — one comment line only when the why isn't in it. One behavior at one tier; no tests of config defaults, plain constructors, or `Kind` tables.
+- Naming: Python `test_<function>_<scenario>_<expected>` · TS `it("should <behavior> when <condition>")` · Go `TestFunction_Scenario`. Every test has a comment on why it matters and what it asserts. One behavior at one tier; no tests of config defaults, plain constructors, or `Kind` tables.
 - Property-based tests (`hypothesis`, `fast-check`, `go test -fuzz`) for parsers, serializers, invariants, roundtrips.
 - **Assertion check:** would a one-character bug still pass? right field? expected value derived independently? asserts behavior, not calls?
 
@@ -110,9 +110,9 @@ Read it all → restate → verify against the code → respond → implement on
 
 ## Documentation Sync
 
-**Docs change in the same change as the code** — stale docs are a bug; no "docs to follow" TODOs.
+**Docs are the first priority** — agents read docs before code, so a stale doc is a bug. Docs first: every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`.
 
-- **When:** public API / CLI flag / config / endpoint added, renamed, removed; documented behavior changed; breaking change (CHANGELOG, migration note); layout changed. Not for internal refactors, bugs restoring documented behavior, or test-only changes — say "no doc impact".
+- **When:** public API / CLI flag / config / endpoint added, renamed, removed; documented behavior changed; breaking change (CHANGELOG, migration note); layout changed. Doc comments and test Why/What docs are docs and are revised with their code. A change with truly no doc impact says `Docs-Impact: none (<reason>)` in the commit.
 - **Where:** search docs, READMEs, agent instruction files, docstrings, and comments for the changed symbol, then one hop out for docs describing dependent behavior.
 - **How:** change only what's now wrong; fix counts and lists; one term everywhere; revise — never silently delete — a doc comment when editing its symbol. Report the doc files touched.
 - **Generated docs** (config/API/CLI references) are regenerated from their source, never hand-edited.
@@ -155,7 +155,7 @@ Read it all → restate → verify against the code → respond → implement on
 - Table-driven tests with `t.Run()` subtests
 - `t.Parallel()` where safe (no shared mutable state)
 - Test naming: `TestFunctionName_Scenario` (e.g., `TestParseConfig_EmptyInput`)
-- The test name is the documentation; one comment line only when the why isn't in it
+- Every test has a comment: **Why important** + **What it tests**
 - `testify` assertions where appropriate (`assert`, `require`)
 - Test file pattern: `<file>_test.go` in an external `<pkg>_test` package (black-box, public surface); a same-package `*_internal_test.go` only as a last resort, with a comment saying why
 - `rapid` for property-based testing (pure functions, roundtrips, invariants)
@@ -164,7 +164,7 @@ Read it all → restate → verify against the code → respond → implement on
 ## Documentation Requirements
 
 - Exactly one package doc per package (`doc.go`)
-- Doc comment on every exported symbol, starting with the name — one or two lines; longer only for a non-obvious why. Unexported symbols and fields only when the name and type don't say it
+- Doc comment on every symbol — exported and unexported types, functions, methods, constants, struct fields, enum values — starting with the name (trivially obvious fields exempt)
 - Inline comments for non-obvious logic only
 - No comments that restate the code
 - No issue-tracker IDs in comments; link only committed in-repo docs under `docs/`
@@ -209,7 +209,7 @@ Read it all → restate → verify against the code → respond → implement on
 ## Testing Requirements
 
 - Class-based test organization with descriptive method names
-- The test name is the documentation; a one-line docstring only when the why isn't in the name
+- Every test has a docstring: **Why important** + **What it tests**
 - `conftest.py` fixtures: global at `tests/unit/conftest.py`, per-service in subdirectories
 - `hypothesis` for property-based testing (pure functions, roundtrips, invariants)
 - `pytest` markers per layer: `@pytest.mark.unit`, `@pytest.mark.integration`, `@pytest.mark.e2e`
@@ -280,7 +280,7 @@ Run all: `uv run pre-commit run --all-files`
 ## Testing Requirements
 
 - `describe`/`it` blocks with descriptive names (reads as a specification)
-- The test name is the documentation; one comment line only when the why isn't in it
+- Every test has a comment: **Why important** + **What it tests**
 - React Testing Library for component tests (test behavior, not implementation)
 - **Test doubles (two tiers):** unit mocks the boundary (`vi.mock` / `vi.fn`). A Node/service integration test that needs a backing service runs it in a Docker container via `@testcontainers/postgresql` (or core `testcontainers` `GenericContainer`) — never a hand-rolled fake or in-memory substitute (`must_fix`). A frontend integration test may mock the HTTP boundary with **MSW** (Mock Service Worker); browser E2E is Playwright.
 - Test file pattern: `<file>.test.ts` or `<file>.spec.ts` colocated with source

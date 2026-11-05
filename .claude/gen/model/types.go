@@ -55,7 +55,9 @@ type Rule struct {
 
 	// Hook names the hook enforcing the rule when Enforce is hook: bash-guard
 	// (a guard_rules.json row), bash-guard-builtin (a check coded in
-	// guard_bash.py) or edit-guard (guard-generated.sh).
+	// guard_bash.py), edit-guard (an Edit/Write PreToolUse script such as
+	// guard-generated.sh or guard-suppressions.sh) or commit-guard (a Bash
+	// PreToolUse script that judges a `git commit`, such as guard-docs.sh).
 	Hook string `yaml:"hook,omitempty"`
 
 	// Paths are globs limiting where the rule applies; empty means everywhere.

@@ -38,7 +38,13 @@ func hasField(errs []model.Error, path, field string) bool {
 	return false
 }
 
-// A validator that always reports something blocks every render.
+// TestValidateValidModelHasNoErrors tests the clean path.
+//
+// Why this test is important:
+//   - A validator that always reports something blocks every render.
+//
+// What it tests:
+//   - A model with one valid rule and a valid role yields no errors.
 func TestValidateValidModelHasNoErrors(t *testing.T) {
 	m := &model.Model{
 		Models: map[string]model.ModelRole{"review": {Model: "opus", Effort: "xhigh"}},
@@ -49,7 +55,13 @@ func TestValidateValidModelHasNoErrors(t *testing.T) {
 	}
 }
 
-// Fixing one error per run is slow; the user needs the full list.
+// TestValidateAggregatesAllErrors tests that every violation is reported at once.
+//
+// Why this test is important:
+//   - Fixing one error per run is slow; the user needs the full list.
+//
+// What it tests:
+//   - Two broken fields in two rules both appear, each formatted path:field: message.
 func TestValidateAggregatesAllErrors(t *testing.T) {
 	a, b := validRule("a"), validRule("b")
 	a.Severity = "fatal"
@@ -63,7 +75,13 @@ func TestValidateAggregatesAllErrors(t *testing.T) {
 	}
 }
 
-// The guard-table target selects rows by hook kind; a missing kind drops the row.
+// TestValidateHookNeedsHookKind tests that a hook-enforced rule names its hook.
+//
+// Why this test is important:
+//   - The guard-table target selects rows by hook kind; a missing kind drops the row.
+//
+// What it tests:
+//   - enforce: hook without hook reports /0/hook.
 func TestValidateHookNeedsHookKind(t *testing.T) {
 	r := validRule("a")
 	r.Enforce = "hook"
@@ -73,7 +91,13 @@ func TestValidateHookNeedsHookKind(t *testing.T) {
 	}
 }
 
-// Without the guard block the Bash guard silently enforces nothing.
+// TestValidateBashGuardNeedsGuardBlock tests that a bash-guard rule carries its row.
+//
+// Why this test is important:
+//   - Without the guard block the Bash guard silently enforces nothing.
+//
+// What it tests:
+//   - hook: bash-guard without guard reports /0/guard; edit-guard needs none.
 func TestValidateBashGuardNeedsGuardBlock(t *testing.T) {
 	bash, edit := validRule("a"), validRule("b")
 	bash.Enforce, bash.Hook = "hook", "bash-guard"
@@ -87,7 +111,13 @@ func TestValidateBashGuardNeedsGuardBlock(t *testing.T) {
 	}
 }
 
-// {{rule "id"}} must resolve to exactly one statement.
+// TestValidateDuplicateRuleID tests rule id uniqueness.
+//
+// Why this test is important:
+//   - {{rule "id"}} must resolve to exactly one statement.
+//
+// What it tests:
+//   - The second rule with a repeated id reports /1/id.
 func TestValidateDuplicateRuleID(t *testing.T) {
 	errs := model.Validate(&model.Model{Rules: []model.Rule{validRule("a"), validRule("a")}})
 	if !hasField(errs, "rules.yaml", "/1/id") || hasField(errs, "rules.yaml", "/0/id") {
@@ -95,7 +125,13 @@ func TestValidateDuplicateRuleID(t *testing.T) {
 	}
 }
 
-// Review tiers and skill effort are closed sets; a typo must not render.
+// TestValidateBadSeverity tests the severity enum and the effort enum.
+//
+// Why this test is important:
+//   - Review tiers and skill effort are closed sets; a typo must not render.
+//
+// What it tests:
+//   - severity "major" reports /0/severity; effort "huge" reports /review/effort.
 func TestValidateBadSeverity(t *testing.T) {
 	r := validRule("a")
 	r.Severity = "major"
@@ -109,7 +145,15 @@ func TestValidateBadSeverity(t *testing.T) {
 	}
 }
 
-// A rule a hook enforces needs no ⛔/NEVER/MUST; emphasis makes current models over-apply it.
+// TestEmphasisRejectedForHookRule tests the emphasis constraint.
+//
+// Why this test is important:
+//   - A rule a hook enforces needs no ⛔/NEVER/MUST; emphasis makes current
+//     models over-apply it.
+//
+// What it tests:
+//   - A hook-enforced statement with ⛔, and a lint-enforced one with NEVER,
+//     each report /i/statement naming the rule.
 func TestEmphasisRejectedForHookRule(t *testing.T) {
 	hook, lint := validRule("hooked"), validRule("linted")
 	hook.Enforce, hook.Hook, hook.Statement = "hook", "edit-guard", "⛔ Do not edit generated files."
@@ -123,7 +167,13 @@ func TestEmphasisRejectedForHookRule(t *testing.T) {
 	}
 }
 
-// Without a machine check, emphasis may still be the author's choice.
+// TestEmphasisAllowedForProseRule tests that unenforced rules keep emphasis.
+//
+// Why this test is important:
+//   - Without a machine check, emphasis may still be the author's choice.
+//
+// What it tests:
+//   - A prose rule with MUST validates cleanly.
 func TestEmphasisAllowedForProseRule(t *testing.T) {
 	r := validRule("a")
 	r.Statement = "You MUST ask first."
@@ -132,7 +182,13 @@ func TestEmphasisAllowedForProseRule(t *testing.T) {
 	}
 }
 
-// "MUSTACHE" or "NEVERTHELESS" are not emphasis.
+// TestMustInsideWordIgnored tests whole-word matching.
+//
+// Why this test is important:
+//   - "MUSTACHE" or "NEVERTHELESS" are not emphasis.
+//
+// What it tests:
+//   - A hook rule whose statement contains MUSTACHE and NEVERTHELESS validates.
 func TestMustInsideWordIgnored(t *testing.T) {
 	r := validRule("a")
 	r.Enforce, r.Hook, r.Statement = "hook", "edit-guard", "MUSTACHE templates, NEVERTHELESS fine."
@@ -154,7 +210,14 @@ func skillModel(skills ...model.Skill) *model.Model {
 	}
 }
 
-// Claude Code names a skill after its folder; a mismatched name field makes /name and the listing disagree.
+// TestSkillNameMustMatchFile tests the command-name rule.
+//
+// Why this test is important:
+//   - Claude Code names a skill after its folder; a mismatched name field
+//     makes /name and the listing disagree.
+//
+// What it tests:
+//   - name "fixx" in fix.yaml reports skills/fix.yaml:/name.
 func TestSkillNameMustMatchFile(t *testing.T) {
 	s := validSkill("fix")
 	s.Name = "fixx"
@@ -163,7 +226,15 @@ func TestSkillNameMustMatchFile(t *testing.T) {
 	}
 }
 
-// Text past the cap is cut from the listing, so trigger phrases there never reach the model.
+// TestDescriptionBudget tests the listing's 1,536-character cap.
+//
+// Why this test is important:
+//   - Text past the cap is cut from the listing, so trigger phrases there
+//     never reach the model.
+//
+// What it tests:
+//   - description + when_to_use of 1,537 characters reports /description;
+//     exactly 1,536 passes.
 func TestDescriptionBudget(t *testing.T) {
 	over, at := validSkill("a"), validSkill("b")
 	over.Description, over.WhenToUse = strings.Repeat("x", 1000), strings.Repeat("y", 537)
@@ -174,7 +245,14 @@ func TestDescriptionBudget(t *testing.T) {
 	}
 }
 
-// A skill's model pin comes from its role; a missing role renders no pin and the skill silently inherits the session model.
+// TestRoleMustExist tests role resolution.
+//
+// Why this test is important:
+//   - A skill's model pin comes from its role; a missing role renders no pin
+//     and the skill silently inherits the session model.
+//
+// What it tests:
+//   - No role reports /role; an undefined role reports /role.
 func TestRoleMustExist(t *testing.T) {
 	none, bad := validSkill("a"), validSkill("b")
 	none.Role, bad.Role = "", "nope"
@@ -184,7 +262,15 @@ func TestRoleMustExist(t *testing.T) {
 	}
 }
 
-// Mirrors render a rule's summary; a missing one renders an empty sentence into Cursor and Kilocode.
+// TestMirrorRuleNeedsSummary tests the summary requirement for mirrors.
+//
+// Why this test is important:
+//   - Mirrors render a rule's summary; a missing one renders an empty
+//     sentence into Cursor and Kilocode.
+//
+// What it tests:
+//   - A rule targeting cursor/go without summary reports /0/summary naming
+//     the rule and the mirror; a claude-md-only rule needs none.
 func TestMirrorRuleNeedsSummary(t *testing.T) {
 	mirrored, local := validRule("a"), validRule("b")
 	mirrored.Targets = []string{"claude-md", "cursor/go"}
@@ -197,7 +283,14 @@ func TestMirrorRuleNeedsSummary(t *testing.T) {
 	}
 }
 
-// A missing skills/<name>.md.tmpl used to surface only at render, as an I/O error, after validation had passed.
+// TestSkillTemplateMustExist tests that a skill without a body is invalid.
+//
+// Why this test is important:
+//   - A missing skills/<name>.md.tmpl used to surface only at render, as an
+//     I/O error, after validation had passed.
+//
+// What it tests:
+//   - A skill whose template is absent reports skills/fix.md.tmpl.
 func TestSkillTemplateMustExist(t *testing.T) {
 	s := validSkill("fix")
 	s.HasTemplate = false

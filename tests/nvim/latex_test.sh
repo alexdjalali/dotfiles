@@ -8,7 +8,12 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
 
 LATEXMKRC="$REPO_ROOT/latex/.latexmkrc"
 
-# -shell-escape lets any document run shell commands at build time; on for every document, opening an untrusted .tex runs its code.
+# Why this test is important:
+#   - -shell-escape lets any document run shell commands at build time; on for
+#     every document, opening an untrusted .tex runs its code.
+# What it tests:
+#   - No active (uncommented) latexmkrc line enables -shell-escape, and the
+#     dead $silent branch and default-valued $max_repeat are gone.
 test_latexmkrc_no_global_shell_escape() {
   local active
   active=$(grep -vE '^\s*#' "$LATEXMKRC")
@@ -17,7 +22,12 @@ test_latexmkrc_no_global_shell_escape() {
   assert_not_contains "$active" '$silent' "active latexmkrc lines"
 }
 
-# The same flags in three places (latexmkrc, VimTeX, texlab) drift apart and let one editor build differ from another.
+# Why this test is important:
+#   - The same flags in three places (latexmkrc, VimTeX, texlab) drift apart and
+#     let one editor build differ from another.
+# What it tests:
+#   - The Neovim config passes none of latexmk's -pdf/-synctex/-interaction/
+#     -shell-escape flags; latexmkrc sets them.
 test_flags_defined_once() {
   local hits
   hits=$(grep -rnE -- '"-(pdf|synctex=1|interaction=nonstopmode|shell-escape)"' "$REPO_ROOT/nvim/lua" | sed "s#$REPO_ROOT/##")

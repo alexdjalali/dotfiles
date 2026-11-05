@@ -13,14 +13,23 @@ render() {
   jq -cn --arg d "$T" "$1 | .workspace.current_dir = \$d" | bash "$STATUSLINE"
 }
 
-# The ⚡ segment claims to show the reasoning effort; showing the output style name there mislabels it.
+# Why this test is important:
+#   - The ⚡ segment claims to show the reasoning effort; showing the output
+#     style name there mislabels it.
+# What it tests:
+#   - A payload with an output style but no effort renders no ⚡ segment.
 test_no_effort_segment_without_effort() {
   local out
   out=$(render '{model: {display_name: "Opus"}, output_style: {name: "default"}}')
   assert_not_contains "$out" "⚡" "status line"
 }
 
-# Claude Code sends effort as an object ({level: ...}); printing it raw put three lines of JSON into the footer of every Opus session.
+# Why this test is important:
+#   - Claude Code sends effort as an object ({level: ...}); printing it raw put
+#     three lines of JSON into the footer of every Opus session.
+# What it tests:
+#   - The real payload shape renders "⚡ xhigh" on a single line, and the plain
+#     string form still works.
 test_effort_segment_with_effort() {
   local out
   out=$(render '{model: {display_name: "Opus"}, effort: {level: "xhigh"}}')
@@ -30,7 +39,11 @@ test_effort_segment_with_effort() {
   assert_contains "$out" "⚡ high" "status line (string effort)"
 }
 
-# The header promises graceful degradation; a status line that exits 127 blanks the footer on a machine without jq.
+# Why this test is important:
+#   - The header promises graceful degradation; a status line that exits 127
+#     blanks the footer on a machine without jq.
+# What it tests:
+#   - With no jq on PATH it still prints the directory and exits 0.
 test_degrades_without_jq() {
   local bin="$T/nojq" out rc
   mkdir -p "$bin"

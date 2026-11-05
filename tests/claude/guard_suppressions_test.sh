@@ -24,7 +24,12 @@ write_status() {
   echo $?
 }
 
-# Each suppression marker an agent reaches for is blocked when an edit adds it.
+# Why this test is important:
+#   - An agent asked to get a check green takes the cheapest path, and an
+#     inline suppression is the cheapest path there is.
+# What it tests:
+#   - An Edit that adds //nolint, #nosec, # noqa, type: ignore, pyright:
+#     ignore, eslint-disable, @ts-expect-error or nosemgrep exits 2.
 test_blocks_added_markers() {
   assert_eq 2 "$(edit_status "$T/a.go" 'x := f()' 'x := f() //nolint:errcheck')" "nolint"
   assert_eq 2 "$(edit_status "$T/a.go" 'f()' 'f() // #nosec G204')" "nosec"
@@ -36,7 +41,11 @@ test_blocks_added_markers() {
   assert_eq 2 "$(edit_status "$T/a.go" 'f()' 'f() // nosemgrep')" "nosemgrep"
 }
 
-# The block message tells the agent what to do instead.
+# Why this test is important:
+#   - A bare block leaves the agent guessing; the reason must point it at the
+#     fix and at the human-owned path for changing the rule.
+# What it tests:
+#   - The stderr reason says "fix the code" and names the edited file.
 test_reason_names_the_alternative() {
   local err
   err=$(jq -cn --arg p "$T/a.go" '{tool_input: {file_path: $p, old_string: "f()", new_string: "f() //nolint"}}' |
@@ -45,13 +54,22 @@ test_reason_names_the_alternative() {
   assert_contains "$err" "$T/a.go" "reason names the file"
 }
 
-# Moving or keeping an existing suppression is not adding one.
+# Why this test is important:
+#   - Refactors move and delete existing suppressions; blocking those would
+#     make the guard punish cleanup.
+# What it tests:
+#   - An Edit with the same marker count, or fewer, exits 0.
 test_allows_unchanged_marker_count() {
   assert_eq 0 "$(edit_status "$T/a.go" 'f() //nolint:errcheck' 'g() //nolint:errcheck')" "same count"
   assert_eq 0 "$(edit_status "$T/a.go" 'f() //nolint:errcheck' 'f()')" "removal"
 }
 
-# A Write counts against the file's current contents.
+# Why this test is important:
+#   - Write replaces a whole file and has no old_string, so the guard must
+#     compare against what is on disk or it would miss (or invent) additions.
+# What it tests:
+#   - Rewriting a file with the same markers passes; adding one, or creating
+#     a new file that carries one, exits 2.
 test_write_compares_with_existing_file() {
   printf 'x = 1  # noqa\n' > "$T/old.py"
   assert_eq 0 "$(write_status "$T/old.py" $'x = 2  # noqa\n')" "rewrite keeping one"
@@ -59,7 +77,12 @@ test_write_compares_with_existing_file() {
   assert_eq 2 "$(write_status "$T/new.py" $'y = 3  # type: ignore\n')" "new file with one"
 }
 
-# Exemption, baseline and allowlist files may shrink but not grow.
+# Why this test is important:
+#   - Exemption lists are the other way agents silence checks: one more line
+#     in a baseline file and the gate goes green.
+# What it tests:
+#   - A baseline, .trivyignore or allowlist that gains lines exits 2; one
+#     that shrinks exits 0.
 test_blocks_growing_exemption_files() {
   printf '{"a": 1}\n' > "$T/conformance_exemptions_baseline.json"
   assert_eq 2 "$(write_status "$T/conformance_exemptions_baseline.json" $'{"a": 1,\n "b": 2}\n')" "baseline grows"
@@ -68,14 +91,22 @@ test_blocks_growing_exemption_files() {
   assert_eq 2 "$(edit_status "$T/lint-allowlist.yaml" 'a' $'a\nb')" "allowlist grows"
 }
 
-# Docs and ordinary code that mention a marker in prose are not suppressions.
+# Why this test is important:
+#   - Rules and docs talk about //nolint; a guard that blocked them would stop
+#     the very docs that explain the policy.
+# What it tests:
+#   - A Markdown edit mentioning a marker, a plain code edit, and a payload
+#     with no path all exit 0.
 test_allows_markdown_and_plain_code() {
   assert_eq 0 "$(edit_status "$T/README.md" 'x' 'never add //nolint')" "markdown"
   assert_eq 0 "$(edit_status "$T/a.go" 'x := 1' 'x := 2')" "plain code"
   assert_eq 0 "$(edit_status "" 'x' 'y')" "no path"
 }
 
-# A guard that cannot read its payload fails closed.
+# Why this test is important:
+#   - A guard that allows what it cannot read fails open.
+# What it tests:
+#   - Malformed JSON exits 2.
 test_blocks_bad_json() {
   printf 'not json' | bash "$GUARD" >/dev/null 2>&1
   assert_eq 2 "$?" "exit for malformed payload"

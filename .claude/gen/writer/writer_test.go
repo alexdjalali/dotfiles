@@ -42,7 +42,13 @@ var render = []target.File{
 	{Path: "rules/b.md", Data: []byte(marked)},
 }
 
-// --check runs in just lint; a false drift fails every commit.
+// TestCheckCleanTreeIsEmpty tests that a tree matching the render reports nothing.
+//
+// Why this test is important:
+//   - --check runs in just lint; a false drift fails every commit.
+//
+// What it tests:
+//   - Check after Write returns no drift.
 func TestCheckCleanTreeIsEmpty(t *testing.T) {
 	root := t.TempDir()
 	if err := writer.Write(root, render, []string{"rules"}); err != nil {
@@ -53,7 +59,15 @@ func TestCheckCleanTreeIsEmpty(t *testing.T) {
 	}
 }
 
-// A hand edit, a deleted output and a stale output are the three ways generated files go wrong; each must fail the check.
+// TestCheckReportsDiffersMissingOrphan tests each drift kind.
+//
+// Why this test is important:
+//   - A hand edit, a deleted output and a stale output are the three ways
+//     generated files go wrong; each must fail the check.
+//
+// What it tests:
+//   - An edited a.md is "differs", an absent b.md is "missing", a marked
+//     c.md nobody rendered is "orphan", and an unmarked d.md is ignored.
 func TestCheckReportsDiffersMissingOrphan(t *testing.T) {
 	root := t.TempDir()
 	put(t, root, "rules/a.md", "hand edited\n")
@@ -70,7 +84,14 @@ func TestCheckReportsDiffersMissingOrphan(t *testing.T) {
 	}
 }
 
-// Removing a template must remove its output, but hand-written files in the same directory must survive migration.
+// TestWriteDeletesMarkedOrphanOnly tests orphan cleanup on write.
+//
+// Why this test is important:
+//   - Removing a template must remove its output, but hand-written files in
+//     the same directory must survive migration.
+//
+// What it tests:
+//   - Write deletes the marked c.md and keeps the unmarked d.md.
 func TestWriteDeletesMarkedOrphanOnly(t *testing.T) {
 	root := t.TempDir()
 	put(t, root, "rules/c.md", marked)
@@ -86,7 +107,14 @@ func TestWriteDeletesMarkedOrphanOnly(t *testing.T) {
 	}
 }
 
-// Claude Code may read a rule mid-write; a partial file loses instructions.
+// TestWriteIsAtomicOnRename tests that an existing file is replaced whole.
+//
+// Why this test is important:
+//   - Claude Code may read a rule mid-write; a partial file loses instructions.
+//
+// What it tests:
+//   - A longer pre-existing a.md ends with exactly the rendered bytes and no
+//     temp files remain.
 func TestWriteIsAtomicOnRename(t *testing.T) {
 	root := t.TempDir()
 	put(t, root, "rules/a.md", strings.Repeat("old content\n", 50))

@@ -34,7 +34,7 @@ alwaysApply: false
 ## Testing Requirements
 
 - Class-based test organization with descriptive method names
-- The test name is the documentation; a one-line docstring only when the why isn't in the name
+- Every test has a docstring: **Why important** + **What it tests**
 - `conftest.py` fixtures: global at `tests/unit/conftest.py`, per-service in subdirectories
 - `hypothesis` for property-based testing (pure functions, roundtrips, invariants)
 - `pytest` markers per layer: `@pytest.mark.unit`, `@pytest.mark.integration`, `@pytest.mark.e2e`

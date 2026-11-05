@@ -32,7 +32,8 @@ Folders are **layout paths** (`~/.claude/templates/docs-layout.md`): `<audit>` i
    - **codegen gaps:** hand-written code a generator should own, hand-edited generated files, repeated shapes with no template
    - **theory gaps:** one kind of work implemented many ways (a long `switch` dispatching it, N packages declaring the same struct) — name the missing noun and its single shape; a component with no reference implementation
    - **infra drift:** pairs that must agree but are neither generated nor guarded: a call and its IAM grant, generated clients across modules, lock files, versions or digests pinned per environment
-   - **bloat:** measure, then name what can go: unreachable code (`deadcode -test=false`, `vulture`, `knip`), interfaces with one implementation that aren't an external boundary, comment lines ÷ code lines, test lines ÷ production lines and assertions per test line, config code + config tests vs features, a dev CLI wrapping stock tools, inline suppressions and exemption files
+   - **bloat:** measure, then name what can go: unreachable code (`deadcode -test=false`, `vulture`, `knip`), interfaces with one implementation that aren't an external boundary, test lines ÷ production lines and assertions per test line, config code + config tests vs features, a dev CLI wrapping stock tools, inline suppressions and exemption files
+   - **docs:** stale or missing docs: symbols without doc comments, tests without Why/What docs, READMEs / docs pages / CLAUDE.md / ADRs describing behavior the code no longer has, generated references out of date — each is a finding, ranked high
    - **operability:** external calls without timeouts, failure paths with no log/metric/span
 
 3. Oversized production files (tests and generated files exempt): `git ls-files -z -- '*.py' '*.go' '*.ts' '*.tsx' | xargs -0 grep -L --null 'Code generated .* DO NOT EDIT' | xargs -0 wc -l | awk '$1 > 800 && $2 != "total"'`.

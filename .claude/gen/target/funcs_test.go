@@ -37,7 +37,13 @@ func exec(t *testing.T, text string) (string, error) {
 	return buf.String(), err
 }
 
-// {{rule}} is how a statement is written once and reused.
+// TestRuleReturnsStatement tests the rule function.
+//
+// Why this test is important:
+//   - {{rule}} is how a statement is written once and reused.
+//
+// What it tests:
+//   - {{rule "a-rule"}} renders exactly that rule's statement.
 func TestRuleReturnsStatement(t *testing.T) {
 	got, err := exec(t, `x {{rule "a-rule"}} y`)
 	if err != nil || got != "x A second. y" {
@@ -45,7 +51,13 @@ func TestRuleReturnsStatement(t *testing.T) {
 	}
 }
 
-// A misspelled id must fail the build, not render an empty sentence.
+// TestRuleUnknownIDErrors tests the failure on a typo.
+//
+// Why this test is important:
+//   - A misspelled id must fail the build, not render an empty sentence.
+//
+// What it tests:
+//   - {{rule "nope"}} fails naming the id.
 func TestRuleUnknownIDErrors(t *testing.T) {
 	_, err := exec(t, `{{rule "nope"}}`)
 	if err == nil || !strings.Contains(err.Error(), `unknown rule "nope"`) {
@@ -53,7 +65,14 @@ func TestRuleUnknownIDErrors(t *testing.T) {
 	}
 }
 
-// review-diff's checklist is rendered from the catalog grouped by category.
+// TestLensesGroupsByCategory tests the review-lens list.
+//
+// Why this test is important:
+//   - review-diff's checklist is rendered from the catalog grouped by category.
+//
+// What it tests:
+//   - {{lenses "review"}} groups Quality (b, c) before Correctness (a), by
+//     first appearance; a one-item group renders on one line.
 func TestLensesGroupsByCategory(t *testing.T) {
 	got, err := exec(t, `{{lenses "review"}}`)
 	want := "- **Quality:**\n  - B first.\n  - C elsewhere.\n- **Correctness:** A second."
@@ -62,7 +81,14 @@ func TestLensesGroupsByCategory(t *testing.T) {
 	}
 }
 
-// CLAUDE.md's Models line must match the skills' pins.
+// TestModelFormatsRole tests the model function.
+//
+// Why this test is important:
+//   - CLAUDE.md's Models line must match the skills' pins.
+//
+// What it tests:
+//   - A role with effort renders "model (effort)", without renders "model",
+//     and an unknown role fails.
 func TestModelFormatsRole(t *testing.T) {
 	got, err := exec(t, `{{model "review"}}/{{model "diagnose"}}`)
 	if err != nil || got != "claude-fable-5-1 (xhigh)/opus" {
@@ -73,7 +99,15 @@ func TestModelFormatsRole(t *testing.T) {
 	}
 }
 
-// review-diff's lenses moved from hand-written prose into the catalog; a lens lost in the move silently narrows every review.
+// TestReviewLensesCoverLegacyList tests the migrated review checklist.
+//
+// Why this test is important:
+//   - review-diff's lenses moved from hand-written prose into the catalog;
+//     a lens lost in the move silently narrows every review.
+//
+// What it tests:
+//   - The repository's catalog renders, through {{lenses "review"}} and
+//     {{lenses "audit"}}, every lens and category the hand-written skills had.
 func TestReviewLensesCoverLegacyList(t *testing.T) {
 	m, err := model.Load("../../..")
 	if err != nil {
@@ -107,7 +141,14 @@ func TestReviewLensesCoverLegacyList(t *testing.T) {
 	}
 }
 
-// A list rendered inside a numbered step must be indented on every line, or Markdown ends the step.
+// TestIndentNestsEveryLine tests the indent function.
+//
+// Why this test is important:
+//   - A list rendered inside a numbered step must be indented on every line,
+//     or Markdown ends the step.
+//
+// What it tests:
+//   - {{lenses "review" | indent 3}} prefixes each line with three spaces.
 func TestIndentNestsEveryLine(t *testing.T) {
 	got, err := exec(t, `{{lenses "review" | indent 3}}`)
 	want := "   - **Quality:**\n     - B first.\n     - C elsewhere.\n   - **Correctness:** A second."
@@ -116,7 +157,15 @@ func TestIndentNestsEveryLine(t *testing.T) {
 	}
 }
 
-// "has no summary" for a misspelled id sends the author to add a summary to a rule that does not exist.
+// TestSummaryErrorsNameTheCause tests summary's two failure messages.
+//
+// Why this test is important:
+//   - "has no summary" for a misspelled id sends the author to add a summary
+//     to a rule that does not exist.
+//
+// What it tests:
+//   - {{summary "nope"}} fails with unknown rule; {{summary "a-rule"}} (no
+//     summary) fails with has no summary.
 func TestSummaryErrorsNameTheCause(t *testing.T) {
 	if _, err := exec(t, `{{summary "nope"}}`); err == nil || !strings.Contains(err.Error(), `unknown rule "nope"`) {
 		t.Fatalf("unknown id: err = %v", err)

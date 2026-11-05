@@ -8,7 +8,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
 # shellcheck source=../lib/zsh.sh
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/zsh.sh"
 
-# Aliases that shadow real tools (pydoc, godoc) break those tools.
+# Why this test is important:
+#   - Aliases that shadow real tools (pydoc, godoc) break those tools.
+# What it tests:
+#   - pydoc/godoc are not aliases, and the duplicate tree2 alias is gone.
 test_aliases_are_hygienic() {
   mock_cmd eza
   local out
@@ -18,7 +21,12 @@ test_aliases_are_hygienic() {
   assert_contains "$out" "tree2: no alias" "tree2"
 }
 
-# `gac` staged everything (`git add .`), sweeping untracked scratch files into commits; it must match the tracked-only `ga`.
+# Why this test is important:
+#   - `gac` staged everything (`git add .`), sweeping untracked scratch files
+#     into commits; it must match the tracked-only `ga`.
+# What it tests:
+#   - After `gac msg`, the tracked change is committed as "msg" and an
+#     untracked file is still untracked.
 test_gac_commits_tracked_changes_only() {
   make_repo "$T/repo"
   printf 'v1\n' > "$T/repo/tracked.txt"
@@ -32,14 +40,21 @@ test_gac_commits_tracked_changes_only() {
   assert_eq "?? new.txt" "$(git -C "$T/repo" status --porcelain)" "working tree after gac"
 }
 
-# Every eza-backed alias must degrade gracefully on a machine without eza.
+# Why this test is important:
+#   - Every eza-backed alias must degrade gracefully on a machine without eza.
+# What it tests:
+#   - With no eza on PATH, the tree alias is not defined.
 test_tree_alias_needs_eza() {
   local out
   out=$(PATH="$MOCK_BIN:/usr/bin:/bin" zsh_with 'alias tree || echo "tree: no alias"' 04-aliases.zsh 2>&1)
   assert_contains "$out" "tree: no alias" "tree alias without eza"
 }
 
-# Aliases pointing at files this repo doesn't track break on every other machine; they belong in the untracked ~/.zshrc.local.
+# Why this test is important:
+#   - Aliases pointing at files this repo doesn't track break on every other
+#     machine; they belong in the untracked ~/.zshrc.local.
+# What it tests:
+#   - None of the machine-only aliases/functions is defined by the tracked config.
 test_machine_only_aliases_not_tracked() {
   local out
   out=$(zsh_with 'for n in gbs dreset e2e prr docs docs-git dev-docs dashboard macclean brewmaintain aireview aws-export-tf; do whence -w $n; done' \
@@ -50,7 +65,10 @@ test_machine_only_aliases_not_tracked() {
   done
 }
 
-# Two timers printed every slow command's duration twice.
+# Why this test is important:
+#   - Two timers printed every slow command's duration twice.
+# What it tests:
+#   - Loading 07-visual.zsh registers no preexec timer (p10k owns durations).
 test_no_duplicate_timer() {
   local out
   out=$(zsh_with 'print -l -- "${preexec_functions[@]}" "${precmd_functions[@]}"' 07-visual.zsh 2>&1)
@@ -58,7 +76,12 @@ test_no_duplicate_timer() {
   assert_not_contains "$out" "visual_precmd" "precmd hooks"
 }
 
-# ~/.zshrc.local loads first, so a tracked alias of the same name silently beats it; overrides that must win need a hook that loads last.
+# Why this test is important:
+#   - ~/.zshrc.local loads first, so a tracked alias of the same name silently
+#     beats it; overrides that must win need a hook that loads last.
+# What it tests:
+#   - After the whole .zshrc loads, an alias from ~/.zshrc.local.post replaces
+#     the tracked alias of the same name.
 test_zshrc_local_post_wins() {
   echo "alias gs='echo post'" > "$T/.zshrc.local.post"
   local out
@@ -66,7 +89,12 @@ test_zshrc_local_post_wins() {
   assert_eq "gs='echo post'" "$out" "gs after .zshrc"
 }
 
-# install.sh links ~/.zshrc from wherever the repo is cloned; a .zshrc that assumed ~/dotfiles loaded no conf.d module from any other clone.
+# Why this test is important:
+#   - install.sh links ~/.zshrc from wherever the repo is cloned; a .zshrc that
+#     assumed ~/dotfiles loaded no conf.d module from any other clone.
+# What it tests:
+#   - With DOTFILES unset, .zshrc (reached through a ~/.zshrc link) sets
+#     DOTFILES to the repo it lives in.
 test_zshrc_finds_its_repo() {
   ln -s "$REPO_ROOT/zsh/.zshrc" "$T/.zshrc"
   local out

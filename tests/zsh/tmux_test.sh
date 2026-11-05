@@ -7,14 +7,21 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
 
 TMUX_CONF="$REPO_ROOT/tmux/.tmux.conf"
 
-# In tmux, a top-level NAME=value line sets the global environment, which every new pane's shell inherits; config-only variables leak into all shells.
+# Why this test is important:
+#   - In tmux, a top-level NAME=value line sets the global environment, which
+#     every new pane's shell inherits; config-only variables leak into all shells.
+# What it tests:
+#   - .tmux.conf contains no top-level NAME=value assignment.
 test_no_global_env_assignments() {
   local found
   found=$(grep -nE '^[A-Za-z_][A-Za-z0-9_]*=' "$TMUX_CONF")
   assert_eq "" "$found" "global environment assignments in .tmux.conf"
 }
 
-# A syntax error in .tmux.conf silently drops every setting after it.
+# Why this test is important:
+#   - A syntax error in .tmux.conf silently drops every setting after it.
+# What it tests:
+#   - tmux parses the file without errors (parse-only, so no TPM network clone).
 test_config_parses() {
   local sock="$T/tmux.sock" out rc
   out=$(tmux -S "$sock" -f /dev/null start-server \; source-file -n "$TMUX_CONF" 2>&1)
@@ -33,7 +40,13 @@ tmux_query() {
   printf '%s\n' "$out"
 }
 
-# Neovim's smart-splits moves between its splits on Ctrl-h/j/k/l and hands off to tmux at the edge; without matching root bindings the keys never cross from an nvim split into a neighbouring tmux pane.
+# Why this test is important:
+#   - Neovim's smart-splits moves between its splits on Ctrl-h/j/k/l and hands
+#     off to tmux at the edge; without matching root bindings the keys never
+#     cross from an nvim split into a neighbouring tmux pane.
+# What it tests:
+#   - Ctrl-h/j/k/l in the root table forward to Neovim panes (@pane-is-vim)
+#     and select the neighbouring tmux pane otherwise.
 test_ctrl_hjkl_cross_nvim_and_tmux() {
   local key dir out
   for key in h:L j:D k:U l:R; do
@@ -44,7 +57,11 @@ test_ctrl_hjkl_cross_nvim_and_tmux() {
   done
 }
 
-# Programs in a pane (Neovim, image previews, OSC 8 links) talk to iTerm through escape sequences that tmux drops unless passthrough is allowed.
+# Why this test is important:
+#   - Programs in a pane (Neovim, image previews, OSC 8 links) talk to iTerm
+#     through escape sequences that tmux drops unless passthrough is allowed.
+# What it tests:
+#   - allow-passthrough is on.
 test_allow_passthrough_on() {
   local out
   out=$(tmux_query show-options -gv allow-passthrough)

@@ -52,7 +52,12 @@ import (
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )
 
-// Real SQL, FK persistence and transactions are invisible to a mock.
+// TestStore_CRUD tests the store against real Postgres.
+//
+// Why this test is important:
+//   - real SQL, FK persistence, and transaction semantics are invisible to sqlmock.
+// What it tests:
+//   - Create → Get → List → Delete round-trips against a live database.
 func TestStore_CRUD(t *testing.T) {
 	testcontainers.SkipIfProviderIsNotHealthy(t) // skip when Docker is unavailable
 	ctx := context.Background()
@@ -81,9 +86,8 @@ Prefer a module package (`modules/postgres`, `modules/redis`, …) over a raw `G
 ### Documentation
 
 - Exactly one package doc per package (`doc.go`), starting `// Package x …`.
-- Every **exported** symbol has a doc comment starting with its name (`// ProcessOrder handles…`) — **one or two lines**. Longer only to explain a non-obvious *why* (an invariant, a concurrency rule, a failure mode); never to restate the body, the type, or the layer it sits in.
-- Unexported symbols and struct fields get a comment only when the name and type don't already say it.
-- When you edit a documented symbol, revise its comment; when a comment only restated the code, deleting it is a fix. Tracker IDs and link rules: `documentation-sync.md`.
+- Every symbol documented — exported **and** unexported types, functions, methods, constants, **struct fields and enum values** — the comment starts with the name (`// ProcessOrder handles…`). A blank line separates documented members. Trivially obvious fields are exempt.
+- When you edit a documented symbol, revise its comment — never delete it. Tracker IDs and link rules: `documentation-sync.md`.
 
 ### Error Handling
 

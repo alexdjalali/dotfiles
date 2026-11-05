@@ -23,7 +23,12 @@ load_install() {
   source "$script" </dev/null
 }
 
-# The tests (and anyone reusing a helper) source install.sh; if sourcing ran the installer it would brew, curl and relink the machine it runs on.
+# Why this test is important:
+#   - The tests (and anyone reusing a helper) source install.sh; if sourcing ran
+#     the installer it would brew, curl and relink the machine it runs on.
+# What it tests:
+#   - Sourcing install.sh defines its functions but runs no external command
+#     and creates nothing in HOME.
 test_sourcing_runs_nothing() {
   load_install
   assert_eq "function" "$(type -t main)" "main after sourcing"
@@ -31,7 +36,12 @@ test_sourcing_runs_nothing() {
   assert_eq "" "$(ls -A "$HOME")" "files created in HOME while sourcing"
 }
 
-# install.sh is re-run with --update on every machine; a second run must not pile up backups of links it made itself.
+# Why this test is important:
+#   - install.sh is re-run with --update on every machine; a second run must not
+#     pile up backups of links it made itself.
+# What it tests:
+#   - backup_and_link creates the link, and a second call leaves it alone with
+#     no backup directory.
 test_backup_and_link_is_idempotent() {
   load_install
   : > "$T/src"
@@ -42,7 +52,11 @@ test_backup_and_link_is_idempotent() {
   return 0
 }
 
-# A fresh machine already has some of these files; linking must not destroy them.
+# Why this test is important:
+#   - A fresh machine already has some of these files; linking must not destroy them.
+# What it tests:
+#   - An existing regular file is moved into the backup directory before the link
+#     replaces it.
 test_backup_and_link_backs_up_existing_file() {
   load_install
   : > "$T/src"
@@ -52,7 +66,11 @@ test_backup_and_link_backs_up_existing_file() {
   assert_eq "mine" "$(cat "$HOME"/.dotfiles-backup/*/.cfg)" "backed-up content"
 }
 
-# A hardcoded ~/dotfiles links every file to the wrong place when the repo is cloned anywhere else.
+# Why this test is important:
+#   - A hardcoded ~/dotfiles links every file to the wrong place when the repo
+#     is cloned anywhere else.
+# What it tests:
+#   - DOTFILES is the directory install.sh itself lives in.
 test_dotfiles_dir_derived_from_script_location() {
   mkdir -p "$T/elsewhere"
   cp "$REPO_ROOT/install.sh" "$T/elsewhere/install.sh"
@@ -60,7 +78,12 @@ test_dotfiles_dir_derived_from_script_location() {
   assert_eq "$T/elsewhere" "$DOTFILES" "DOTFILES"
 }
 
-# The old bootstrap printed "ok" after `|| true`, so a broken plugin install looked like success; and `Lazy! sync` moved every plugin past the lockfile.
+# Why this test is important:
+#   - The old bootstrap printed "ok" after `|| true`, so a broken plugin install
+#     looked like success; and `Lazy! sync` moved every plugin past the lockfile.
+# What it tests:
+#   - bootstrap_nvim installs the locked versions (`Lazy! restore`) and, when
+#     nvim exits non-zero, prints a warning and no "ok".
 test_nvim_bootstrap_failure_is_reported() {
   load_install
   mock_cmd nvim "" 1
@@ -71,7 +94,10 @@ test_nvim_bootstrap_failure_is_reported() {
   assert_not_contains "$out" "[ok]" "bootstrap output"
 }
 
-# Under `set -e` a missing bat aborted the whole install at the theme step.
+# Why this test is important:
+#   - Under `set -e` a missing bat aborted the whole install at the theme step.
+# What it tests:
+#   - With no bat on PATH, the theme step warns and the script carries on.
 test_missing_bat_does_not_abort() {
   load_install
   command rm -f "$MOCK_BIN/bat"
@@ -81,7 +107,12 @@ test_missing_bat_does_not_abort() {
   assert_contains "$out" "reached" "script continued after the theme step"
 }
 
-# Links from older layouts point at directories that no longer exist (or, for Cursor's skills, that Cursor now manages itself).
+# Why this test is important:
+#   - Links from older layouts point at directories that no longer exist (or,
+#     for Cursor's skills, that Cursor now manages itself).
+# What it tests:
+#   - remove_legacy_links deletes the ~/.claude/commands, ~/.claude/standards and
+#     ~/.cursor/skills-cursor symlinks, and leaves a real directory alone.
 test_legacy_links_removed() {
   load_install
   mkdir -p "$HOME/.claude" "$HOME/.cursor" "$HOME/.cursor/rules-real"
@@ -96,7 +127,11 @@ test_legacy_links_removed() {
   [[ -d "$HOME/.cursor/rules-real" ]] || _fail "a real directory was removed"
 }
 
-# The uv tool list must match what the editor and `just lint` actually use; mypy has no consumer in the nvim config.
+# Why this test is important:
+#   - The uv tool list must match what the editor and `just lint` actually use;
+#     mypy has no consumer in the nvim config.
+# What it tests:
+#   - install_uv_tools installs basedpyright and ruff, and not mypy.
 test_uv_tools_match_consumers() {
   load_install
   install_uv_tools >/dev/null
@@ -107,7 +142,13 @@ test_uv_tools_match_consumers() {
   assert_not_contains "$calls" "mypy" "uv calls"
 }
 
-# ~/.gitconfig links to the tracked file, so whatever `git lfs install` writes shows up as a repo diff after every install; `--skip-smudge` rewrote the tracked [filter "lfs"].
+# Why this test is important:
+#   - ~/.gitconfig links to the tracked file, so whatever `git lfs install`
+#     writes shows up as a repo diff after every install; `--skip-smudge`
+#     rewrote the tracked [filter "lfs"].
+# What it tests:
+#   - The lfs step runs plain `git lfs install`, and the tracked filter holds
+#     exactly the values that command writes.
 test_git_lfs_step_matches_tracked_config() {
   load_install
   mock_cmd git-lfs
@@ -118,7 +159,12 @@ test_git_lfs_step_matches_tracked_config() {
   assert_eq "git-lfs filter-process" "$("$REAL_GIT" config -f "$cfg" filter.lfs.process)" "filter.lfs.process"
 }
 
-# ~/.claude/rules, ~/.cursor/rules and ~/.kilocode/rules share a basename; a flat backup dir made the second move fail and stop the install half done.
+# Why this test is important:
+#   - ~/.claude/rules, ~/.cursor/rules and ~/.kilocode/rules share a basename; a
+#     flat backup dir made the second move fail and stop the install half done.
+# What it tests:
+#   - Two existing targets with the same name are both backed up, each under its
+#     path relative to HOME, and both get linked.
 test_backup_keeps_same_named_targets_apart() {
   load_install
   mkdir -p "$T/src" "$HOME/.a/rules" "$HOME/.b/rules"

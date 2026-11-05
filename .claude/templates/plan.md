@@ -51,6 +51,7 @@ The map later phases use instead of re-exploring:
 - **Config:** [owning slice; new fields + fail-safe `base` default; env overlay / secrets entries]
 - **Codegen:** [source → generator command → generated paths; or "none"]
 - **Operability:** [timeouts; logs/metrics/spans added; health/readiness/shutdown impact]
+- **Docs** (`code-addition-checklist.md` 11 — first priority): [every doc this plan refreshes, per story: doc comments, test Why/What docs, README / docs pages / CLAUDE.md / AGENTS.md, ADRs, generated references]
 - **Budget** (`code-addition-checklist.md` 10): [~N prod / ~M test lines hand-written · deletes: [what] · each new interface / config field / CLI step / test tier and why · generated: [what the generator emits instead]]
 - **Reference:** [`file:line` of the implementation this mirrors — or "sets a new pattern: ADR-NNNN"]
 - **Guards:** [each new invariant or convention → the check that enforces it (lint rule, repo guard, ratchet, generator) and the task that adds it; or "needs judgment — review only"]

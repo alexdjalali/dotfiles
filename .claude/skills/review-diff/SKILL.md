@@ -54,9 +54,9 @@ Read the goal (PR description / commit messages / plan) so deliberate choices ar
   - resilience (an external call without a timeout, retry/breaker/logging inlined instead of a decorator, retry on a permanent error, a doubled-up retry over an SDK that already retries)
   - errors (code-less errors, internal detail leaked past the transport edge)
   - observability (silent failure branches, context-free errors, a new path with no log/metric/span, missing trace correlation)
-  - docs (`documentation-sync.md`)
+  - docs — `must_fix` (`documentation-sync.md`): a changed symbol whose doc comment wasn't revised, a test without its Why/What doc, a README / docs page / CLAUDE.md / ADR / generated reference that now describes old behavior, a missing doc for a new symbol, flag, config field or endpoint, a `Docs-Impact: none` claim the diff contradicts
   - suppressions (a new `nolint`/`noqa`/`type: ignore`/`eslint-disable`/`ts-ignore`, exemption or baseline entry, raised ratchet ceiling, or skipped/xfailed test the user didn't approve — `must_fix`: revert it and fix the code)
-  - bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a comment block restating the code, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library — name the lines that can go)
+  - bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library — name the lines that can go)
 - **Tests changed?** Read `~/.claude/rules/testing-authoring.md` first (it loads only when *editing* tests) and the project's `.claude/rules/testing-project.md` if present.
 
 File anything that *might* be an issue — "not sure" means `suggestion`, not silence. Before keeping a `must_fix`, try to refute it against the code; keep it only if it survives.

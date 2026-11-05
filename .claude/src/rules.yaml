@@ -27,6 +27,15 @@
   summary: "Satisfy a check, never silence it — no new `nolint`/`noqa`/`type: ignore`/`eslint-disable`/`ts-ignore`, exemption or baseline entry, raised ratchet, or skipped test; a wrong rule is changed by an ADR the user approves."
   targets: [claude-md, rules/development-practices, cursor/development-practices, cursor/global-standards]
 
+- id: docs-first
+  statement: "Docs are the first priority and the agent's map: every change refreshes every doc it touches, in the same commit — doc comments on every symbol, test docs (Why this test is important / What it tests), READMEs, docs/ pages, CLAUDE.md / AGENTS.md, ADRs and generated references. Read the docs before the code, write or update the doc before or with the code, never after. A commit with truly no doc impact says `Docs-Impact: none (<reason>)` in its message. The `guard-docs.sh` PreToolUse hook blocks a code commit that refreshes no docs and declares nothing."
+  category: docs
+  severity: must_fix
+  enforce: hook
+  hook: commit-guard
+  summary: "Docs first: every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`."
+  targets: [claude-md, rules/documentation-sync, cursor/documentation-sync, cursor/global-standards]
+
 - id: no-force-push-main
   statement: Don't force-push main or master.
   category: git
@@ -155,9 +164,9 @@
   enforce: review
   targets: [review-lenses]
 - id: review-docs
-  statement: "docs (`documentation-sync.md`)"
+  statement: "docs — `must_fix` (`documentation-sync.md`): a changed symbol whose doc comment wasn't revised, a test without its Why/What doc, a README / docs page / CLAUDE.md / ADR / generated reference that now describes old behavior, a missing doc for a new symbol, flag, config field or endpoint, a `Docs-Impact: none` claim the diff contradicts"
   category: Quality
-  severity: should_fix
+  severity: must_fix
   enforce: review
   targets: [review-lenses]
 - id: review-suppressions
@@ -167,7 +176,7 @@
   enforce: review
   targets: [review-lenses]
 - id: review-bloat
-  statement: "bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a comment block restating the code, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library — name the lines that can go)"
+  statement: "bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library — name the lines that can go)"
   category: Quality
   severity: should_fix
   enforce: review
@@ -241,9 +250,15 @@
   enforce: review
   targets: [audit-lenses]
 - id: audit-bloat
-  statement: "measure, then name what can go: unreachable code (`deadcode -test=false`, `vulture`, `knip`), interfaces with one implementation that aren't an external boundary, comment lines ÷ code lines, test lines ÷ production lines and assertions per test line, config code + config tests vs features, a dev CLI wrapping stock tools, inline suppressions and exemption files"
+  statement: "measure, then name what can go: unreachable code (`deadcode -test=false`, `vulture`, `knip`), interfaces with one implementation that aren't an external boundary, test lines ÷ production lines and assertions per test line, config code + config tests vs features, a dev CLI wrapping stock tools, inline suppressions and exemption files"
   category: bloat
   severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-docs
+  statement: "stale or missing docs: symbols without doc comments, tests without Why/What docs, READMEs / docs pages / CLAUDE.md / ADRs describing behavior the code no longer has, generated references out of date — each is a finding, ranked high"
+  category: docs
+  severity: must_fix
   enforce: review
   targets: [audit-lenses]
 - id: audit-operability

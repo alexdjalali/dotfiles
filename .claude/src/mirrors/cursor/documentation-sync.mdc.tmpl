@@ -5,9 +5,9 @@ alwaysApply: true
 
 ## Documentation Sync
 
-**Docs change in the same change as the code** — stale docs are a bug; no "docs to follow" TODOs.
+**Docs are the first priority** — agents read docs before code, so a stale doc is a bug. {{summary "docs-first"}}
 
-- **When:** public API / CLI flag / config / endpoint added, renamed, removed; documented behavior changed; breaking change (CHANGELOG, migration note); layout changed. Not for internal refactors, bugs restoring documented behavior, or test-only changes — say "no doc impact".
+- **When:** public API / CLI flag / config / endpoint added, renamed, removed; documented behavior changed; breaking change (CHANGELOG, migration note); layout changed. Doc comments and test Why/What docs are docs and are revised with their code. A change with truly no doc impact says `Docs-Impact: none (<reason>)` in the commit.
 - **Where:** search docs, READMEs, agent instruction files, docstrings, and comments for the changed symbol, then one hop out for docs describing dependent behavior.
 - **How:** change only what's now wrong; fix counts and lists; one term everywhere; revise — never silently delete — a doc comment when editing its symbol. Report the doc files touched.
 - **Generated docs** (config/API/CLI references) are regenerated from their source, never hand-edited.

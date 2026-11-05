@@ -6,6 +6,7 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 
 - **ADR first** for architectural changes and for any deviation from an established pattern.
 - **Plan before code** for non-trivial work: `/spec` → gitignored `docs/local/plans/` (`~/.claude/templates/plan.md`).
+- **Docs first — the top priority** (`documentation-sync.md`). Agents work from docs: read them before the code, refresh every doc a change touches in the same commit, and treat a stale doc as a bug. {{rule "docs-first"}}
 - **TDD mandatory** (`testing.md`). **Verify before done** (`verification.md`).
 - **Own what you find.** Fix a problem when it comes up — a failing test, a broken config, a gap in a module, a stale local file — instead of deferring it, routing around it, or attributing it elsewhere ("pre-existing", "the user's config", "a later story"). Only what you can't do yourself (missing credentials, a destructive or outward-facing step) goes back to the user, with the exact command.
 
@@ -15,7 +16,7 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 
 ## Quality Gates
 
-- **Fast checks** — per story, before each commit, scoped to changed files: format → lint → type check → affected tests → docs updated (`documentation-sync.md`).
+- **Fast checks** — per story, before each commit, scoped to changed files: docs refreshed (`documentation-sync.md`) → format → lint → type check → affected tests.
 - **Full gate** — once, after the last commit, before any push: the project's own gate if it has one (named in its `.claude/rules/`), else fast checks repo-wide + the full suite, 0 failures.
 - **Never rerun a costly step on unchanged input.** The full gate, reviews, `spec-review`, and live execution record the SHA (or clean tree) they passed on; later steps reuse it and re-run only what a change touched.
 - **The full gate never runs mid-cycle** — not per commit, not after `/github commit`, not to check a fix. A red gate → re-run only the failing step's own command until green, then the full gate once more.
@@ -40,7 +41,7 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 - **Generate > generalize > hand-write.** Code derived from a contract (proto, OpenAPI, schema, DI graph, mocks) comes from the project's generator via its CLI; output is committed, never hand-edited, and CI fails on drift. A repeated shape becomes a template/scaffold.
 - **Metaprogramming is the default for ceremony.** The shape around a seam — `Kind` + `Config` + factory + stub + decorator wiring + mock + config schema/docs — is declared once (a schema, a YAML row, a struct tag) and **emitted by a generator**, not typed per component. Generators and guards are themselves declarative (a template + schema; a semgrep / depguard / forbidigo / ruff rule or a row in the existing guard engine); a bespoke analyzer or a new engine is the exception, sized and justified in its ADR.
 - **Shared library first.** A capability that isn't product-specific is built in the shared library (KE) from day one — never grown in the product and extracted later.
-- **Code budget.** Hand-maintained lines are the cost: prefer deleting to adding, a stock tool to a wrapper, and one test at the right tier to three. Comments say *why*, briefly.
+- **Code budget.** Hand-maintained lines are the cost: prefer deleting to adding, a stock tool to a wrapper, and one test at the right tier to three. Docs are never part of the budget to cut: doc comments, test docs and written docs are how the next agent understands the code.
 - Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code. DRY = push logic down into the shared library, inject product strategy up.
 - **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + frozen `Config` + `*_from_config` / `NewFromConfig`) that returns the interface, defaults to a stub/noop so the graph boots with zero infra, and fails loudly on an unknown kind.
 - **DI:** constructor injection, wired at one composition root per deployable (Go: Wire; Python: `deps.py`); no I/O during construction, no globals/singletons, teardown in reverse order. Repository pattern for data; separate persistence models, domain entities, DTOs; early returns.
@@ -56,6 +57,6 @@ When compacting, keep verbatim: the active plan path and its header (`Type`, `St
 
 ## Anti-Patterns
 
-Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · config/env read outside the config layer · hand-edited generated code (the `guard-generated.sh` PreToolUse hook blocks Edit/Write on it; edit the source and regenerate) · globals/singletons/service locators · impl selected by `if`/import instead of a `Kind` factory · retry/logging/tracing inlined instead of a decorator · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior · an interface + `Kind` + factory for an internal collaborator with one implementation · hand-written ceremony a generator could emit · comment blocks that restate the code · per-test "Why this test is important" blocks · a dev-CLI command that only wraps a stock tool · a suppression, exemption, or raised ratchet (the `guard-suppressions.sh` hook blocks the inline ones).
+Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardcoded secrets/URLs/config · config/env read outside the config layer · hand-edited generated code (the `guard-generated.sh` PreToolUse hook blocks Edit/Write on it; edit the source and regenerate) · globals/singletons/service locators · impl selected by `if`/import instead of a `Kind` factory · retry/logging/tracing inlined instead of a decorator · code-less errors · an external call without a timeout · mutable state shared across goroutines/async tasks · untyped `any`/`interface{}` · import cycles · tests of implementation instead of behavior · an interface + `Kind` + factory for an internal collaborator with one implementation · hand-written ceremony a generator could emit · stale or missing docs (the `guard-docs.sh` hook blocks a code commit that refreshes none) · a dev-CLI command that only wraps a stock tool · a suppression, exemption, or raised ratchet (the `guard-suppressions.sh` hook blocks the inline ones).
 
 @RTK.md

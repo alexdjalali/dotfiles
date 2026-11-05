@@ -41,7 +41,11 @@ EOF
   return 0
 }
 
-# The hook runs on every compaction and resume; printing an anchor when there is no chain in flight would inject noise into unrelated sessions.
+# Why this test is important:
+#   - The hook runs on every compaction and resume; printing an anchor when
+#     there is no chain in flight would inject noise into unrelated sessions.
+# What it tests:
+#   - No plan directory, or only VERIFIED plans, gives empty output and exit 0.
 test_silent_without_active_plan() {
   local out rc
   out=$(anchor); rc=$?
@@ -53,7 +57,12 @@ test_silent_without_active_plan() {
   assert_eq "" "$out" "output with only a VERIFIED plan"
 }
 
-# After compaction the model must know which plan, phase, and task it was on, and the SHAs the chain recorded, without re-reading the transcript.
+# Why this test is important:
+#   - After compaction the model must know which plan, phase, and task it was
+#     on, and the SHAs the chain recorded, without re-reading the transcript.
+# What it tests:
+#   - An active plan yields its path, header fields, progress totals, the first
+#     unchecked task, the git position, and the /spec resume command.
 test_anchors_active_plan() {
   local out
   make_plan 2026-01-01-login.md PENDING
@@ -67,7 +76,12 @@ test_anchors_active_plan() {
   assert_contains "$out" "/spec docs/local/plans/2026-01-01-login.md" "resume command"
 }
 
-# A finished plan is often the newest file; anchoring to it would resume the wrong work.
+# Why this test is important:
+#   - A finished plan is often the newest file; anchoring to it would resume
+#     the wrong work.
+# What it tests:
+#   - With a newer VERIFIED plan and an older PENDING one, the PENDING plan is
+#     the anchor.
 test_skips_verified_plan_for_older_active_one() {
   local out
   make_plan 2026-01-01-old.md COMPLETE 120
@@ -77,7 +91,12 @@ test_skips_verified_plan_for_older_active_one() {
   assert_not_contains "$out" "2026-02-01-new.md" "verified plan"
 }
 
-# A hook that exits non-zero or hangs on a machine without jq would delay every session start.
+# Why this test is important:
+#   - A hook that exits non-zero or hangs on a machine without jq would delay
+#     every session start.
+# What it tests:
+#   - With no jq on PATH and an empty payload it falls back to $PWD, still
+#     anchors the plan, and exits 0.
 test_degrades_without_jq() {
   local bin="$T/nojq" out rc
   make_plan 2026-01-01-login.md PENDING

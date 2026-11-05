@@ -143,6 +143,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-docs.sh\" || exit 2"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
             "command": "rtk hook claude"
           }
         ]

@@ -6,7 +6,15 @@ import (
 	"testing"
 )
 
-// guard_rows.py blocks commands from this table; a wrong key lets a hook bypass through.
+// TestGuardTableGolden tests the guard-table target against its golden file.
+//
+// Why this test is important:
+//   - guard_rows.py blocks commands from this table; a wrong key lets a
+//     hook bypass through.
+//
+// What it tests:
+//   - A bash-guard rule renders as one row in .claude/scripts/guard_rules.json,
+//     config keys included, with the marker under "_generated".
 func TestGuardTableGolden(t *testing.T) {
 	files := renderLoaded(t, "guard-table", "../testdata/guardtable")
 	want, err := os.ReadFile("../testdata/guardtable/golden.json")
@@ -21,7 +29,15 @@ func TestGuardTableGolden(t *testing.T) {
 	}
 }
 
-// Only bash-guard rules have a row; an edit-guard rule in the table would be an empty, meaningless row.
+// TestGuardTableOmitsNonBashRules tests row selection.
+//
+// Why this test is important:
+//   - Only bash-guard rules have a row; an edit-guard rule in the table
+//     would be an empty, meaningless row.
+//
+// What it tests:
+//   - Of a bash-guard and an edit-guard rule, only the bash-guard one
+//     (no-verify) becomes a row.
 func TestGuardTableOmitsNonBashRules(t *testing.T) {
 	files := renderLoaded(t, "guard-table", "../testdata/guardtable")
 	var table struct {

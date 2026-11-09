@@ -10,12 +10,23 @@ generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
 
 # Epic <N> — <Title>
 
-**Status**: Planning **Stories**: -- **Class**: <highest story class> **Initiative**: <ADR-NNNN, … — or none>
-**Design doc**: <`<design>/<slug>.md` — one per epic> **Merged**: -- **Stable**: -- (done = stable in staging, not merged — `~/.claude/templates/estimate.md`)
+- **Status**: Planning
+- **Stories**: --
+- **Class**: <highest story class> (`~/.claude/templates/estimate.md`)
+- **Initiative**: <ADR-NNNN, … — or none>
+- **Design doc**: <`<design>/<slug>.md`, one per epic>
+- **Merged**: --
+- **Stable**: -- (the epic is done when it is stable in staging, which comes after merge)
 
 ## Summary
 
-<2-3 sentences describing what this epic achieves and why>
+<One short paragraph each, in full sentences, for someone who hasn't read the code.>
+
+**The problem today:** <what is wrong or missing, and who it affects>
+
+**When this epic ships:** <what is different, in terms of product behavior or a number>
+
+**Why now:** <what this unblocks, or what waiting costs>
 
 ## Architecture Diagram
 
@@ -40,6 +51,15 @@ graph TD
 ## Dependencies
 
 - <Other epics or external requirements>
+
+## Gold Standards
+
+The reference each tier follows; stories carry the verbatim excerpts. A tier with no reference is a gap and needs an ADR before its stories start.
+
+| Tier | Reference (`path:start-end`) | What it demonstrates | Gap |
+| ---- | ---------------------------- | -------------------- | --- |
+| <Repository> | <`path:start-end`> | <the shape to copy> | <none, or ADR-NNNN> |
+| <Tests> | <`tests/path:start-end`> | <tier, double, doc block> | <none, or ADR-NNNN> |
 
 ## Gaps & Unknowns
 

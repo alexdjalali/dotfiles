@@ -112,7 +112,7 @@
   enforce: review
   targets: [review-lenses]
 - id: review-consistency-and-dry
-  statement: "consistency and DRY (MUST cite the existing pattern/implementation `file:line`)"
+  statement: "consistency and DRY (MUST cite the existing pattern/implementation `file:line`; when a plan is given, new code matches each Gold Standards entry's Copy items or records a Deviation)"
   category: Quality
   severity: should_fix
   enforce: review

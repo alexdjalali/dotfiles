@@ -46,7 +46,7 @@ Read the goal (PR description / commit messages / plan) so deliberate choices ar
   - security (injection, authn/z, secrets, unvalidated boundary input, SSRF/path traversal)
   - performance (uncached hot paths, N+1, redundant work)
   - dead code (confirm "unused" with a caller search)
-  - consistency and DRY (MUST cite the existing pattern/implementation `file:line`)
+  - consistency and DRY (MUST cite the existing pattern/implementation `file:line`; when a plan is given, new code matches each Gold Standards entry's Copy items or records a Deviation)
   - tests (`testing.md`: behavior assertions a one-character bug would fail, tier-correct doubles — a violation is `must_fix` — parsimony, new deps mocked in all existing tests)
   - standards (file > 800 excluding generated files, function > 50, nesting > 4, untyped `any`, bare `except:`, hardcoded config)
   - design (`code-addition-checklist.md`: the One Idea — a concrete type where a core interface belongs, impl selection by `if`/import instead of a `Kind` factory, a factory with no stub default or a silent fallback on an unknown kind, construction or I/O outside the composition root, globals/singletons, coupling, leaking layers)

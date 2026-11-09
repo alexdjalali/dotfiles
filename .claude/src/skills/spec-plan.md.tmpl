@@ -8,7 +8,7 @@
    - **RCA** → its root cause (`file:line`) and fix sketch are the starting point — re-confirm both against the current code, don't re-derive.
 2. Ambiguous request → ask one clarifying question before continuing.
 3. With CodeGraph + Semble: every file the change touches, similar features and their patterns, the call chains up- and downstream, and the blast radius (`codegraph_impact`, then Grep for name lists a graph can't see). Record what you found in the plan's **Context for Implementer** (patterns `file:line`, key files, gotchas) — it is the map later phases use instead of re-exploring. Bugs and stale comments spotted here go in the plan under *Fix on sight* rules (`development-practices.md`): small ones as tasks in the story that touches that code, larger ones as a task outside the plan and a note to the user.
-4. **Theory check** — name the reference implementation each touched tier follows. None exists → the work sets a new pattern: an Accepted ADR (or design doc naming the domain's nouns) must exist first — STOP and suggest `/adr`; agents amplify the theory they're given, and without one they produce N locally reasonable shapes for the same work.
+4. **Theory check** — name the reference implementation each touched tier follows. None exists → the work sets a new pattern: an Accepted ADR (or design doc naming the domain's nouns) must exist first — STOP and suggest `/adr`; agents amplify the theory they're given, and without one they produce N locally reasonable shapes for the same work. Copy each reference into the plan's **Gold Standards**: a verbatim excerpt (at most 30 lines) pinned to a SHA, plus a test exemplar. Re-confirm any excerpt a story carries against the current code, because `file:line` rots. Code that violates current standards isn't gold: pick another or flag it. Gold standards named in the repo's `.claude/rules/` win.
 5. **Bugfix only:** reproduce consistently (trigger, inputs, observed vs expected); trace to the **root cause, not the symptom**, including every parallel implementation sharing the flaw; specify the reproducing test — path, name, tier/double (`testing.md` *Test Double Policy*), and the exact assertion that fails *because the bug exists* and passes after the fix.
 6. **Gap analysis** (*Gaps & Unknowns* in the plan template) — verify the assumptions against the code, write the questions the user didn't ask, name the failure modes, argue the case against the plan, and look outside the plan's own files: adjacent systems, `git log` on the area, similar features, past RCAs. A question whose answer changes the design goes to the user now, not at approval.
 
@@ -16,6 +16,7 @@
 
 - **1 story = 1 commit** — group tasks by story; each group leaves the tree green on its own. **3–12 tasks per story**, NEVER more; a story needing more is two stories (say so; `/rfp` owns the split). A bugfix is one group.
 - Each task: independently testable, one focused TDD cycle, no circular dependencies, reusing the repo's helpers and conventions. NEVER a task that doesn't trace to the request, acceptance criteria, or a *Fix on sight* item from Phase 1. Fold setup, config, and docs into the task whose deliverable needs them.
+- **Gold:** each task names the Gold Standards entries it follows and what varies, or `none (<reason>)`.
 - **Interfaces:** a task that others build on names what it produces (exact function/type names, signatures); a task that uses them names what it consumes.
 - **No placeholders** — each is a plan failure: "TBD", "add error handling", "handle edge cases", "similar to Task N", tests without their assertion, or a name no task defines.
 - **Score** the plan on the five axes of `~/.claude/templates/estimate.md` (a story's score is the starting point). **Spike** (13–15) → STOP: suggest splitting or a timeboxed spike. **Design first** with no Accepted ADR → STOP: `/adr` first. **Gate and soak** → the tasks that add the guards for the new invariants come before the code they guard.
@@ -33,13 +34,13 @@
 
 Header `Type: Feature | Bugfix`, `Status: PENDING`, `Approved: No`, `Iteration: 1`.
 
-- Always fill: Summary, **Goal Verification** (truths + artifacts; for a bugfix the contract's "must" clause is the first truth), Scope, **Gaps & Unknowns**, Progress Tracking (grouped by story), Implementation Tasks (`### Story N` groups, each with a conventional `Commit:` message), Testing Strategy, Risks, References.
+- Always fill: Summary, **Goal Verification** (truths + artifacts; for a bugfix the contract's "must" clause is the first truth), Scope, **Gaps & Unknowns**, **Gold Standards**, Progress Tracking (grouped by story), Implementation Tasks (`### Story N` groups, each with a conventional `Commit:` message), Testing Strategy, Risks, References.
 - **Bugfix block** (Bugfix only): Source, Behavior Contract, Root Cause, Reproducing Test spec.
 - **Proposed Repository Structure** — only when new files are created; match the real tree (`codegraph_files` / `ls`); read `~/.claude/templates/repo.md` only when a new top-level directory is needed. A layout that must DEVIATE → ask the user before finalizing.
 - `Trivial:` only within the template's limits; bugfix tasks never. Delete every section that doesn't apply.
 - Prose follows `~/.claude/templates/prose-style.md`.
 
-**Self-review before Phase 4** (inline, not an agent): every requirement / acceptance criterion maps to a task · every Cross-cutting `gap` maps to a task · every *Gaps & Unknowns* item names something specific and ends in a question, a task, or evidence · no placeholders · names and signatures agree across tasks · the edge cases and failure inputs a user would hit (empty, invalid, concurrent, first-run) each have a task whose test pins them. Fix gaps inline.
+**Self-review before Phase 4** (inline, not an agent): every requirement / acceptance criterion maps to a task · every Cross-cutting `gap` maps to a task · every *Gaps & Unknowns* item names something specific and ends in a question, a task, or evidence · every Gold Standards excerpt was read from the repo and every task has a `Gold:` line · no placeholders · names and signatures agree across tasks · the edge cases and failure inputs a user would hit (empty, invalid, concurrent, first-run) each have a task whose test pins them. Fix gaps inline.
 
 ## Phase 4 — Review the plan
 

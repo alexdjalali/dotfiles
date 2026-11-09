@@ -40,6 +40,8 @@ Use remaining budget to verify the **1-3 riskiest** assumptions against code. Fl
 
 **Gap analysis:** review as a Distinguished Engineer who owns the outcome. Don't only test what the plan says; look for what it never considered: the question the user should have asked, the system next to the change, the failure mode absent from *Gaps & Unknowns*, and whether this is the right problem to solve. A missing or generic *Gaps & Unknowns* section is a `must_fix`; each thing the plan never considered is a `gap_analysis` issue.
 
+**Gold standards:** spot-check at least one *Gold Standards* excerpt against its file. A missing section, a task with no `Gold:` line, an excerpt that doesn't match the code, or a reference that violates current standards is a `must_fix` in category `gold_standard`.
+
 ### 4. Write Output
 
 **Write JSON to `output_path` as your FINAL action.**
@@ -57,7 +59,7 @@ Output ONLY valid JSON (no markdown wrapper):
   "issues": [
     {
       "severity": "must_fix | should_fix | suggestion",
-      "category": "requirement_coverage | scope_alignment | task_completeness | definition_of_done | risk_quality | untested_assumption | hidden_dependency | gap_analysis",
+      "category": "requirement_coverage | scope_alignment | task_completeness | definition_of_done | risk_quality | untested_assumption | hidden_dependency | gap_analysis | gold_standard",
       "title": "Brief title",
       "description": "What's wrong and why it matters",
       "suggested_fix": "Specific fix"

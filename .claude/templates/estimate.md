@@ -17,7 +17,7 @@ Story points measured human effort, and human effort is no longer what varies. S
 | 11–12 | **Gate and soak** | the guards that pin the new invariants land before the code; every risky file reviewed by a human; a staging soak before the epic counts as stable |
 | 13–15 | **Spike** | human-led and timeboxed; split before building — never `/spec` it whole |
 
-Record it as `**Score**: D<n> N<n> O<n> B<n> C<n> = <total> · <Class>`.
+Record it in words, with each axis named: `<total> of 15, <Class>. Decisions <n>, Novelty <n>, Operational surface <n>, Blast radius <n>, Context cost <n>.`, then one sentence on what drives the score.
 
 **Fixed limits:** 3–12 tasks per story (a thirteenth task means two stories), one commit per story, one design doc and one PR per epic. Above the epic sits the **initiative**: a set of ADRs delivered as a sequence of epics.
 

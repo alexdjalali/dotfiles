@@ -24,6 +24,18 @@ shape from this section alone.>
 solution (external contracts, security, correctness invariants, physics). Explicit
 non-goals so scope is unambiguous.>
 
+## Theory and gold standards
+
+<The subsystem's nouns: the few kinds of work it does. Each kind has one shape and
+one reference module per tier.>
+
+| Kind of work | Tier | Reference (`path:start-end`, or `proposed: ADR-NNNN`) | Shape it fixes |
+| --- | --- | --- | --- |
+| <noun> | <tier> | <reference> | <what every instance must share> |
+
+<For each shape, a verbatim excerpt of at most 30 lines from the repo; a new shape
+is a sketch labeled `proposed`.>
+
 ## The design
 
 ```mermaid

@@ -42,6 +42,14 @@ graph TD
 
 > Diagram should show: (1) components affected by this decision, (2) new components introduced, (3) data flow between them, (4) external dependencies. Use C4 conventions: `graph TD` for structure, `sequenceDiagram` for interactions.
 
+## Reference Example
+
+The canonical code for this decision: a verbatim excerpt of the existing implementation (`path:start-end` @ `<short sha>`), or, for a new pattern, a sketch labeled `proposed` that the first story replaces with real code. At most 30 lines. `none (<reason>)` when the decision has no code shape.
+
+```<language>
+<excerpt>
+```
+
 ## Enforcement
 
 An unenforced decision is a suggestion. Name the check that makes a violation a build failure — an import guard generated from the layer model, a repository-model guard, a ratchet, a generator — or state that it needs human judgment and where it is reviewed.

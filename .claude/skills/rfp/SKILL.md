@@ -29,11 +29,11 @@ An epic with every story Complete but no `Stable` date is **in the tail**, not d
    - is implementable without an unfinished sibling — NEVER depend on one;
    - **fits one commit** — `/spec` makes exactly one commit per story, so each story leaves the tree green on its own and is small enough to review as a unit (≤ 12 plan tasks);
    - answers the **code-addition checklist** (`~/.claude/templates/code-addition-checklist.md`), so the *how* is scoped, not just the *what*;
-   - names its **reference implementation** (`file:line`) — or says it sets a new pattern, which needs an ADR and is reviewed as a pattern once;
+   - carries its **gold standard** in the story template's section: a verbatim excerpt (at most 30 lines, `path:start-end` @ short SHA) of each shape it builds plus a test exemplar, with what to copy and what to vary — read from the repo, NEVER written from memory. Code that violates current standards isn't gold. A new pattern says so, needs an ADR, and is reviewed as a pattern once;
    - is **scored** on the five axes of `~/.claude/templates/estimate.md` — never story points. A Spike-class story (13–15) is split or turned into a timeboxed spike, never written as one story; a Design-first story names the ADR it waits on;
    - **creates new files → includes a Proposed Repository Structure** (the story template's section): a tree of new/changed paths consistent with the current layout (inspect it first — `codegraph_files` / `ls`). NEVER finalize a story whose layout deviates from the current structure without the user's confirmation.
-3. Write each story to `<story>/<N>.<M>-<slug>.md` from `~/.claude/templates/story.md` — numbered from the epic (epic 5 → 5.1, 5.2, …), titled with a verb phrase ("Add user authentication", not "User authentication"). Prose follows `~/.claude/templates/prose-style.md`. When the layout says `frontmatter: true`, keep the template's OKF frontmatter block; otherwise drop it.
-4. Update the epic's stories table with relative links and status `Todo`, and its `**Class**` (the highest story class). Any story with Operational surface ≥ 2 → fill the epic's *Soak* checklist.
+3. Write each story to `<story>/<N>.<M>-<slug>.md` from `~/.claude/templates/story.md` — numbered from the epic (epic 5 → 5.1, 5.2, …), titled with a verb phrase ("Add user authentication", not "User authentication"). Prose follows `~/.claude/templates/prose-style.md`, *Written for a person first* above all: *What this delivers* must make sense to someone who hasn't read the code. When the layout says `frontmatter: true`, keep the template's OKF frontmatter block; otherwise drop it.
+4. Update the epic's stories table with relative links and status `Todo`, its `**Class**` (the highest story class), and its *Gold Standards* table (one row per tier). Any story with Operational surface ≥ 2 → fill the epic's *Soak* checklist.
 
 ## Next Step
 

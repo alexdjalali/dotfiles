@@ -12,14 +12,12 @@ generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
 
 # Story <N.M> — <Title>
 
-**Epic**: <N> — <Epic Title> **Status**: Todo
-**Score**: D<n> N<n> O<n> B<n> C<n> = <total> · <Delegate | Design first | Gate and soak | Spike> (`~/.claude/templates/estimate.md`)
-**Reference**: <`file:line` of the reference implementation this story follows — or "sets a new pattern: ADR-NNNN">
-**Docs**: <every doc this story refreshes — doc comments, test Why/What docs, README / docs pages / CLAUDE.md, ADRs> (`code-addition-checklist.md` 11)
-**Cross-cutting**: <layers this story reaches and the rollout order, or `none (<reason>)`> (`cross-cutting.md`)
-**Budget**: <~N hand-written code lines · deletes <what> · generated <what>> (`code-addition-checklist.md` 10)
+- **Epic**: <N> — <Epic Title>
+- **Status**: Todo
 
----
+## What this delivers
+
+<Two to four full sentences for someone who hasn't read the code. What is wrong or missing today, what is different when this ships, and who notices. Name the product behavior before the module.>
 
 ## Story
 
@@ -27,7 +25,7 @@ generated: {by: <human:id | tool/model>, at: <RFC 3339 datetime>}
 
 **Acceptance Criteria**:
 
-Precise enough for a machine to check — an agent won't ask what a vague criterion means, it will guess. Each one reads as a test case:
+Write each criterion as a complete sentence that a person can read and a test can check. Vague criteria get guessed at.
 
 - Given <state>, when <action>, then <observable result>
 - Given <state>, when <action>, then <observable result>
@@ -38,6 +36,32 @@ Precise enough for a machine to check — an agent won't ask what a vague criter
 - `test_<scenario_1>` — unit (mock `<boundary>`)
 - `test_<scenario_2>` — integration (real `<service>` via testcontainers, e.g. `postgres:16`)
 - `test_<scenario_3>`
+
+---
+
+## Planning details
+
+Write each field as a sentence.
+
+- **Size and risk**: <total> of 15, <Delegate | Design first | Gate and soak | Spike>. Decisions <n>, Novelty <n>, Operational surface <n>, Blast radius <n>, Context cost <n>. <One sentence on what drives the score.> (`~/.claude/templates/estimate.md`)
+- **Follows**: <the gold standard below, in words and `path:start-end` — or "This story sets a new pattern, decided in ADR-NNNN.">
+- **Docs to update**: <every doc this story refreshes: doc comments, test Why/What docs, README, docs pages, CLAUDE.md, ADRs> (`code-addition-checklist.md` 11)
+- **Reaches beyond the code**: <the infrastructure, config, or permissions this story touches and the order they roll out — or "Nothing, because <reason>."> (`cross-cutting.md`)
+- **Expected size**: <about N hand-written lines; what it deletes; what is generated> (`code-addition-checklist.md` 10)
+
+---
+
+## Gold Standard
+
+The code this story follows, copied verbatim from the repo and never written from memory. One entry per shape, plus a test exemplar. `none (<reason>)` only for a mechanical or config-only story. Code that violates current standards isn't gold. A new pattern is labeled `proposed: ADR-NNNN`.
+
+### <Shape> — `path:start-end` @ `<short sha>`
+
+```<language>
+<verbatim excerpt, at most 30 lines>
+```
+
+**Copy:** <what must match> · **Vary:** <what changes in this story>
 
 ---
 
@@ -80,6 +104,8 @@ src/
 
 ## Checklist
 
+The implementer's definition of done. A reader who only wants to know what this story does can stop above this line.
+
 ### Architecture — the One Idea (behind an interface, selected by config, injected explicitly, wrapped by decorators)
 
 - [ ] **Core interface** — the contract lives in the dependency-free core; consumers depend on it (accept interfaces, return structs)
@@ -89,6 +115,7 @@ src/
 - [ ] **Decorators** — timeout, retry (backoff + jitter, transient only), circuit breaker, tracing, metrics, logging wrap the interface at the composition root in the per-layer order; never inlined in a backend
 - [ ] **Coded errors** — every error wraps with a code (transient/permanent and transport status derive from it); sanitized at the transport edge
 - [ ] **Patterns over helpers** — Strategy / Adapter / Repository / Pipeline stage; DRY = push logic down into the shared library, inject product strategy up
+- [ ] **Follows the gold standard** — matches every *Copy* item; a departure is recorded with its reason
 
 ### Config
 

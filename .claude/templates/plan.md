@@ -63,11 +63,40 @@ The map later phases use instead of re-exploring:
 - **Operability:** [timeouts; logs/metrics/spans added; health/readiness/shutdown impact]
 - **Docs** (`code-addition-checklist.md` 11 — first priority): [every doc this plan refreshes, per story: doc comments, test Why/What docs, README / docs pages / CLAUDE.md / AGENTS.md, ADRs, generated references]
 - **Budget** (`code-addition-checklist.md` 10): [~N prod / ~M test lines hand-written · deletes: [what] · each new interface / config field / CLI step / test tier and why · generated: [what the generator emits instead]]
-- **Reference:** [`file:line` of the implementation this mirrors — or "sets a new pattern: ADR-NNNN"]
+- **Reference:** see *Gold Standards* below
 - **Guards:** [each new invariant or convention → the check that enforces it (lint rule, repo guard, ratchet, generator) and the task that adds it; or "needs judgment — review only"]
 - **Cross-cutting** (`cross-cutting.md`): [one line per layer: done `file:line` · not needed: reason · gap → Task N; or `none (<reason>)`]
 - **Rollout:** [order across IaC, data, code, traffic · manual steps with the exact command · rollback and what can't be undone; or "merge is the deploy"]
 - **Must agree:** [pairs that must stay in sync — a cloud call and its permission grant, a source and its generated output, a pinned version across environments — each generated from the other or guarded; or "none"]
+
+## Gold Standards
+
+Required: the code implementation copies, so nobody has to go find it. One entry per shape the plan builds, plus a test exemplar. A plan with no shape to follow says `none (<reason>)` — mechanical change, config only. A bugfix uses the nearest working code.
+
+- Excerpts are copied verbatim from the repo, never written from memory, and pinned to a SHA.
+- Code that violates current standards isn't gold: pick another reference or flag it.
+- A gold standard named in the repo's `.claude/rules/` wins.
+- A new pattern is labeled `proposed: ADR-NNNN`; its first task implements it and becomes the reference.
+
+### G1: [shape, e.g. "Repository with retry decorator"] — `path:start-end` @ `<short sha>`
+
+**Used by:** Task 1, Task 3 · **Why gold:** [what makes this the one to copy]
+
+```<language>
+[verbatim excerpt, at most 30 lines]
+```
+
+**Copy:** [what must match: structure, naming, error handling, wiring] · **Vary:** [what legitimately changes]
+
+### G2: [test exemplar] — `tests/path:start-end` @ `<short sha>`
+
+**Used by:** Task 1 · **Why gold:** [right tier and double, Why/What docs]
+
+```<language>
+[verbatim excerpt, at most 30 lines]
+```
+
+**Copy:** [fixtures, assertion style, doc block] · **Vary:** [scenario, inputs]
 
 ## Progress Tracking
 
@@ -88,7 +117,8 @@ The map later phases use instead of re-exploring:
 - **Objective:** [1–2 sentences] · **Depends on:** [none | Task N]
 - **Files:** create `path` · modify `path` · test `tests/path`
 - **Interfaces:** produces [exact names/signatures later tasks use] · consumes [from Task N]
-- **Notes:** [approach; pattern to follow `file:line`] — no placeholders ("TBD", "handle edge cases", "similar to Task N")
+- **Gold:** [G1 (vary: what differs in this task), G2 — or `none (<reason>)`]
+- **Notes:** [approach] — no placeholders ("TBD", "handle edge cases", "similar to Task N")
 - **Trivial:** [optional — only within `testing.md` limits, naming the covering test; never for bugfixes]
 - **Done when:** [observable criterion] · **Verify:** `<test-command> tests/path -q`
 

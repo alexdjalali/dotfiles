@@ -4,7 +4,7 @@ Answered by `/rfp` (per story) and `spec-plan` (per plan) before tasks are final
 
 **The One Idea** (the target shape for 3, 7, 8): everything is an implementation detail behind an interface, selected by configuration, injected explicitly, and wrapped by decorators.
 
-1. **Infra/deploy?** A dev-environment change and a staging/prod (IaC) change?
+1. **Cross-cutting / infra?** Walk `~/.claude/templates/cross-cutting.md`: every layer this change reaches (contracts, data, config, secrets, permissions, network, build, CI/CD, IaC, deploy, env parity, observability) is done, not needed with a reason, or a gap — and the rollout order is stated. A dev-environment change and a staging/prod (IaC) change?
 2. **CLI/tooling?** A change to the project's CLI or task runner? A step that only runs a stock tool (`golangci-lint`, `helm`, `buf`, `pytest`, `tilt`) is a `justfile`/`Makefile` recipe, not Go code with its own tests; a CLI command holds only logic no tool provides.
 3. **Philosophy / gold standard?** Consistent with the project's design philosophy, mirroring an existing reference implementation? A deviation is an ADR, not a silent exception.
 4. **Right test types, right double** (`testing.md` *Test Double Policy*)? Unit / integration / e2e, plus property/fuzz and chaos when warranted. An integration test **names its Docker image + testcontainers module** (e.g. `postgres:16` via `testcontainers-go` / `testcontainers[postgres]` / `@testcontainers/postgresql`).

@@ -8,6 +8,8 @@ The "how it works / how we'll build it" **between an ADR (the decision) and a pl
 4. **`arch` stops here** — write the diagrams with a brief narrative and the source ADR in the header.
 5. **Design only:** a **TL;DR** (end state in 3–6 steps), the **theory** — the subsystem's nouns (the few kinds of work it does, each with one shape and one reference module per tier), a **state/data model** when stateful, then **each stage** — what drives it, its seams and interfaces, what's config-selected (`Kind` + factory), built-in resiliency, what's deferred. Then **guardrails** (each invariant → the lint, guard, ratchet, or generator that enforces it; every pair that must agree → generated or guarded), **alternatives considered**, and **open questions** — each a decision to clear before `/spec`. Write the file.
 
+6. **Design only:** fill *Cross-cutting and rollout* from `~/.claude/templates/cross-cutting.md` — each layer reached, its owning stage, the deploy order, the version-skew window, and rollback.
+
 ## Rules
 
 - The DECISION belongs in an ADR — cross-reference it, don't duplicate it.

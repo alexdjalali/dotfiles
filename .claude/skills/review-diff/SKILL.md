@@ -30,7 +30,7 @@ Default base `main` (else `master`, else the default branch). Always three-dot. 
 
 ## 2 — Intent and surface
 
-Read the goal (PR description / commit messages / plan) so deliberate choices aren't flagged, and apply the lineage test. List every changed file and symbol — your coverage checklist. Read each changed file in full at the head ref — except generated files (a `Code generated … DO NOT EDIT.` header or the project's generated paths): review their source (proto, schema, template, `wire.go`) instead, and flag a generated file changed without its source as hand-edited (`must_fix`). Read the changed symbols' callers (`codegraph_callers` / `codegraph_impact`) — bugs live in unchanged callers too.
+Read the goal (PR description / commit messages / plan) so deliberate choices aren't flagged, and apply the lineage test. List every changed file and symbol — your coverage checklist. Read each changed file in full at the head ref — except generated files (a `Code generated … DO NOT EDIT.` header or the project's generated paths): review their source (proto, schema, template, `wire.go`) instead, and flag a generated file changed without its source as hand-edited (`must_fix`). Read the changed symbols' callers (`codegraph_callers` / `codegraph_impact`) — bugs live in unchanged callers too. If a trigger in `~/.claude/templates/cross-cutting.md` applies, walk its layers against the diff and the repo's `.claude/rules/cross-cutting.md` — **the defect is usually in a file the diff did not touch**, so search for what should have changed with it.
 
 ## 3 — Review each file once, against every lens
 
@@ -40,7 +40,8 @@ Read the goal (PR description / commit messages / plan) so deliberate choices ar
   - concurrency and shared state
   - resource lifecycle (leaks, cleanup skipped on early return)
   - contracts (changed signatures with stale callers, breaking persisted/wire formats, migration order)
-  - infrastructure (a new cloud/queue/storage call without its permission grant in the same change, a CI workflow missing a token permission, two files that must agree — source and generated output, a lock file, an image pinned per environment — neither generated nor guarded)
+  - cross-cutting (`cross-cutting.md`: a layer the change reaches but did not update — a new cloud/queue/storage call without its permission grant in the same change, a new deployable without its image repository or CI path, a CI workflow missing a token permission, a config field missing from an environment, a renamed metric with a stale dashboard or alert, a new query without tenant scoping; two files that must agree — source and generated output, a lock file, an image pinned per environment — neither generated nor guarded; a trigger with no Cross-cutting lines)
+  - rollout (code that needs infrastructure or a migration not yet live at deploy, old and new versions unable to coexist during the rollout, a manual step a merge will not perform left unstated, no rollback path, an irreversible step not called out)
 - **Quality:**
   - security (injection, authn/z, secrets, unvalidated boundary input, SSRF/path traversal)
   - performance (uncached hot paths, N+1, redundant work)

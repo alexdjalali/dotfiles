@@ -36,6 +36,8 @@ Compare plan vs user request: (1) all requirements addressed? (2) clarifications
 
 Use remaining budget to verify the **1-3 riskiest** assumptions against code. Flag anything unverified as `untested_assumption`.
 
+**Cross-cutting:** the plan's *Cross-cutting* and *Rollout* lines answer every layer in `~/.claude/templates/cross-cutting.md` that its change reaches. A layer the plan's own tasks imply but the plan omits, a `gap` with no task, or a missing deploy order is a `must_fix`.
+
 ### 4. Write Output
 
 **Write JSON to `output_path` as your FINAL action.**

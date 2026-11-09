@@ -47,6 +47,13 @@ Same types as conventional commits. Max 72 chars.
 
 - `path` — why
 
+## Rollout
+
+<!-- `cross-cutting.md`: layers reached, deploy order, manual steps with the exact command, rollback.
+     Or `Cross-cutting: none (<reason>)`. -->
+
+-
+
 ## Test Plan
 
 <!-- How was this tested? What should reviewers verify? -->

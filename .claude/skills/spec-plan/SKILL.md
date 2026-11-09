@@ -15,7 +15,7 @@ description: /spec planning, Feature or Bugfix — explore (or reproduce + root-
    - **Story** → its **acceptance criteria are the requirements**; its code-addition answers and Proposed Repository Structure seed the design.
    - **RCA** → its root cause (`file:line`) and fix sketch are the starting point — re-confirm both against the current code, don't re-derive.
 2. Ambiguous request → ask one clarifying question before continuing.
-3. With CodeGraph + Semble: every file the change touches, similar features and their patterns, and the call chains up- and downstream. Record what you found in the plan's **Context for Implementer** (patterns `file:line`, key files, gotchas) — it is the map later phases use instead of re-exploring.
+3. With CodeGraph + Semble: every file the change touches, similar features and their patterns, the call chains up- and downstream, and the blast radius (`codegraph_impact`, then Grep for name lists a graph can't see). Record what you found in the plan's **Context for Implementer** (patterns `file:line`, key files, gotchas) — it is the map later phases use instead of re-exploring.
 4. **Theory check** — name the reference implementation each touched tier follows. None exists → the work sets a new pattern: an Accepted ADR (or design doc naming the domain's nouns) must exist first — STOP and suggest `/adr`; agents amplify the theory they're given, and without one they produce N locally reasonable shapes for the same work.
 5. **Bugfix only:** reproduce consistently (trigger, inputs, observed vs expected); trace to the **root cause, not the symptom**, including every parallel implementation sharing the flaw; specify the reproducing test — path, name, tier/double (`testing.md` *Test Double Policy*), and the exact assertion that fails *because the bug exists* and passes after the fix.
 
@@ -31,6 +31,7 @@ description: /spec planning, Feature or Bugfix — explore (or reproduce + root-
 - **Shared library first** — a capability that isn't product-specific is planned in the shared library (KE) with the product consuming a release; NEVER built in the product "for now".
 - **Docs first** — fill the plan's *Docs* line: every doc each story refreshes (`code-addition-checklist.md` 11). Each task's Definition of Done includes its doc comments, test Why/What docs and written docs; a task with no doc work says why.
 - **Budget** — fill the plan's *Budget* line: estimated hand-written lines (prod / test), what the plan deletes, and why each new interface, config field, CLI step, and test tier is needed (`code-addition-checklist.md` 10). Pick the variant with fewer hand-maintained code lines within the shape — docs are never cut to meet it.
+- **Cross-cutting** — walk `~/.claude/templates/cross-cutting.md` and fill *Cross-cutting* and *Rollout*: every layer done, not needed with a reason, or a gap that is its own task in the same story. A repo's `.claude/rules/cross-cutting.md` supplies the real paths and may name a skill to run.
 - **Infrastructure** — for every new cloud call, queue, or CI step, the permission/grant it needs is in the same story. Two files that must agree (source ↔ generated, a lock file, a pinned image across environments) → generate one from the other, else a task adds the guard comparing them. Fill *Must agree*.
 - **Code-addition checklist** — answer every question in `~/.claude/templates/code-addition-checklist.md` before tasks are final (a repo's `.claude/rules/code-addition-checklist.md`, when present, supplies concrete answers and may add questions; answer its full list); a "yes" to infra/CLI/config/codegen is its own task, and the answers fill the plan's *Shape*, *Config*, *Codegen*, and *Operability* lines.
 - **Bugfix:** the Behavior Contract — Given <trigger>, the code **did** <bug>; it **must** <correct behavior> — plus every parallel implementation, fixed together or with a stated reason. The fix tasks come first; the **last task writes the reproducing test** (at the end, per `testing.md`) — `spec-verify` proves it with the revert-test.
@@ -45,7 +46,7 @@ Header `Type: Feature | Bugfix`, `Status: PENDING`, `Approved: No`, `Iteration: 
 - `Trivial:` only within the template's limits; bugfix tasks never. Delete every section that doesn't apply.
 - Prose follows `~/.claude/templates/prose-style.md`.
 
-**Self-review before Phase 4** (inline, not an agent): every requirement / acceptance criterion maps to a task · no placeholders · names and signatures agree across tasks · the edge cases and failure inputs a user would hit (empty, invalid, concurrent, first-run) each have a task whose test pins them. Fix gaps inline.
+**Self-review before Phase 4** (inline, not an agent): every requirement / acceptance criterion maps to a task · every Cross-cutting `gap` maps to a task · no placeholders · names and signatures agree across tasks · the edge cases and failure inputs a user would hit (empty, invalid, concurrent, first-run) each have a task whose test pins them. Fix gaps inline.
 
 ## Phase 4 — Review the plan
 

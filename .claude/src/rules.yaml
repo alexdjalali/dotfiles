@@ -36,6 +36,14 @@
   summary: "Docs first: every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`."
   targets: [claude-md, rules/documentation-sync, cursor/documentation-sync, cursor/global-standards]
 
+- id: cross-cutting
+  statement: "**Cross-cutting changes are traced, not assumed.** A change that reaches past its own layer (new deployable, external call, contract, schema, config field, permission, or an infrastructure or CI edit) walks `~/.claude/templates/cross-cutting.md` when planning, before committing, and in review: every layer done, not needed with a reason, or a gap, plus the rollout order. Silence is a gap."
+  category: quality
+  severity: must_fix
+  enforce: review
+  summary: "Cross-cutting changes walk every layer (contracts, data, config, secrets, permissions, network, build, CI/CD, IaC, deploy, env parity, observability) when planning, before committing, and in review, and state the rollout order; silence is a gap."
+  targets: [claude-md, cursor/global-standards]
+
 - id: no-force-push-main
   statement: Don't force-push main or master.
   category: git
@@ -158,7 +166,13 @@
   enforce: review
   targets: [review-lenses]
 - id: review-infra
-  statement: "infrastructure (a new cloud/queue/storage call without its permission grant in the same change, a CI workflow missing a token permission, two files that must agree — source and generated output, a lock file, an image pinned per environment — neither generated nor guarded)"
+  statement: "cross-cutting (`cross-cutting.md`: a layer the change reaches but did not update — a new cloud/queue/storage call without its permission grant in the same change, a new deployable without its image repository or CI path, a CI workflow missing a token permission, a config field missing from an environment, a renamed metric with a stale dashboard or alert, a new query without tenant scoping; two files that must agree — source and generated output, a lock file, an image pinned per environment — neither generated nor guarded; a trigger with no Cross-cutting lines)"
+  category: Correctness
+  severity: must_fix
+  enforce: review
+  targets: [review-lenses]
+- id: review-rollout
+  statement: "rollout (code that needs infrastructure or a migration not yet live at deploy, old and new versions unable to coexist during the rollout, a manual step a merge will not perform left unstated, no rollback path, an irreversible step not called out)"
   category: Correctness
   severity: must_fix
   enforce: review
@@ -244,7 +258,7 @@
   enforce: review
   targets: [audit-lenses]
 - id: audit-infra-drift
-  statement: "pairs that must agree but are neither generated nor guarded: a call and its IAM grant, generated clients across modules, lock files, versions or digests pinned per environment"
+  statement: "pairs that must agree but are neither generated nor guarded: a call and its IAM grant, a built image and its registry, a deployable and its CI path, a config field across environments, a metric and its dashboard or alert, generated clients across modules, lock files, versions or digests pinned per environment"
   category: infra drift
   severity: should_fix
   enforce: review

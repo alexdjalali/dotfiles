@@ -65,6 +65,7 @@ An unenforced decision is a suggestion. Name the check that makes a violation a 
 - Dependencies affected
 - Testing strategy
 - Rollback plan
+- Cross-cutting layers this decision reaches (`cross-cutting.md`)
 
 ## Quality Checklist
 

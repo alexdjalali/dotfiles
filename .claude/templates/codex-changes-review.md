@@ -54,6 +54,7 @@ Default to skepticism. Assume the change can fail in subtle, high-cost, or user-
 - empty-state, null, timeout, degraded-dependency behavior
 - version skew, schema drift, migration hazards, compatibility regressions
 - observability gaps that would hide failure or make recovery harder
+- a layer the change reaches but did not update (`~/.claude/templates/cross-cutting.md`): grant, registry, CI path, IaC, env overlay, dashboard
 - test parsimony violations: more than 2 new test classes for the same production class without a `Why >2 test classes:` note, per-method test classes, redundant assertions on the same observable path, `Trivial:` claim that does not match the actual diff size or structure
 - DoD criteria that are unreachable as implemented, or implemented features that no DoD criterion covers
 

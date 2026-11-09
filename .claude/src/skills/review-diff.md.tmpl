@@ -15,7 +15,7 @@ Default base `main` (else `master`, else the default branch). Always three-dot. 
 
 ## 2 — Intent and surface
 
-Read the goal (PR description / commit messages / plan) so deliberate choices aren't flagged, and apply the lineage test. List every changed file and symbol — your coverage checklist. Read each changed file in full at the head ref — except generated files (a `Code generated … DO NOT EDIT.` header or the project's generated paths): review their source (proto, schema, template, `wire.go`) instead, and flag a generated file changed without its source as hand-edited (`must_fix`). Read the changed symbols' callers (`codegraph_callers` / `codegraph_impact`) — bugs live in unchanged callers too.
+Read the goal (PR description / commit messages / plan) so deliberate choices aren't flagged, and apply the lineage test. List every changed file and symbol — your coverage checklist. Read each changed file in full at the head ref — except generated files (a `Code generated … DO NOT EDIT.` header or the project's generated paths): review their source (proto, schema, template, `wire.go`) instead, and flag a generated file changed without its source as hand-edited (`must_fix`). Read the changed symbols' callers (`codegraph_callers` / `codegraph_impact`) — bugs live in unchanged callers too. If a trigger in `~/.claude/templates/cross-cutting.md` applies, walk its layers against the diff and the repo's `.claude/rules/cross-cutting.md` — **the defect is usually in a file the diff did not touch**, so search for what should have changed with it.
 
 ## 3 — Review each file once, against every lens
 

@@ -55,6 +55,8 @@ The map later phases use instead of re-exploring:
 - **Budget** (`code-addition-checklist.md` 10): [~N prod / ~M test lines hand-written · deletes: [what] · each new interface / config field / CLI step / test tier and why · generated: [what the generator emits instead]]
 - **Reference:** [`file:line` of the implementation this mirrors — or "sets a new pattern: ADR-NNNN"]
 - **Guards:** [each new invariant or convention → the check that enforces it (lint rule, repo guard, ratchet, generator) and the task that adds it; or "needs judgment — review only"]
+- **Cross-cutting** (`cross-cutting.md`): [one line per layer: done `file:line` · not needed: reason · gap → Task N; or `none (<reason>)`]
+- **Rollout:** [order across IaC, data, code, traffic · manual steps with the exact command · rollback and what can't be undone; or "merge is the deploy"]
 - **Must agree:** [pairs that must stay in sync — a cloud call and its permission grant, a source and its generated output, a pinned version across environments — each generated from the other or guarded; or "none"]
 
 ## Progress Tracking

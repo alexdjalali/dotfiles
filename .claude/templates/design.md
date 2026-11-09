@@ -50,6 +50,11 @@ templates), the generator that owns each, where output lands, and the drift chec
 breaker / bulkhead, and the decorator order. The new error codes. The logs,
 metrics, and spans added; health/readiness; shutdown and drain. How it degrades.>
 
+### Cross-cutting and rollout
+
+<The layers from `cross-cutting.md` this design reaches, each with its owner stage. The
+deploy order, manual steps, version-skew window, and rollback.>
+
 ### Configuration
 
 <The config slice each layer owns, the `Kind`s and their stub default, new fields

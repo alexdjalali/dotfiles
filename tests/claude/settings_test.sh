@@ -157,18 +157,19 @@ test_lint_hook_counts_only_added_patterns() {
 }
 
 # Why this test is important:
-#   - The anchor only helps if compaction actually triggers it, and the 500K
+#   - The anchor only helps if compaction actually triggers it, and the 200K
 #     auto-compact window is what keeps long /spec sessions from growing to
-#     the 1M-window models' ~967K default before compacting.
+#     the 1M-window models' ~967K default before compacting, since every turn
+#     re-sends the whole context.
 # What it tests:
 #   - A SessionStart hook matching "compact" runs compact-anchor.sh, and
-#     autoCompactWindow is 500000 (the Compact instructions in CLAUDE.md assume 500K).
+#     autoCompactWindow is 200000 (the Compact instructions in CLAUDE.md assume 200K).
 test_compact_anchor_hook_wired() {
   local hooks
   hooks=$(jq -r '.hooks.SessionStart[] | select(.matcher != null and (.matcher | test("compact"))) | .hooks[].command' "$SETTINGS" |
     sed "s#\$HOME/dotfiles#$REPO_ROOT#g")
   assert_contains "$hooks" "$REPO_ROOT/.claude/scripts/compact-anchor.sh" "SessionStart compact hook"
-  assert_eq 500000 "$(jq -r '.autoCompactWindow' "$SETTINGS")" "autoCompactWindow"
+  assert_eq 200000 "$(jq -r '.autoCompactWindow' "$SETTINGS")" "autoCompactWindow"
 }
 
 # Why this test is important:

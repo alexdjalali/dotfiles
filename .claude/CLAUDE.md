@@ -7,13 +7,13 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 
 - **ADR first** for architectural changes and for any deviation from an established pattern.
 - **Plan before code** for non-trivial work: `/spec` → gitignored `docs/local/plans/` (`~/.claude/templates/plan.md`).
-- **Docs first — the top priority** (`documentation-sync.md`). Agents work from docs: read them before the code, refresh every doc a change touches in the same commit, and treat a stale doc as a bug. Docs are the first priority and the agent's map: every change refreshes every doc it touches, in the same commit — doc comments on every symbol, test docs (Why this test is important / What it tests), READMEs, docs/ pages, CLAUDE.md / AGENTS.md, ADRs and generated references. Read the docs before the code, write or update the doc before or with the code, never after. A commit with truly no doc impact says `Docs-Impact: none (<reason>)` in its message. The `guard-docs.sh` PreToolUse hook blocks a code commit that refreshes no docs and declares nothing.
+- **Docs first — the top priority** (`documentation-sync.md`). Agents work from docs: read them before the code, refresh every doc a change touches in the same commit, and treat a stale doc as a bug. Docs first: every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`.
 - **TDD mandatory** (`testing.md`). **Verify before done** (`verification.md`).
 - **Own what you find.** Fix a problem when it comes up — a failing test, a broken config, a gap in a module, a stale local file — instead of deferring it, routing around it, or attributing it elsewhere ("pre-existing", "the user's config", "a later story"). Only what you can't do yourself (missing credentials, a destructive or outward-facing step) goes back to the user, with the exact command.
 
 **`/spec` chain** (user-typed; phases hand off via `Skill()` in the same turn): `spec-plan` → **[plan approval — the only gate]** → `spec-implement` → `spec-verify`, looping verify → implement until `Status: VERIFIED`. **1 story = 1 commit:** each story commits on fast checks; verify reviews all the chain's commits once with `/review-diff`, fixes every finding (all tiers) in one commit that is checked against the findings — never re-reviewed — executes, runs the full gate once, last, then suggests `/github pr`.
 
-**Models:** skills pin `model:` / `effort:` in frontmatter (applies typed or chained), by role from `.claude/src/models.yaml` — review claude-fable-5-1 (xhigh) · planning and verification opus (xhigh) · diagnosis opus · execution claude-opus-4-8 (high) · mechanical steps sonnet (low).
+**Models:** skills pin `model:` / `effort:` in frontmatter (applies typed or chained), by role from `.claude/src/models.yaml` — review claude-fable-5-1 (xhigh) · planning and verification opus (xhigh) · diagnosis opus (high) · execution opus (high) · mechanical steps sonnet (low).
 
 ## Quality Gates
 
@@ -23,7 +23,7 @@ Structural change: `/adr` → `/design-doc` (or `/design-doc arch` for diagrams)
 - **The full gate never runs mid-cycle** — not per commit, not after `/github commit`, not to check a fix. A red gate → re-run only the failing step's own command until green, then the full gate once more.
 - **Docs-only commits inherit the gate.** A commit touching only `docs/**` and `*.md` (e.g. closing stories) keeps the previous SHA's green full gate — record it as `green @ <sha> (+docs <sha2>)`; no rerun.
 - Never commit on a red fast check; never push on a red or unrun full gate. Don't bypass hooks (`--no-verify`, `LEFTHOOK=0`, overriding `core.hooksPath`); a hook failure is a red fast check — fix, re-stage, retry.
-- Satisfy a check; don't silence it. An agent adds no inline suppression (`//nolint`, `#nosec`, `nosemgrep`, `# noqa`, `type: ignore`, `eslint-disable`, `@ts-ignore` / `@ts-expect-error`), no exemption / baseline / allowlist entry, no raised ratchet ceiling, and no skipped test to get green. A rule that is wrong is changed by an ADR the user approves; an exception is added by the user. The `guard-suppressions.sh` PreToolUse hook blocks the inline markers and growing exemption files.
+- Satisfy a check, never silence it — no new `nolint`/`noqa`/`type: ignore`/`eslint-disable`/`ts-ignore`, exemption or baseline entry, raised ratchet, or skipped test; a wrong rule is changed by an ADR the user approves.
 
 Tools: Python `uv` `ruff` `basedpyright` · Go `gofumpt` `goimports` `golangci-lint` · TS `pnpm` `eslint` `tsc` `vitest`. Language standards auto-load by path from `rules/standards-*.md`.
 
@@ -54,7 +54,7 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 
 ## Compact instructions
 
-When compacting, keep verbatim: the active plan path and its header (`Type`, `Status`, `Approved`, `Iteration`, `Base`, `Reviewed`, `Full gate`); the current phase and the task in progress; each story's commit SHA; open review findings by tier; user decisions and approvals; the last gate/test result with its exit code; files changed but not yet committed. Drop tool output bodies, file contents already committed, and exploration transcripts — the plan's *Context for Implementer* carries the map. Auto-compaction runs at ~95% of `autoCompactWindow` (500K); the `compact-anchor` hook re-injects the plan header afterwards.
+When compacting, keep verbatim: the active plan path and its header (`Type`, `Status`, `Approved`, `Iteration`, `Base`, `Reviewed`, `Full gate`); the current phase and the task in progress; each story's commit SHA; open review findings by tier; user decisions and approvals; the last gate/test result with its exit code; files changed but not yet committed. Drop tool output bodies, file contents already committed, and exploration transcripts — the plan's *Context for Implementer* carries the map. Auto-compaction runs at ~95% of `autoCompactWindow` (200K); the `compact-anchor` hook re-injects the plan header afterwards.
 
 ## Anti-Patterns
 

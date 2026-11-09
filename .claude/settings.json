@@ -216,7 +216,9 @@
     "slack-automation@awesome-claude-skills": false,
     "sentry-automation@awesome-claude-skills": false,
     "datadog-automation@awesome-claude-skills": false,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "context7@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "chrome-devtools-plugins": {
@@ -237,7 +239,7 @@
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
-  "autoCompactWindow": 500000,
+  "autoCompactWindow": 200000,
   "prefersReducedMotion": true,
   "autoDreamEnabled": false,
   "showThinkingSummaries": true,
@@ -248,5 +250,6 @@
   "autoCompactEnabled": true,
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "showThinkingHint": true
+  "showThinkingHint": true,
+  "skipWorkflowUsageWarning": true
 }

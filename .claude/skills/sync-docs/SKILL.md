@@ -12,8 +12,8 @@ A repo-wide sweep; the always-on per-change rule is `documentation-sync.md`. **I
 
 ## Steps
 
-1. **Inventory** `.claude/rules/`, `docs/`, `CLAUDE.md`, and READMEs (plus `~/.claude/rules/`, read-only).
-2. **Scan for drift** — for each documented pattern, constraint, path, tool, or command, verify it against the code: wrong path → update; removed tool or command → remove the reference; a changed symbol or behavior → update its **direct** references AND the **indirect** ones (docs describing callers or higher-level behavior that depend on it — `codegraph_callers` / `codegraph_impact`).
+1. **Inventory** `.claude/rules/`, `docs/`, `CLAUDE.md`, READMEs, and source doc comments, docstrings, and inline comments (plus `~/.claude/rules/`, read-only).
+2. **Scan for drift** — for each documented pattern, constraint, path, tool, or command, and each comment's claim about its code, verify it against the code: wrong path → update; removed tool or command → remove the reference; a changed symbol or behavior → update its **direct** references AND the **indirect** ones (docs describing callers or higher-level behavior that depend on it — `codegraph_callers` / `codegraph_impact`).
 3. **Fix stale entries** — minimal diffs: change only what is now wrong; NEVER rewrite accurate prose. New or replaced text follows `~/.claude/templates/prose-style.md`.
 4. **Document undocumented patterns** that exist in the code, in the relevant project `.claude/rules/` file — NEVER invent a constraint the code doesn't have, and NEVER document future plans.
 5. **Counts and lists** — "supports X, Y, Z" with Z removed → fix it; update `CLAUDE.md` when directory structure or key commands changed.

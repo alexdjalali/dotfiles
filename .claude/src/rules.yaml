@@ -178,7 +178,7 @@
   enforce: review
   targets: [review-lenses]
 - id: review-docs
-  statement: "docs — `must_fix` (`documentation-sync.md`): a changed symbol whose doc comment wasn't revised, a test without its Why/What doc, a README / docs page / CLAUDE.md / ADR / generated reference that now describes old behavior, a missing doc for a new symbol, flag, config field or endpoint, a `Docs-Impact: none` claim the diff contradicts"
+  statement: "docs — `must_fix` (`documentation-sync.md`): a changed symbol whose doc comment wasn't revised, an inline comment or docstring — in the diff or on a caller you read — that contradicts the code, a test without its Why/What doc, a README / docs page / CLAUDE.md / ADR / generated reference that now describes old behavior, a missing doc for a new symbol, flag, config field or endpoint, a `Docs-Impact: none` claim the diff contradicts"
   category: Quality
   severity: must_fix
   enforce: review
@@ -270,7 +270,7 @@
   enforce: review
   targets: [audit-lenses]
 - id: audit-docs
-  statement: "stale or missing docs: symbols without doc comments, tests without Why/What docs, READMEs / docs pages / CLAUDE.md / ADRs describing behavior the code no longer has, generated references out of date — each is a finding, ranked high"
+  statement: "stale or missing docs: symbols without doc comments, comments or docstrings that contradict the code, tests without Why/What docs, READMEs / docs pages / CLAUDE.md / ADRs describing behavior the code no longer has, generated references out of date — each is a finding, ranked high"
   category: docs
   severity: must_fix
   enforce: review

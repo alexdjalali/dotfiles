@@ -8,7 +8,8 @@ alwaysApply: true
 ### Changes
 
 - Ambiguous request → state assumptions and ask before coding.
-- **Lineage test:** every changed line traces to the request. The interface, factory, config, decorators, tests, and docs that put the requested behavior in the project's shape are the request, not scope creep; unrelated refactors are. Remove what your change orphaned; mention, don't delete, pre-existing dead code.
+- **Fix on sight:** watch for bugs and stale comments in everything you read. A stale comment or doc → fix it, no size limit. A small bug in code you're already in → fix it now with its reproducing test and record it in the commit body. A bug that needs a schema or API change or crosses layers → tell the user. Someone's uncommitted edits → report only.
+- **Lineage test:** every changed line traces to the request or a recorded fix-on-sight change. The interface, factory, config, decorators, tests, and docs that put the requested behavior in the project's shape are the request, not scope creep; unrelated refactors are. Remove what your change orphaned; mention, don't delete, pre-existing dead code.
 - **Least hand-maintained code:** generate > generalize > hand-write. Derive code from a contract with the project's generator; otherwise build the general shape (interface + `Kind` + config + DI + decorators) once and configure it. Shorter is better within that shape.
 - **Generated code:** {{summary "generated-code-not-hand-edited"}}
 - **Never invent values** (paths, env vars, keys, IDs, URLs, ports, versions, unverified APIs) — confirm by reading, running, or asking.

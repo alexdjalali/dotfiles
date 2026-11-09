@@ -74,7 +74,7 @@ Focus on issues hooks CANNOT catch. Review the diff for:
 - **Config:** env/config read outside the config layer or entrypoints, a new field with no fail-safe `base` default or no doc, a hard-coded value that belongs in config → **should_fix**
 - **Codegen:** a generated file (`Code generated … DO NOT EDIT.` header or the project's generated paths) changed without its source, or a source (proto, schema, `wire.go`, template) changed without regenerated output → **must_fix**; hand-written code a project generator already produces → **should_fix**
 - **Consistency & DRY:** change diverges from an established repo pattern / naming / error-handling idiom, or duplicates an existing helper instead of reusing it (cite the `file:line` it diverges from or duplicates) → **should_fix**
-- **Docs sync:** a code change whose symbol or behavior is referenced by an inline comment, docstring, README, or architecture doc — directly or indirectly (via a caller) — that was NOT updated in the same change → **should_fix**
+- **Docs sync:** a code change whose symbol or behavior is referenced by an inline comment, docstring, README, or architecture doc — directly or indirectly (via a caller) — that was NOT updated in the same change → **must_fix**
 
 ### 4. Goal Achievement
 

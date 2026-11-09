@@ -14,7 +14,7 @@ description: /spec implementation — execute an approved plan task by task with
 
 ## Per task — each unchecked task in order, including fix tasks a verify loop added
 
-1. **Read the task and its docs** — know exactly what its Definition of Done requires, and read the docs (doc comments, README, docs pages, CLAUDE.md) for the code it touches first.
+1. **Read the task and its docs** — know exactly what its Definition of Done requires, and read the docs (doc comments, README, docs pages, CLAUDE.md) for the code it touches first. As you read, watch for bugs and stale comments and handle them per *Deviations* below.
    **Docs first** — write or update the doc for the behavior (doc comments on the new or changed symbols, the test's *Why this test is important / What it tests* block, the docs page) before or with the code, never after.
 2. **RED** (features) — one failing test for the task's behavior, tier and double per `testing.md` *Test Double Policy*, reusing existing fixtures. It must fail for the right reason (behavior missing — not a syntax or import error). Only a task whose `Trivial:` claim holds skips RED — run its named covering command instead. **Bugfix tasks skip RED:** fix first; the plan's last task writes the reproducing test, which `spec-verify` revert-proves.
 3. **GREEN** — the least code that passes, in the shape the plan specifies (`code-addition-checklist.md`: interface + `Kind` factory + config + constructor injection at the composition root + decorators + coded errors). Match the reference implementation the plan names; reuse the shared library before writing new. Contract-derived code: edit the source and run the generator through the project CLI — never hand-edit generated output. Anything the plan didn't cover (infra, CLI, config, a new dependency) is a Deviation, not a silent add.
@@ -23,7 +23,7 @@ description: /spec implementation — execute an approved plan task by task with
 6. **Docs refreshed — the first check, never skipped** — every doc referencing the changed code, directly or indirectly, is current (`documentation-sync.md`): doc comments on every touched symbol, Why/What docs on every new or edited test, README / docs pages / CLAUDE.md / AGENTS.md / ADRs, regenerated references. The `guard-docs.sh` hook blocks a code commit that refreshes no docs; `Docs-Impact: none (<reason>)` only when that is true.
 7. **Tick it now** — `- [ ]` → `- [x]`, Progress Tracking Done +1, Left −1. NEVER batch-mark.
 
-**Red flags — stop and do the step:** "too simple to test" · "I'll write the test after" (features) · "it works, skip the test" (bugfixes) · "it passed immediately, fine" · "the plan didn't say, but I'll add it" · "I'll hard-code it for now" / "I'll inline the retry" · "I'll just edit the generated file" · "I'll batch the ticks" · "infra can follow in another PR". Each is how a verify loop-back starts.
+**Red flags — stop and do the step:** "too simple to test" · "I'll write the test after" (features) · "it works, skip the test" (bugfixes) · "it passed immediately, fine" · "the plan didn't say, but I'll add it" (a new capability; a recorded *Fix on sight* change is fine) · "I'll hard-code it for now" / "I'll inline the retry" · "I'll just edit the generated file" · "I'll batch the ticks" · "infra can follow in another PR". Each is how a verify loop-back starts.
 
 ## After each story's last task — commit
 
@@ -39,6 +39,7 @@ description: /spec implementation — execute an approved plan task by task with
 Record every one in the plan's `## Deviations` section.
 
 - **Bug / missing critical / blocking** (errors, missing validation, broken imports) → fix inline (+ tests if applicable) and document; don't expand scope.
+- **Found while reading** (*Fix on sight*, `development-practices.md`) → a stale comment or small bug is fixed in the current story's commit, the bug with its reproducing test, and recorded here; a bug needing a schema or API change or crossing layers becomes a task and a note to the user.
 - **Architectural surprise** (new table, library swap, breaking API change) → **STOP**, document it, and ask via `AskUserQuestion` before continuing.
 
 ## After the last task

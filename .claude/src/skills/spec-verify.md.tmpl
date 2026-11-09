@@ -10,7 +10,7 @@
 
 **Every tier is fixed by default** — `must_fix`, `should_fix`, and `suggestion` alike, all in one fix commit. Skip a finding only when it is wrong for this codebase (`code-review-reception.md` push-back), with the reason recorded next to it. Any finding open → loop back now (Phase 5 *Otherwise*); don't prove, execute, or gate code that is about to change.
 
-**Fix check (every return from a loop-back, instead of a review)** — inline, no agent: read `git diff <Reviewed>...HEAD`; every recorded finding is resolved or has a recorded skip; the fix touches nothing beyond them; spec-implement's fast checks were green. An unresolved finding, or a `must_fix`-grade defect the fix itself introduced → one more fix task. Don't hunt for new findings. `Iteration` past 3 → stop and ask the user; the loop is not converging.
+**Fix check (every return from a loop-back, instead of a review)** — inline, no agent: read `git diff <Reviewed>...HEAD`; every recorded finding is resolved or has a recorded skip; the fix touches nothing beyond them and any *Fix on sight* change recorded in the plan's `## Deviations`; spec-implement's fast checks were green. An unresolved finding, or a `must_fix`-grade defect the fix itself introduced → one more fix task. Don't hunt for new findings. `Iteration` past 3 → stop and ask the user; the loop is not converging.
 
 ## Phase 2 — Bugfix: revert-test proof
 

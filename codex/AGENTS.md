@@ -46,7 +46,8 @@ Files > 800 lines, functions > 50, nesting > 4 (generated files exempt) · hardc
 ### Changes
 
 - Ambiguous request → state assumptions and ask before coding.
-- **Lineage test:** every changed line traces to the request. The interface, factory, config, decorators, tests, and docs that put the requested behavior in the project's shape are the request, not scope creep; unrelated refactors are. Remove what your change orphaned; mention, don't delete, pre-existing dead code.
+- **Fix on sight:** watch for bugs and stale comments in everything you read. A stale comment or doc → fix it, no size limit. A small bug in code you're already in → fix it now with its reproducing test and record it in the commit body. A bug that needs a schema or API change or crosses layers → tell the user. Someone's uncommitted edits → report only.
+- **Lineage test:** every changed line traces to the request or a recorded fix-on-sight change. The interface, factory, config, decorators, tests, and docs that put the requested behavior in the project's shape are the request, not scope creep; unrelated refactors are. Remove what your change orphaned; mention, don't delete, pre-existing dead code.
 - **Least hand-maintained code:** generate > generalize > hand-write. Derive code from a contract with the project's generator; otherwise build the general shape (interface + `Kind` + config + DI + decorators) once and configure it. Shorter is better within that shape.
 - **Generated code:** never hand-edit — change the source and regenerate through the project's CLI; commit the output; CI fails on drift.
 - **Never invent values** (paths, env vars, keys, IDs, URLs, ports, versions, unverified APIs) — confirm by reading, running, or asking.
@@ -116,6 +117,7 @@ Read it all → restate → verify against the code → respond → implement on
 - **When:** public API / CLI flag / config / endpoint added, renamed, removed; documented behavior changed; breaking change (CHANGELOG, migration note); layout changed. Doc comments and test Why/What docs are docs and are revised with their code. A change with truly no doc impact says `Docs-Impact: none (<reason>)` in the commit.
 - **Where:** search docs, READMEs, agent instruction files, docstrings, and comments for the changed symbol, then one hop out for docs describing dependent behavior.
 - **How:** change only what's now wrong; fix counts and lists; one term everywhere; revise — never silently delete — a doc comment when editing its symbol. Report the doc files touched.
+- **Stale on sight:** a comment, docstring, or doc you read that contradicts the code gets fixed in the same change, even in code the change doesn't otherwise touch.
 - **Generated docs** (config/API/CLI references) are regenerated from their source, never hand-edited.
 - **Comments:** no issue-tracker IDs in comments or doc comments (context goes in the commit/PR); link only committed in-repo docs under `docs/`, never gitignored or scratch paths.
 

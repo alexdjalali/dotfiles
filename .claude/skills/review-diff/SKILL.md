@@ -30,7 +30,7 @@ Default base `main` (else `master`, else the default branch). Always three-dot. 
 
 ## 2 — Intent and surface
 
-Read the goal (PR description / commit messages / plan) so deliberate choices aren't flagged, and apply the lineage test. List every changed file and symbol — your coverage checklist. Read each changed file in full at the head ref — except generated files (a `Code generated … DO NOT EDIT.` header or the project's generated paths): review their source (proto, schema, template, `wire.go`) instead, and flag a generated file changed without its source as hand-edited (`must_fix`). Read the changed symbols' callers (`codegraph_callers` / `codegraph_impact`) — bugs live in unchanged callers too. If a trigger in `~/.claude/templates/cross-cutting.md` applies, walk its layers against the diff and the repo's `.claude/rules/cross-cutting.md` — **the defect is usually in a file the diff did not touch**, so search for what should have changed with it.
+Read the goal (PR description / commit messages / plan) so deliberate choices aren't flagged, and apply the lineage test (a recorded *Fix on sight* change passes it, `development-practices.md`). List every changed file and symbol — your coverage checklist. Read each changed file in full at the head ref — except generated files (a `Code generated … DO NOT EDIT.` header or the project's generated paths): review their source (proto, schema, template, `wire.go`) instead, and flag a generated file changed without its source as hand-edited (`must_fix`). Read the changed symbols' callers (`codegraph_callers` / `codegraph_impact`) — bugs live in unchanged callers too. If a trigger in `~/.claude/templates/cross-cutting.md` applies, walk its layers against the diff and the repo's `.claude/rules/cross-cutting.md` — **the defect is usually in a file the diff did not touch**, so search for what should have changed with it.
 
 ## 3 — Review each file once, against every lens
 
@@ -55,7 +55,7 @@ Read the goal (PR description / commit messages / plan) so deliberate choices ar
   - resilience (an external call without a timeout, retry/breaker/logging inlined instead of a decorator, retry on a permanent error, a doubled-up retry over an SDK that already retries)
   - errors (code-less errors, internal detail leaked past the transport edge)
   - observability (silent failure branches, context-free errors, a new path with no log/metric/span, missing trace correlation)
-  - docs — `must_fix` (`documentation-sync.md`): a changed symbol whose doc comment wasn't revised, a test without its Why/What doc, a README / docs page / CLAUDE.md / ADR / generated reference that now describes old behavior, a missing doc for a new symbol, flag, config field or endpoint, a `Docs-Impact: none` claim the diff contradicts
+  - docs — `must_fix` (`documentation-sync.md`): a changed symbol whose doc comment wasn't revised, an inline comment or docstring — in the diff or on a caller you read — that contradicts the code, a test without its Why/What doc, a README / docs page / CLAUDE.md / ADR / generated reference that now describes old behavior, a missing doc for a new symbol, flag, config field or endpoint, a `Docs-Impact: none` claim the diff contradicts
   - suppressions (a new `nolint`/`noqa`/`type: ignore`/`eslint-disable`/`ts-ignore`, exemption or baseline entry, raised ratchet ceiling, or skipped/xfailed test the user didn't approve — `must_fix`: revert it and fix the code)
   - bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library — name the lines that can go)
 - **Tests changed?** Read `~/.claude/rules/testing-authoring.md` first (it loads only when *editing* tests) and the project's `.claude/rules/testing-project.md` if present.
@@ -86,4 +86,4 @@ One list, most severe first, exact duplicates dropped; every finding has `file:l
 - [file] auth / permissions / migration / public contract / infrastructure / first instance of a new pattern
 ```
 
-Say so when a tier is empty. The caller decides what happens next: `spec-verify` turns `must_fix` / `should_fix` into one fix commit; a user who typed `/review-diff` is asked which findings to address.
+Say so when a tier is empty. The caller decides what happens next: `spec-verify` turns every tier into one fix commit; a user who typed `/review-diff` is asked which findings to address.

@@ -5,6 +5,7 @@
 
 - **Always refresh.** Every change refreshes every doc it touches, in the same commit — never a "docs to follow" TODO, never "I'll update the docs after". Write or update the doc before or with the code.
 - **Doc comments and test docs are docs.** Every symbol keeps its doc comment, every test keeps its *Why this test is important / What it tests* block, and editing either the code or the test means revising its doc.
+- **Fix stale comments on sight.** A comment, docstring, or doc you read that contradicts the code gets fixed in the same change, even in code the change doesn't otherwise touch — no size limit, no task, no asking. Only someone's uncommitted edits are report-only.
 
 - **When:** a public API / CLI flag / config field / endpoint added, renamed, or removed; documented behavior changed; a breaking change (CHANGELOG / migration note); layout changed (the project's `*-project.md` rule, README). Internal refactors still revise the doc comments they touch. A change with truly no doc impact says `Docs-Impact: none (<reason>)` in the commit message — a claim review checks.
 - **Where:** Grep the docs, READMEs, `CLAUDE.md` / `AGENTS.md`, docstrings, and comments for the changed symbol (direct), then one hop out via `codegraph_callers` / `codegraph_impact` for docs describing dependent behavior (indirect).

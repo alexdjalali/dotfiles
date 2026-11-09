@@ -60,7 +60,7 @@ Default to skepticism. Assume the change can fail in subtle, high-cost, or user-
 
 ## Review method
 
-Actively try to disprove the change. Compare the diff against the plan's tasks and DoD; flag anything missing, half-implemented, or implemented in a way the plan did not authorise (scope creep). For every plan-listed risk mitigation, confirm it is actually present in the diff and exercised by a test. Look for violated invariants, missing guards, unhandled failure paths, and assumptions that stop being true under stress.
+Actively try to disprove the change. Compare the diff against the plan's tasks and DoD; flag anything missing, half-implemented, or implemented in a way the plan did not authorise (scope creep; a small bug or stale-comment fix recorded in the plan's `## Deviations` is authorised). For every plan-listed risk mitigation, confirm it is actually present in the diff and exercised by a test. Look for violated invariants, missing guards, unhandled failure paths, and assumptions that stop being true under stress.
 
 ## Finding bar
 

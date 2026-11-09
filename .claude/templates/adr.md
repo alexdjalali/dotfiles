@@ -48,6 +48,14 @@ An unenforced decision is a suggestion. Name the check that makes a violation a 
 
 - <rule> → <check> (`/inspect` to add it)
 
+## Gaps & Unknowns
+
+Each item names a specific file, system, or decision and ends in a question, a follow-up, or `checked: <evidence>`.
+
+- **Assumptions:** <assumption → how verified>
+- **Questions nobody asked:** <question — how the answer changes the decision>
+- **Case against this decision:** <the strongest argument, and the answer to it>
+
 ## Consequences
 
 ### Positive

@@ -33,6 +33,16 @@ Full gate: [spec-verify: `green @ <sha>`]
 
 **In:** [what changes] · **Out:** [explicit boundaries]
 
+## Gaps & Unknowns
+
+Required. Each item names a specific file, system, or decision and ends in a question for the user, `Task N`, or `checked: <evidence>`. A generic worry is a plan failure.
+
+- **Assumptions:** [assumption → `checked: <file:line or command>`, or `untested → Task N`]
+- **Questions the user didn't ask:** [question — how the answer changes the plan; ranked, the top 3 are shown at approval]
+- **Failure modes:** [what breaks on partial failure, concurrency, scale, rollout, or first run → `Task N` or `checked: <evidence>`]
+- **Case against this plan:** [the strongest argument that this is the wrong problem or approach, and the answer to it]
+- **Unknown unknowns:** [what was examined outside the plan's own files — adjacent systems, `git log` on the area, similar features, past RCAs — and what it turned up]
+
 ## Proposed Repository Structure (only if files are added)
 
 ```text

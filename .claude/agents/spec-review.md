@@ -38,6 +38,8 @@ Use remaining budget to verify the **1-3 riskiest** assumptions against code. Fl
 
 **Cross-cutting:** the plan's *Cross-cutting* and *Rollout* lines answer every layer in `~/.claude/templates/cross-cutting.md` that its change reaches. A layer the plan's own tasks imply but the plan omits, a `gap` with no task, or a missing deploy order is a `must_fix`.
 
+**Gap analysis:** review as a Distinguished Engineer who owns the outcome. Don't only test what the plan says; look for what it never considered: the question the user should have asked, the system next to the change, the failure mode absent from *Gaps & Unknowns*, and whether this is the right problem to solve. A missing or generic *Gaps & Unknowns* section is a `must_fix`; each thing the plan never considered is a `gap_analysis` issue.
+
 ### 4. Write Output
 
 **Write JSON to `output_path` as your FINAL action.**
@@ -55,7 +57,7 @@ Output ONLY valid JSON (no markdown wrapper):
   "issues": [
     {
       "severity": "must_fix | should_fix | suggestion",
-      "category": "requirement_coverage | scope_alignment | task_completeness | definition_of_done | risk_quality | untested_assumption | hidden_dependency",
+      "category": "requirement_coverage | scope_alignment | task_completeness | definition_of_done | risk_quality | untested_assumption | hidden_dependency | gap_analysis",
       "title": "Brief title",
       "description": "What's wrong and why it matters",
       "suggested_fix": "Specific fix"

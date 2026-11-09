@@ -29,6 +29,7 @@ Default to skepticism. Assume the plan can fail in subtle, high-cost, or user-vi
 - Failure modes that fail-OPEN (let bad inputs through) vs fail-CLOSED
 - Test parsimony violations or non-falsifiable Definition-of-Done criteria
 - Architectural drift from existing project patterns (compare against the reference files)
+- What the plan never considered: the question the user should have asked, adjacent systems, failure modes absent from *Gaps & Unknowns*, and whether this is the right problem to solve
 
 ## Review method
 

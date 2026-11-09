@@ -73,6 +73,16 @@ pending ─▶ processing ─▶ indexed / failed>
 | --- | --- |
 | <alt> | <trade-off> |
 
+## Gaps & Unknowns
+
+Each item names a specific file, system, or decision and ends in a question, a story, or `checked: <evidence>`.
+
+- **Assumptions:** <assumption → how verified>
+- **Questions nobody asked:** <question — how the answer changes the design>
+- **Failure modes:** <what breaks, and where the design handles it>
+- **Case against this design:** <the strongest argument, and the answer to it>
+- **Unknown unknowns:** <what was examined outside this subsystem, and what it turned up>
+
 ## Open questions
 
 - <unresolved decision that needs a ruling before/while building>

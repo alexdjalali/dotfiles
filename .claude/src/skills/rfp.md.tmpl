@@ -14,7 +14,7 @@ An epic with every story Complete but no `Stable` date is **in the tail**, not d
 
 ## Decompose an epic
 
-1. Read the epic (`<epic>/epic-NN-<slug>.md`, or `<epic>/epic-NN-<slug>/epic.md` where epics are directories) — create it from `~/.claude/templates/epic.md` first if missing.
+1. Read the epic (`<epic>/epic-NN-<slug>.md`, or `<epic>/epic-NN-<slug>/epic.md` where epics are directories) — create it from `~/.claude/templates/epic.md` first if missing. Fill its *Gaps & Unknowns* (*Gap analysis*, `CLAUDE.md`) before decomposing: a gap that needs work becomes a story, and a question that changes the epic goes to the user first.
 2. Break it into **3–10 stories**. Each story:
    - has acceptance criteria precise enough for a machine to check — Given / When / Then, each one a test case; at least one checkable at the unit level — NEVER a story testable only end-to-end, NEVER "users can manage X";
    - is implementable without an unfinished sibling — NEVER depend on one;

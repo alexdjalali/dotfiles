@@ -41,6 +41,15 @@ graph TD
 
 - <Other epics or external requirements>
 
+## Gaps & Unknowns
+
+Each item names a specific file, system, or decision and ends in a question, a story, or `checked: <evidence>`.
+
+- **Assumptions:** <assumption → how verified>
+- **Questions nobody asked:** <question — how the answer changes the epic>
+- **Missing work:** <what no story covers yet → story N.M, or why it is out>
+- **Case against this epic:** <the strongest argument, and the answer to it>
+
 ## Soak (Gate-and-soak epics, or any story with Operational surface ≥ 2)
 
 - [ ] Every new cloud call has its permission/grant deployed (IAM, CI token, trust policy)

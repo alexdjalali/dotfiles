@@ -13,7 +13,7 @@ argument-hint: '[<decision title> | accept|reject|supersede <NNNN> [by <MMMM>]]'
 
 1. List `<adr>/`; the next number is the highest + 1, 4 digits zero-padded (`0001`, `0002`, …).
 2. Create `<adr>/NNNN-<kebab-slug>.md` from the template, heading `ADR-NNNN: <Title>`. When the layout says `frontmatter: true`, keep the template's OKF frontmatter block; otherwise drop it.
-3. Fill in context, a concrete decision statement, rationale, consequences, the alternatives table (rejected options and their trade-offs), **Enforcement** — the check that will make a violation a build failure, or why it needs judgment — and, in Implementation Notes, the layers in `~/.claude/templates/cross-cutting.md` the decision reaches. `Status: Proposed` — always, for a new ADR.
+3. Fill in context, a concrete decision statement, rationale, consequences, the alternatives table (rejected options and their trade-offs), **Enforcement** — the check that will make a violation a build failure, or why it needs judgment — and, in Implementation Notes, the layers in `~/.claude/templates/cross-cutting.md` the decision reaches, plus **Gaps & Unknowns** (*Gap analysis*, `CLAUDE.md`). `Status: Proposed` — always, for a new ADR.
 4. Cross-reference related or superseded ADRs.
 
 ## Transition

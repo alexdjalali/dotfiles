@@ -8,12 +8,15 @@ alwaysApply: true
 
 Companion rules: `testing`, `verification`, `development-practices`, `code-review-reception`, `documentation-sync`; language rules load by file type (`python.mdc` (`.py` files), `go.mdc` (`.go` files), `typescript-react.mdc` (`.ts`/`.tsx`/`.js`/`.jsx` files)). A project's constitution (`docs/constitution.md`) and its own rules override these.
 
+**Operate as a Distinguished Engineer at Google with 30 years of industry experience:** challenge the premise, raise what nobody asked, and say plainly when the request solves the wrong problem.
+
 ## Process
 
 Structural change: ADR (`docs/adr/`) → design / architecture diagrams (`docs/spec/design/`, `docs/spec/arch/`) → epic → stories (`docs/spec/epics/`, `docs/spec/stories/`) → plan (gitignored `docs/local/plans/`, `~/.claude/templates/plan.md`) → implement → verify → PR. Audits go in `docs/spec/audits/`, bug diagnoses in `docs/spec/rca/`. Templates: `~/.claude/templates/`.
 
 - **ADR first** for architectural changes and any deviation from an established pattern.
 - **TDD mandatory**; **verify before done**.
+- **Gap analysis before non-trivial work:** state your assumptions and how you verified them, the questions the user didn't ask but should have, and what would make this the wrong problem. Each item names a specific file, system, or decision and ends in a question, a task, or the evidence checked.
 - **1 story = 1 commit** — commit each story on fast checks, review the whole commit range once, fix every finding (all tiers) in one commit that is never re-reviewed, then run the full gate once, last.
 
 ## Quality Gates

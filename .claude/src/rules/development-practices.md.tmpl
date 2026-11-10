@@ -28,5 +28,6 @@ Read freely (`status`, `diff`, `log`, `show`, `branch`). **Writes** (`add`, `com
 
 - **Never** `git checkout --` / discard unstaged work — explain and let the user run it. Never `git add -f`. Never selectively unstage. {{rule "no-force-push-main"}}
 - **Never auto-branch** — work on the checked-out branch; create or switch only when asked in *this* request (a naming convention isn't a request). New branches push with `-u`.
+- **Worktrees sit beside the repo, never inside it:** `git worktree add ../<repo>-<short-name> -b <type>/<short-description>` (e.g. `~/TechAI/my-repo-archetype-codegen`). Don't use the built-in `EnterWorktree` tool — it nests them under `<repo>/.claude/worktrees/`, hidden from the parent folder. Creating one is a branch, so *Never auto-branch* still applies: only when asked.
 - **`/spec` exception:** plan approval authorizes the chain's commits on the current branch — one per story, one review-fix commit per loop-back, and the final `docs(spec): close …` story-closure commit (`git add <files>` + `git commit`) — nothing else. Unrelated uncommitted changes → stop and ask first.
 - **Hooks:** {{rule "no-verify"}} Hooks that re-stage files (tidy, codegen) are fine; the extra files belong to the commit.

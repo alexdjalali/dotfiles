@@ -36,6 +36,14 @@
   summary: "Docs first: every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`."
   targets: [claude-md, rules/documentation-sync, cursor/documentation-sync, cursor/global-standards]
 
+- id: adopt-before-build
+  statement: "**Adopt before build.** Before writing a capability that isn't product-specific, look in this order: the standard library → a dependency already in the repo → the shared library (KE) → a stable, well-regarded third-party tool, open source preferred → a managed service. Write it only when none qualifies, and record each candidate rejected and why. A candidate qualifies on evidence checked at adoption, never from memory: a release in the last 12 months, a license compatible with the product (MIT / Apache-2.0 / BSD; anything copyleft goes to the user), real production adopters, no open critical advisory (OSV), and an OpenSSF Scorecard where one is published; GitHub stars alone prove nothing. Use it as shipped and pin it: an external boundary puts it behind the seam as one backend, and an in-process library stays a plain dependency with no wrapper. New infrastructure, or a library that shapes the architecture, is an ADR."
+  category: quality
+  severity: should_fix
+  enforce: review
+  summary: "Adopt before build: stdlib → existing dependency → shared library → stable, well-regarded third-party (open source preferred) → managed service; write it only when none qualifies, and record what was rejected and why. Check maintenance, license, adopters and advisories at adoption; stars alone prove nothing."
+  targets: [claude-md, cursor/global-standards]
+
 - id: cross-cutting
   statement: "**Cross-cutting changes are traced, not assumed.** A change that reaches past its own layer (new deployable, external call, contract, schema, config field, permission, or an infrastructure or CI edit) walks `~/.claude/templates/cross-cutting.md` when planning, before committing, and in review: every layer done, not needed with a reason, or a gap, plus the rollout order. Silence is a gap."
   category: quality
@@ -190,7 +198,7 @@
   enforce: review
   targets: [review-lenses]
 - id: review-bloat
-  statement: "bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library — name the lines that can go)"
+  statement: "bloat (`code-addition-checklist.md` *Budget*: an interface/`Kind`/factory/config field for an internal collaborator with one implementation, hand-written ceremony a generator could emit, a test re-asserting a lower tier's behavior or testing structure, a CLI step wrapping a stock tool, a generic capability built in the product instead of the shared library, a capability hand-built where a qualifying library or tool exists (*Adopt before build*) — name the lines that can go)"
   category: Quality
   severity: should_fix
   enforce: review
@@ -264,7 +272,7 @@
   enforce: review
   targets: [audit-lenses]
 - id: audit-bloat
-  statement: "measure, then name what can go: unreachable code (`deadcode -test=false`, `vulture`, `knip`), interfaces with one implementation that aren't an external boundary, test lines ÷ production lines and assertions per test line, config code + config tests vs features, a dev CLI wrapping stock tools, inline suppressions and exemption files"
+  statement: "measure, then name what can go: unreachable code (`deadcode -test=false`, `vulture`, `knip`), interfaces with one implementation that aren't an external boundary, test lines ÷ production lines and assertions per test line, config code + config tests vs features, a dev CLI wrapping stock tools, hand-built generic capabilities a maintained library or tool now covers (name it and the lines it deletes), inline suppressions and exemption files"
   category: bloat
   severity: should_fix
   enforce: review

@@ -32,6 +32,7 @@ Conventional commits `<type>(<scope>): <description>`; branches `<type>/<short-d
 
 **The One Idea:** everything is an implementation detail behind an interface, selected by configuration, injected explicitly, and wrapped by decorators. General by default.
 
+- Adopt before build: stdlib → existing dependency → shared library → stable, well-regarded third-party (open source preferred) → managed service; write it only when none qualifies, and record what was rejected and why. Check maintenance, license, adopters and advisories at adoption; stars alone prove nothing.
 - **Generate > generalize > hand-write.** Contract-derived code (proto, OpenAPI, schema, DI graph, mocks) comes from the project's generator via its CLI; output committed, never hand-edited, CI fails on drift. A repeated shape becomes a template.
 - Layers Foundation → Client → Service/Domain → Controller/API; **imports go downward only** — no lateral imports, shared libraries never import app code. DRY = push logic down, inject product strategy up.
 - **Swappable components:** contract in a dependency-free core; impl chosen by config through a factory (`Kind` + frozen `Config` + `*_from_config` / `NewFromConfig`) that returns the interface, defaults to a stub/noop, and fails loudly on an unknown kind.

@@ -258,7 +258,16 @@
     "codex@openai-codex": true,
     "context7@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
-    "terraform-skill@antonbabenko": true
+    "terraform-skill@antonbabenko": true,
+    "static-analysis@trailofbits": true,
+    "insecure-defaults@trailofbits": true,
+    "supply-chain-risk-auditor@trailofbits": true,
+    "sharp-edges@trailofbits": true,
+    "agentic-actions-auditor@trailofbits": true,
+    "differential-review@trailofbits": true,
+    "variant-analysis@trailofbits": true,
+    "property-based-testing@trailofbits": true,
+    "mutation-testing@trailofbits": true
   },
   "extraKnownMarketplaces": {
     "chrome-devtools-plugins": {
@@ -277,6 +286,12 @@
       "source": {
         "source": "github",
         "repo": "antonbabenko/agent-plugins"
+      }
+    },
+    "trailofbits": {
+      "source": {
+        "source": "github",
+        "repo": "trailofbits/skills"
       }
     }
   },

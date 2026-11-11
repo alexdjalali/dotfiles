@@ -117,6 +117,23 @@ hook nor reads a decision from it, so Gryph never delays or blocks a call.
 - Query the trail with `gryph logs`. A machine without Gryph on `PATH` shows a
   hook error on each call until `brew bundle` installs it.
 
+### Claude Code plugins
+
+`enabledPlugins` and `extraKnownMarketplaces` in `.claude/settings.json` are
+the plugin list. Add a plugin with `claude plugin install <name>@<marketplace>`
+(after `claude plugin marketplace add <owner/repo>` for a new marketplace),
+then copy its `enabledPlugins` entry and any new marketplace into the repo file.
+
+- The Trail of Bits security plugins (`trailofbits`, from
+  [trailofbits/skills](https://github.com/trailofbits/skills)) are
+  CC-BY-SA-4.0. Use them as installed plugins; never copy or adapt their
+  files into this repo, which would put those files under share-alike. Nine
+  are enabled: `static-analysis`, `insecure-defaults`,
+  `supply-chain-risk-auditor`, `sharp-edges`, `agentic-actions-auditor`,
+  `differential-review`, `variant-analysis`, `property-based-testing` and
+  `mutation-testing`. `fp-check`, `gh-cli` and `modern-python` stay off
+  because they add hooks.
+
 ## Tools
 
 The annotated [`Brewfile`](Brewfile) is the catalogue: `brew bundle` installs

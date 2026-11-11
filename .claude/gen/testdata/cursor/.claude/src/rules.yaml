@@ -1,7 +1,0 @@
-- id: no-verify
-  statement: "Don't bypass hooks (`--no-verify`)."
-  summary: "Never bypass hooks (`--no-verify`) — fix, re-stage, retry."
-  category: git
-  severity: must_fix
-  enforce: prose
-  targets: [cursor/alpha]

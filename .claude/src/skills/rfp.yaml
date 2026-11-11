@@ -1,5 +1,0 @@
-name: "rfp"
-description: "Decompose an epic into independently testable, scored stories (decisions, novelty, operational surface, blast radius, context cost — never story points) in the epic and story folders of the docs layout, or report per-epic progress to stable with `status`. Use when an epic needs breaking into implementable stories or estimating."
-role: "plan"
-effort: "high"
-argument_hint: "[status | <epic name or file>]"

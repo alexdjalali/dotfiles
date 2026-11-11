@@ -1,4 +1,0 @@
-name: "design-doc"
-description: "Write an implementable technical design (TL;DR, diagrams, state model, alternatives) in the design folder (docs/spec/design/ by default), or with `arch` just the architecture diagrams (context / container / component) in the arch folder. Use when a change is too large or subtle to go straight from an ADR to /spec, or to diagram how a system fits together."
-role: "diagnose"
-argument_hint: "[arch] <subsystem or feature | ADR>"

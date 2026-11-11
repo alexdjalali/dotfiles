@@ -1,8 +1,0 @@
-[
-  {"query": "reviews keep flagging fmt.Errorf without an error code in our Go services; make that a lint rule so it stops coming up", "should_trigger": true},
-  {"query": "for the third time someone ran git push --force to main. turn that review finding into a hook that blocks it", "should_trigger": true},
-  {"query": "the audit found env reads outside the config layer again in internal/api/handler.go:42 — promote that finding into an enforced check", "should_trigger": true},
-  {"query": "review my branch before I open the PR", "should_trigger": false},
-  {"query": "audit the payments package for coupling and dead code", "should_trigger": false},
-  {"query": "the CSV export drops the last row, fix it", "should_trigger": false}
-]

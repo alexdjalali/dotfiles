@@ -1,8 +1,0 @@
-[
-  {"query": "that took forever, the real problem was the gopls cache. capture this as a skill so next time we don't burn an hour on it", "should_trigger": true},
-  {"query": "save what we just figured out about the misleading testcontainers error as a reusable project skill", "should_trigger": true},
-  {"query": "turn the deploy workaround we found into a skill for this repo", "should_trigger": true},
-  {"query": "write a README section explaining how to run the tests", "should_trigger": false},
-  {"query": "write an ADR documenting why we chose Postgres", "should_trigger": false},
-  {"query": "what skills do I have installed?", "should_trigger": false}
-]

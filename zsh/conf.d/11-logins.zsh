@@ -6,7 +6,7 @@
 # ~/.zshrc.local, never in this public repo:
 #   WORK_SSO_SESSION    the [sso-session] name in ~/.aws/config
 #   WORK_AUTH0_TENANT   the Auth0 tenant domain to make the default
-#   GT_AWS_PROFILE    the `aws login` profile in ~/.aws/config
+#   GT_AWS_PROFILE      the `aws login` profile in ~/.aws/config
 #   WORK_CHROME_PROFILE the Chrome profile directory for AWS (default "Profile 1")
 #   WORK_AUTH0_CHROME_PROFILE the Chrome profile directory for Auth0
 

@@ -1,8 +1,0 @@
-[
-  {"query": "I keep thinking we need some kind of notification system for the app but I'm not sure what it should do. help me think it through", "should_trigger": true},
-  {"query": "let's brainstorm how we could cut our CI time, I don't know where to start", "should_trigger": true},
-  {"query": "we're torn between building our own feature-flag service and buying one. what should we build, if anything?", "should_trigger": true},
-  {"query": "add a --dry-run flag to the deploy script that prints the commands instead of running them", "should_trigger": false},
-  {"query": "write an ADR for moving from REST to gRPC between the billing and ledger services", "should_trigger": false},
-  {"query": "the CSV export drops the last row, fix it", "should_trigger": false}
-]

@@ -177,49 +177,39 @@ link_dotfiles() {
     # iTerm2 dynamic profiles (the Web browser profile; iTerm reloads the folder live)
     backup_and_link "$DOTFILES/iterm/DynamicProfiles/web.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/web.json"
 
-    # Gryph (log-only agent audit trail, ADR-0003) reads the macOS user config dir
-    backup_and_link "$DOTFILES/gryph/config.yaml" "$HOME/Library/Application Support/safedep/gryph/config.yml"
-
     # Ensure Raycast scripts are executable
     chmod +x "$DOTFILES/raycast/"*.sh 2>/dev/null || true
-
-    # Claude Code (individual files — ~/.claude/ also contains runtime data we don't track)
-    backup_and_link "$DOTFILES/.claude/CLAUDE.md"           "$HOME/.claude/CLAUDE.md"
-    backup_and_link "$DOTFILES/.claude/RTK.md"             "$HOME/.claude/RTK.md"
-    backup_and_link "$DOTFILES/.claude/settings.json"       "$HOME/.claude/settings.json"
-    # settings.local.json is machine-specific (not tracked in git) — scaffold if missing
-    if [ ! -f "$HOME/.claude/settings.local.json" ]; then
-        mkdir -p "$HOME/.claude"
-        printf '{\n  "permissions": {\n    "allow": []\n  }\n}\n' > "$HOME/.claude/settings.local.json"
-        ok "Scaffolded ~/.claude/settings.local.json — edit to add local permissions"
-    else
-        # shellcheck disable=SC2088  # display text, not a path
-        ok "~/.claude/settings.local.json already exists"
-    fi
-    backup_and_link "$DOTFILES/.claude/skills"               "$HOME/.claude/skills"
-    backup_and_link "$DOTFILES/.claude/templates"            "$HOME/.claude/templates"
-    backup_and_link "$DOTFILES/.claude/rules"                "$HOME/.claude/rules"
-    backup_and_link "$DOTFILES/.claude/agents"               "$HOME/.claude/agents"
-
-    # Cursor (global rules — ~/.cursor/ also holds runtime data and the skills Cursor manages itself)
-    backup_and_link "$DOTFILES/cursor/rules"                "$HOME/.cursor/rules"
-
-    # Kilocode (global rules)
-    backup_and_link "$DOTFILES/kilocode/rules"              "$HOME/.kilocode/rules"
-
-    remove_legacy_links
 }
 
-# Links older layouts made: skills used to live in ~/.claude/commands, the rules
-# in ~/.claude/standards, and Cursor now manages ~/.cursor/skills-cursor itself.
-remove_legacy_links() {
-    local link
-    for link in "$HOME/.claude/commands" "$HOME/.claude/standards" "$HOME/.cursor/skills-cursor"; do
-        if [ -L "$link" ]; then
-            rm "$link"
-            ok "Removed legacy link $link"
-        fi
-    done
+# ---------------------------------------------------------------------------
+# 6b. Agent config (Claude Code, Cursor, Kilocode, Gryph)
+# ---------------------------------------------------------------------------
+
+# The agent config lives in its own repo, which this public repo never names:
+# the untracked ~/.dotfiles.local sets AGENT_CONFIG_REPO (clone URL) and
+# AGENT_CONFIG_DIR (checkout path). Unset → warn and skip. Otherwise clone the
+# checkout if missing and run its install.sh, which links the agent config into
+# $HOME and renders ~/.claude/settings.json with this repo's overlay
+# (claude/settings.overlay.json: the iTerm2 status hooks) merged in. A failure
+# warns and the remaining steps still run.
+setup_agent_config() {
+    info "Setting up agent config..."
+    local AGENT_CONFIG_REPO="" AGENT_CONFIG_DIR=""
+    # shellcheck source=/dev/null  # untracked, per machine
+    [ -f "$HOME/.dotfiles.local" ] && . "$HOME/.dotfiles.local"
+    if [ -z "$AGENT_CONFIG_REPO" ] || [ -z "$AGENT_CONFIG_DIR" ]; then
+        warn "AGENT_CONFIG_REPO / AGENT_CONFIG_DIR not set in ~/.dotfiles.local — skipping agent config"
+        return 0
+    fi
+    if [ ! -d "$AGENT_CONFIG_DIR/.git" ]; then
+        git clone "$AGENT_CONFIG_REPO" "$AGENT_CONFIG_DIR" </dev/null ||
+            { warn "Cloning $AGENT_CONFIG_REPO failed — skipping agent config"; return 0; }
+    fi
+    if "$AGENT_CONFIG_DIR/install.sh" --overlay "$DOTFILES/claude/settings.overlay.json" </dev/null; then
+        ok "Agent config installed from $AGENT_CONFIG_DIR"
+    else
+        warn "$AGENT_CONFIG_DIR/install.sh failed — agent config not installed"
+    fi
 }
 
 # ---------------------------------------------------------------------------
@@ -455,16 +445,14 @@ print_next_steps() {
     echo "     For another profile, pick a Brewfile Nerd Font in"
     echo "     iTerm > Settings > Profiles > Text > Font."
     echo ""
-    echo "  7. CLAUDE CODE: Review ~/.claude/settings.local.json for"
-    echo "     machine-specific permissions. Runtime data (sessions,"
-    echo "     cache, history) stays in ~/.claude/ untracked."
+    echo "  7. AGENT CONFIG: Set AGENT_CONFIG_REPO (clone URL) and"
+    echo "     AGENT_CONFIG_DIR (checkout path) in ~/.dotfiles.local, then"
+    echo "     re-run './install.sh --update'. Its install.sh links the Claude"
+    echo "     Code, Cursor, Kilocode and Gryph config and renders"
+    echo "     ~/.claude/settings.json with claude/settings.overlay.json."
+    echo "     Machine-specific permissions go in ~/.claude/settings.local.json."
     echo ""
-    echo "  8. CURSOR: Global rules are symlinked to ~/.cursor/rules/."
-    echo "     Project rules go in each repo's .cursor/rules/ dir."
-    echo ""
-    echo "  9. KILOCODE: Global rules are symlinked to ~/.kilocode/rules/."
-    echo ""
-    echo " 10. Open a new shell to pick up all changes."
+    echo "  8. Open a new shell to pick up all changes."
     echo ""
     echo "  TIP: Run './install.sh --update' to re-sync symlinks without"
     echo "       reinstalling packages."
@@ -473,7 +461,7 @@ print_next_steps() {
 
 main() {
     if [[ "$DOTFILES" != "$HOME/dotfiles" ]]; then
-        warn "Running from $DOTFILES: .claude/settings.json hook paths and zsh's DOTFILES default assume ~/dotfiles"
+        warn "Running from $DOTFILES: zsh's DOTFILES default assumes ~/dotfiles"
     fi
     if [[ "${1:-}" == "--update" ]]; then
         info "Update mode: skipping install steps 1-5, jumping to symlinks..."
@@ -485,6 +473,7 @@ main() {
         install_oh_my_zsh
     fi
     link_dotfiles
+    setup_agent_config
     setup_bat_theme
     setup_iterm_integration
     create_directories

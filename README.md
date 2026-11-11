@@ -15,12 +15,8 @@ Personal dev environment for macOS. Catppuccin Mocha theme throughout.
 | `raycast/` | 28 Raycast script commands for dev workflows |
 | `neomutt/` | Neomutt for Gmail (password in the macOS Keychain) |
 | `Brewfile` | Homebrew packages, casks and fonts (annotated; commented entries are optional) |
-| `.claude/` | Claude Code config: CLAUDE.md, rules, skills, templates, agents, hook scripts, settings |
-| `cursor/` | Cursor global rules (a condensed mirror of the Claude rules) |
-| `kilocode/` | Kilocode global rules, generated from `cursor/rules/` |
-| `codex/` | Codex `AGENTS.md`, generated from the Cursor rule templates |
-| `gryph/` | Gryph config for the log-only agent audit trail (ADR-0003) |
-| `tests/`, `justfile` | `just test` and `just lint` for the scripts and config; `just eval [skill]` runs the skills' behavior evals (paid, not part of `just test`) |
+| `claude/` | `settings.overlay.json`: the iTerm2 status hooks merged into `~/.claude/settings.json` (see *Agent config*) |
+| `tests/`, `justfile` | `just test` and `just lint` for the scripts and config |
 
 ## Fresh machine install
 
@@ -43,7 +39,7 @@ cd ~/dotfiles
 3. Installs the Brewfile's packages, casks, and fonts (`brew bundle`)
 4. Sets Homebrew zsh as the default shell
 5. Installs Oh My Zsh, plugins (autosuggestions, syntax-highlighting, fzf-tab), and Powerlevel10k
-6. Creates symlinks (with automatic backup of existing files to `~/.dotfiles-backup/`) and removes links older versions made
+6. Creates symlinks (with automatic backup of existing files to `~/.dotfiles-backup/`), then installs the agent config from its own checkout (see *Agent config*)
 7. Installs the bat/delta Catppuccin Mocha syntax theme (skipped with a warning if bat is missing)
 8. Downloads iTerm2 shell integration
 9. Creates `~/.local/scripts`, `~/.local/docs`, `~/notes`, `~/.cache/neomutt`
@@ -56,11 +52,11 @@ cd ~/dotfiles
 
 `./install.sh --update` skips steps 1-5. The script is idempotent: it's safe to
 run multiple times. Steps that can fail without breaking the rest (the Brewfile,
-a missing bat or git-lfs, the Neovim bootstrap, the uv tools) print `[warn]`
+a missing bat or git-lfs, the agent config, the Neovim bootstrap, the uv tools) print `[warn]`
 instead of `[ok]`; any other failure (a download, a clone) stops the script. The
 repo can live anywhere (the script and `.zshrc` find it from their own
-location), but the hook paths in `.claude/settings.json` assume `~/dotfiles`,
-so the script warns elsewhere.
+location), but zsh's `DOTFILES` default assumes `~/dotfiles`, so the script
+warns elsewhere.
 
 ### Symlinks created
 
@@ -73,66 +69,29 @@ so the script warns elsewhere.
 ~/.neomuttrc             -> ~/dotfiles/neomutt/.neomuttrc
 ~/.neomutt               -> ~/dotfiles/neomutt/.neomutt
 ~/.local/scripts/raycast -> ~/dotfiles/raycast
-~/.claude/CLAUDE.md      -> ~/dotfiles/.claude/CLAUDE.md
-~/.claude/RTK.md         -> ~/dotfiles/.claude/RTK.md
-~/.claude/settings.json  -> ~/dotfiles/.claude/settings.json
-~/.claude/skills         -> ~/dotfiles/.claude/skills
-~/.claude/templates      -> ~/dotfiles/.claude/templates
-~/.claude/rules          -> ~/dotfiles/.claude/rules
-~/.claude/agents         -> ~/dotfiles/.claude/agents
-~/.cursor/rules          -> ~/dotfiles/cursor/rules
-~/.kilocode/rules        -> ~/dotfiles/kilocode/rules
 ~/.latexmkrc             -> ~/dotfiles/latex/.latexmkrc
 ~/Library/Application Support/iTerm2/DynamicProfiles/web.json -> ~/dotfiles/iterm/DynamicProfiles/web.json
-~/Library/Application Support/safedep/gryph/config.yml -> ~/dotfiles/gryph/config.yaml
 ```
 
 `~/.latexmkrc` is linked only when MacTeX is installed.
 
-A tool that writes `~/.claude/settings.json` itself (Claude Code's auto-mode
-setup adding `autoMode`, iTerm2 adding its `cc-status` hooks) replaces the
-symlink with a plain file, and the guard hooks then drift from the repo. Keep
-machine-specific keys like those out of the repo: re-merge the repo file into
-the installed one rather than re-linking over them, and compare with
-`diff <(jq -S .hooks ~/.claude/settings.json) <(jq -S .hooks .claude/settings.json)`.
+### Agent config
 
-### Gryph, the agent audit trail
+The Claude Code, Cursor, Kilocode and Gryph config lives in a separate repo,
+not in this one. Point the installer at it in the untracked `~/.dotfiles.local`:
 
-[Gryph](https://github.com/safedep/gryph) (`brew "safedep/tap/gryph"`) records
-every Claude Code tool call in a local database, as a log-only observer
-(ADR-0003). `.claude/settings.json` runs it from three hook entries:
-`gryph _hook claude-code PostToolUse`, `… PostToolUseFailure` and
-`… Notification`. Each runs `async`: Claude Code neither waits for an async
-hook nor reads a decision from it, so Gryph never delays or blocks a call.
-`onFailure: "continue"` is set as well, for the record. `tests/claude/settings_test.sh` pins that set.
+```bash
+AGENT_CONFIG_REPO="<clone URL>"
+AGENT_CONFIG_DIR="<checkout path>"
+```
 
-- Never run `gryph install`: it writes `~/.claude/settings.json`, which this
-  repo owns, and would duplicate the three entries.
-- The config is [`gryph/config.yaml`](gryph/config.yaml), which `install.sh`
-  links to `~/Library/Application Support/safedep/gryph/config.yml` (Gryph
-  reads only `config.yml`): `minimal`
-  logging (action, path, command line, result; no output previews), 90-day
-  retention, policy off. Edit that file, never `gryph config set`, which
-  rewrites the whole config through the link into the tracked file.
-- Query the trail with `gryph logs`. A machine without Gryph on `PATH` shows a
-  hook error on each call until `brew bundle` installs it.
-
-### Claude Code plugins
-
-`enabledPlugins` and `extraKnownMarketplaces` in `.claude/settings.json` are
-the plugin list. Add a plugin with `claude plugin install <name>@<marketplace>`
-(after `claude plugin marketplace add <owner/repo>` for a new marketplace),
-then copy its `enabledPlugins` entry and any new marketplace into the repo file.
-
-- The Trail of Bits security plugins (`trailofbits`, from
-  [trailofbits/skills](https://github.com/trailofbits/skills)) are
-  CC-BY-SA-4.0. Use them as installed plugins; never copy or adapt their
-  files into this repo, which would put those files under share-alike. Nine
-  are enabled: `static-analysis`, `insecure-defaults`,
-  `supply-chain-risk-auditor`, `sharp-edges`, `agentic-actions-auditor`,
-  `differential-review`, `variant-analysis`, `property-based-testing` and
-  `mutation-testing`. `fp-check`, `gh-cli` and `modern-python` stay off
-  because they add hooks.
+Step 6 clones `AGENT_CONFIG_REPO` into `AGENT_CONFIG_DIR` when the checkout is
+missing, then runs its `install.sh --overlay claude/settings.overlay.json`. That
+links the agent config into `$HOME` and renders `~/.claude/settings.json` with
+this repo's overlay, the iTerm2 `cc-status` hooks, merged in. With either value
+unset the step warns and skips; a failed clone or install warns and the rest of
+the install continues. That repo's README covers the rest: the render, its
+`--check` drift report, plugins and Gryph.
 
 ## Tools
 

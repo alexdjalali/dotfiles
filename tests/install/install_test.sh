@@ -107,26 +107,6 @@ test_missing_bat_does_not_abort() {
 }
 
 # Why this test is important:
-#   - Links from older layouts point at directories that no longer exist (or,
-#     for Cursor's skills, that Cursor now manages itself).
-# What it tests:
-#   - remove_legacy_links deletes the ~/.claude/commands, ~/.claude/standards and
-#     ~/.cursor/skills-cursor symlinks, and leaves a real directory alone.
-test_legacy_links_removed() {
-  load_install
-  mkdir -p "$HOME/.claude" "$HOME/.cursor" "$HOME/.cursor/rules-real"
-  ln -s "$T/gone" "$HOME/.claude/commands"
-  ln -s "$T/gone" "$HOME/.claude/standards"
-  ln -s "$T/gone" "$HOME/.cursor/skills-cursor"
-  remove_legacy_links >/dev/null
-  local link
-  for link in .claude/commands .claude/standards .cursor/skills-cursor; do
-    [[ -L "$HOME/$link" ]] && _fail "$link still linked"
-  done
-  [[ -d "$HOME/.cursor/rules-real" ]] || _fail "a real directory was removed"
-}
-
-# Why this test is important:
 #   - The uv tool list must match what the editor and `just lint` actually use;
 #     mypy has no consumer in the nvim config.
 # What it tests:
@@ -159,8 +139,8 @@ test_git_lfs_step_matches_tracked_config() {
 }
 
 # Why this test is important:
-#   - ~/.claude/rules, ~/.cursor/rules and ~/.kilocode/rules share a basename; a
-#     flat backup dir made the second move fail and stop the install half done.
+#   - Link targets can share a basename (~/.a/rules, ~/.b/rules); a flat
+#     backup dir made the second move fail and stop the install half done.
 # What it tests:
 #   - Two existing targets with the same name are both backed up, each under its
 #     path relative to HOME, and both get linked.
@@ -175,26 +155,80 @@ test_backup_keeps_same_named_targets_apart() {
   assert_eq "$T/src $T/src" "$(readlink "$HOME/.a/rules") $(readlink "$HOME/.b/rules")" "link targets"
 }
 
+# Writes ~/.dotfiles.local pointing at a checkout in $T/agent, and (with
+# "present") an install.sh there that records its argv and exits with $2.
+agent_config() {
+  printf 'AGENT_CONFIG_REPO=https://example.invalid/agent.git\nAGENT_CONFIG_DIR=%q\n' "$T/agent" > "$HOME/.dotfiles.local"
+  [[ ${1-} == present ]] || return 0
+  mkdir -p "$T/agent/.git"
+  printf '#!/usr/bin/env bash\nprintf "%%s\\n" "$*" >> %q\nexit %d\n' "$T/agent.calls" "${2:-0}" > "$T/agent/install.sh"
+  chmod +x "$T/agent/install.sh"
+}
+
 # Why this test is important:
-#   - Gryph reads its config from the macOS user config dir, not ~/.config, and
-#     only as config.yml: it renames a config.yaml to config.yml on load, so a
-#     config.yaml link would come back on every install run. A link anywhere
-#     else leaves Gryph on its defaults (standard logging), which records more
-#     than ADR-0003 allows.
+#   - This repo is public and never names the agent-config repo; a machine
+#     without ~/.dotfiles.local must still install everything else.
 # What it tests:
-#   - link_dotfiles links ~/Library/Application Support/safedep/gryph/config.yml
-#     to the tracked gryph/config.yaml, and creates no config.yaml beside it.
-#     It runs a copy of install.sh from $T, so link_dotfiles' chmod of the
-#     raycast scripts never touches the real checkout.
-test_link_dotfiles_links_gryph_config() {
-  mkdir -p "$T/dots"
-  cp "$REPO_ROOT/install.sh" "$T/dots/install.sh"
-  load_install "$T/dots/install.sh"
-  link_dotfiles >/dev/null
-  local dir="$HOME/Library/Application Support/safedep/gryph"
-  assert_eq "$T/dots/gryph/config.yaml" "$(readlink "$dir/config.yml")" "gryph config link"
-  [[ -e $dir/config.yaml || -L $dir/config.yaml ]] && _fail "config.yaml sibling exists"
-  return 0
+#   - With no ~/.dotfiles.local, setup_agent_config warns, clones nothing and
+#     returns 0.
+test_agent_config_skipped_without_local_settings() {
+  load_install
+  local out
+  out=$(setup_agent_config 2>&1) || _fail "setup_agent_config failed"
+  assert_contains "$out" "[warn]" "skip output"
+  assert_eq "" "$(mock_calls git)" "git calls"
+}
+
+# Why this test is important:
+#   - A fresh machine has no agent-config checkout; the installer must fetch it
+#     from the URL in ~/.dotfiles.local rather than fail on a missing path.
+# What it tests:
+#   - A missing checkout is cloned from AGENT_CONFIG_REPO into AGENT_CONFIG_DIR.
+test_agent_config_cloned_when_missing() {
+  load_install
+  agent_config
+  setup_agent_config >/dev/null 2>&1
+  assert_eq "clone https://example.invalid/agent.git $T/agent" "$(mock_calls git)" "git calls"
+}
+
+# Why this test is important:
+#   - The iTerm status hooks live here, not in the agent-config repo; without
+#     the overlay the rendered ~/.claude/settings.json loses them.
+# What it tests:
+#   - An existing checkout is not re-cloned, and its install.sh runs with
+#     --overlay pointing at this repo's claude/settings.overlay.json.
+test_agent_config_installed_with_overlay() {
+  load_install
+  agent_config present
+  setup_agent_config >/dev/null 2>&1
+  assert_eq "" "$(mock_calls git)" "git calls"
+  assert_eq "--overlay $DOTFILES/claude/settings.overlay.json" "$(cat "$T/agent.calls")" "install.sh args"
+}
+
+# Why this test is important:
+#   - A failed agent-config install must be visible, but must not stop the
+#     shell, tmux and editor steps that follow it.
+# What it tests:
+#   - When the checkout's install.sh exits non-zero, setup_agent_config warns
+#     and returns 0.
+test_agent_config_failure_warns() {
+  load_install
+  agent_config present 1
+  local out
+  out=$(setup_agent_config 2>&1) || _fail "setup_agent_config failed"
+  assert_contains "$out" "[warn]" "failure output"
+}
+
+# Why this test is important:
+#   - The overlay is merged into ~/.claude/settings.json on every machine; a
+#     path under one user's home or a missing event breaks the iTerm status.
+# What it tests:
+#   - claude/settings.overlay.json is valid JSON whose every hook command is
+#     $HOME/.config/iterm2/cc-status, across the nine events iTerm reports.
+test_settings_overlay_hooks_use_home() {
+  local f="$REPO_ROOT/claude/settings.overlay.json"
+  assert_eq "9" "$(jq '.hooks | length' "$f")" "hook events"
+  assert_eq "[\"\$HOME/.config/iterm2/cc-status\"]" "$(jq -c '[.hooks[][].hooks[].command] | unique' "$f")" "hook commands"
 }
 
 run_test test_sourcing_runs_nothing
@@ -204,8 +238,11 @@ run_test test_backup_keeps_same_named_targets_apart
 run_test test_dotfiles_dir_derived_from_script_location
 run_test test_nvim_bootstrap_failure_is_reported
 run_test test_missing_bat_does_not_abort
-run_test test_legacy_links_removed
 run_test test_uv_tools_match_consumers
 run_test test_git_lfs_step_matches_tracked_config
-run_test test_link_dotfiles_links_gryph_config
+run_test test_agent_config_skipped_without_local_settings
+run_test test_agent_config_cloned_when_missing
+run_test test_agent_config_installed_with_overlay
+run_test test_agent_config_failure_warns
+run_test test_settings_overlay_hooks_use_home
 finish

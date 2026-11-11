@@ -24,32 +24,6 @@ test:
     rm -rf "$cfg"
     exit "$status"
 
-# Run the skills' behavior evals (`claude plugin eval`, one skill at a time;
-# each skill directory is the plugin under test). Costs money and minutes, so
-# it is not part of `just test`. `just eval fix` runs one skill; extra flags
-# pass through, e.g. `just eval fix --runs 1 --ablation none`.
-eval skill="*" *flags:
-    #!/usr/bin/env bash
-    set -uo pipefail
-    shopt -s nullglob
-    status=0
-    for d in .claude/skills/{{skill}}/evals; do
-        cases=("$d"/*/case.yaml)
-        [ ${#cases[@]} -gt 0 ] || continue
-        echo "== ${d%/evals}"
-        claude plugin eval "${d%/evals}" --scaffold --trust-plugin --no-publish \
-            --allow-tools Bash Edit Write {{flags}} || status=1
-    done
-    exit "$status"
-
-# Lint every shell script with shellcheck (following the sourced test libraries),
-# format-check, lint and type-check the Python hook scripts, vet the claude-gen
-# generator, and fail when a generated file differs from a fresh render.
+# Lint every shell script with shellcheck (following the sourced test libraries).
 lint:
-    shellcheck -x -P SCRIPTDIR install.sh raycast/*.sh .claude/scripts/*.sh tests/lib/*.sh tests/*/*_test.sh zsh/libexec/*/* .claude/skills/*/evals/*/fixture.sh
-    ruff format --check .claude/scripts
-    ruff check .claude/scripts
-    basedpyright .claude/scripts
-    out=$(gofumpt -l .claude/gen) && test -z "$out"
-    go -C .claude/gen vet ./...
-    go -C .claude/gen run . --root "$PWD" --check
+    shellcheck -x -P SCRIPTDIR install.sh raycast/*.sh tests/lib/*.sh tests/*/*_test.sh zsh/libexec/*/*

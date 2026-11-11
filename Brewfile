@@ -64,7 +64,7 @@ brew "entr"                # File watcher (re-run commands on change)
 # Languages & Package Managers
 # =============================================================================
 brew "go"
-brew "gofumpt"             # Stricter gofmt; `just lint` checks .claude/gen with it
+brew "gofumpt"             # Stricter gofmt
 brew "python@3.13"
 brew "uv"                  # Fast Python package manager
 brew "pipx"                # Install Python CLI tools in isolation
@@ -82,7 +82,7 @@ brew "oven-sh/bun/bun"     # Fast JS runtime + bundler
 brew "lazygit"             # Terminal UI for git
 brew "gh"                  # GitHub CLI
 brew "gitleaks"            # Secret scanning for git repos
-brew "safedep/tap/gryph"   # Agent audit trail: logs tool calls, log-only (ADR-0003)
+brew "safedep/tap/gryph"   # Agent audit trail: logs tool calls, log-only
 # brew "gitui"             # Alternative terminal UI for git
 # brew "git-absorb"        # Auto-fixup commits into the right place
 # brew "git-branchless"    # Stacking workflow for git

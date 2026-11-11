@@ -1,8 +1,0 @@
-[
-  {"query": "we keep seeing duplicate charges and orphaned invoices, I think it's one cause. diagnose it and write it up with file:line evidence, don't fix anything", "should_trigger": true},
-  {"query": "Priya is going to fix the session timeout bug next sprint; I need a root cause analysis doc she can work from", "should_trigger": true},
-  {"query": "do a root-cause writeup for last night's outage where the queue consumers all stalled", "should_trigger": true},
-  {"query": "the CSV export drops the last row, fix it", "should_trigger": false},
-  {"query": "audit the payments package for coupling and dead code", "should_trigger": false},
-  {"query": "write an ADR for moving from SQS to Kafka", "should_trigger": false}
-]

@@ -1,4 +1,0 @@
-name: "adr"
-description: "Write an Architecture Decision Record in the ADR folder (docs/adr/ by default), or accept / reject / supersede one. Use before an architectural change — new component or table, library swap, breaking API/schema change, or a pattern deviation."
-role: "diagnose"
-argument_hint: "[<decision title> | accept|reject|supersede <NNNN> [by <MMMM>]]"

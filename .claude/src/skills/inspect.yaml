@@ -1,4 +1,0 @@
-name: "inspect"
-description: "Promote a recurring review or audit finding into an enforced check — a Bash-guard row, an edit-guard path, a linter rule (golangci-lint forbidigo/depguard, ruff, semgrep), or generator validation — test first, then move the rule's enforce level rightward. Use when a review or audit finding recurs and should become a hook or lint rule instead of prose."
-role: "plan"
-argument_hint: "<finding | file:line>"

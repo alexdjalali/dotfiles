@@ -1,8 +1,0 @@
-[
-  {"query": "sweep the internal/storage package for duplication, dead code, and anything that drifts from our conventions", "should_trigger": true},
-  {"query": "assess how well the services follow our One Idea charter and write up the gaps", "should_trigger": true},
-  {"query": "check whether this repo's layout matches our standard repo structure", "should_trigger": true},
-  {"query": "review the diff on this branch", "should_trigger": false},
-  {"query": "the cache tests fail on main, fix them", "should_trigger": false},
-  {"query": "refactor the user service to use the repository pattern", "should_trigger": false}
-]

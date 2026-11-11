@@ -73,15 +73,18 @@ end)
 
 -- Why this test is important:
 --   - Skills get renamed and removed (/debug, /review); the pipeline page must
---     name only ones that exist.
+--     name only ones that exist. The skills live in the agent-config repo,
+--     which install.sh links to ~/.claude/skills.
 -- What it tests:
---   - Every /name on the spec pipeline page is a .claude/skills/<name>/ directory.
+--   - Every /name on the spec pipeline page is an installed
+--     ~/.claude/skills/<name>/ directory.
 spec.it("documented_skills_exist", function()
   local missing, seen = {}, 0
+  local skills = vim.fn.expand("~/.claude/skills/")
   for _, line in ipairs(page_lines("<leader>Ws")) do
     for name in (" " .. line):gmatch("%s/(%l[%w%-]*)") do
       seen = seen + 1
-      if vim.fn.isdirectory(root .. "/.claude/skills/" .. name) == 0 then table.insert(missing, "/" .. name) end
+      if vim.fn.isdirectory(skills .. name) == 0 then table.insert(missing, "/" .. name) end
     end
   end
   spec.eq(true, seen > 0, "the spec page names skills")

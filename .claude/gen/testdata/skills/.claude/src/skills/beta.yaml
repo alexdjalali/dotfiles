@@ -1,5 +1,0 @@
-name: beta
-description: Ship the work. User-typed only.
-role: mechanical
-effort: medium
-disable_model_invocation: true

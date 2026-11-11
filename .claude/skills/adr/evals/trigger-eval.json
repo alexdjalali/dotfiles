@@ -1,8 +1,0 @@
-[
-  {"query": "we're switching the queue from SQS to Kafka, record that decision properly before we start", "should_trigger": true},
-  {"query": "write an architecture decision record for adding a read replica", "should_trigger": true},
-  {"query": "accept ADR 0012", "should_trigger": true},
-  {"query": "write the detailed design for the new ingestion pipeline with sequence diagrams", "should_trigger": false},
-  {"query": "break the auth epic into stories", "should_trigger": false},
-  {"query": "fix the off-by-one in pagination", "should_trigger": false}
-]

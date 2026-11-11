@@ -1,6 +1,0 @@
-schema_version: "1.1"
-name: off-by-one-page
-description: An uncommitted change drops the last item of every page; /review-diff should report it as must_fix with file:line and change nothing.
-tags: [behavior]
-context:
-  scaffold_script: fixture.sh

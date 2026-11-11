@@ -11,9 +11,6 @@
 # and its stdin to $MOCK_DIR/NAME.stdin, prints STDOUT, and exits with EXIT.
 # The shim always reads stdin, so give the code under test explicit stdin
 # (`</dev/null`, a pipe, or a heredoc).
-#
-# `verdict CMD…` runs a PreToolUse guard on the payload on stdin and prints
-# "ask", "pass" or "exit <n>" (see its doc).
 
 # shellcheck disable=SC2034  # read by the test files that source this library
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -59,24 +56,6 @@ make_repo() {
   git -c init.defaultBranch=main init -q "$1"
   [[ ${2-} == dirty ]] && : > "$1/untracked.txt"
   return 0
-}
-
-# The verdict of the command "$@" (a PreToolUse guard, maybe behind env) on the payload
-# on stdin: "ask" (an ask decision on stdout, exit 0), "pass" (no output, exit
-# 0), "exit <n>" for any other status, or the unexpected output itself.
-verdict() {
-  local out rc
-  out=$("$@" 2>/dev/null)
-  rc=$?
-  if ((rc != 0)); then
-    echo "exit $rc"
-  elif [[ -z $out ]]; then
-    echo pass
-  elif [[ $(jq -r '.hookSpecificOutput.permissionDecision' <<<"$out" 2>/dev/null) == ask ]]; then
-    echo ask
-  else
-    echo "unexpected output: $out"
-  fi
 }
 
 # _in_sandbox <fn> <dir>: run test fn with $T=dir and its own $MOCK_DIR and

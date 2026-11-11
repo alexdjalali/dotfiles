@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Text checks that the global Neovim config (and the Claude hook scripts) carry
-# nothing specific to one project.
+# Text checks that the global Neovim config carries nothing specific to one
+# project.
 set -uo pipefail
 # shellcheck source=../lib/assert.sh
 source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
@@ -9,12 +9,12 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
 #   - Project names, credentials and another repo's CI commands in a global
 #     config mislead every other repo it runs in.
 # What it tests:
-#   - No file under nvim/ (except the lockfile) or .claude/scripts/ mentions
-#     hpc, changeme, bloodhound, ADR-0058, or the `search lint|typecheck|preflight` CLI.
+#   - No file under nvim/ (except the lockfile) mentions hpc, changeme,
+#     bloodhound, ADR-0058, or the `search lint|typecheck|preflight` CLI.
 test_no_project_specific_strings() {
   local hits
   hits=$(grep -rnE -i 'hpc|changeme|bloodhound|ADR-0058|search (lint|typecheck|preflight)' \
-    "$REPO_ROOT/nvim" "$REPO_ROOT/.claude/scripts" --exclude=lazy-lock.json | sed "s#$REPO_ROOT/##")
+    "$REPO_ROOT/nvim" --exclude=lazy-lock.json | sed "s#$REPO_ROOT/##")
   assert_eq "" "$hits" "project-specific strings"
 }
 

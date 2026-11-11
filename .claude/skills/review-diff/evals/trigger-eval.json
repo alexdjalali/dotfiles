@@ -1,8 +1,0 @@
-[
-  {"query": "review my changes before I commit", "should_trigger": true},
-  {"query": "can you look over PR 412 and tell me what's wrong with it", "should_trigger": true},
-  {"query": "code review feature/auth-refresh against main", "should_trigger": true},
-  {"query": "audit the whole codebase for structural problems", "should_trigger": false},
-  {"query": "explain what the diff in the last commit does", "should_trigger": false},
-  {"query": "a reviewer left comments on my PR, help me respond to them", "should_trigger": false}
-]

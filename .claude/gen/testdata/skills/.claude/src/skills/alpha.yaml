@@ -1,8 +1,0 @@
-name: alpha
-description: "Review a diff: correctness and quality. Use when asked to review changes."
-role: review
-context: fork
-agent: general-purpose
-background: false
-argument_hint: "[<paths> | <PR number>]"
-inject: ["git status --short", "git diff --stat HEAD"]

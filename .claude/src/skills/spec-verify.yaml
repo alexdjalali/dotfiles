@@ -1,3 +1,0 @@
-name: "spec-verify"
-description: "/spec verification, Feature or Bugfix — a dead-code/redundant-test prune and one review-diff over the chain's commits (every tier fixed in one commit, never re-reviewed), plan/contract audits, revert-test proof (bugfix), live execution, then the full gate once, last; marks VERIFIED or loops back to implement. Runs after spec-implement."
-role: "plan"

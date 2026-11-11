@@ -3,9 +3,10 @@
 // when the project opts in, beside a pinned `@nizos/probity@1.10.1` and the
 // PreToolUse entry for Write|Edit|NotebookEdit in its .claude/settings.json.
 // fastPath covers TS/JS, Python (with @ast-grep/lang-python), C#, Ruby and
-// PHP; Go and other languages take the validator path. Narrow `files` per
-// project. Regenerate from .claude/src/probity/ and the tdd-* rows of
-// .claude/src/rules.yaml; never edit the copy in place.
+// PHP; Go and other languages take the validator path. The marker on line 1
+// covers this template only: drop it from the copy, which then belongs to the
+// project, and narrow `files` there. To pick up a change to the tdd-* rows of
+// .claude/src/rules.yaml, regenerate here and copy the file again.
 import { defineConfig, enforceTdd } from '@nizos/probity'
 
 const exceptions: string[] = [

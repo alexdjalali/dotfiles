@@ -184,12 +184,17 @@ test_backup_keeps_same_named_targets_apart() {
 # What it tests:
 #   - link_dotfiles links ~/Library/Application Support/safedep/gryph/config.yml
 #     to the tracked gryph/config.yaml, and creates no config.yaml beside it.
+#     It runs a copy of install.sh from $T, so link_dotfiles' chmod of the
+#     raycast scripts never touches the real checkout.
 test_link_dotfiles_links_gryph_config() {
-  load_install
+  mkdir -p "$T/dots"
+  cp "$REPO_ROOT/install.sh" "$T/dots/install.sh"
+  load_install "$T/dots/install.sh"
   link_dotfiles >/dev/null
   local dir="$HOME/Library/Application Support/safedep/gryph"
-  assert_eq "$REPO_ROOT/gryph/config.yaml" "$(readlink "$dir/config.yml")" "gryph config link"
-  assert_eq "absent" "$([ -e "$dir/config.yaml" ] || [ -L "$dir/config.yaml" ] && echo present || echo absent)" "no config.yaml sibling"
+  assert_eq "$T/dots/gryph/config.yaml" "$(readlink "$dir/config.yml")" "gryph config link"
+  [[ -e $dir/config.yaml || -L $dir/config.yaml ]] && _fail "config.yaml sibling exists"
+  return 0
 }
 
 run_test test_sourcing_runs_nothing

@@ -18,6 +18,8 @@ Personal dev environment for macOS. Catppuccin Mocha theme throughout.
 | `.claude/` | Claude Code config: CLAUDE.md, rules, skills, templates, agents, hook scripts, settings |
 | `cursor/` | Cursor global rules (a condensed mirror of the Claude rules) |
 | `kilocode/` | Kilocode global rules, generated from `cursor/rules/` |
+| `codex/` | Codex `AGENTS.md`, generated from the Cursor rule templates |
+| `gryph/` | Gryph config for the log-only agent audit trail (ADR-0003) |
 | `tests/`, `justfile` | `just test` and `just lint` for the scripts and config; `just eval [skill]` runs the skills' behavior evals (paid, not part of `just test`) |
 
 ## Fresh machine install
@@ -100,8 +102,9 @@ the installed one rather than re-linking over them, and compare with
 every Claude Code tool call in a local database, as a log-only observer
 (ADR-0003). `.claude/settings.json` runs it from three hook entries:
 `gryph _hook claude-code PostToolUse`, `… PostToolUseFailure` and
-`… Notification`, each `async` with `onFailure: "continue"`, so it never
-delays or blocks a call. `tests/claude/settings_test.sh` pins that set.
+`… Notification`. Each runs `async`: Claude Code neither waits for an async
+hook nor reads a decision from it, so Gryph never delays or blocks a call.
+`onFailure: "continue"` is set as well, for the record. `tests/claude/settings_test.sh` pins that set.
 
 - Never run `gryph install`: it writes `~/.claude/settings.json`, which this
   repo owns, and would duplicate the three entries.

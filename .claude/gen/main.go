@@ -1,6 +1,7 @@
 // Command claude-gen renders the agent config (rules, skills, CLAUDE.md, the
-// guard table, the Cursor, Kilocode and Codex mirrors) from the typed model
-// in .claude/src, or with --check reports where the files on disk differ.
+// guard table, the Cursor, Kilocode and Codex mirrors, the Probity TDD config
+// template) from the typed model in .claude/src, or with --check reports where
+// the files on disk differ.
 //
 //	go -C .claude/gen run . --root "$PWD" [--check]
 package main

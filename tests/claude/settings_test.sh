@@ -312,8 +312,10 @@ test_web_scan_hook_covers_web_tools() {
 # What it tests:
 #   - The hook commands mentioning gryph are exactly one per observer event
 #     (PostToolUse, PostToolUseFailure, Notification), each in Gryph's own
-#     `gryph _hook claude-code <Event>` form; each runs async with onFailure
-#     "continue"; and no hook command mentions probity.
+#     `gryph _hook claude-code <Event>` form; each runs async (what keeps it
+#     from blocking: Claude Code neither waits for an async hook nor reads its
+#     decision) with onFailure "continue" set for the record; and no hook
+#     command mentions probity.
 test_observer_hooks_only_observe() {
   local want
   want=$(jq -cn '["Notification: gryph _hook claude-code Notification",

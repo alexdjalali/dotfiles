@@ -10,7 +10,7 @@ import (
 	"claudegen/target"
 )
 
-// catalog is a model with four rules across three targets and two roles.
+// catalog is a model with four rules across four targets and two roles.
 func catalog() *model.Model {
 	return &model.Model{
 		Models: map[string]model.ModelRole{

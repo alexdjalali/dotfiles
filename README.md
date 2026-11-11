@@ -81,6 +81,8 @@ so the script warns elsewhere.
 ~/.cursor/rules          -> ~/dotfiles/cursor/rules
 ~/.kilocode/rules        -> ~/dotfiles/kilocode/rules
 ~/.latexmkrc             -> ~/dotfiles/latex/.latexmkrc
+~/Library/Application Support/iTerm2/DynamicProfiles/web.json -> ~/dotfiles/iterm/DynamicProfiles/web.json
+~/Library/Application Support/safedep/gryph/config.yml -> ~/dotfiles/gryph/config.yaml
 ```
 
 `~/.latexmkrc` is linked only when MacTeX is installed.
@@ -91,6 +93,26 @@ symlink with a plain file, and the guard hooks then drift from the repo. Keep
 machine-specific keys like those out of the repo: re-merge the repo file into
 the installed one rather than re-linking over them, and compare with
 `diff <(jq -S .hooks ~/.claude/settings.json) <(jq -S .hooks .claude/settings.json)`.
+
+### Gryph, the agent audit trail
+
+[Gryph](https://github.com/safedep/gryph) (`brew "safedep/tap/gryph"`) records
+every Claude Code tool call in a local database, as a log-only observer
+(ADR-0003). `.claude/settings.json` runs it from three hook entries:
+`gryph _hook claude-code PostToolUse`, `… PostToolUseFailure` and
+`… Notification`, each `async` with `onFailure: "continue"`, so it never
+delays or blocks a call. `tests/claude/settings_test.sh` pins that set.
+
+- Never run `gryph install`: it writes `~/.claude/settings.json`, which this
+  repo owns, and would duplicate the three entries.
+- The config is [`gryph/config.yaml`](gryph/config.yaml), which `install.sh`
+  links to `~/Library/Application Support/safedep/gryph/config.yml` (Gryph
+  reads only `config.yml`): `minimal`
+  logging (action, path, command line, result; no output previews), 90-day
+  retention, policy off. Edit that file, never `gryph config set`, which
+  rewrites the whole config through the link into the tracked file.
+- Query the trail with `gryph logs`. A machine without Gryph on `PATH` shows a
+  hook error on each call until `brew bundle` installs it.
 
 ## Tools
 

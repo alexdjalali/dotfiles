@@ -7,6 +7,7 @@
 
 # Taps
 tap "oven-sh/bun"
+tap "safedep/tap"
 
 # =============================================================================
 # Core CLI
@@ -81,6 +82,7 @@ brew "oven-sh/bun/bun"     # Fast JS runtime + bundler
 brew "lazygit"             # Terminal UI for git
 brew "gh"                  # GitHub CLI
 brew "gitleaks"            # Secret scanning for git repos
+brew "safedep/tap/gryph"   # Agent audit trail: logs tool calls, log-only (ADR-0003)
 # brew "gitui"             # Alternative terminal UI for git
 # brew "git-absorb"        # Auto-fixup commits into the right place
 # brew "git-branchless"    # Stacking workflow for git

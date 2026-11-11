@@ -19,6 +19,7 @@ readme_section() {
 #     their home directory; it listed a removed link and missed seven.
 # What it tests:
 #   - The "Symlinks created" block holds exactly the backup_and_link pairs.
+#     Only one-line calls are parsed, so install.sh keeps each call on one line.
 test_symlink_table_matches_install() {
   local want got
   want=$(sed -nE 's/^ *backup_and_link "\$DOTFILES\/([^"]+)" +"\$HOME\/([^"]+)".*/~\/\2 -> ~\/dotfiles\/\1/p' "$INSTALL" | sort)

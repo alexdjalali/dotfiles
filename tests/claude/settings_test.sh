@@ -303,8 +303,34 @@ test_web_scan_hook_covers_web_tools() {
   done
 }
 
+# Why this test is important:
+#   - ADR-0003 splits hooks into classes: guards and steering hooks may refuse a
+#     call, observers only record it. A Gryph hook that could block (PreToolUse,
+#     onFailure "block", or a foreground run whose decision is read), a second
+#     copy left by `gryph install`, or a Probity (steering) hook in these user
+#     settings, which every project inherits, breaks that split.
+# What it tests:
+#   - The hook commands mentioning gryph are exactly one per observer event
+#     (PostToolUse, PostToolUseFailure, Notification), each in Gryph's own
+#     `gryph _hook claude-code <Event>` form; each runs async with onFailure
+#     "continue"; and no hook command mentions probity.
+test_observer_hooks_only_observe() {
+  local want
+  want=$(jq -cn '["Notification: gryph _hook claude-code Notification",
+    "PostToolUse: gryph _hook claude-code PostToolUse",
+    "PostToolUseFailure: gryph _hook claude-code PostToolUseFailure"]')
+  assert_eq "$want" "$(jq -c '[.hooks | to_entries[] | .key as $e | .value[].hooks[]
+    | select(.command | contains("gryph")) | "\($e): \(.command)"] | sort' "$SETTINGS")" \
+    "gryph hooks by event"
+  assert_eq "[]" "$(jq -c '[.hooks[][].hooks[] | select(.command | contains("gryph"))
+    | select(.async != true or .onFailure != "continue") | .command]' "$SETTINGS")" \
+    "gryph hooks not async with onFailure continue"
+  assert_not_contains "$(jq -r '.hooks[][].hooks[].command' "$SETTINGS")" "probity" "hook commands"
+}
+
 run_test test_lint_hook_counts_only_added_patterns
 run_test test_settings_registers_generated_guard
 run_test test_configured_generated_guard_asks
 run_test test_web_scan_hook_covers_web_tools
+run_test test_observer_hooks_only_observe
 finish

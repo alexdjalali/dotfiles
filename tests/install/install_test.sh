@@ -175,6 +175,23 @@ test_backup_keeps_same_named_targets_apart() {
   assert_eq "$T/src $T/src" "$(readlink "$HOME/.a/rules") $(readlink "$HOME/.b/rules")" "link targets"
 }
 
+# Why this test is important:
+#   - Gryph reads its config from the macOS user config dir, not ~/.config, and
+#     only as config.yml: it renames a config.yaml to config.yml on load, so a
+#     config.yaml link would come back on every install run. A link anywhere
+#     else leaves Gryph on its defaults (standard logging), which records more
+#     than ADR-0003 allows.
+# What it tests:
+#   - link_dotfiles links ~/Library/Application Support/safedep/gryph/config.yml
+#     to the tracked gryph/config.yaml, and creates no config.yaml beside it.
+test_link_dotfiles_links_gryph_config() {
+  load_install
+  link_dotfiles >/dev/null
+  local dir="$HOME/Library/Application Support/safedep/gryph"
+  assert_eq "$REPO_ROOT/gryph/config.yaml" "$(readlink "$dir/config.yml")" "gryph config link"
+  assert_eq "absent" "$([ -e "$dir/config.yaml" ] || [ -L "$dir/config.yaml" ] && echo present || echo absent)" "no config.yaml sibling"
+}
+
 run_test test_sourcing_runs_nothing
 run_test test_backup_and_link_is_idempotent
 run_test test_backup_and_link_backs_up_existing_file
@@ -185,4 +202,5 @@ run_test test_missing_bat_does_not_abort
 run_test test_legacy_links_removed
 run_test test_uv_tools_match_consumers
 run_test test_git_lfs_step_matches_tracked_config
+run_test test_link_dotfiles_links_gryph_config
 finish

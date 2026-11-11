@@ -175,8 +175,10 @@ link_dotfiles() {
     backup_and_link "$DOTFILES/raycast"             "$HOME/.local/scripts/raycast"
 
     # iTerm2 dynamic profiles (the Web browser profile; iTerm reloads the folder live)
-    backup_and_link "$DOTFILES/iterm/DynamicProfiles/web.json" \
-        "$HOME/Library/Application Support/iTerm2/DynamicProfiles/web.json"
+    backup_and_link "$DOTFILES/iterm/DynamicProfiles/web.json" "$HOME/Library/Application Support/iTerm2/DynamicProfiles/web.json"
+
+    # Gryph (log-only agent audit trail, ADR-0003) reads the macOS user config dir
+    backup_and_link "$DOTFILES/gryph/config.yaml" "$HOME/Library/Application Support/safedep/gryph/config.yml"
 
     # Ensure Raycast scripts are executable
     chmod +x "$DOTFILES/raycast/"*.sh 2>/dev/null || true

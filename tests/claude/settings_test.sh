@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # Tests for the hooks and env block in .claude/settings.json (symlinked to
 # ~/.claude/settings.json, so it configures every Claude Code session).
 set -uo pipefail
@@ -23,7 +22,7 @@ generated_guard_hooks() {
 }
 
 lint_hook() {
-  jq -r '.hooks.PostToolUse[] | select(.matcher == "Edit") | .hooks[].command' "$SETTINGS" |
+  jq -r '.hooks.PostToolUse[] | select(.matcher == "Edit|Write") | .hooks[].command' "$SETTINGS" |
     sed "s#\$HOME/dotfiles#$REPO_ROOT#g"
 }
 
@@ -41,31 +40,65 @@ test_settings_uses_guard_script() {
 }
 
 # Why this test is important:
-#   - Proves the wiring end to end: the exact command Claude Code runs must block.
+#   - Proves the wiring end to end: the exact command Claude Code runs must
+#     send the call to the user's prompt.
 # What it tests:
-#   - The configured guard command, fed a force-push-to-main hook payload, exits 2.
-test_configured_guard_blocks_force_push() {
-  local cmd rc
+#   - The configured guard command, fed a force-push-to-main hook payload,
+#     gets an "ask" decision.
+test_configured_guard_asks_on_force_push() {
+  local cmd
   cmd=$(bash_guard_hooks | grep guard-bash.sh)
-  jq -cn '{tool_input: {command: "git push -f origin main"}}' |
-    bash -c "$cmd" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status of the configured guard"
+  assert_eq ask "$(jq -cn '{tool_input: {command: "git push -f origin main"}}' | verdict bash -c "$cmd")" \
+    "verdict of the configured guard"
 }
 
 # Why this test is important:
-#   - Claude Code blocks only on exit 2. If the launcher is missing (moved, or
-#     settings.json synced without the scripts), bash exits 127 and every
-#     command would run unchecked.
+#   - A PreToolUse hook that crashes, cannot start (a moved script), times out
+#     or prints bad JSON is a non-blocking error by default: the call runs
+#     unchecked. onFailure "block" turns each of those into a refusal, and a
+#     timeout keeps a hung guard from stalling the session.
 # What it tests:
-#   - The configured guard command exits 2 when guard-bash.sh doesn't exist.
-test_configured_guard_fails_closed_without_launcher() {
-  local cmd rc
+#   - Every PreToolUse hook sets onFailure "block" and a timeout of at most
+#     60 s, and the configured guard-bash command fails (non-zero) when its
+#     script doesn't exist.
+test_guards_block_on_failure() {
+  local cmd
+  assert_eq "[]" "$(jq -c '[.hooks.PreToolUse[].hooks[] | select(.onFailure != "block") | .command]' "$SETTINGS")" \
+    "PreToolUse hooks without onFailure block"
+  assert_eq "[]" "$(jq -c '[.hooks.PreToolUse[].hooks[] | select((.timeout // 600) > 60) | .command]' "$SETTINGS")" \
+    "PreToolUse hooks without a short timeout"
   cmd=$(bash_guard_hooks | grep guard-bash.sh)
   cmd=${cmd//"$REPO_ROOT"/"$T/missing"}
-  jq -cn '{tool_input: {command: "git status"}}' | bash -c "$cmd" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status with guard-bash.sh missing"
+  assert_eq "exit 127" "$(jq -cn '{tool_input: {command: "git status"}}' | verdict bash -c "$cmd")" \
+    "configured guard with its script missing"
+}
+
+# Why this test is important:
+#   - rtk rewrote every Bash command before the guards and the auto-mode
+#     classifier saw it, which left calls with no verdict; it was removed
+#     (ADR-0002). guard-read never ran (nothing set its env var).
+# What it tests:
+#   - No hook command mentions rtk or guard-read.sh.
+test_removed_hooks_stay_gone() {
+  local all
+  all=$(jq -r '.hooks[][].hooks[].command' "$SETTINGS")
+  assert_not_contains "$all" "rtk " "hook commands"
+  assert_not_contains "$all" "guard-read.sh" "hook commands"
+}
+
+# Why this test is important:
+#   - Secrets read into context leave the machine, and the guards are only as
+#     strong as the files that define them; guard-sensitive covers both.
+# What it tests:
+#   - A Read|Edit|Write PreToolUse hook runs guard-sensitive.sh, and the
+#     configured command asks before a Read of .env.
+test_configured_sensitive_guard_asks() {
+  local cmd
+  cmd=$(jq -r '.hooks.PreToolUse[] | select(.matcher == "Read|Edit|Write") | .hooks[].command' "$SETTINGS" |
+    sed "s#\$HOME/dotfiles#$REPO_ROOT#g" | grep guard-sensitive.sh)
+  assert_contains "$cmd" "$REPO_ROOT/.claude/scripts/guard-sensitive.sh" "Read|Edit|Write PreToolUse hooks"
+  assert_eq ask "$(jq -cn --arg p "$T/.env" '{tool_name: "Read", tool_input: {file_path: $p}}' | verdict bash -c "$cmd")" \
+    "verdict for a Read of .env"
 }
 
 # Why this test is important:
@@ -173,6 +206,23 @@ test_compact_anchor_hook_wired() {
 }
 
 # Why this test is important:
+#   - The lint digest only shapes code if every session sees it, including
+#     after /clear and compaction, which drop the context it was injected into.
+# What it tests:
+#   - A SessionStart hook with no matcher (every source) runs lint_digest.py,
+#     and the configured command, fed a payload outside git, exits 0 silently.
+test_lint_digest_hook_wired() {
+  local cmd out rc
+  cmd=$(jq -r '.hooks.SessionStart[] | select(.matcher == null) | .hooks[].command' "$SETTINGS" |
+    sed "s#\$HOME/dotfiles#$REPO_ROOT#g" | grep lint_digest.py)
+  assert_contains "$cmd" "$REPO_ROOT/.claude/scripts/lint_digest.py" "SessionStart hook"
+  out=$(jq -cn --arg d "$T" '{cwd: $d, source: "clear"}' | bash -c "$cmd" 2>&1)
+  rc=$?
+  assert_eq 0 "$rc" "exit status"
+  assert_eq "" "$out" "output outside git"
+}
+
+# Why this test is important:
 #   - The edit guard only stops hand edits to generated files if Claude Code
 #     runs it before every Edit and Write.
 # What it tests:
@@ -182,16 +232,16 @@ test_settings_registers_generated_guard() {
 }
 
 # Why this test is important:
-#   - Proves the wiring end to end: the exact configured command must block.
+#   - Proves the wiring end to end: the exact configured command must ask.
 # What it tests:
-#   - The configured command, fed an Edit payload for a generated file, exits 2.
-test_configured_generated_guard_blocks() {
-  local cmd rc
+#   - The configured command, fed an Edit payload for a generated file, gets
+#     an "ask" decision.
+test_configured_generated_guard_asks() {
+  local cmd
   cmd=$(generated_guard_hooks | grep guard-generated.sh)
   printf '// Code generated by wire. DO NOT EDIT.\n' > "$T/wire_gen.go"
-  jq -cn --arg p "$T/wire_gen.go" '{tool_input: {file_path: $p}}' | bash -c "$cmd" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status of the configured edit guard"
+  assert_eq ask "$(jq -cn --arg p "$T/wire_gen.go" '{tool_input: {file_path: $p}}' | verdict bash -c "$cmd")" \
+    "verdict of the configured edit guard"
 }
 
 # Why this test is important:
@@ -199,15 +249,13 @@ test_configured_generated_guard_blocks() {
 #     Code actually runs it before every Edit and Write.
 # What it tests:
 #   - The Edit|Write PreToolUse hooks include guard-suppressions.sh, and the
-#     exact configured command exits 2 on an Edit that adds a //nolint.
-test_configured_suppression_guard_blocks() {
-  local cmd rc
+#     exact configured command asks on an Edit that adds a //nolint.
+test_configured_suppression_guard_asks() {
+  local cmd
   cmd=$(generated_guard_hooks | grep guard-suppressions.sh)
   assert_contains "$cmd" "$REPO_ROOT/.claude/scripts/guard-suppressions.sh" "Edit|Write PreToolUse hooks"
-  jq -cn --arg p "$T/a.go" '{tool_input: {file_path: $p, old_string: "f()", new_string: "f() //nolint"}}' |
-    bash -c "$cmd" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status of the configured suppression guard"
+  assert_eq ask "$(jq -cn --arg p "$T/a.go" '{tool_input: {file_path: $p, old_string: "f()", new_string: "f() //nolint"}}' |
+    verdict bash -c "$cmd")" "verdict of the configured suppression guard"
 }
 
 # Why this test is important:
@@ -215,31 +263,48 @@ test_configured_suppression_guard_blocks() {
 #     Claude Code runs it before every Bash command.
 # What it tests:
 #   - A Bash PreToolUse hook invokes guard-docs.sh, and the exact configured
-#     command blocks a code-only commit in a fresh repo.
-test_configured_docs_guard_blocks() {
-  local cmd rc
+#     command asks before a code-only commit in a fresh repo.
+test_configured_docs_guard_asks() {
+  local cmd
   cmd=$(bash_guard_hooks | grep guard-docs.sh)
   assert_contains "$cmd" "$REPO_ROOT/.claude/scripts/guard-docs.sh" "Bash PreToolUse hooks"
   make_repo "$T/r"
   printf 'package a\n' > "$T/r/a.go"
   git -C "$T/r" add a.go
-  jq -cn --arg d "$T/r" '{tool_input: {command: "git commit -m x"}, cwd: $d}' | bash -c "$cmd" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status of the configured docs guard"
+  assert_eq ask "$(jq -cn --arg d "$T/r" '{tool_input: {command: "git commit -m x"}, cwd: $d}' | verdict bash -c "$cmd")" \
+    "verdict of the configured docs guard"
 }
 
-run_test test_configured_docs_guard_blocks
-run_test test_configured_suppression_guard_blocks
+run_test test_configured_docs_guard_asks
+run_test test_configured_suppression_guard_asks
 run_test test_compact_anchor_hook_wired
+run_test test_lint_digest_hook_wired
 run_test test_settings_uses_guard_script
-run_test test_configured_guard_blocks_force_push
-run_test test_configured_guard_fails_closed_without_launcher
+run_test test_configured_guard_asks_on_force_push
+run_test test_guards_block_on_failure
+run_test test_removed_hooks_stay_gone
+run_test test_configured_sensitive_guard_asks
 run_test test_effort_set_once
 run_test test_no_default_false_flags
 run_test test_lint_hook_warns_on_new_print
 run_test test_lint_hook_ignores_preexisting_print
 run_test test_lint_hook_allows_print_with_file
+# Why this test is important:
+#   - The injection scanner only helps if it runs on every tool that brings
+#     web content into the session, built-in and MCP alike.
+# What it tests:
+#   - A PostToolUse entry runs web_scan.py, and its matcher covers WebFetch,
+#     WebSearch and the web-fetch, web-search and grep MCP tools.
+test_web_scan_hook_covers_web_tools() {
+  local matcher
+  matcher=$(jq -r '.hooks.PostToolUse[] | select(any(.hooks[]; .command | contains("web_scan.py"))) | .matcher' "$SETTINGS")
+  for tool in WebFetch WebSearch mcp__web-fetch__fetch_url mcp__web-search__search mcp__grep-mcp__searchGitHub; do
+    [[ $tool =~ ^($matcher)$ ]] || _fail "matcher [$matcher] misses $tool"
+  done
+}
+
 run_test test_lint_hook_counts_only_added_patterns
 run_test test_settings_registers_generated_guard
-run_test test_configured_generated_guard_blocks
+run_test test_configured_generated_guard_asks
+run_test test_web_scan_hook_covers_web_tools
 finish

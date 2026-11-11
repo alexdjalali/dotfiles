@@ -32,14 +32,12 @@
       "Bash(pyright:*)",
       "Bash(ruff:*)",
       "Bash(pytest:*)",
-      "Bash(python:*)",
       "Bash(uv:*)",
       "Bash(go:*)",
       "Bash(gofumpt:*)",
       "Bash(goimports:*)",
       "Bash(golangci-lint:*)",
       "Bash(pnpm:*)",
-      "Bash(npx:*)",
       "Bash(vitest:*)",
       "Bash(tsc:*)",
       "Bash(eslint:*)",
@@ -61,7 +59,6 @@
       "Bash(fd:*)",
       "Bash(cp:*)",
       "Bash(mv:*)",
-      "Bash(rm:*)",
       "Bash(mkdir:*)",
       "Bash(cat:*)",
       "Bash(bat:*)",
@@ -126,6 +123,15 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/dotfiles/.claude/scripts/lint_digest.py\"",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -134,25 +140,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-bash.sh\" || exit 2"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-bash.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
+          },
           {
             "type": "command",
-            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-docs.sh\" || exit 2"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-docs.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
           }
         ]
       },
@@ -161,20 +157,26 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-generated.sh\" || exit 2"
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-generated.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
           },
           {
             "type": "command",
-            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-suppressions.sh\" || exit 2"
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-suppressions.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
           }
         ]
       },
       {
-        "matcher": "Read|Bash",
+        "matcher": "Read|Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-read.sh\" || exit 2"
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/guard-sensitive.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
           }
         ]
       }
@@ -185,16 +187,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=$(jq -r \".tool_input.file_path // empty\"); if [ -z \"$FILE\" ]; then exit 0; fi; case \"$FILE\" in *.py) ruff format --quiet \"$FILE\" 2>/dev/null ;; *.go) gofumpt -w \"$FILE\" 2>/dev/null ;; *.ts|*.tsx|*.js|*.jsx) prettier --write --log-level silent \"$FILE\" 2>/dev/null ;; esac; exit 0'"
+            "command": "bash \"$HOME/dotfiles/.claude/scripts/edit-lint.sh\"",
+            "timeout": 90
           }
         ]
       },
       {
-        "matcher": "Edit",
+        "matcher": "WebFetch|WebSearch|mcp__web-fetch__.*|mcp__web-search__.*|mcp__grep-mcp__.*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/dotfiles/.claude/scripts/edit-lint.sh\"",
+            "command": "python3 \"$HOME/dotfiles/.claude/scripts/web_scan.py\"",
             "timeout": 10
           }
         ]
@@ -218,7 +221,8 @@
     "datadog-automation@awesome-claude-skills": false,
     "codex@openai-codex": true,
     "context7@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "terraform-skill@antonbabenko": true
   },
   "extraKnownMarketplaces": {
     "chrome-devtools-plugins": {
@@ -231,6 +235,12 @@
       "source": {
         "source": "github",
         "repo": "Piebald-AI/claude-code-lsps"
+      }
+    },
+    "antonbabenko": {
+      "source": {
+        "source": "github",
+        "repo": "antonbabenko/agent-plugins"
       }
     }
   },

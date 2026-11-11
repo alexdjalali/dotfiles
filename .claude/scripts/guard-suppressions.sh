@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # guard-suppressions.sh
 #
-# Claude Code PreToolUse hook for Edit and Write. It blocks a change that
-# silences a check instead of satisfying it:
+# Claude Code PreToolUse hook for Edit and Write. A change that silences a
+# check instead of satisfying it goes to the user's permission prompt (an
+# "ask" decision, hook_lib.sh), where the user's approval is the override:
 #   - in a code file, a new inline suppression (//nolint, #nosec, nosemgrep,
 #     # noqa, type: ignore, pyright: ignore, eslint-disable, @ts-ignore,
 #     @ts-expect-error, //lint:ignore, pylint: disable, istanbul/c8 ignore);
@@ -12,23 +13,23 @@
 # existing suppression passes. A rule that is wrong is changed by the user
 # (or by an ADR), never by an agent-written exception.
 #
-# The hook fails closed: a payload it cannot read, or a missing jq, blocks
-# with exit 2, the only status Claude Code treats as a block.
+# The hook fails toward the prompt: a payload it cannot read, or a missing
+# jq, asks.
 set -uo pipefail
 
+here=${BASH_SOURCE[0]%/*}
+[[ $here == "${BASH_SOURCE[0]}" ]] && here=.
+# shellcheck source=hook_lib.sh
+source "$here/hook_lib.sh" || exit 2
+
+# block <what>: ask the user about the change, naming the alternative.
 block() {
-  echo "BLOCKED: $1 ($path). Do not silence the check: fix the code so it passes. If the rule itself is wrong, stop and propose the rule change (ADR) to the user; exceptions are added by the user, not by an agent." >&2
-  exit 2
+  hook_ask guard-suppressions "$1 ($path). Do not silence the check: fix the code so it passes. If the rule itself is wrong, stop and propose the rule change (ADR) to the user; exceptions are added by the user, not by an agent."
 }
 
-if ! command -v jq >/dev/null 2>&1; then
-  echo "BLOCKED: guard-suppressions.sh needs jq to read the hook payload" >&2
-  exit 2
-fi
-if ! payload=$(jq -ec '.tool_input // {}' 2>/dev/null); then
-  echo "BLOCKED: guard-suppressions.sh could not read the hook payload" >&2
-  exit 2
-fi
+full=""
+hook_payload guard-suppressions full
+payload=$(jq -c '.tool_input // {}' <<<"$full")
 path=$(jq -r '.file_path // ""' <<<"$payload")
 [[ -n $path ]] || exit 0
 

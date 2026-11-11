@@ -11,6 +11,9 @@
 # and its stdin to $MOCK_DIR/NAME.stdin, prints STDOUT, and exits with EXIT.
 # The shim always reads stdin, so give the code under test explicit stdin
 # (`</dev/null`, a pipe, or a heredoc).
+#
+# `verdict CMD…` runs a PreToolUse guard on the payload on stdin and prints
+# "ask", "pass" or "exit <n>" (see its doc).
 
 # shellcheck disable=SC2034  # read by the test files that source this library
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -58,18 +61,44 @@ make_repo() {
   return 0
 }
 
-run_test() {
-  local fn=$1 out rc
-  out=$(
-    T=$(mktemp -d)
-    trap 'rm -rf "$T"' EXIT
-    MOCK_DIR="$T/.mocks"
-    MOCK_BIN="$T/.mocks/bin"
-    mkdir -p "$MOCK_BIN"
-    PATH="$MOCK_BIN:$PATH"
-    "$fn" 2>&1
-  )
+# The verdict of the command "$@" (a PreToolUse guard, maybe behind env) on the payload
+# on stdin: "ask" (an ask decision on stdout, exit 0), "pass" (no output, exit
+# 0), "exit <n>" for any other status, or the unexpected output itself.
+verdict() {
+  local out rc
+  out=$("$@" 2>/dev/null)
   rc=$?
+  if ((rc != 0)); then
+    echo "exit $rc"
+  elif [[ -z $out ]]; then
+    echo pass
+  elif [[ $(jq -r '.hookSpecificOutput.permissionDecision' <<<"$out" 2>/dev/null) == ask ]]; then
+    echo ask
+  else
+    echo "unexpected output: $out"
+  fi
+}
+
+# _in_sandbox <fn> <dir>: run test fn with $T=dir and its own $MOCK_DIR and
+# $MOCK_BIN (locals, seen by fn through bash's dynamic scope). run_test calls
+# it in a subshell, so the PATH change stays per test.
+_in_sandbox() {
+  local T=$2 MOCK_DIR MOCK_BIN
+  MOCK_DIR="$T/.mocks"
+  MOCK_BIN="$T/.mocks/bin"
+  mkdir -p "$MOCK_BIN"
+  PATH="$MOCK_BIN:$PATH"
+  "$1" 2>&1
+}
+
+# run_test <fn>: run one test in a fresh temp dir, removed afterwards even
+# when the test exits early, and record its result.
+run_test() {
+  local fn=$1 dir out rc
+  dir=$(mktemp -d)
+  out=$(_in_sandbox "$fn" "$dir")
+  rc=$?
+  rm -rf "$dir"
   if [[ $rc -eq 0 ]]; then
     _PASSED=$((_PASSED + 1))
     printf '  ok    %s\n' "$fn"

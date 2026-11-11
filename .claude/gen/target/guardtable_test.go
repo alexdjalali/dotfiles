@@ -36,8 +36,8 @@ func TestGuardTableGolden(t *testing.T) {
 //     would be an empty, meaningless row.
 //
 // What it tests:
-//   - Of a bash-guard and an edit-guard rule, only the bash-guard one
-//     (no-verify) becomes a row.
+//   - Of two bash-guard rules and an edit-guard rule, only the bash-guard
+//     ones (no-verify, infra) become rows, in catalog order.
 func TestGuardTableOmitsNonBashRules(t *testing.T) {
 	files := renderLoaded(t, "guard-table", "../testdata/guardtable")
 	var table struct {
@@ -48,7 +48,7 @@ func TestGuardTableOmitsNonBashRules(t *testing.T) {
 	if err := json.Unmarshal(files[0].Data, &table); err != nil {
 		t.Fatal(err)
 	}
-	if len(table.Rows) != 1 || table.Rows[0].ID != "no-verify" {
+	if len(table.Rows) != 2 || table.Rows[0].ID != "no-verify" || table.Rows[1].ID != "infra" {
 		t.Fatalf("rows = %+v", table.Rows)
 	}
 }

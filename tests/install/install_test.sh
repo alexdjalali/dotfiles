@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # Tests for install.sh, sourced into a throwaway HOME with every external
 # command it runs replaced by a mock, so nothing touches brew, the network or
 # the real home directory.

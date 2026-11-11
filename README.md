@@ -18,7 +18,7 @@ Personal dev environment for macOS. Catppuccin Mocha theme throughout.
 | `.claude/` | Claude Code config: CLAUDE.md, rules, skills, templates, agents, hook scripts, settings |
 | `cursor/` | Cursor global rules (a condensed mirror of the Claude rules) |
 | `kilocode/` | Kilocode global rules, generated from `cursor/rules/` |
-| `tests/`, `justfile` | `just test` and `just lint` for the scripts and config |
+| `tests/`, `justfile` | `just test` and `just lint` for the scripts and config; `just eval [skill]` runs the skills' behavior evals (paid, not part of `just test`) |
 
 ## Fresh machine install
 
@@ -84,6 +84,13 @@ so the script warns elsewhere.
 ```
 
 `~/.latexmkrc` is linked only when MacTeX is installed.
+
+A tool that writes `~/.claude/settings.json` itself (Claude Code's auto-mode
+setup adding `autoMode`, iTerm2 adding its `cc-status` hooks) replaces the
+symlink with a plain file, and the guard hooks then drift from the repo. Keep
+machine-specific keys like those out of the repo: re-merge the repo file into
+the installed one rather than re-linking over them, and compare with
+`diff <(jq -S .hooks ~/.claude/settings.json) <(jq -S .hooks .claude/settings.json)`.
 
 ## Tools
 

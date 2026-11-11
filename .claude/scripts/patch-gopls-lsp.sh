@@ -3,7 +3,7 @@
 #
 # Ensures the gopls LSP plugin (Piebald "claude-code-lsps" marketplace) is
 # configured so Claude Code's LSP tool does NOT report "stale LSP" on large
-# large multi-module go.work workspaces (dozens of modules, where gopls's
+# multi-module go.work workspaces (dozens of modules, where gopls's
 # initial workspace load takes 10 s or more).
 #
 # Two knobs, both applied to the plugin's cached .lsp.json:

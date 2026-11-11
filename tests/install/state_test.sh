@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # shellcheck disable=SC2016  # zsh code is passed to zsh_with unexpanded on purpose
 # Tests for the tracked config install.sh sets up: git, the iTerm prefs and the
 # Neovim plugin lockfile. Real local tools (git, plutil, zsh, nvim) run

@@ -19,13 +19,18 @@
       "guard": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["argv0", "subcommands", "reason"],
+        "required": ["reason"],
+        "oneOf": [
+          {"required": ["argv0", "subcommands"], "not": {"required": ["commands"]}},
+          {"required": ["commands"], "not": {"anyOf": [{"required": ["argv0"]}, {"required": ["subcommands"]}, {"required": ["flags"]}, {"required": ["env"]}, {"required": ["config"]}]}}
+        ],
         "properties": {
           "argv0": {"type": "string", "minLength": 1},
           "subcommands": {"type": "array", "minItems": 1, "items": {"type": "string"}},
           "flags": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
           "env": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
           "config": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "commands": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}},
           "reason": {"type": "string", "minLength": 1}
         }
       }

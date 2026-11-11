@@ -17,3 +17,14 @@
   enforce: hook
   hook: edit-guard
   targets: [claude-md]
+- id: infra
+  statement: Infra changes need the user.
+  severity: must_fix
+  enforce: hook
+  hook: bash-guard
+  targets: [claude-md]
+  guard:
+    commands:
+      terraform: [apply, state rm]
+      aws: ["delete-*"]
+    reason: infra changes need the user

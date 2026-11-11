@@ -1,8 +1,11 @@
-"""Block destructive shell commands before Claude Code runs them.
+"""Send destructive shell commands to the user before Claude Code runs them.
 
-Evaluator for the PreToolUse Bash hook, started by guard-bash.sh (which blocks
-whenever this script cannot run). Reads the hook JSON on stdin. Exits 2 with a
-reason on stderr to block, and 0 to allow. Anything it cannot parse is blocked.
+Evaluator for the PreToolUse Bash hook, started by guard-bash.sh (which asks
+whenever this script cannot run). Reads the hook JSON on stdin and always
+exits 0: a command a rule catches gets a `permissionDecision: "ask"` decision
+on stdout, so it goes to the user's permission prompt with the reason (the
+user's approval is the override); any other command gets no output. Anything
+it cannot parse is asked about too.
 
 Two layers:
   1. A structured pass that reads the command the way bash does. A quote-aware
@@ -41,8 +44,10 @@ from typing import cast
 from guard_rows import (
     ASSIGNMENT,
     Blocked,
+    check_commands,
     check_exports,
     check_rows,
+    command_programs,
     has_flag,
     positionals,
     record_assignment,
@@ -621,12 +626,17 @@ def evaluate(text: str, cwd: str, depth: int = 0) -> None:
 
 
 def check_wrapped(program: str, args: list[str], env: dict[str, str], cwd: str) -> None:
-    """Judge git or rm behind a wrapper peel does not know (`mise exec -- git
-    …`) as if run directly, on the real tokens and this command's cwd: for git
-    the catalog rows (with assignments before it added to env) and the
-    structural checks; for rm the relative-target check the backstop lacks.
+    """Judge git, rm or a command-row program behind a wrapper peel does not
+    know (`mise exec -- git …`, `aws-vault exec p -- terraform apply`) as if
+    run directly, on the real tokens and this command's cwd: for git the
+    catalog rows (with assignments before it added to env) and the structural
+    checks; for rm the relative-target check the backstop lacks; for a
+    command-row program its banned commands.
     """
     names = [PurePosixPath(a).name for a in args]
+    for i, name in enumerate(names):
+        if name != program and name in command_programs():
+            check_commands(name, args[i + 1 :])
     if program != "git" and "git" in names:
         i = names.index("git")
         git_env = dict(env)
@@ -642,6 +652,14 @@ def check_wrapped(program: str, args: list[str], env: dict[str, str], cwd: str) 
         check_rm(rm_args, cwd)
 
 
+def next_cwd(program: str, args: list[str], cwd: str) -> str:
+    """The working directory after `cd` / `pushd` with args."""
+    dirs = [a for a in args if a == "-" or not a.startswith("-")]
+    if not dirs:
+        return HOME if program == "cd" else cwd
+    return cwd if dirs[0] == "-" else expand_path(dirs[0], cwd)
+
+
 def check_command(cmd: Command, cwd: str, depth: int) -> str:
     """Check one simple command; return the cwd after it (for `cd`)."""
     env: dict[str, str] = {}
@@ -653,13 +671,11 @@ def check_command(cmd: Command, cwd: str, depth: int) -> str:
         split_git(args, cwd) if program in row_programs() | {"git"} else ([], "", [])
     )
     check_rows(env, program, *split)
+    check_commands(program, args)
     check_exports(program, args)
     check_wrapped(program, args, env, cwd)
     if program in ("cd", "pushd"):
-        dirs = [a for a in args if a == "-" or not a.startswith("-")]
-        if not dirs:
-            return HOME if program == "cd" else cwd
-        return cwd if dirs[0] == "-" else expand_path(dirs[0], cwd)
+        return next_cwd(program, args, cwd)
     if program in SHELLS or program == "eval":
         for herestring in cmd.herestrings:
             evaluate(herestring, cwd, depth + 1)
@@ -691,22 +707,55 @@ def parse_payload(raw: object) -> tuple[str, str]:
     )
 
 
+def ask(reason: str) -> None:
+    """Print the PreToolUse decision that sends the call to the user's
+    permission prompt with reason: the user's approval is the override."""
+    decision = {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "ask",
+        "permissionDecisionReason": f"guard-bash: {reason}",
+    }
+    print(json.dumps({"hookSpecificOutput": decision}))
+
+
+def commit_dirs(text: str, cwd: str) -> list[str]:
+    """The repo directory of each `git commit` in text, in order, following
+    `cd` / `pushd`, wrappers (`rtk`, `env`, …) and `git -C` / `-c` options."""
+    out: list[str] = []
+    for cmd in commands(without(text, Scan(text).drop, 0, len(text))):
+        tokens = peel(cmd.args, {})
+        if not tokens:
+            continue
+        program, args = PurePosixPath(tokens[0]).name, tokens[1:]
+        if program in ("cd", "pushd"):
+            cwd = next_cwd(program, args, cwd)
+        elif program == "git":
+            opts, sub, _ = split_git(args, cwd)
+            if sub == "commit":
+                repo = cwd
+                for flag, value in zip(opts, opts[1:]):
+                    if flag == "-C":
+                        repo = expand_path(value, repo)
+                out.append(repo)
+    return out
+
+
 def main() -> int:
+    """Hook entry point: exit 0, printing an `ask` decision when a rule (or a
+    failure to inspect) catches the command. `--commit-dirs` instead prints
+    commit_dirs for guard-docs.sh, one per line."""
     try:
         command, cwd = parse_payload(cast(object, json.load(sys.stdin)))
+        if sys.argv[1:] == ["--commit-dirs"]:
+            print("\n".join(commit_dirs(command, cwd)))
+            return 0
         evaluate(command, cwd)
     except Blocked as reason:
-        print(f"BLOCKED: {reason}", file=sys.stderr)
-        print(
-            "Ask the user to run it themselves if it is really intended.",
-            file=sys.stderr,
-        )
-        return 2
+        ask(str(reason))
     except Exception as error:  # fail closed: an unreadable command is not a safe one
-        print(
-            f"BLOCKED: guard could not inspect the command ({error})", file=sys.stderr
-        )
-        return 2
+        if sys.argv[1:] == ["--commit-dirs"]:
+            raise
+        ask(f"could not inspect the command ({error})")
     return 0
 
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # Tests for the Raycast script commands in raycast/.
 #
 # Raycast runs each script with the script's own folder as the working

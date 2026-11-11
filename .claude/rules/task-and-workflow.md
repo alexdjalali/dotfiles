@@ -5,6 +5,7 @@
 
 - **Default: quick mode** — do it directly. Architectural / 20+ files / cross-cutting → ask: `/spec` or quick mode?
 - **Don't suggest `/spec`** for bugfixes, single features, one-module refactors, flag/config/dependency changes, test additions, or anything with a clear outcome. In doubt → quick mode.
+- **No clear outcome yet** ("brainstorm", "what should we build", competing options) → `/frame` first; its brief feeds `/adr`, `/rfp` or `/spec`.
 - **Never invoke `/spec`** — the user types it (it's `disable-model-invocation`). Suggest it instead of Claude Code plan mode.
 - **Bugs:** contained (cause known or not) → `/fix` · several related, or someone else fixes → `/rca` (diagnosis only) · cross-layer / schema / API → `/spec` bugfix lane. A reproducing test is mandatory everywhere but `/rca` — written **after** the fix and revert-proven. An outgrown `/fix` stops and escalates — never silently.
 - **Resuming `/spec`** after an interruption or compaction: the next action is a tool call — re-read the plan and continue until VERIFIED.

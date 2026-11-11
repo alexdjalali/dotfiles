@@ -19,7 +19,7 @@
     reason: git hooks are gates; fix the failure instead of bypassing them
 
 - id: no-suppressions
-  statement: "Satisfy a check; don't silence it. An agent adds no inline suppression (`//nolint`, `#nosec`, `nosemgrep`, `# noqa`, `type: ignore`, `eslint-disable`, `@ts-ignore` / `@ts-expect-error`), no exemption / baseline / allowlist entry, no raised ratchet ceiling, and no skipped test to get green. A rule that is wrong is changed by an ADR the user approves; an exception is added by the user. The `guard-suppressions.sh` PreToolUse hook blocks the inline markers and growing exemption files."
+  statement: "Satisfy a check; don't silence it. An agent adds no inline suppression (`//nolint`, `#nosec`, `nosemgrep`, `# noqa`, `type: ignore`, `eslint-disable`, `@ts-ignore` / `@ts-expect-error`), no exemption / baseline / allowlist entry, no raised ratchet ceiling, and no skipped test to get green. A rule that is wrong is changed by an ADR the user approves; an exception is added by the user. The `guard-suppressions.sh` PreToolUse hook asks before the inline markers and growing exemption files."
   category: quality
   severity: must_fix
   enforce: hook
@@ -28,12 +28,12 @@
   targets: [claude-md, rules/development-practices, cursor/development-practices, cursor/global-standards]
 
 - id: docs-first
-  statement: "Docs are the first priority and the agent's map: every change refreshes every doc it touches, in the same commit — doc comments on every symbol, test docs (Why this test is important / What it tests), READMEs, docs/ pages, CLAUDE.md / AGENTS.md, ADRs and generated references. Read the docs before the code, write or update the doc before or with the code, never after. A commit with truly no doc impact says `Docs-Impact: none (<reason>)` in its message. The `guard-docs.sh` PreToolUse hook blocks a code commit that refreshes no docs and declares nothing."
+  statement: "Docs are the first priority and the agent's map: every change refreshes every doc it touches, in the same commit — doc comments on every symbol, test docs (Why this test is important / What it tests), READMEs, docs/ pages, CLAUDE.md / AGENTS.md, ADRs and generated references. Read the docs before the code, write or update the doc before or with the code, never after. A commit with truly no doc impact says `Docs-Impact: none (<reason>)` in its message. The `guard-docs.sh` PreToolUse hook asks before a code commit that refreshes no docs and declares nothing."
   category: docs
   severity: must_fix
   enforce: hook
   hook: commit-guard
-  summary: "Docs first: every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`."
+  summary: "Every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`."
   targets: [claude-md, rules/documentation-sync, cursor/documentation-sync, cursor/global-standards]
 
 - id: adopt-before-build
@@ -60,6 +60,26 @@
   hook: bash-guard-builtin
   summary: never force-push main/master
   targets: [claude-md, rules/development-practices, cursor/development-practices, cursor/global-standards]
+
+- id: infra-needs-user
+  statement: "**Infrastructure changes are the user's call.** Never run a command that changes live infrastructure on your own — `terraform`/`tofu`/`terragrunt` apply, destroy, import, taint, force-unlock or state edits; `kubectl` delete, apply, replace, patch, scale, drain, cordon, edit, set or rollout undo/restart; `helm` install, upgrade, uninstall or rollback; mutating `aws` / `gcloud` / `az` calls (delete, terminate, remove, purge, put, update, IAM policy changes, deploy). Plan, diff or dry-run instead, show the result, and let the user approve the real run in the permission prompt."
+  category: infra
+  severity: must_fix
+  enforce: hook
+  hook: bash-guard
+  summary: "Never change live infrastructure on your own (terraform apply/destroy/state, kubectl delete/apply, helm install/upgrade, mutating cloud CLI calls); plan or dry-run, then let the user approve the real run."
+  targets: [rules/development-practices, cursor/development-practices]
+  guard:
+    commands:
+      terraform: &terraform [apply, destroy, import, taint, untaint, force-unlock, "state rm", "state mv", "state push", "state replace-provider", "workspace delete"]
+      tofu: *terraform
+      terragrunt: *terraform
+      kubectl: [delete, apply, replace, patch, scale, drain, cordon, uncordon, taint, edit, "set *", "rollout undo", "rollout restart", annotate, label]
+      helm: [install, upgrade, uninstall, delete, rollback]
+      aws: ["delete-*", "terminate-*", "remove-*", "purge-*", "put-*", "update-*", "deregister-*", "revoke-*", "s3 rm", "s3 rb", "s3 mv", "s3 sync"]
+      gcloud: [delete, "remove-*", purge, update, deploy, stop, reset, "set-iam-policy", "add-iam-policy-binding", "remove-iam-policy-binding"]
+      az: [delete, purge, update, remove, stop, deallocate, "deployment create", "role assignment create"]
+    reason: this changes live infrastructure
 
 - id: generated-code-not-hand-edited
   statement: Change generated code at its source (proto, schema, template, `wire.go`) and regenerate through the project's CLI instead of editing the output; commit the output; CI fails on drift.
@@ -287,5 +307,11 @@
   statement: "external calls without timeouts, failure paths with no log/metric/span"
   category: operability
   severity: should_fix
+  enforce: review
+  targets: [audit-lenses]
+- id: audit-security
+  statement: "run the stock scanners that are installed — `semgrep scan --config p/default --metrics off --quiet`, `gitleaks git --redact`, `osv-scanner scan source -r .`, `trivy fs --scanners misconfig .` for IaC — then read for what they miss: injection, authn/z gaps, unvalidated boundary input, SSRF / path traversal, unsafe deserialization, secrets in code or history; a scanner hit is evidence to verify, not a finding by itself, and a missing scanner is named, not skipped silently"
+  category: security
+  severity: must_fix
   enforce: review
   targets: [audit-lenses]

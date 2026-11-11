@@ -1,10 +1,11 @@
-**Input:** a feature request or story / epic / ADR / design-doc path (`Type: Feature`), or a bug report or RCA (`Type: Bugfix`). **Output:** an approved plan at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored) from `~/.claude/templates/plan.md`, then the hand-off to `spec-implement`. NEVER write production or test code before approval.
+**Input:** a feature request or `/frame` brief / story / epic / ADR / design-doc path (`Type: Feature`), or a bug report or RCA (`Type: Bugfix`). **Output:** an approved plan at `docs/local/plans/YYYY-MM-DD-<slug>.md` (gitignored) from `~/.claude/templates/plan.md`, then the hand-off to `spec-implement`. NEVER write production or test code before approval.
 
 ## Phase 1 — Explore
 
 1. **Requirements source** — cite every one under References.
    - **Epic** (under the `epic` layout folder, `~/.claude/templates/docs-layout.md`) → read it and every open story it lists, in order; each story becomes one story group (one commit).
    - **Story** → its **acceptance criteria are the requirements**; its code-addition answers and Proposed Repository Structure seed the design.
+   - **Brief** (`/frame`) → its success criteria are the requirements and become Goal Verification truths; its non-goals bound Scope; its chosen approach seeds the design and its open questions start Gaps & Unknowns.
    - **RCA** → its root cause (`file:line`) and fix sketch are the starting point — re-confirm both against the current code, don't re-derive.
 2. Ambiguous request → ask one clarifying question before continuing.
 3. With CodeGraph + Semble: every file the change touches, similar features and their patterns, the call chains up- and downstream, and the blast radius (`codegraph_impact`, then Grep for name lists a graph can't see). Record what you found in the plan's **Context for Implementer** (patterns `file:line`, key files, gotchas) — it is the map later phases use instead of re-exploring. Bugs and stale comments spotted here go in the plan under *Fix on sight* rules (`development-practices.md`): small ones as tasks in the story that touches that code, larger ones as a task outside the plan and a note to the user.

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # Tests for .claude/scripts/guard-bash.sh, the Claude Code PreToolUse hook that
-# blocks destructive shell commands.
+# sends destructive shell commands to the user's permission prompt ("ask").
 #
 # The destructive commands below exist only as data in this file. The live
 # guard scans Bash command lines, so run this file (`just test`); never paste
@@ -12,11 +11,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/../lib/assert.sh"
 
 GUARD="$REPO_ROOT/.claude/scripts/guard-bash.sh"
 
-# Exit status of the guard for one command string, fed as the hook's JSON. The
-# cwd is the test's empty temp dir, so no row depends on where the suite runs.
+# The guard's verdict on one command string, fed as the hook's JSON. The cwd
+# is the test's empty temp dir, so no row depends on where the suite runs.
 guard_status() {
-  jq -cn --arg c "$1" --arg d "$T" '{cwd: $d, tool_input: {command: $c}}' | bash "$GUARD" >/dev/null 2>&1
-  echo $?
+  jq -cn --arg c "$1" --arg d "$T" '{cwd: $d, tool_input: {command: $c}}' | verdict bash "$GUARD"
 }
 
 # The $HOME rows are deliberately literal: the guard must catch them unexpanded.
@@ -207,6 +205,21 @@ MUST_BLOCK=(
   'git config --global core.hooksPath /dev/null'
   'git config set core.hooksPath /dev/null'
   'git config --unset core.hooksPath'
+  # live infrastructure changes (rule infra-needs-user)
+  'terraform apply'
+  'tofu destroy -auto-approve'
+  'terraform -chdir=infra apply'
+  'terraform state rm aws_s3_bucket.b'
+  'terragrunt apply'
+  'kubectl -n prod delete pod p'
+  'kubectl apply -f deploy.yaml'
+  'helm upgrade web ./chart'
+  'aws ec2 terminate-instances --instance-ids i-1'
+  'aws s3 rm s3://b/k'
+  'gcloud run deploy web --image img'
+  'az group delete -n rg'
+  'aws-vault exec p -- terraform apply'
+  'cd infra && terraform apply'
 )
 
 # Destructive text is allowed only when quoted: an unquoted mention such as
@@ -300,19 +313,29 @@ MUST_ALLOW=(
   'git log -n 5'
   'LEFTHOOK=1 git commit -m x'
   'git push -n'
+  # read-only infrastructure commands
+  'terraform plan'
+  'terraform -chdir=infra plan'
+  'kubectl get pods'
+  'helm list'
+  'aws s3 ls'
+  'gcloud config list'
+  'az account show'
 )
 
 # Why this test is important:
-#   - With bypassPermissions on, this hook is the only thing standing between a
-#     mistaken command and a wiped home directory or a rewritten main branch.
+#   - In auto mode this hook is the only deterministic check between a
+#     mistaken command and a wiped home directory, a rewritten main branch or
+#     a destroyed environment; the user must see each one first.
 # What it tests:
 #   - Every destructive form (force-push variants, recursive rm of / ~ $HOME,
-#     reset --hard, checkout discards, worktree restore, clean -f), including
-#     compound and nested commands, exits 2.
+#     reset --hard, checkout discards, worktree restore, clean -f, hook
+#     bypasses, live infrastructure changes), including compound, nested and
+#     wrapped commands, gets an "ask" decision.
 test_blocks_destructive_commands() {
   local c let_through=()
   for c in "${MUST_BLOCK[@]}"; do
-    [[ $(guard_status "$c") == 2 ]] || let_through+=("[$c]")
+    [[ $(guard_status "$c") == ask ]] || let_through+=("[$c]")
   done
   assert_eq "" "${let_through[*]-}" "commands the guard let through"
 }
@@ -324,28 +347,27 @@ test_blocks_destructive_commands() {
 #     --track/--detach checkouts, staged-only restore, dry-run clean,
 #     destructive text inside a commit message, options extending or sharing a
 #     prefix with a banned one, wrapped non-forced or feature-branch pushes, a
-#     push option starting with +), exit 0.
+#     push option starting with +, read-only infrastructure commands), pass
+#     with no decision.
 test_allows_everyday_commands() {
   local c blocked=()
   for c in "${MUST_ALLOW[@]}"; do
-    [[ $(guard_status "$c") == 0 ]] || blocked+=("[$c]")
+    [[ $(guard_status "$c") == pass ]] || blocked+=("[$c]")
   done
   assert_eq "" "${blocked[*]-}" "commands the guard wrongly blocked"
 }
 
-# Guard exit status for a command run from a repo checked out on branch $1.
+# Guard verdict for a command run from a repo checked out on branch $1.
 push_status_on_branch() {
   git -c init.defaultBranch="$1" init -q "$T/repo"
   jq -cn --arg c "$2" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' |
-    bash "$GUARD" >/dev/null 2>&1
-  echo $?
+    verdict bash "$GUARD"
 }
 
-# Guard exit status for command $2 run from directory $1, with HOME=$T.
+# Guard verdict for command $2 run from directory $1, with HOME=$T.
 status_with_home() {
   jq -cn --arg c "$2" --arg d "$1" '{cwd: $d, tool_input: {command: $c}}' |
-    HOME="$T" bash "$GUARD" >/dev/null 2>&1
-  echo $?
+    verdict env HOME="$T" bash "$GUARD"
 }
 
 # Why this test is important:
@@ -353,7 +375,7 @@ status_with_home() {
 #     is checked out: on main they rewrite origin/main.
 # What it tests:
 #   - `git push -f`, `git push --force origin` and `git push origin HEAD --force`
-#     are blocked from a repo on main and allowed from a repo on a feature branch,
+#     are asked about from a repo on main and allowed from a repo on a feature branch,
 #     also through `git -C ~/repo` (git gets the `~` unexpanded); the verdict
 #     holds with a quoted global option, a quoted assignment or redirection in
 #     front, an unknown wrapper, or a later `cd` (each judged on the real
@@ -365,14 +387,14 @@ test_force_push_of_current_branch() {
     'git -c "user.name=A B" push -f' 'git push -f && cd /tmp' \
     'GIT_SSH_COMMAND="ssh -i key" git push -f && cd /tmp' \
     '2>/dev/null git -c "a.b=c d" push -f' 'mise exec -- git -c "a.b=c d" push -f'; do
-    assert_eq 2 "$(push_status_on_branch main "$c")" "[$c] on main"
+    assert_eq ask "$(push_status_on_branch main "$c")" "[$c] on main"
     command rm -rf "$T/repo"
-    assert_eq 0 "$(push_status_on_branch feature "$c")" "[$c] on feature"
+    assert_eq pass "$(push_status_on_branch feature "$c")" "[$c] on feature"
     command rm -rf "$T/repo"
   done
   for branch in main feature; do
-    want=0
-    [[ $branch == main ]] && want=2
+    want=pass
+    [[ $branch == main ]] && want=ask
     git -c init.defaultBranch="$branch" init -q "$T/repo"
     assert_eq "$want" "$(status_with_home "$T" 'git -C ~/repo push -f')" "[git -C ~/repo push -f] on $branch"
     command rm -rf "$T/repo"
@@ -389,7 +411,7 @@ test_force_push_of_every_branch() {
   local c
   for c in 'git push -f --all origin' 'git push -f --branches origin' \
     'git push -f --al origin' 'git push -f --branch origin'; do
-    assert_eq 2 "$(push_status_on_branch feature "$c")" "[$c] on feature"
+    assert_eq ask "$(push_status_on_branch feature "$c")" "[$c] on feature"
     command rm -rf "$T/repo"
   done
 }
@@ -404,7 +426,7 @@ test_push_main_outside_refspec() {
   local c
   for c in 'git push -f main feature/x' 'git -C main push -f origin feature/x'; do
     mkdir -p "$T/repo/main"
-    assert_eq 0 "$(push_status_on_branch feature "$c")" "[$c] on feature"
+    assert_eq pass "$(push_status_on_branch feature "$c")" "[$c] on feature"
     command rm -rf "$T/repo"
   done
 }
@@ -423,14 +445,14 @@ test_relative_rm_resolved_against_cwd() {
   local c
   mkdir -p "$T/project"
   for c in 'rm -rf *' 'rm -rf .' 'rm -rf ./*' '2>/dev/null rm -rf *' 'mise exec -- rm -rf *'; do
-    assert_eq 2 "$(status_with_home "$T" "$c")" "[$c] from \$HOME"
-    assert_eq 0 "$(status_with_home "$T/project" "$c")" "[$c] from a project directory"
+    assert_eq ask "$(status_with_home "$T" "$c")" "[$c] from \$HOME"
+    assert_eq pass "$(status_with_home "$T/project" "$c")" "[$c] from a project directory"
   done
-  assert_eq 2 "$(status_with_home "$T/project" 'cd -P ~ && rm -rf *')" "[cd -P ~ && rm -rf *] from a project directory"
-  assert_eq 0 "$(status_with_home "$T" 'git rm -r --cached .')" "[git rm -r --cached .] from \$HOME"
-  assert_eq 0 "$(status_with_home "$T" 'mise exec -- git rm -r --cached .')" "[mise exec -- git rm -r --cached .] from \$HOME"
+  assert_eq ask "$(status_with_home "$T/project" 'cd -P ~ && rm -rf *')" "[cd -P ~ && rm -rf *] from a project directory"
+  assert_eq pass "$(status_with_home "$T" 'git rm -r --cached .')" "[git rm -r --cached .] from \$HOME"
+  assert_eq pass "$(status_with_home "$T" 'mise exec -- git rm -r --cached .')" "[mise exec -- git rm -r --cached .] from \$HOME"
   for c in 'git rm -r --cached ~' '/usr/bin/git rm -r --cached ~' 'git -c core.quotepath=off rm -r --cached ~'; do
-    assert_eq 0 "$(status_with_home "$T/project" "$c")" "[$c]"
+    assert_eq pass "$(status_with_home "$T/project" "$c")" "[$c]"
   done
 }
 
@@ -442,71 +464,62 @@ test_relative_rm_resolved_against_cwd() {
 #     --ours) is blocked; checking out a branch name (not a path) is allowed,
 #     also with a redirection to an existing file, wrapped or not.
 test_checkout_of_existing_path() {
-  local c rc
+  local c
   git -c init.defaultBranch=main init -q "$T/repo"
   mkdir -p "$T/repo/src"
   : > "$T/repo/README.md"
   : > "$T/repo/src/a.txt"
   for c in 'git checkout README.md' 'git checkout src/' 'git checkout --ours src/a.txt'; do
-    jq -cn --arg c "$c" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' | bash "$GUARD" >/dev/null 2>&1
-    rc=$?
-    assert_eq 2 "$rc" "[$c]"
+    assert_eq ask "$(jq -cn --arg c "$c" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' | verdict bash "$GUARD")" "[$c]"
   done
   # A redirection target is not a checkout path, wrapped or not.
   for c in 'git checkout main' 'git checkout main > README.md' 'mise exec -- git checkout main > README.md'; do
-    jq -cn --arg c "$c" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' | bash "$GUARD" >/dev/null 2>&1
-    rc=$?
-    assert_eq 0 "$rc" "[$c]"
+    assert_eq pass "$(jq -cn --arg c "$c" --arg d "$T/repo" '{cwd: $d, tool_input: {command: $c}}' | verdict bash "$GUARD")" "[$c]"
   done
 }
 
 # Why this test is important:
-#   - Claude Code shows the hook's stderr; without a reason the block is opaque.
+#   - The permission prompt shows the decision's reason; without one the user
+#     cannot tell why the call needs approval, or which guard asked.
 # What it tests:
-#   - A blocked command prints a "BLOCKED:" reason on stderr.
-test_block_reports_reason() {
-  local err
-  err=$(jq -cn '{tool_input: {command: "git reset --hard"}}' | bash "$GUARD" 2>&1 >/dev/null)
-  assert_contains "$err" "BLOCKED:" "stderr of a blocked command"
+#   - A caught command's decision names the guard and the rule's reason.
+test_ask_reports_reason() {
+  local out
+  out=$(jq -cn '{tool_input: {command: "git reset --hard"}}' | bash "$GUARD" 2>/dev/null)
+  assert_eq "guard-bash: git reset --hard discards uncommitted work" \
+    "$(jq -r '.hookSpecificOutput.permissionDecisionReason' <<<"$out")" "reason of a caught command"
 }
 
 # Why this test is important:
 #   - A guard that silently allows everything when its runtime is missing or
-#     its input is unreadable is worse than none; it must fail closed.
+#     its input is unreadable is worse than none; it must fail toward the
+#     user's prompt.
 # What it tests:
 #   - Without python3 on PATH, with a python3 that fails to run (a broken
-#     pyenv shim exits 127), and for a malformed payload, the guard exits 2.
+#     pyenv shim exits 127), and for a malformed payload, the guard asks.
 test_fails_closed() {
-  local rc
-  printf '{"tool_input":{"command":"git status"}}' | env PATH="$T/empty" /bin/bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status without python3"
+  assert_eq ask "$(printf '{"tool_input":{"command":"git status"}}' | verdict env PATH="$T/empty" /bin/bash "$GUARD")" "without python3"
   mock_cmd python3 "" 127
-  printf '{"tool_input":{"command":"git status"}}' | bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status when python3 fails"
+  assert_eq ask "$(printf '{"tool_input":{"command":"git status"}}' | verdict bash "$GUARD")" "when python3 fails"
   command rm -f "$MOCK_BIN/python3"
-  printf 'not json' | bash "$GUARD" >/dev/null 2>&1
-  rc=$?
-  assert_eq 2 "$rc" "exit status for a malformed payload"
+  assert_eq ask "$(printf 'not json' | verdict bash "$GUARD")" "for a malformed payload"
 }
 
 # Why this test is important:
 #   - The hook-bypass bans live in guard_rules.json; a missing or corrupt
-#     table must block, not silently drop the bans.
+#     table must ask, not silently drop the bans.
 # What it tests:
 #   - With the table deleted, not JSON, or a row missing fields, `git status`
-#     exits 2 and stderr names the guard table.
+#     gets an "ask" decision whose reason names the guard table.
 test_fails_closed_on_bad_table() {
-  local table err rc
+  local table out
   command cp -R "$REPO_ROOT/.claude/scripts" "$T/scripts"
   table="$T/scripts/guard_rules.json"
   for bad in missing 'not json' '{"rows":[{"id":1}]}'; do
     if [[ $bad == missing ]]; then command rm -f "$table"; else printf '%s' "$bad" > "$table"; fi
-    err=$(jq -cn '{tool_input: {command: "git status"}}' | bash "$T/scripts/guard-bash.sh" 2>&1 >/dev/null)
-    rc=$?
-    assert_eq 2 "$rc" "exit with a $bad table"
-    assert_contains "$err" "guard table" "stderr with a $bad table"
+    out=$(jq -cn '{tool_input: {command: "git status"}}' | bash "$T/scripts/guard-bash.sh" 2>/dev/null)
+    assert_eq ask "$(jq -r '.hookSpecificOutput.permissionDecision' <<<"$out")" "decision with a $bad table"
+    assert_contains "$out" "guard table" "reason with a $bad table"
   done
 }
 
@@ -517,7 +530,7 @@ run_test test_force_push_of_every_branch
 run_test test_push_main_outside_refspec
 run_test test_relative_rm_resolved_against_cwd
 run_test test_checkout_of_existing_path
-run_test test_block_reports_reason
+run_test test_ask_reports_reason
 run_test test_fails_closed
 run_test test_fails_closed_on_bad_table
 finish

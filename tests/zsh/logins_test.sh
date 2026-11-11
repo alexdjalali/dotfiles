@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # shellcheck disable=SC2016  # zsh code is passed to zsh_with unexpanded on purpose
 # Tests for the per-identity sign-in helpers in zsh/conf.d/11-logins.zsh and the
 # Chrome-profile launcher in zsh/libexec/work-browser/open.

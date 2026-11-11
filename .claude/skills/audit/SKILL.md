@@ -3,7 +3,7 @@
 name: audit
 model: opus
 effort: high
-description: Audit code for structural problems — a quick chat sweep (DRY, coupling, complexity, dead code, convention drift, test gaps, One-Idea drift, codegen gaps, operability), a persisted file:line-cited audit against a named standard (charter, ADR, budget) in the audits folder (docs/spec/audits/ by default), or `repo` for layout compliance. Reports, never fixes. Use when asked to audit, sweep, or assess code quality, conformance, or repo structure.
+description: Audit code for structural problems — a quick chat sweep (DRY, coupling, complexity, dead code, convention drift, test gaps, One-Idea drift, codegen gaps, operability, security with semgrep / gitleaks / osv-scanner), a persisted file:line-cited audit against a named standard (charter, ADR, budget) in the audits folder (docs/spec/audits/ by default), or `repo` for layout compliance. Reports, never fixes. Use when asked to audit, sweep, or assess code quality, conformance, or repo structure.
 argument-hint: '[<standard, e.g. philosophy-conformance | go-optimization | security> | repo] [<path>]'
 ---
 
@@ -36,6 +36,7 @@ Folders are **layout paths** (`~/.claude/templates/docs-layout.md`): `<audit>` i
    - **bloat:** measure, then name what can go: unreachable code (`deadcode -test=false`, `vulture`, `knip`), interfaces with one implementation that aren't an external boundary, test lines ÷ production lines and assertions per test line, config code + config tests vs features, a dev CLI wrapping stock tools, hand-built generic capabilities a maintained library or tool now covers (name it and the lines it deletes), inline suppressions and exemption files
    - **docs:** stale or missing docs: symbols without doc comments, comments or docstrings that contradict the code, tests without Why/What docs, READMEs / docs pages / CLAUDE.md / ADRs describing behavior the code no longer has, generated references out of date — each is a finding, ranked high
    - **operability:** external calls without timeouts, failure paths with no log/metric/span
+   - **security:** run the stock scanners that are installed — `semgrep scan --config p/default --metrics off --quiet`, `gitleaks git --redact`, `osv-scanner scan source -r .`, `trivy fs --scanners misconfig .` for IaC — then read for what they miss: injection, authn/z gaps, unvalidated boundary input, SSRF / path traversal, unsafe deserialization, secrets in code or history; a scanner hit is evidence to verify, not a finding by itself, and a missing scanner is named, not skipped silently
 
 3. Oversized production files (tests and generated files exempt): `git ls-files -z -- '*.py' '*.go' '*.ts' '*.tsx' | xargs -0 grep -L --null 'Code generated .* DO NOT EDIT' | xargs -0 wc -l | awk '$1 > 800 && $2 != "total"'`.
 4. **Unenforced rules** — for each rule the project's `CLAUDE.md` / `.claude/rules/` states, find the check that enforces it (lint config, import guard, repository guard, hook, generator). Verify by running or reading the check, never by the model's own reading of the code: agents report conformance to unchecked rules with full confidence. A rule with no check is a finding → `/inspect`.

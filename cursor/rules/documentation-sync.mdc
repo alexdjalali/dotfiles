@@ -6,7 +6,7 @@ alwaysApply: true
 
 ## Documentation Sync
 
-**Docs are the first priority** — agents read docs before code, so a stale doc is a bug. Docs first: every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`.
+**Docs are the first priority** — agents read docs before code, so a stale doc is a bug. Every change refreshes every doc it touches (doc comments, test Why/What docs, READMEs, docs/, CLAUDE.md) in the same commit; a commit with no doc impact declares `Docs-Impact: none (<reason>)`.
 
 - **When:** public API / CLI flag / config / endpoint added, renamed, removed; documented behavior changed; breaking change (CHANGELOG, migration note); layout changed. Doc comments and test Why/What docs are docs and are revised with their code. A change with truly no doc impact says `Docs-Impact: none (<reason>)` in the commit.
 - **Where:** search docs, READMEs, agent instruction files, docstrings, and comments for the changed symbol, then one hop out for docs describing dependent behavior.

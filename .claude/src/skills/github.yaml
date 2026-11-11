@@ -1,5 +1,5 @@
 name: "github"
-description: "Ship the current work — commit, create a branch, push and open or update a PR, or merge — fast checks before a commit, the full gate once before the push, confirming every git write. User-typed only."
+description: "Ship the current work — commit, create a branch or worktree, push and open or update a PR, babysit its CI, answer its review feedback, or merge — fast checks before a commit, the full gate once before the push, confirming every git write. User-typed only."
 role: "mechanical"
-argument_hint: "[commit | branch <type>/<desc> | pr | merge]"
+argument_hint: "[commit | branch <type>/<desc> | worktree <type>/<desc> | pr | ci <PR> | feedback <PR> | merge]"
 disable_model_invocation: true

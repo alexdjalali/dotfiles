@@ -25,6 +25,19 @@
         "core.hooksPath"
       ],
       "reason": "hooks are gates"
+    },
+    {
+      "id": "infra",
+      "commands": {
+        "aws": [
+          "delete-*"
+        ],
+        "terraform": [
+          "apply",
+          "state rm"
+        ]
+      },
+      "reason": "infra changes need the user"
     }
   ]
 }

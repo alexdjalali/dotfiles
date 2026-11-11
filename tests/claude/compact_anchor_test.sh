@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # Tests for .claude/scripts/compact-anchor.sh, the SessionStart hook that
 # re-anchors a /spec chain after compaction or resume.
 set -uo pipefail

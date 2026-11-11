@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2031  # $T is set per test by run_test (tests/lib/assert.sh)
 # Tests for the neomutt config (neomutt/.neomuttrc and the account examples).
 set -uo pipefail
 # shellcheck source=../lib/assert.sh

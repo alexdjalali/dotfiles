@@ -70,25 +70,33 @@ type Rule struct {
 	Guard *Guard `yaml:"guard,omitempty"`
 }
 
-// Guard is the data a bash-guard rule contributes to guard_rules.json.
+// Guard is the data a bash-guard rule contributes to guard_rules.json. A row
+// either bans flags, env values or config overrides on Argv0's Subcommands,
+// or bans whole commands per program through Commands.
 type Guard struct {
-	// Argv0 is the program the row applies to, e.g. git.
-	Argv0 string `yaml:"argv0" json:"argv0"`
+	// Argv0 is the program the flag, env and config bans apply to, e.g. git.
+	Argv0 string `yaml:"argv0,omitempty" json:"argv0,omitempty"`
 
-	// Subcommands are the subcommands the row applies to.
-	Subcommands []string `yaml:"subcommands" json:"subcommands"`
+	// Subcommands are the Argv0 subcommands the flag and env bans apply to.
+	Subcommands []string `yaml:"subcommands,omitempty" json:"subcommands,omitempty"`
+
+	// Commands maps a program (terraform, kubectl, aws, …) to the commands it
+	// bans outright. Each entry is a space-separated sequence of globs that
+	// must appear, in order and adjacent, among the call's non-option words:
+	// "apply", "state rm", "delete-*".
+	Commands map[string][]string `yaml:"commands,omitempty" json:"commands,omitempty"`
 
 	// Flags maps a subcommand (or "all") to the flags it bans.
-	Flags map[string][]string `yaml:"flags" json:"flags"`
+	Flags map[string][]string `yaml:"flags,omitempty" json:"flags,omitempty"`
 
 	// Env maps an environment variable to the values it bans.
-	Env map[string][]string `yaml:"env" json:"env"`
+	Env map[string][]string `yaml:"env,omitempty" json:"env,omitempty"`
 
 	// Config lists git config keys the row bans overriding: per command
 	// (-c, --config-env, GIT_CONFIG_KEY_n) on a listed subcommand, and
 	// written or unset with `git config`.
 	Config []string `yaml:"config,omitempty" json:"config,omitempty"`
 
-	// Reason is printed when the row blocks a command.
+	// Reason is shown in the permission prompt when the row catches a command.
 	Reason string `yaml:"reason" json:"reason"`
 }

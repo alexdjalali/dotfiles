@@ -1,0 +1,4 @@
+name: "frame"
+description: "Frame a fuzzy idea before any plan — interview one question at a time, compare 2–3 approaches with trade-offs, recommend one, and write a brief (problem, users, success criteria, non-goals, chosen approach, open questions) that /spec, /adr or /rfp read. Use when the user is unsure what to build, says brainstorm / think through / explore options, or a request has no clear outcome yet."
+role: "plan"
+argument_hint: "<idea or problem statement>"

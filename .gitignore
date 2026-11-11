@@ -38,6 +38,7 @@ neomutt/.neomutt/certificates
 .claude/todos/
 .claude/homunculus/
 .claude/history.jsonl
+.claude/skills/*/evals/results/
 .claude/stats-cache.json
 
 # Cursor runtime (we only track rules/)

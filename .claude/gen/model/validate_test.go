@@ -262,24 +262,29 @@ func TestRoleMustExist(t *testing.T) {
 	}
 }
 
-// TestMirrorRuleNeedsSummary tests the summary requirement for mirrors.
+// TestMirrorRuleNeedsSummary tests the summary requirement for targets that
+// render a rule's summary: the Cursor mirrors and the Probity addendum.
 //
 // Why this test is important:
-//   - Mirrors render a rule's summary; a missing one renders an empty
-//     sentence into Cursor and Kilocode.
+//   - Those targets render a rule's summary; a missing one renders an empty
+//     sentence into Cursor and Kilocode, or an empty bullet into the
+//     instructions Probity gives the agent.
 //
 // What it tests:
-//   - A rule targeting cursor/go without summary reports /0/summary naming
-//     the rule and the mirror; a claude-md-only rule needs none.
+//   - A rule targeting cursor/go or probity without summary reports
+//     /0/summary naming the rule and the target; a claude-md-only rule needs
+//     none.
 func TestMirrorRuleNeedsSummary(t *testing.T) {
-	mirrored, local := validRule("a"), validRule("b")
-	mirrored.Targets = []string{"claude-md", "cursor/go"}
-	errs := model.Validate(&model.Model{Rules: []model.Rule{mirrored, local}})
-	if !hasField(errs, "rules.yaml", "/0/summary") || hasField(errs, "rules.yaml", "/1/summary") {
-		t.Fatalf("errors = %v", fields(errs))
-	}
-	if want := `rule "a" targets cursor/go but has no summary`; !strings.Contains(errs[0].Message, want) {
-		t.Fatalf("message = %q, want %q", errs[0].Message, want)
+	for _, target := range []string{"cursor/go", "probity"} {
+		mirrored, local := validRule("a"), validRule("b")
+		mirrored.Targets = []string{"claude-md", target}
+		errs := model.Validate(&model.Model{Rules: []model.Rule{mirrored, local}})
+		if !hasField(errs, "rules.yaml", "/0/summary") || hasField(errs, "rules.yaml", "/1/summary") {
+			t.Fatalf("%s: errors = %v", target, fields(errs))
+		}
+		if want := `rule "a" targets ` + target + ` but has no summary`; !strings.Contains(errs[0].Message, want) {
+			t.Fatalf("%s: message = %q, want %q", target, errs[0].Message, want)
+		}
 	}
 }
 

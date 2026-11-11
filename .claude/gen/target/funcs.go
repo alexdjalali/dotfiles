@@ -1,6 +1,8 @@
 package target
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"text/template"
@@ -17,6 +19,7 @@ import (
 //	model ROLE     "model (effort)" or "model" for a models.yaml role
 //	indent N TEXT  TEXT with N spaces before every line (use in a pipeline)
 //	mirror NAME    the Cursor rule NAME's body for Codex: frontmatter and trailing newlines stripped
+//	summariesJSON TARGET  JSON array of the summaries of rules listing TARGET, for TypeScript templates
 func FuncMap(m *model.Model) template.FuncMap {
 	return template.FuncMap{
 		"rule":    func(id string) (string, error) { return ruleStatement(m, id) },
@@ -25,6 +28,9 @@ func FuncMap(m *model.Model) template.FuncMap {
 		"model":   func(role string) (string, error) { return roleModel(m, role) },
 		"indent":  indent,
 		"mirror":  func(name string) (string, error) { return mirrorBody(m, name) },
+		"summariesJSON": func(target string) (string, error) {
+			return summariesJSON(m, target)
+		},
 	}
 }
 
@@ -66,6 +72,28 @@ func rulesFor(m *model.Model, target string) []model.Rule {
 		}
 	}
 	return out
+}
+
+// summariesJSON renders the summaries of the rules listing target, in catalog
+// order, as an indented JSON array of strings: "[]" when none do, "<" and "&"
+// left literal. A listed rule without a summary is an error (ruleSummary).
+func summariesJSON(m *model.Model, target string) (string, error) {
+	summaries := []string{}
+	for _, r := range rulesFor(m, target) {
+		s, err := ruleSummary(m, r.ID)
+		if err != nil {
+			return "", err
+		}
+		summaries = append(summaries, s)
+	}
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(summaries); err != nil {
+		return "", model.Wrap(err, model.CodeInvalidModel, "summaries for "+target)
+	}
+	return strings.TrimSuffix(buf.String(), "\n"), nil
 }
 
 // lensList renders the statements for target grouped under their category,

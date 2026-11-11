@@ -77,6 +77,7 @@ func Default() *Registry {
 	r.Register(KindCursor, func() Target { return CursorTarget{} })
 	r.Register(KindKilocode, func() Target { return KilocodeTarget{} })
 	r.Register(KindAgentsMd, func() Target { return AgentsMdTarget{} })
+	r.Register(KindProbity, func() Target { return ProbityTarget{} })
 	return r
 }
 

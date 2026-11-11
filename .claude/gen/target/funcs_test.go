@@ -10,7 +10,7 @@ import (
 	"claudegen/target"
 )
 
-// catalog is a model with three rules across two targets and two roles.
+// catalog is a model with four rules across three targets and two roles.
 func catalog() *model.Model {
 	return &model.Model{
 		Models: map[string]model.ModelRole{
@@ -21,6 +21,7 @@ func catalog() *model.Model {
 			{ID: "b-rule", Statement: "B first.", Category: "Quality", Targets: []string{"claude-md", "review-lenses"}},
 			{ID: "a-rule", Statement: "A second.", Category: "Correctness", Targets: []string{"claude-md", "review-lenses"}},
 			{ID: "c-rule", Statement: "C elsewhere.", Category: "Quality", Targets: []string{"rules/testing", "review-lenses"}},
+			{ID: "p-rule", Statement: "P.", Summary: "P with \"quotes\" and <angle>.", Targets: []string{"probity"}},
 		},
 	}
 }
@@ -172,5 +173,24 @@ func TestSummaryErrorsNameTheCause(t *testing.T) {
 	}
 	if _, err := exec(t, `{{summary "a-rule"}}`); err == nil || !strings.Contains(err.Error(), `rule "a-rule" has no summary`) {
 		t.Fatalf("missing summary: err = %v", err)
+	}
+}
+
+// TestSummariesJSONListsTargetRows tests the summariesJSON function.
+//
+// Why this test is important:
+//   - The Probity template embeds this output as a TypeScript array literal;
+//     an unescaped quote breaks the config, an HTML-escaped "<" shows the
+//     agent "\u003c", and "null" for an empty target fails the string[] type.
+//
+// What it tests:
+//   - The summaries of the rules targeting probity render as an indented JSON
+//     array with quotes escaped and "<" kept literal; a target no rule lists
+//     renders "[]".
+func TestSummariesJSONListsTargetRows(t *testing.T) {
+	got, err := exec(t, `{{summariesJSON "probity"}}|{{summariesJSON "none"}}`)
+	want := "[\n  \"P with \\\"quotes\\\" and <angle>.\"\n]|[]"
+	if err != nil || got != want {
+		t.Fatalf("got %q\nwant %q, err %v", got, want, err)
 	}
 }

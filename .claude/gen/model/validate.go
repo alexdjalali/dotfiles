@@ -69,11 +69,14 @@ func checkEmphasis(rules []Rule) []Error {
 	return errs
 }
 
-// mirrorPrefixes are the target prefixes that render a rule's summary.
-var mirrorPrefixes = []string{"cursor/"}
+// mirrorPrefixes are the target prefixes that render a rule's summary: the
+// Cursor mirrors and the Probity addendum. Matching is by prefix, so any
+// target starting with one of them needs a summary.
+var mirrorPrefixes = []string{"cursor/", "probity"}
 
-// checkMirrorSummaries reports rules that target a mirror without a summary:
-// mirrors render the condensed summary, not the statement.
+// checkMirrorSummaries reports rules that target a mirror or the Probity
+// addendum without a summary: those render the condensed summary, not the
+// statement.
 func checkMirrorSummaries(rules []Rule) []Error {
 	var errs []Error
 	for i, r := range rules {
@@ -91,7 +94,8 @@ func checkMirrorSummaries(rules []Rule) []Error {
 	return errs
 }
 
-// mirrorTarget reports whether target names a mirror file.
+// mirrorTarget reports whether target renders summaries (a mirror file or the
+// Probity addendum).
 func mirrorTarget(target string) bool {
 	for _, p := range mirrorPrefixes {
 		if strings.HasPrefix(target, p) {

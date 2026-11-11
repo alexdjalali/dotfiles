@@ -315,3 +315,15 @@
   severity: must_fix
   enforce: review
   targets: [audit-lenses]
+- id: tdd-bugfix
+  statement: "**Bug fixes are the exception: reproduce, root-cause, fix — then write the reproducing test at the end** and prove it with the revert-test (fails with the fix reverted, passes re-applied). The test is still mandatory; only its timing moves."
+  category: testing
+  severity: must_fix
+  enforce: review
+  targets: [rules/testing]
+- id: tdd-skip-red
+  statement: "**Skip RED only for** docs, config, dep bumps, formatting — or a plan task's `Trivial:` claim naming its covering test/command: ≤ 5 net new production lines, no new branch/loop/try with a non-trivial body, no new public symbol, no new error path (audited at verify). **Bugfixes never qualify.**"
+  category: testing
+  severity: must_fix
+  enforce: review
+  targets: [rules/testing]

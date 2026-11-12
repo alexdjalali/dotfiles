@@ -27,6 +27,7 @@ path=(
   $HOME/.local/bin
   $HOME/.local/scripts
   $HOME/.cargo/bin(N)
+  /opt/homebrew/opt/rustup/bin(N)
   $HOME/.bun/bin(N)
   $HOME/Library/Python/3.*/bin(N)
   $HOME/TechAI/*/bin(N)

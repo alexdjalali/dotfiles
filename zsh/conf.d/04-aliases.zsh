@@ -197,3 +197,10 @@ alias ghub-actions='ghub actions'
 
 # Git check all projects
 alias gca='git-check-all'
+
+# VV dev machines: attach to (or create) tmux session "main" (Ctrl+B keys)
+alias neo="ssh neo -t 'tmux new -A -s main'"
+alias trinity="ssh trinity -t 'tmux new -A -s main'"
+# Same session shown as native iTerm panes (Cmd+D splits; tmux keys don't apply)
+alias neo-cc="ssh neo -t 'tmux -CC new -A -s main'"
+alias trinity-cc="ssh trinity -t 'tmux -CC new -A -s main'"

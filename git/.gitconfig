@@ -5,7 +5,6 @@
 [core]
 	editor = nvim
 	pager = delta
-	fsmonitor = true
 	untrackedCache = true
 	preloadIndex = true
 [init]
